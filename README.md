@@ -16,7 +16,7 @@
 
 **Ref!t**은 다음과 같은 흐름으로 면접 경험을 관리합니다.
 
-<img width="7680" height="1392" alt="mvp" src="https://github.com/user-attachments/assets/332d8932-7f62-401d-8a07-c2f1bbd66be5" />
+<img width="7680" height="1392" alt="Ref!t 서비스 흐름도" src="https://github.com/user-attachments/assets/332d8932-7f62-401d-8a07-c2f1bbd66be5" />
 
 
 ## 🔗 팀 스페이스
