@@ -1,5 +1,4 @@
 @import 'pretendard/dist/web/variable/pretendardvariable.css';
-@import 'tailwindcss';
 
 @theme {
   --font-sans: 'Pretendard', 'Pretendard Variable', system-ui, sans-serif;
