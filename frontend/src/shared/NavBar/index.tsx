@@ -1,7 +1,14 @@
 import { NavLink } from 'react-router'
 import { Logo } from '@/assets'
-import { ROUTES } from '@/routes'
+import { ROUTES } from '@/constants/routes'
 import UserProfile from '@/shared/NavBar/UserProfile'
+
+const navItems = [
+  { to: ROUTES.DASHBOARD, label: '홈', end: true },
+  { to: ROUTES.DASHBOARD_MY_INTERVIEWS, label: '내 면접 모아보기', end: true },
+  { to: ROUTES.DASHBOARD_TREND_QUESTIONS, label: '질문 트렌드 모아보기' },
+  { to: ROUTES.DASHBOARD_MY_COLLECTIONS, label: '스크랩' },
+]
 
 export default function NavBar() {
   return (
@@ -11,28 +18,16 @@ export default function NavBar() {
       </NavLink>
 
       <div className="flex items-center gap-2">
-        <NavLink to={ROUTES.DASHBOARD} end className={getNavLinkClassName}>
-          홈
-        </NavLink>
-        <NavLink
-          to={ROUTES.DASHBOARD_MY_INTERVIEWS}
-          end
-          className={getNavLinkClassName}
-        >
-          내 면접 모아보기
-        </NavLink>
-        <NavLink
-          to={ROUTES.DASHBOARD_TREND_QUESTIONS}
-          className={getNavLinkClassName}
-        >
-          질문 트렌드 모아보기
-        </NavLink>
-        <NavLink
-          to={ROUTES.DASHBOARD_MY_COLLECTIONS}
-          className={getNavLinkClassName}
-        >
-          스크랩
-        </NavLink>
+        {navItems.map((item) => (
+          <NavLink
+            key={item.to}
+            to={item.to}
+            end={item.end}
+            className={getNavLinkClassName}
+          >
+            {item.label}
+          </NavLink>
+        ))}
       </div>
 
       <UserProfile />
