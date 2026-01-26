@@ -1,7 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router'
-import DashboardLayout from '@/routes/layouts/DashboardLayout'
-import Dashboard from '@/routes/pages/Dashboard'
-import NotFound from '@/routes/pages/NotFound'
+import { DashboardLayout, RootLayout } from '@/routes/layouts'
+import { Dashboard, NotFound } from '@/routes/pages'
 
 export const ROUTES = {
   HOME: '/',
@@ -34,55 +33,69 @@ const router = createBrowserRouter([
   { path: ROUTES.SIGNIN, Component: Dashboard },
   { path: ROUTES.TERMS, Component: Dashboard },
   {
-    path: ROUTES.DASHBOARD,
-    Component: DashboardLayout,
-    children: [
-      { index: true, Component: Dashboard },
-      {
-        path: getChildPath(ROUTES.DASHBOARD_MY_INTERVIEWS, ROUTES.DASHBOARD),
-        Component: Dashboard,
-      },
-      {
-        path: getChildPath(ROUTES.DASHBOARD_TREND_QUESTIONS, ROUTES.DASHBOARD),
-        Component: Dashboard,
-      },
-      {
-        path: getChildPath(ROUTES.DASHBOARD_MY_COLLECTIONS, ROUTES.DASHBOARD),
-        Component: Dashboard,
-      },
-      {
-        path: getChildPath(
-          ROUTES.DASHBOARD_COLLECTION_DETAIL,
-          ROUTES.DASHBOARD,
-        ),
-        Component: Dashboard,
-      },
-    ],
-  },
-  {
-    path: ROUTES.RECORD,
-    children: [
-      { index: true, Component: Dashboard },
-      {
-        path: getChildPath(ROUTES.RECORD_CONFIRM, ROUTES.RECORD),
-        Component: Dashboard,
-      },
-      {
-        path: getChildPath(ROUTES.RECORD_LINK, ROUTES.RECORD),
-        Component: Dashboard,
-      },
-    ],
-  },
-  {
-    path: ROUTES.RETRO,
+    Component: RootLayout,
     children: [
       {
-        path: getChildPath(ROUTES.RETRO_QUESTION, ROUTES.RETRO),
-        Component: Dashboard,
+        path: ROUTES.DASHBOARD,
+        Component: DashboardLayout,
+        children: [
+          { index: true, Component: Dashboard },
+          {
+            path: getChildPath(
+              ROUTES.DASHBOARD_MY_INTERVIEWS,
+              ROUTES.DASHBOARD,
+            ),
+            Component: Dashboard,
+          },
+          {
+            path: getChildPath(
+              ROUTES.DASHBOARD_TREND_QUESTIONS,
+              ROUTES.DASHBOARD,
+            ),
+            Component: Dashboard,
+          },
+          {
+            path: getChildPath(
+              ROUTES.DASHBOARD_MY_COLLECTIONS,
+              ROUTES.DASHBOARD,
+            ),
+            Component: Dashboard,
+          },
+          {
+            path: getChildPath(
+              ROUTES.DASHBOARD_COLLECTION_DETAIL,
+              ROUTES.DASHBOARD,
+            ),
+            Component: Dashboard,
+          },
+        ],
       },
       {
-        path: getChildPath(ROUTES.RETRO_DETAILS, ROUTES.RETRO),
-        Component: Dashboard,
+        path: ROUTES.RECORD,
+        children: [
+          { index: true, Component: Dashboard },
+          {
+            path: getChildPath(ROUTES.RECORD_CONFIRM, ROUTES.RECORD),
+            Component: Dashboard,
+          },
+          {
+            path: getChildPath(ROUTES.RECORD_LINK, ROUTES.RECORD),
+            Component: Dashboard,
+          },
+        ],
+      },
+      {
+        path: ROUTES.RETRO,
+        children: [
+          {
+            path: getChildPath(ROUTES.RETRO_QUESTION, ROUTES.RETRO),
+            Component: Dashboard,
+          },
+          {
+            path: getChildPath(ROUTES.RETRO_DETAILS, ROUTES.RETRO),
+            Component: Dashboard,
+          },
+        ],
       },
     ],
   },
