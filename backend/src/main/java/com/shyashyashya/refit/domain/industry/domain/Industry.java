@@ -27,7 +27,7 @@ public class Industry extends BaseEntity {
     private String name;
 
     /*
-      Factory Constructor
+      Factory Method
      */
     public static Industry create(String name) {
         return Industry.builder()

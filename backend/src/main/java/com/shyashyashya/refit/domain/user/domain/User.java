@@ -50,7 +50,7 @@ public class User extends BaseEntity {
     private JobCategory jobCategory;
 
     /*
-      Factory Constructor
+      Factory Method
      */
     public static User create(String email, String nickname, String profileImageUrl, Industry industry, JobCategory jobCategory) {
         return User.builder()

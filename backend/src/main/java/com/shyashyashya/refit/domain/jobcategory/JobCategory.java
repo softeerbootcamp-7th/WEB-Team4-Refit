@@ -29,7 +29,7 @@ public class JobCategory extends BaseEntity {
 
 
     /*
-      Factory Constructor
+      Factory Method
      */
     public static JobCategory create(String name) {
         return JobCategory.builder()
