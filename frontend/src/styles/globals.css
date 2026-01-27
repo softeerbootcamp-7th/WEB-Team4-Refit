@@ -1,0 +1,9 @@
+:root {
+  color: var(--color-gray-800);
+  background-color: var(--color-gray-100);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
