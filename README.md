@@ -156,6 +156,7 @@
 
 
 ## 백엔드
+### 기술 스택
 <table>
     <thead>
         <tr>
@@ -202,6 +203,8 @@
     </tbody>
 </table>
 
+### ERD
+<img src="https://github.com/user-attachments/assets/eed01b33-b71e-4882-b6d2-83331ad5249a">
 
 ## 팀원 소개
 
