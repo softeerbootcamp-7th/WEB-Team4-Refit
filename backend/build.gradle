@@ -1,12 +1,12 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '4.0.1'
+    id 'org.springframework.boot' version '3.5.10'
     id 'io.spring.dependency-management' version '1.1.7'
 }
 
-group = 'com.lookback'
+group = 'com.shyashyashya'
 version = '0.0.1-SNAPSHOT'
-description = 'lookback'
+description = 'refit'
 
 java {
     toolchain {
@@ -29,13 +29,12 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
 
     runtimeOnly 'com.mysql:mysql-connector-j'
-    runtimeOnly 'com.h2database:h2:2.4.240' // TEST 용으로 수정 필요
+    runtimeOnly 'com.h2database:h2' // TEST 용으로 수정 필요
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
-    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
@@ -43,6 +42,6 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-jar {
-    enabled = false;
+tasks.named('jar') {
+    enabled = false
 }
