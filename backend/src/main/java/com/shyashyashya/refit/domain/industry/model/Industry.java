@@ -1,4 +1,4 @@
-package com.shyashyashya.refit.domain.jobcategory.domain;
+package com.shyashyashya.refit.domain.industry.model;
 
 import com.shyashyashya.refit.domain.common.domain.BaseEntity;
 import jakarta.persistence.Column;
@@ -14,30 +14,29 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "job_categories")
+@Table(name = "industries")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class JobCategory extends BaseEntity {
+public class Industry extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "job_category_id", nullable = false, updatable = false)
+    @Column(name = "industry_id", nullable = false, updatable = false)
     private Long id;
 
-    @Column(name = "job_category_name", columnDefinition = "varchar(50)", nullable = false, unique = true)
+    @Column(name = "industry_name", columnDefinition = "varchar(20)", nullable = false)
     private String name;
-
 
     /*
       Factory Method
      */
-    public static JobCategory create(String name) {
-        return JobCategory.builder()
+    public static Industry create(String name) {
+        return Industry.builder()
                 .name(name)
                 .build();
     }
 
     @Builder(access = AccessLevel.PRIVATE)
-    private JobCategory(String name) {
+    private Industry(String name) {
         this.name = name;
     }
 }
