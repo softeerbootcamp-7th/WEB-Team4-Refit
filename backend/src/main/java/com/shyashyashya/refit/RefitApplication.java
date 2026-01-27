@@ -1,13 +1,13 @@
-package com.lookback.lookback;
+package com.shyashyashya.refit;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class LookbackApplication {
+public class RefitApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(LookbackApplication.class, args);
+        SpringApplication.run(RefitApplication.class, args);
     }
 
 }
