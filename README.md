@@ -11,7 +11,7 @@
     &nbsp; | &nbsp;
     <a href="https://www.figma.com/design/1bTgPqgo2ISeKo9rg0uXVY/-4%ED%8C%80--%EC%B5%9C%EC%A2%85%EC%82%B0%EC%B6%9C%EB%AC%BC-%ED%95%B8%EB%93%9C%EC%98%A4%ED%94%84?node-id=11706-13638&t=d15cAGb98gYZbypL-1">Figma</a>
     &nbsp; | &nbsp; 
-    <a href="https://github.com/boostcampwm2023/web13_Boarlog/wiki">GitHub Wiki</a>
+    <a href="https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki">GitHub Wiki</a>
   </p>
 </div>
 
@@ -88,8 +88,8 @@
 
 | 스프린트 명 | 스프린트 기간 | 내용                                                                                                                    |
 | ----------- | -------------- |-----------------------------------------------------------------------------------------------------------------------|
-| Refit 1주차 | 26-01-19 ~ 26-01-25 | FE: 주요 기능들 피저빌리티 체크, 기본 프로젝트 세팅<br/>BE: API 명세 및 ERD 설계<br/> 공통: 기획/디자인 리뷰 및 수정, Git 컨벤션 설정, Jira Automation 구현       |
-| Refit 2주차 | 26-01-26 ~ 26-02-02 | FE: 기본적인 뷰 구현, OpenAPI workflow 개발 <br/> BE: Whisper, Google STT 등 프로젝트 적용 예정 기술 성능 검토, 프로젝트 공통 컴포넌트 개발, OAuth 로그인 개발 |
+| Refit 1주차 | 26-01-19<br/>~ 26-01-25 | FE: 주요 기능들 피저빌리티 체크, 기본 프로젝트 세팅<br/>BE: API 명세 및 ERD 설계<br/> 공통: 기획/디자인 리뷰 및 수정, Git 컨벤션 설정, Jira Automation 구현      |
+| Refit 2주차 | 26-01-26<br/>~ 26-02-02 | FE: 기본적인 뷰 구현, OpenAPI workflow 개발 <br/> BE: Whisper, Google STT 등 프로젝트 적용 예정 기술 성능 검토, 프로젝트 공통 컴포넌트 개발, OAuth 로그인 개발 |
 
 
 - 티켓 생성 → To Do → In Progress → Code Review → Done
