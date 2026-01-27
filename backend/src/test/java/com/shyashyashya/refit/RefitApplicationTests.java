@@ -1,10 +1,10 @@
-package com.lookback.lookback;
+package com.shyashyashya.refit;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class LookbackApplicationTests {
+class RefitApplicationTests {
 
     @Test
     void contextLoads() {
