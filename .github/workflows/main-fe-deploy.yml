@@ -1,13 +1,13 @@
-name: Deploy Frontend (dev -> preview)
+name: Deploy Frontend (main -> production)
 
 on:
   push:
-    branches: [dev]
+    branches: [main]
     paths:
       - "frontend/**"
 
 concurrency:
-  group: vercel-frontend-dev
+  group: vercel-frontend-prod
   cancel-in-progress: true
 
 jobs:
@@ -16,7 +16,7 @@ jobs:
 
     env:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_DEV }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_PROD }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
 
     steps:
@@ -44,14 +44,14 @@ jobs:
         working-directory: frontend
         run: pnpm build
 
-      - name: Vercel pull (preview)
+      - name: Vercel pull (production)
         working-directory: frontend
-        run: npx vercel pull --yes --environment=preview --token=$VERCEL_TOKEN
+        run: npx vercel pull --yes --environment=production --token=$VERCEL_TOKEN
 
-      - name: Vercel build (preview)
+      - name: Vercel build (production)
         working-directory: frontend
-        run: npx vercel build --token=$VERCEL_TOKEN
+        run: npx vercel build --prod --token=$VERCEL_TOKEN
 
-      - name: Vercel deploy (preview)
+      - name: Vercel deploy (production)
         working-directory: frontend
-        run: npx vercel deploy --prebuilt --token=$VERCEL_TOKEN
+        run: npx vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
