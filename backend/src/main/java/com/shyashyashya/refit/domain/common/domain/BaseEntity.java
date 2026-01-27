@@ -1,5 +1,6 @@
 package com.shyashyashya.refit.domain.common.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
@@ -15,8 +16,10 @@ import java.time.LocalDateTime;
 public abstract class BaseEntity {
 
     @CreatedDate
-    private LocalDateTime createDate;
+    @Column(updatable = false, nullable = false)
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
-    private LocalDateTime updateDate;
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
 }
