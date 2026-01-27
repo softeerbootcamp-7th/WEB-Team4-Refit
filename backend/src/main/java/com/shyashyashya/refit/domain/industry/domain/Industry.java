@@ -22,6 +22,6 @@ public class Industry extends BaseEntity {
     @Column(name = "industry_id", nullable = false, updatable = false)
     private Long id;
 
-    @Column(columnDefinition = "varchar(20)", nullable = false)
-    private String industryName;
+    @Column(name = "industry_name", columnDefinition = "varchar(20)", nullable = false)
+    private String name;
 }
