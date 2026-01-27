@@ -86,10 +86,10 @@
 리핏 팀은 Jira를 기반으로 업무를 관리하고, 1주 단위 스프린트를 운영해요. Jira와 GitHub을 이중으로 관리하는 수고로움을 줄이고, 팀에서 정한 Git 컨벤션을 지키기 위해 Jira Automation을 사용했어요.
 <br/>
 
-| 스프린트 명 | 스프린트 기간 | 내용 |
-| ----------- | -------------- | ---------------------------------------------------------------|
-| Refit 1주차 | 26-01-19 ~ 26-01-25 | FE: 주요 기능들 피저빌리티 체크, 기본 프로젝트 세팅<br/>BE: API 명세 및 ERD 설계<br/> 공통: 기획/디자인 리뷰 및 수정, Git 컨벤션 설정, Jira Automation 구현|
-| Refit 2주차 | 26-01-26 ~ 26-02-02 | FE: 기본적인 뷰 구현, OpenAPI workflow 개발 <br/> BE: Whisper 모델 기능 체크 |
+| 스프린트 명 | 스프린트 기간 | 내용                                                                                                                    |
+| ----------- | -------------- |-----------------------------------------------------------------------------------------------------------------------|
+| Refit 1주차 | 26-01-19 ~ 26-01-25 | FE: 주요 기능들 피저빌리티 체크, 기본 프로젝트 세팅<br/>BE: API 명세 및 ERD 설계<br/> 공통: 기획/디자인 리뷰 및 수정, Git 컨벤션 설정, Jira Automation 구현       |
+| Refit 2주차 | 26-01-26 ~ 26-02-02 | FE: 기본적인 뷰 구현, OpenAPI workflow 개발 <br/> BE: Whisper, Google STT 등 프로젝트 적용 예정 기술 성능 검토, 프로젝트 공통 컴포넌트 개발, OAuth 로그인 개발 |
 
 
 - 티켓 생성 → To Do → In Progress → Code Review → Done
@@ -156,7 +156,51 @@
 
 
 ## 백엔드
-
+<table>
+    <thead>
+        <tr>
+            <th>분류</th>
+            <th>기술 스택</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                  <p>언어 및 프레임워크</p>
+            </td>
+            <td>
+                  <img src="https://img.shields.io/badge/java-%23ED8B00.svg?logo=openjdk&logoColor=white">
+                  <img src="https://img.shields.io/badge/spring-%236DB33F.svg?logo=spring&logoColor=white"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>의존성 관리 및 빌드</p>
+            </td>
+            <td>
+              <img src="https://img.shields.io/badge/Gradle-02303A.svg?logo=Gradle&logoColor=white"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>배포</p>
+            </td>
+            <td>
+                <img src="https://img.shields.io/badge/GitHub_Actions-2088FF?logo=github-actions&logoColor=white"/>
+                <img src="https://img.shields.io/badge/docker-%230db7ed.svg?logo=docker&logoColor=white"/>
+                <img src="https://img.shields.io/badge/AWS-%23FF9900.svg?logo=amazon-aws&logoColor=white"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>데이터베이스</p>
+            </td>
+            <td>
+                <img src="https://img.shields.io/badge/mysql-4479A1.svg?logo=mysql&logoColor=white"/>
+            </td>
+        </tr>
+    </tbody>
+</table>
 
 
 ## 팀원 소개
