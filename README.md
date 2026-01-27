@@ -124,6 +124,7 @@
             <td>
                   <img src="https://img.shields.io/badge/React_Router-CA4245?logo=react-router&logoColor=white"/>
                   <img src="https://img.shields.io/badge/TanStack_Query-FF4154?logo=react-query&logoColor=white"/>
+                  <img src="https://img.shields.io/badge/Orval-F53C56?logo=orval&logoColor=white"/>
             </td>
         </tr>
         <tr>
