@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -47,4 +48,29 @@ public class User extends BaseEntity {
     @JoinColumn(name = "job_category_id")
     @OneToOne(fetch = FetchType.LAZY)
     private JobCategory jobCategory;
+
+    /*
+      Factory Constructor
+     */
+    public static User create(String email, String nickname, String profileImageUrl, Industry industry, JobCategory jobCategory) {
+        return User.builder()
+                .email(email)
+                .nickname(nickname)
+                .profileImageUrl(profileImageUrl)
+                .isAgreedToTerms(true)
+                .industry(industry)
+                .jobCategory(jobCategory)
+                .build();
+    }
+
+    @Builder(access = AccessLevel.PRIVATE)
+    private User(String email, String nickname, String profileImageUrl, boolean isAgreedToTerms,
+                 Industry industry, JobCategory jobCategory) {
+        this.email = email;
+        this.nickname = nickname;
+        this.profileImageUrl = profileImageUrl;
+        this.isAgreedToTerms = isAgreedToTerms;
+        this.industry = industry;
+        this.jobCategory = jobCategory;
+    }
 }
