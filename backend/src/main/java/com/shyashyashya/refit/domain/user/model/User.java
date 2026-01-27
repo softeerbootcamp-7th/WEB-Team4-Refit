@@ -1,6 +1,6 @@
 package com.shyashyashya.refit.domain.user.model;
 
-import com.shyashyashya.refit.domain.common.domain.BaseEntity;
+import com.shyashyashya.refit.domain.common.model.BaseEntity;
 import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import jakarta.persistence.Column;
