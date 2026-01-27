@@ -29,13 +29,13 @@ public class User extends BaseEntity {
     @Column(name = "user_id", updatable = false, nullable = false)
     private Long id;
 
-    @Column(columnDefinition = "varchar(50)")
+    @Column(columnDefinition = "varchar(255)")
     private String email;
 
-    @Column(columnDefinition = "varchar(5)", nullable = false, unique = true)
+    @Column(columnDefinition = "varchar(30)", nullable = false, unique = true)
     private String nickname;
 
-    @Column(columnDefinition = "varchar(100)")
+    @Column(columnDefinition = "varchar(2048)")
     private String profileImageUrl;
 
     @Column(nullable = false)
