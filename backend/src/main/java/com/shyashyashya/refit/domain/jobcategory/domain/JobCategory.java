@@ -1,7 +1,6 @@
-package com.shyashyashya.refit.domain.jobcategory;
+package com.shyashyashya.refit.domain.jobcategory.domain;
 
 import com.shyashyashya.refit.domain.common.domain.BaseEntity;
-import com.shyashyashya.refit.domain.industry.domain.Industry;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

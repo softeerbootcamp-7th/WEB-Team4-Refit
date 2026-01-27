@@ -2,7 +2,7 @@ package com.shyashyashya.refit.domain.user.domain;
 
 import com.shyashyashya.refit.domain.common.domain.BaseEntity;
 import com.shyashyashya.refit.domain.industry.domain.Industry;
-import com.shyashyashya.refit.domain.jobcategory.JobCategory;
+import com.shyashyashya.refit.domain.jobcategory.domain.JobCategory;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
