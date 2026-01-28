@@ -13,14 +13,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<CommonResponse<Void>> handleCustomException(CustomException e) {
         ErrorCode errorCode = e.getErrorCode();
-        log.info("CustomException: [{}]: {}", errorCode.name(), errorCode.getMessage());
+        log.info("CustomException [{}]: {}", errorCode.name(), errorCode.getMessage());
         var response = CommonResponse.customException(errorCode);
         return ResponseEntity.status(errorCode.getHttpStatus()).body(response);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<CommonResponse<Void>> handlerException(Exception e) {
-        log.error("Exception: [{}]: {}", e.getClass().getName(), e.getMessage());
+        log.error("Exception: {}", e.getMessage());
         var response = CommonResponse.unknownException(e);
         return ResponseEntity.internalServerError().body(response);
     }
