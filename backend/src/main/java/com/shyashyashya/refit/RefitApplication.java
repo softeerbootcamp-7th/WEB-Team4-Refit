@@ -11,5 +11,4 @@ public class RefitApplication {
     public static void main(String[] args) {
         SpringApplication.run(RefitApplication.class, args);
     }
-
 }
