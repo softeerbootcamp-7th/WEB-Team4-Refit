@@ -78,8 +78,7 @@ public class StarAnalysis extends BaseEntity {
             StarInclusionLevel aInclusionLevel,
             StarInclusionLevel rInclusionLevel,
             String overallSummaryText,
-            QnaSet qnaSet
-    ) {
+            QnaSet qnaSet) {
         this.sInclusionLevel = sInclusionLevel;
         this.tInclusionLevel = tInclusionLevel;
         this.aInclusionLevel = aInclusionLevel;

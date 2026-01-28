@@ -38,10 +38,7 @@ public class ScrapFolder extends BaseEntity {
      * Static Factory Method
      */
     public static ScrapFolder create(String name, User user) {
-        return ScrapFolder.builder()
-                .name(name)
-                .user(user)
-                .build();
+        return ScrapFolder.builder().name(name).user(user).build();
     }
 
     @Builder(access = AccessLevel.PRIVATE)

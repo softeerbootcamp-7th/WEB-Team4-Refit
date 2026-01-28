@@ -35,11 +35,7 @@ public class QnaSetCategory extends BaseEntity {
     /*
      * Static Factory Method
      */
-    public static QnaSetCategory create(
-            String categoryName,
-            String exampleQuestion,
-            double cohesion
-    ) {
+    public static QnaSetCategory create(String categoryName, String exampleQuestion, double cohesion) {
         return QnaSetCategory.builder()
                 .categoryName(categoryName)
                 .exampleQuestion(exampleQuestion)
@@ -48,11 +44,7 @@ public class QnaSetCategory extends BaseEntity {
     }
 
     @Builder(access = AccessLevel.PRIVATE)
-    private QnaSetCategory(
-            String categoryName,
-            String exampleQuestion,
-            double cohesion
-    ) {
+    private QnaSetCategory(String categoryName, String exampleQuestion, double cohesion) {
         this.categoryName = categoryName;
         this.exampleQuestion = exampleQuestion;
         this.cohesion = cohesion;

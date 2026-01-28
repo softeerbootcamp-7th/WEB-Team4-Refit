@@ -51,8 +51,7 @@ public class QnaSet extends BaseEntity {
             String answerText,
             boolean isMarkedDifficult,
             Interview interview,
-            QnaSetCategory qnaSetCategory
-    ) {
+            QnaSetCategory qnaSetCategory) {
         return QnaSet.builder()
                 .questionText(questionText)
                 .answerText(answerText)
@@ -68,8 +67,7 @@ public class QnaSet extends BaseEntity {
             String answerText,
             boolean isMarkedDifficult,
             Interview interview,
-            QnaSetCategory qnaSetCategory
-    ) {
+            QnaSetCategory qnaSetCategory) {
         this.questionText = questionText;
         this.answerText = answerText;
         this.isMarkedDifficult = isMarkedDifficult;

@@ -16,12 +16,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Entity
@@ -88,8 +87,7 @@ public class Interview extends BaseEntity {
             User user,
             Company company,
             Industry industry,
-            JobCategory jobCategory
-    ) {
+            JobCategory jobCategory) {
         return Interview.builder()
                 .jobRole(jobRole)
                 .reviewStatus(reviewStatus)
@@ -117,8 +115,7 @@ public class Interview extends BaseEntity {
             User user,
             Company company,
             Industry industry,
-            JobCategory jobCategory
-    ) {
+            JobCategory jobCategory) {
         this.jobRole = jobRole;
         this.reviewStatus = reviewStatus;
         this.resultStatus = resultStatus;

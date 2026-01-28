@@ -42,12 +42,7 @@ public class InterviewSelfReview extends BaseEntity {
     /*
      * Static Factory Method
      */
-    public static InterviewSelfReview create(
-            String keepText,
-            String problemText,
-            String tryText,
-            Interview interview
-    ) {
+    public static InterviewSelfReview create(String keepText, String problemText, String tryText, Interview interview) {
         return InterviewSelfReview.builder()
                 .keepText(keepText)
                 .problemText(problemText)

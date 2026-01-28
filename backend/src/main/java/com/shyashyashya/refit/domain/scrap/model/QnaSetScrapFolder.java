@@ -37,10 +37,7 @@ public class QnaSetScrapFolder extends BaseEntity {
     /*
      * Static Factory Method
      */
-    public static QnaSetScrapFolder create(
-            QnaSet qnaSet,
-            ScrapFolder scrapFolder
-    ) {
+    public static QnaSetScrapFolder create(QnaSet qnaSet, ScrapFolder scrapFolder) {
         return QnaSetScrapFolder.builder()
                 .qnaSet(qnaSet)
                 .scrapFolder(scrapFolder)
@@ -48,10 +45,7 @@ public class QnaSetScrapFolder extends BaseEntity {
     }
 
     @Builder(access = AccessLevel.PRIVATE)
-    private QnaSetScrapFolder(
-            QnaSet qnaSet,
-            ScrapFolder scrapFolder
-    ) {
+    private QnaSetScrapFolder(QnaSet qnaSet, ScrapFolder scrapFolder) {
         this.qnaSet = qnaSet;
         this.scrapFolder = scrapFolder;
     }

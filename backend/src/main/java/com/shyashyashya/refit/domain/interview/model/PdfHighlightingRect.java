@@ -46,12 +46,7 @@ public class PdfHighlightingRect extends BaseEntity {
      * Static Factory Method
      */
     public static PdfHighlightingRect create(
-            double x,
-            double y,
-            double width,
-            double height,
-            PdfHighlighting pdfHighlighting
-    ) {
+            double x, double y, double width, double height, PdfHighlighting pdfHighlighting) {
         return PdfHighlightingRect.builder()
                 .x(x)
                 .y(y)
@@ -62,13 +57,7 @@ public class PdfHighlightingRect extends BaseEntity {
     }
 
     @Builder(access = AccessLevel.PRIVATE)
-    private PdfHighlightingRect(
-            double x,
-            double y,
-            double width,
-            double height,
-            PdfHighlighting pdfHighlighting
-    ) {
+    private PdfHighlightingRect(double x, double y, double width, double height, PdfHighlighting pdfHighlighting) {
         this.x = x;
         this.y = y;
         this.width = width;
