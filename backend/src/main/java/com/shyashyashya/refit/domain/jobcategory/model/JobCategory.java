@@ -26,14 +26,11 @@ public class JobCategory extends BaseEntity {
     @Column(name = "job_category_name", columnDefinition = "varchar(50)", nullable = false, unique = true)
     private String name;
 
-
     /*
-      Factory Method
-     */
+     Factory Method
+    */
     public static JobCategory create(String name) {
-        return JobCategory.builder()
-                .name(name)
-                .build();
+        return JobCategory.builder().name(name).build();
     }
 
     @Builder(access = AccessLevel.PRIVATE)

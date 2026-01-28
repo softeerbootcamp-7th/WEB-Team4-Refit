@@ -11,13 +11,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 
 @Getter
 @Entity
@@ -51,9 +49,15 @@ public class User extends BaseEntity {
     private JobCategory jobCategory;
 
     /*
-      Factory Method
-     */
-    public static User create(String email, String nickname, String profileImageUrl, boolean isAgreedToTerms, Industry industry, JobCategory jobCategory) {
+     Factory Method
+    */
+    public static User create(
+            String email,
+            String nickname,
+            String profileImageUrl,
+            boolean isAgreedToTerms,
+            Industry industry,
+            JobCategory jobCategory) {
         return User.builder()
                 .email(email)
                 .nickname(nickname)
@@ -65,8 +69,13 @@ public class User extends BaseEntity {
     }
 
     @Builder(access = AccessLevel.PRIVATE)
-    private User(String email, String nickname, String profileImageUrl, boolean isAgreedToTerms,
-                 Industry industry, JobCategory jobCategory) {
+    private User(
+            String email,
+            String nickname,
+            String profileImageUrl,
+            boolean isAgreedToTerms,
+            Industry industry,
+            JobCategory jobCategory) {
         this.email = email;
         this.nickname = nickname;
         this.profileImageUrl = profileImageUrl;

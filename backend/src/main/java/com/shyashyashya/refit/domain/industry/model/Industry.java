@@ -27,12 +27,10 @@ public class Industry extends BaseEntity {
     private String name;
 
     /*
-      Factory Method
-     */
+     Factory Method
+    */
     public static Industry create(String name) {
-        return Industry.builder()
-                .name(name)
-                .build();
+        return Industry.builder().name(name).build();
     }
 
     @Builder(access = AccessLevel.PRIVATE)
