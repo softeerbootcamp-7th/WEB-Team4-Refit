@@ -16,7 +16,7 @@
 </div>
 
 
-<!-- [![Wiki](https://img.shields.io/badge/기록_정리_(Wiki)-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/softeerbootcamp-7th/Team4-Refit/wiki)
+<!-- Wiki](https://img.shields.io/badge/기록_정리_(Wiki)-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/softeerbootcamp-7th/Team4-Refit/wiki)
 [![Jira](https://img.shields.io/badge/태스크_관리_(Jira)-0052CC?style=for-the-badge&logo=jira&logoColor=white)](https://shashasha.atlassian.net/jira/software/c/projects/DEV/boards/5/backlog)
 [![Notion](https://img.shields.io/badge/협업_문서_(Notion)-000000?style=for-the-badge&logo=notion&logoColor=white)](https://notion.example.com)
 [![Figma](https://img.shields.io/badge/디자인_(Figma)-F24E1E?style=for-the-badge&logo=figma&logoColor=white)](https://figma.example.com) -->
@@ -31,19 +31,18 @@
 
 </div>
 
-## 목차
+## 📋 목차
 
-1. [기술 아티클](#기술-아티클)
-2. [서비스 소개](#서비스-소개)
-3. [협업 프로세스](#협업-프로세스)
-4. [프론트엔드](#프론트엔드)
-5. [백엔드](#백엔드)
-6. [팀원 소개](#팀원-소개)
-
+1. [기술 아티클](#-기술-아티클)
+2. [서비스 소개](#-서비스-소개)
+3. [협업](#-협업)
+4. [프론트엔드](#-프론트엔드)
+5. [백엔드](#-백엔드)
+6. [팀원 소개](#-팀원-소개)
 
 <br/>
 
-## 기술 아티클 
+## 📚 기술 아티클 
 |파트|제목|작성자|
 |---|---|---| 
 |공통|작성 예정|홍지운|
@@ -52,14 +51,9 @@
 |BE|작성 예정|권찬|
 |BE|작성 예정|송영범|
 |BE|작성 예정|이장안|
+<br/>
 
-
-<!-- 더 많은 기술 아티클은  [📝 Refit-Wiki](https://github.com/softeer5th/Team2-Getit/wiki) 페이지에서 볼 수 있어요. -->
-
-
-
-## 서비스 소개
-
+## 🎤 서비스 소개
 리핏은 면접 경험을 체계적으로 관리할 수 있도록 도와주는 면접 복기 서비스에요. 
 
 리핏 팀에서 22명의 취준생을 대상으로 유저 인터뷰를 시행한 결과, **면접 복기를 제대로 하지 못해서 면접 경험이 유의미한 자산으로 남지 못하는** 문제를 발견했어요. 이를 해결하기 위해 면접 복기를 세 단계로 구조화하고, 각 단계에 맞는 핵심기능을 설계했어요.
@@ -82,24 +76,56 @@
 * 내 기록뿐만 아니라, 다른 유저들이 공유한 면접 질문도 확인할 수 있어요.
 <br/>
 
-## 협업 프로세스
-리핏 팀은 Jira를 기반으로 업무를 관리하고, 1주 단위 스프린트를 운영해요. Jira와 GitHub을 이중으로 관리하는 수고로움을 줄이고, 팀에서 정한 Git 컨벤션을 지키기 위해 Jira Automation을 사용했어요.
+## 🤝 협업
+### 스프린트
+리핏 팀은 Jira를 기반으로 업무를 관리하고, 1주 단위로 스프린트를 운영해요. 
 <br/>
 
-| 스프린트 명 | 스프린트 기간 | 내용                                                                                                                    |
-| ----------- | -------------- |-----------------------------------------------------------------------------------------------------------------------|
-| Refit 1주차 | 26-01-19<br/>~ 26-01-25 | FE: 주요 기능들 피저빌리티 체크, 기본 프로젝트 세팅<br/>BE: API 명세 및 ERD 설계<br/> 공통: 기획/디자인 리뷰 및 수정, Git 컨벤션 설정, Jira Automation 구현      |
-| Refit 2주차 | 26-01-26<br/>~ 26-02-02 | FE: 기본적인 뷰 구현, OpenAPI workflow 개발 <br/> BE: Whisper, Google STT 등 프로젝트 적용 예정 기술 성능 검토, 프로젝트 공통 컴포넌트 개발, OAuth 로그인 개발 |
+| 스프린트 명 | 스프린트 기간 | 백로그 |
+|---|---|---|
+| Refit 1주차 | 26-01-19 ~ 26-01-25 | [Refit 1주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20%22DEV%22%20AND%20sprint%20%3D%204%20ORDER%20BY%20created%20DESC)|
+| Refit 2주차 | 26-01-26 ~ 26-02-02 | [Refit 2주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%20AND%20sprint%20%3D%2039%20ORDER%20BY%20created%20DESC)|
+
+#### Refit 1주차
+- [공통] 디자인 핸드오프 파일 보면서 애매한 기획/디자인 모두 픽스 
+- [공통] Jira Automation를 이용한 workflow 개발
+- [FE] 녹음, 이력서 하이라이트 기능 피저빌리티 체크
+- [FE] 프로젝트 스캐폴딩 및 주요 라이브러리 설치
+- [BE] API 명세 작성 및 ERD 설계
+- [BE] GitHub Action을 이용한 CI/CD 개발 
+
+#### Refit 2주차
+- [FE] 캘린더, 녹음, 기록 확인, 이력서 연결 뷰 개발 
+- [FE] 공통 컴포넌트 개발 
+- [FE] Vercel을 이용한 CI/CD 개발 
+- [BE] OAuth 구글 로그인 개발- [BE] Whisper, Google STT API 검토  
+
+### Jira Workflow
+Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git 컨벤션을 일관되게 유지하기 위해 Jira Automation을 이용해 Workflow를 구현했어요. 혼란을 방지하기 위해 Jira에서 발생한 변경만 GitHub에 반영하는 단방향 흐름으로 설계했고, 커스텀 필드들을 만들어 활용했어요.
+
+#### Jira 티켓이 생성될 때
+- GitHub Issue가 정해진 형식에 따라 자동 생성
+#### Jira 티켓이 수정될 때
+- GitHub Issue가 Jira 티켓의 내용을 따라서 자동 수정 
+#### Jira 티켓이 In Progress 상태로 이동했을 때
+- Origin에 정해진 컨벤션대로 브랜치 생성
+- Git fetch && checkout 명령어를 Jira 카드의 커스텀 필드에 주입
+#### Jira 티켓이 Code Review 상태로 이동했을 때
+- 사전 정의된 양식에 따라 PR을 만들 수 있는 GitHub PR 링크를 Jira 카드의 커스텀 필드에 주입
+#### Jira 티켓이 Done 상태로 이동했을 때
+- GitHub Issue 라벨을 Done 상태로 변경하고 close
+
+<img width="451" height="710" alt="Screenshot 2026-01-27 at 4 01 53 PM" src="https://github.com/user-attachments/assets/ec9ad1d4-d5f0-412e-a676-99b5e083e664" />
 
 
-- 티켓 생성 → To Do → In Progress → Code Review → Done
-- 논의 및 결정 사항은 Wiki / Notion에 정리하여 공유
 
 
 
 <br/>
 
-## 프론트엔드
+
+## 🐥 프론트엔드
+### 기술 스택
 <table>
     <thead>
         <tr>
@@ -155,8 +181,22 @@
     </tbody>
 </table>
 
+### n8n과 Oval를 활용한 API 명세 자동화
+한 달 남짓인 소프티어 프로젝트 개발 기간에서 **API 배포 전까지 프론트엔드 개발을 할 수 없는 것은 큰 병목**이에요. 이를 해결하기 위해 다음과 같은 워크플로우를 도입했어요.
+1. **워크플로우 트리거:** Slack의 `/openapi` 명령어를 통해 n8n 자동화 워크플로우를 호출해요.
+2. **데이터 추출:** Notion API를 활용하여 자연어로 작성된 노션 API 명세 문서를 정형화된 JSON 데이터로 추출해요.
+3. **OAS 생성:** 추출된 JSON을 Gemini LLM에 전달하여 표준화된 OpenAPI Specification(OAS) 파일을 생성해요.
+4. **CI/CD 연동:** 생성된 OAS 파일을 GitHub 저장소에 Push하여 명세를 업데이트해요.
+5. **개발 환경 동기화:** Oval이 업데이트된 OAS를 기반으로 d.ts와 Mock Server를 생성하여 즉각적인 개발 환경을 최신으로 동기화 시켜요.
 
-## 백엔드
+백엔드에서 API가 조금씩 구현되서 나올 때, 기존 mock server와 점진적으로 어떻게 통합할지는 아직 고민하고 있어요.
+
+
+
+<br/>
+
+
+## 💾 백엔드
 ### 기술 스택
 <table>
     <thead>
@@ -205,9 +245,10 @@
 </table>
 
 ### ERD
-<img src="https://github.com/user-attachments/assets/eed01b33-b71e-4882-b6d2-83331ad5249a">
+<img src="https://github.com/user-attachments/assets/eed01b33-b71e-4882-b6d2-83331ad5249a"/>
+<br/>
 
-## 팀원 소개
+## 💻 팀원 소개
 
 | [권찬](https://github.com/kckc0608) | [송영범](https://github.com/zxc534) | [이장안](https://github.com/lja3723) | [홍지운](https://github.com/forhyundaisofteer) | [황주희](https://github.com/HIHJH) |
 |:--:|:--:|:--:|:--:|:--:|
