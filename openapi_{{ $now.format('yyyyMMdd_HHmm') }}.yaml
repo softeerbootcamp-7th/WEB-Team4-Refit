@@ -1,0 +1,125 @@
+```yaml
+openapi: 3.0.0
+info:
+  title: Interview Application API
+  version: 1.0.0
+  description: |
+    This OpenAPI specification defines the API for an interview preparation application.
+    It includes DTO (Data Transfer Object) definitions and example API usage.
+
+    **Discussions/Notes from Requirements:**
+    *   **JSON Key Naming Convention:** The Java DTOs use `camelCase` (e.g., `associationId`, `associationName`). It is assumed that the JSON request/response bodies will also follow `camelCase`. This needs to be formally decided.
+    *   **Terminology Consistency:** Ensure consistent Korean wording for "frequent qna set".
+        *   "많이" (Many/Most) appeared 2 times (e.g., "가장 많이 나온 질문 TOP6").
+        *   "자주" (Frequent) appeared 4 times (e.g., "면접에서 자주 나온 질문", "자주 나오는 면접 질문", "자주 나오는 카테고리", "자주 나오는 인성 질문").
+        *   "빈출" (Frequently appearing) appeared 12 times (e.g., "빈출 카테고리", "유사 면접 빈출 질문", "내 면접 빈출 질문", "주요 직무 빈출").
+        *   Recommendation: Standardize on one term, likely "빈출 면접 질문" or "자주 나오는 면접 질문" for consistency across the application.
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development server
+
+paths:
+  /social-worker/me:
+    get:
+      summary: Get current social worker's my page data
+      description: Retrieves detailed information for the currently authenticated social worker, including their associated organization details.
+      operationId: getSocialWorkerMyData
+      responses:
+        '200':
+          description: Successful retrieval of social worker's my page data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SocialWorkerMyDto'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Social worker not found
+
+  /interviews/{interviewId}:
+    get:
+      summary: Get a specific interview's simple details
+      description: Retrieves a simplified view of an interview record.
+      operationId: getInterviewSimpleDetails
+      parameters:
+        - in: path
+          name: interviewId
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: ID of the interview to retrieve
+      responses:
+        '200':
+          description: Successful retrieval of interview details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InterviewSimpleDto'
+        '404':
+          description: Interview not found
+
+
+components:
+  schemas:
+    AssociationSimpleDto:
+      type: object
+      description: DTO for simple association information.
+      properties:
+        associationId:
+          type: integer
+          format: int64
+          description: Unique identifier for the association.
+          example: 101
+        associationName:
+          type: string
+          description: Name of the association.
+          example: "대한사회복지협회"
+      required:
+        - associationId
+        - associationName
+
+    SocialWorkerMyDto:
+      type: object
+      description: DTO for a social worker's my page specific data.
+      properties:
+        associationSimpleInfo:
+          $ref: '#/components/schemas/AssociationSimpleDto'
+          description: Simple information about the social worker's associated organization.
+        mypageOnlyData1:
+          type: string
+          description: Example of data specific to the social worker's my page.
+          example: "Additional data for my page view"
+      required:
+        - associationSimpleInfo
+        - mypageOnlyData1
+
+    InterviewSimpleDto:
+      type: object
+      description: DTO for a simplified view of an interview record.
+      properties:
+        interviewId:
+          type: integer
+          format: int64
+          description: Unique identifier for the interview.
+          example: 201
+        interviewDate:
+          type: string
+          format: date
+          description: The date the interview was conducted.
+          example: "2023-10-26"
+        jobTitle:
+          type: string
+          description: The job title for the interview.
+          example: "Senior Software Engineer"
+        status:
+          type: string
+          description: The current status of the interview (e.g., 'completed', 'scheduled').
+          example: "completed"
+      required:
+        - interviewId
+        - interviewDate
+        - jobTitle
+        - status
+```
