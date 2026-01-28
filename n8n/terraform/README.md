@@ -21,7 +21,7 @@ This script will create the following resources in your Google Cloud project:
     *   A service account for the Cloud Run service
     *   IAM bindings to allow the service account to access the secrets and the Cloud SQL instance
 *   **Cloud Run:**
-    *   A Cloud Run service that deplodes the latest `n8nio/n8n` container image
+    *   A Cloud Run service that deploys the latest `n8nio/n8n` container image
 
 ## Prerequisites
 
