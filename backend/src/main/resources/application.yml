@@ -1,1 +1,15 @@
-spring.application.name=lookback
+spring:
+  application:
+    name: refit
+  profiles:
+    active: "${SPRING_PROFILES_ACTIVE}"
+    group:
+      test: "test"
+      local: "local, datasource"
+      dev: "dev, datasource"
+    include:
+      - s3
+
+server:
+  tomcat:
+    uri-encoding: UTF-8
