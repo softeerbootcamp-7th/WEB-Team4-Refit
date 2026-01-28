@@ -54,7 +54,7 @@ spotless {
 
 		// define the steps to apply to those files
 		trimTrailingWhitespace()
-		leadingSpacesToTabs() // or leadingTabsToSpaces. Takes an integer argument if you don't like 4
+		leadingTabsToSpaces()
 		endWithNewline()
 	}
 
