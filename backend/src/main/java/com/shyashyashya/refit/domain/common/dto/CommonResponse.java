@@ -16,6 +16,7 @@ public record CommonResponse<T>(boolean isSuccess, String code, String message, 
     public static CommonResponse<Void> customException(ErrorCode errorCode) {
         return new CommonResponse<>(false, errorCode.name(), errorCode.getMessage(), null);
     }
+
     public static CommonResponse<Void> unknownException(Exception e) {
         return new CommonResponse<>(false, e.getClass().getName(), e.getMessage(), null);
     }
