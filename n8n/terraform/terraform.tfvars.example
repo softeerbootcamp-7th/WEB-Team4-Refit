@@ -1,0 +1,22 @@
+# 아래와 같이 terraform.tfvars 파일을 만들어야 동작합니다.
+# 보안 문제로 gitignore 해놓았으니 본인 클라우드에서 올려 보고 싶으신 분이 있으면 저(forhyundaisofteer)에게 요청주세요.
+
+# Google Cloud Project Settings
+project_id = "YOUR_PROJECT_ID"
+region     = "asia-northeast1"
+
+# Google Cloud SQL Settings
+db_instance_name = "n8n-db"
+db_version       = "POSTGRES_13"
+db_tier          = "db-f1-micro"
+db_disk_size     = 10
+db_disk_type     = "PD_HDD"
+
+# Google Cloud Run Settings
+service_name     = "n8n"
+container_image  = "n8nio/n8n:latest"
+container_port   = 5678
+service_memory_limit = "2Gi"
+
+# Domain Mapping
+n8n_domain       = "n8n.example.com"
