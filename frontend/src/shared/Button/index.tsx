@@ -46,7 +46,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {isLoading && <LoadingSpinner className="absolute h-4 w-4 animate-spin" />}
-        <span className={`inline-flex items-center gap-2 ${isLoading ? 'invisible' : ''}`}>{children}</span>
+        <span className={`contents ${isLoading ? 'invisible' : ''}`}>{children}</span>
       </button>
     )
   },
@@ -57,7 +57,7 @@ Button.displayName = 'Button'
 export default Button
 
 const BASE_STYLES =
-  'inline-flex align-middle items-center justify-center gap-2 transition-colors outline-none disabled:pointer-events-none disabled:opacity-50'
+  'relative inline-flex align-middle items-center justify-center gap-2 transition-colors outline-none disabled:pointer-events-none disabled:opacity-50'
 
 const VARIANT_STYLES = {
   'fill-orange-500':
