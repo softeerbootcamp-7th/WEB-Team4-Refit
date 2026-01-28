@@ -21,31 +21,19 @@ const router = createBrowserRouter([
         children: [
           { index: true, Component: Dashboard },
           {
-            path: getChildPath(
-              ROUTES.DASHBOARD_MY_INTERVIEWS,
-              ROUTES.DASHBOARD,
-            ),
+            path: getChildPath(ROUTES.DASHBOARD_MY_INTERVIEWS, ROUTES.DASHBOARD),
             Component: Dashboard,
           },
           {
-            path: getChildPath(
-              ROUTES.DASHBOARD_TREND_QUESTIONS,
-              ROUTES.DASHBOARD,
-            ),
+            path: getChildPath(ROUTES.DASHBOARD_TREND_QUESTIONS, ROUTES.DASHBOARD),
             Component: Dashboard,
           },
           {
-            path: getChildPath(
-              ROUTES.DASHBOARD_MY_COLLECTIONS,
-              ROUTES.DASHBOARD,
-            ),
+            path: getChildPath(ROUTES.DASHBOARD_MY_COLLECTIONS, ROUTES.DASHBOARD),
             Component: Dashboard,
           },
           {
-            path: getChildPath(
-              ROUTES.DASHBOARD_COLLECTION_DETAIL,
-              ROUTES.DASHBOARD,
-            ),
+            path: getChildPath(ROUTES.DASHBOARD_COLLECTION_DETAIL, ROUTES.DASHBOARD),
             Component: Dashboard,
           },
         ],
