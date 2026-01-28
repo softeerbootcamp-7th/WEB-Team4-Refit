@@ -17,6 +17,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -72,4 +73,62 @@ public class Interview extends BaseEntity {
     @JoinColumn(name = "job_category_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private JobCategory jobCategory;
+
+    /*
+     * Static Factory Method
+     */
+    public static Interview create(
+            String jobRole,
+            InterviewReviewStatus reviewStatus,
+            InterviewResultStatus resultStatus,
+            InterviewType interviewType,
+            LocalDateTime startAt,
+            String rawText,
+            String pdfUrl,
+            User user,
+            Company company,
+            Industry industry,
+            JobCategory jobCategory
+    ) {
+        return Interview.builder()
+                .jobRole(jobRole)
+                .reviewStatus(reviewStatus)
+                .resultStatus(resultStatus)
+                .interviewType(interviewType)
+                .startAt(startAt)
+                .rawText(rawText)
+                .pdfUrl(pdfUrl)
+                .user(user)
+                .company(company)
+                .industry(industry)
+                .jobCategory(jobCategory)
+                .build();
+    }
+
+    @Builder(access = AccessLevel.PRIVATE)
+    private Interview(
+            String jobRole,
+            InterviewReviewStatus reviewStatus,
+            InterviewResultStatus resultStatus,
+            InterviewType interviewType,
+            LocalDateTime startAt,
+            String rawText,
+            String pdfUrl,
+            User user,
+            Company company,
+            Industry industry,
+            JobCategory jobCategory
+    ) {
+        this.jobRole = jobRole;
+        this.reviewStatus = reviewStatus;
+        this.resultStatus = resultStatus;
+        this.interviewType = interviewType;
+        this.startAt = startAt;
+        this.rawText = rawText;
+        this.pdfUrl = pdfUrl;
+        this.user = user;
+        this.company = company;
+        this.industry = industry;
+        this.jobCategory = jobCategory;
+    }
 }
