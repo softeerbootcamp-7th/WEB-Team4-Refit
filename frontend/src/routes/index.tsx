@@ -1,17 +1,17 @@
 import { createBrowserRouter, RouterProvider } from 'react-router'
 import { ROUTES } from '@/constants/routes'
 import { DashboardLayout, RootLayout } from '@/routes/layouts'
-import { Dashboard, NotFound, SharedComponentExample } from '@/routes/pages'
+import { DashboardPage, MyInterviewsPage, NotFound, SharedComponentExample } from '@/routes/pages'
 
 const getChildPath = (fullPath: string, rootPath: string): string => {
   return fullPath.replace(rootPath, '').replace(/^\//, '')
 }
 
 const router = createBrowserRouter([
-  { path: ROUTES.HOME, Component: Dashboard },
-  { path: ROUTES.SIGNUP, Component: Dashboard },
-  { path: ROUTES.SIGNIN, Component: Dashboard },
-  { path: ROUTES.TERMS, Component: Dashboard },
+  { path: ROUTES.HOME, Component: DashboardPage },
+  { path: ROUTES.SIGNUP, Component: DashboardPage },
+  { path: ROUTES.SIGNIN, Component: DashboardPage },
+  { path: ROUTES.TERMS, Component: DashboardPage },
   {
     Component: RootLayout,
     children: [
@@ -19,36 +19,36 @@ const router = createBrowserRouter([
         path: ROUTES.DASHBOARD,
         Component: DashboardLayout,
         children: [
-          { index: true, Component: Dashboard },
+          { index: true, Component: DashboardPage },
           {
             path: getChildPath(ROUTES.DASHBOARD_MY_INTERVIEWS, ROUTES.DASHBOARD),
-            Component: Dashboard,
+            Component: MyInterviewsPage,
           },
           {
             path: getChildPath(ROUTES.DASHBOARD_TREND_QUESTIONS, ROUTES.DASHBOARD),
-            Component: Dashboard,
+            Component: DashboardPage,
           },
           {
             path: getChildPath(ROUTES.DASHBOARD_MY_COLLECTIONS, ROUTES.DASHBOARD),
-            Component: Dashboard,
+            Component: DashboardPage,
           },
           {
             path: getChildPath(ROUTES.DASHBOARD_COLLECTION_DETAIL, ROUTES.DASHBOARD),
-            Component: Dashboard,
+            Component: DashboardPage,
           },
         ],
       },
       {
         path: ROUTES.RECORD,
         children: [
-          { index: true, Component: Dashboard },
+          { index: true, Component: DashboardPage },
           {
             path: getChildPath(ROUTES.RECORD_CONFIRM, ROUTES.RECORD),
-            Component: Dashboard,
+            Component: DashboardPage,
           },
           {
             path: getChildPath(ROUTES.RECORD_LINK, ROUTES.RECORD),
-            Component: Dashboard,
+            Component: DashboardPage,
           },
         ],
       },
@@ -57,11 +57,11 @@ const router = createBrowserRouter([
         children: [
           {
             path: getChildPath(ROUTES.RETRO_QUESTION, ROUTES.RETRO),
-            Component: Dashboard,
+            Component: DashboardPage,
           },
           {
             path: getChildPath(ROUTES.RETRO_DETAILS, ROUTES.RETRO),
-            Component: Dashboard,
+            Component: DashboardPage,
           },
         ],
       },
