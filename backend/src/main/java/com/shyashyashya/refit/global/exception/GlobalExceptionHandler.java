@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<CommonResponse<Void>> ExceptionHandler(Exception e) {
+    public ResponseEntity<CommonResponse<Void>> handlerException(Exception e) {
         log.error("Exception: [{}]: {}", e.getClass().getName(), e.getMessage());
         var response = CommonResponse.unknownException(e);
         return ResponseEntity.internalServerError().body(response);
