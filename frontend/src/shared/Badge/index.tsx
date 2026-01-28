@@ -36,7 +36,7 @@ const BASE_STYLES =
   'inline-flex align-middle items-center justify-center rounded-lg'
 
 const TYPE_STYLES = {
-  'hard-label': 'py-1 px-2 caption-l-medium',
+  'hard-label': 'py-1 px-2 caption-m-medium',
   'question-label': 'py-1.5 px-2.5 caption-l-semibold rounded-md',
   'star-label': 'py-1 px-2.5 body-s-medium',
   'd-day-label': 'py-0.5 px-1.5 body-m-semibold',
