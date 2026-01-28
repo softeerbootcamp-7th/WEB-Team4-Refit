@@ -2,6 +2,7 @@ package com.shyashyashya.refit.domain.scrap.model;
 
 import com.shyashyashya.refit.domain.common.model.BaseEntity;
 import com.shyashyashya.refit.domain.interview.model.QnaSet;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -23,7 +24,7 @@ public class QnaSetScrapFolder extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JoinColumn(name = "qna_sets_scrap_folders_id")
+    @Column(name = "qna_sets_scrap_folders_id")
     private Long id;
 
     @JoinColumn(name = "qna_set_id", nullable = false)
