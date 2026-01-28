@@ -1,7 +1,7 @@
 package com.shyashyashya.refit.domain.interview.model;
 
 import com.shyashyashya.refit.domain.common.model.BaseEntity;
-import com.shyashyashya.refit.domain.company.Company;
+import com.shyashyashya.refit.domain.company.model.Company;
 import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.user.model.User;
@@ -17,7 +17,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
-import lombok.Cleanup;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

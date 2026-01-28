@@ -1,6 +1,5 @@
-package com.shyashyashya.refit.domain.company;
+package com.shyashyashya.refit.domain.company.model;
 
-import com.shyashyashya.refit.domain.industry.model.Industry;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
