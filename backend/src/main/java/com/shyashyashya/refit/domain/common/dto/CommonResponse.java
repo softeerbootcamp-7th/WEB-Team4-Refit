@@ -9,6 +9,6 @@ public record CommonResponse<T>(
         T result) {
 
     public static <T> CommonResponse<T> success(ResponseCode responseCode, T result) {
-        return new CommonResponse<>(true, responseCode, "성공입니다.", result);
+        return new CommonResponse<>(true, responseCode, responseCode.getMessage(), result);
     }
 }
