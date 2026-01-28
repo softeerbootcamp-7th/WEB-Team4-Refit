@@ -18,5 +18,3 @@ export const ROUTES = {
   RETRO_QUESTION: '/retro/:interviewId/:questionId',
   RETRO_DETAILS: '/retro/:interviewId/details',
 } as const
-
-// vercel 자동화 테스트
