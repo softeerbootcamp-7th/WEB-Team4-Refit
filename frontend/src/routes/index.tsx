@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router'
 import { ROUTES } from '@/constants/routes'
 import { DashboardLayout, RootLayout } from '@/routes/layouts'
-import { Dashboard, NotFound } from '@/routes/pages'
+import { Dashboard, NotFound, SharedComponentExample } from '@/routes/pages'
 
 const getChildPath = (fullPath: string, rootPath: string): string => {
   return fullPath.replace(rootPath, '').replace(/^\//, '')
@@ -83,6 +83,7 @@ const router = createBrowserRouter([
     path: '*',
     Component: NotFound,
   },
+  { path: 'component-test', Component: SharedComponentExample },
 ])
 
 export default function Router() {
