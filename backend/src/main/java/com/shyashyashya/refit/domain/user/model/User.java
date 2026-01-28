@@ -53,12 +53,12 @@ public class User extends BaseEntity {
     /*
       Factory Method
      */
-    public static User create(String email, String nickname, String profileImageUrl, Industry industry, JobCategory jobCategory) {
+    public static User create(String email, String nickname, String profileImageUrl, boolean isAgreedToTerms, Industry industry, JobCategory jobCategory) {
         return User.builder()
                 .email(email)
                 .nickname(nickname)
                 .profileImageUrl(profileImageUrl)
-                .isAgreedToTerms(true)
+                .isAgreedToTerms(isAgreedToTerms)
                 .industry(industry)
                 .jobCategory(jobCategory)
                 .build();
