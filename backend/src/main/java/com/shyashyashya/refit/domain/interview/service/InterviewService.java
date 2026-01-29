@@ -32,7 +32,7 @@ public class InterviewService {
     private final InterviewValidator interviewValidator;
 
     @Transactional
-    public Long createInterview(User user, InterviewCreateRequest request) {
+    public void createInterview(User user, InterviewCreateRequest request) {
 
         // company 테이블에 해당 name을 갖는 엔트리가 없을 때에만 생성
         // 유저가 생성한 company는 기본적으로 검색 허용 X
@@ -61,8 +61,6 @@ public class InterviewService {
                 jobCategory);
 
         Interview createdInterview = interviewRepository.save(interview);
-
-        return createdInterview.getId();
     }
 
     @Transactional

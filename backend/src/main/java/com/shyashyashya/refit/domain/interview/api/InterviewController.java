@@ -35,8 +35,8 @@ public class InterviewController {
 
         // TODO 요청 유저 받아오기
         User reqUser = null;
-        Long interviewId = interviewService.createInterview(reqUser, request);
+        interviewService.createInterview(reqUser, request);
 
-        return ResponseEntity.ok(CommonResponse.success(ResponseCode.CREATED));
+        return ResponseEntity.ok(CommonResponse.success(ResponseCode.COMMON201));
     }
 }
