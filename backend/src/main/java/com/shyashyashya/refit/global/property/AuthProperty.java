@@ -1,4 +1,4 @@
-package com.shyashyashya.refit.global.config;
+package com.shyashyashya.refit.global.property;
 
 import java.util.List;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 @ConfigurationProperties(prefix = "spring.auth")
-public class AuthConfig {
+public class AuthProperty {
 
     private List<String> whitelistApiUrls;
 }

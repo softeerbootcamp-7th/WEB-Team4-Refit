@@ -2,7 +2,7 @@ package com.shyashyashya.refit.global.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
-import com.shyashyashya.refit.global.config.AuthConfig;
+import com.shyashyashya.refit.global.property.AuthProperty;
 import com.shyashyashya.refit.global.exception.ErrorCode;
 import com.shyashyashya.refit.global.util.RequestUserContext;
 import jakarta.servlet.FilterChain;
@@ -26,7 +26,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Order(1)
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final AuthConfig authConfig;
+    private final AuthProperty authProperty;
     private final RequestUserContext requestUserContext;
     private final ObjectMapper objectMapper;
 
@@ -69,7 +69,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private boolean isWhitelisted(HttpServletRequest request) {
-        return authConfig.getWhitelistApiUrls().stream()
+        return authProperty.getWhitelistApiUrls().stream()
                 .anyMatch(pattern -> pathMatcher.match(pattern, request.getRequestURI()));
     }
 
