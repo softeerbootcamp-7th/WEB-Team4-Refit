@@ -17,6 +17,7 @@ import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepositor
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,9 +37,10 @@ public class InterviewService {
 
         Company company = companyRepository.findByName(request.companyName()).orElseGet(() -> {
             try {
+                // TODO 회사 디폴트 이미지 url로 변경
                 Company newCompany = Company.create(request.companyName(), null, false);
                 return companyRepository.save(newCompany);
-            } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            } catch (DataIntegrityViolationException e) {
                 // Race condition
                 return companyRepository
                         .findByName(request.companyName())

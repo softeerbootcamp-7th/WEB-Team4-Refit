@@ -1,5 +1,6 @@
 package com.shyashyashya.refit.domain.interview.api;
 
+import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON201;
 import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON204;
 
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
@@ -37,6 +38,7 @@ public class InterviewController {
         User reqUser = null;
         interviewService.createInterview(reqUser, request);
 
-        return ResponseEntity.ok(CommonResponse.success(ResponseCode.COMMON201));
+        var response = CommonResponse.success(COMMON201);
+        return ResponseEntity.ok(response);
     }
 }
