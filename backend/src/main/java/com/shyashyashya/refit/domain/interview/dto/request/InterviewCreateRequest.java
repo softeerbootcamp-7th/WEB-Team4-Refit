@@ -2,7 +2,6 @@ package com.shyashyashya.refit.domain.interview.dto.request;
 
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
 import jakarta.validation.constraints.NotNull;
-
 import java.time.LocalDateTime;
 
 public record InterviewCreateRequest(

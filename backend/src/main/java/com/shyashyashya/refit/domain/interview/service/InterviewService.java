@@ -35,19 +35,7 @@ public class InterviewService {
     @Transactional
     public void createInterview(User user, InterviewCreateRequest request) {
 
-        Company company = companyRepository.findByName(request.companyName()).orElseGet(() -> {
-            try {
-                // TODO 회사 디폴트 이미지 url로 변경
-                Company newCompany = Company.create(request.companyName(), null, false);
-                return companyRepository.save(newCompany);
-            } catch (DataIntegrityViolationException e) {
-                // Race condition
-                return companyRepository
-                        .findByName(request.companyName())
-                        .orElseThrow(
-                                () -> new IllegalStateException("Company not found after concurrent save attempt"));
-            }
-        });
+        Company company = findOrSaveCompany(request);
 
         Industry industry = industryRepository
                 .findById(request.industryId())
@@ -73,5 +61,21 @@ public class InterviewService {
         interviewValidator.validateInterviewOwner(interview, currentUser);
 
         interviewRepository.delete(interview);
+    }
+
+    private Company findOrSaveCompany(InterviewCreateRequest request) {
+        return companyRepository.findByName(request.companyName()).orElseGet(() -> {
+            try {
+                // TODO 회사 디폴트 이미지 url로 변경
+                Company newCompany = Company.create(request.companyName(), null, false);
+                return companyRepository.save(newCompany);
+            } catch (DataIntegrityViolationException e) {
+                // Race condition
+                return companyRepository
+                        .findByName(request.companyName())
+                        .orElseThrow(
+                                () -> new IllegalStateException("Company not found after concurrent save attempt"));
+            }
+        });
     }
 }
