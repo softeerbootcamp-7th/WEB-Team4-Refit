@@ -26,4 +26,10 @@ public class UserController {
         var response = CommonResponse.success(COMMON201);
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/my/terms/agree")
+    public ResponseEntity<CommonResponse<Void>> agreeToTerms() {
+        userService.agreeToTerms();
+        return ResponseEntity.ok(CommonResponse.success(ResponseCode.COMMON200));
+    }
 }
