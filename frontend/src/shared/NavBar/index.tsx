@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router'
 import { Logo } from '@/assets'
 import { ROUTES } from '@/constants/routes'
-import UserProfile from '@/shared/NavBar/UserProfile'
+import UserProfile from '@/shared/Navbar/UserProfile'
 
 const navItems = [
   { to: ROUTES.DASHBOARD, label: '홈', end: true },
@@ -19,12 +19,7 @@ export default function NavBar() {
 
       <div className="flex items-center gap-2">
         {navItems.map((item) => (
-          <NavLink
-            key={item.to}
-            to={item.to}
-            end={item.end}
-            className={getNavLinkClassName}
-          >
+          <NavLink key={item.to} to={item.to} end={item.end} className={getNavLinkClassName}>
             {item.label}
           </NavLink>
         ))}
@@ -40,7 +35,5 @@ const getNavLinkClassName = ({ isActive }: { isActive: boolean }) => {
   const activeStyles = 'body-m-semibold text-gray-800'
   const inactiveStyles = 'body-m-medium text-gray-400 hover:text-gray-800'
 
-  return isActive
-    ? `${baseStyles} ${activeStyles}`
-    : `${baseStyles} ${inactiveStyles}`
+  return isActive ? `${baseStyles} ${activeStyles}` : `${baseStyles} ${inactiveStyles}`
 }
