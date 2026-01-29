@@ -53,8 +53,6 @@ public class InterviewService {
                 request.jobRole(),
                 request.interviewType(),
                 request.startAt(),
-                "",
-                null,
                 user,
                 company,
                 industry,

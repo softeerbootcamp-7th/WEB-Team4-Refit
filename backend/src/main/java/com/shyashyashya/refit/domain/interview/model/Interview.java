@@ -80,8 +80,6 @@ public class Interview extends BaseEntity {
             String jobRole,
             InterviewType interviewType,
             LocalDateTime startAt,
-            String rawText,
-            String pdfUrl,
             User user,
             Company company,
             Industry industry,
@@ -92,8 +90,8 @@ public class Interview extends BaseEntity {
                 .resultStatus(InterviewResultStatus.WAIT)
                 .interviewType(interviewType)
                 .startAt(startAt)
-                .rawText(rawText)
-                .pdfUrl(pdfUrl)
+                .rawText("")
+                .pdfUrl(null)
                 .user(user)
                 .company(company)
                 .industry(industry)
