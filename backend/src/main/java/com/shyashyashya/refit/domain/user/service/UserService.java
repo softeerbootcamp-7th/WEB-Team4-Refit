@@ -9,13 +9,11 @@ import com.shyashyashya.refit.domain.user.service.validator.UserSignupConflictVa
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.exception.ErrorCode;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
