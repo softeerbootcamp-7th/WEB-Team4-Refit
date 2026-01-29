@@ -32,8 +32,6 @@ class UserSignUpValidatorTest {
     void 이메일이_이미_존재하면_USER_SIGNUP_EMAIL_CONFLICT_예외가_발생한다() {
         // given
         String email = TEST_USER_1.getEmail();
-
-        // userRepository.findByEmail 호출 시 존재하는 객체를 담은 Optional 반환 설정
         given(userRepository.findByEmail(email)).willReturn(Optional.of(TEST_USER_1));
 
         // when & then
@@ -48,13 +46,10 @@ class UserSignUpValidatorTest {
     void 이메일이_존재하지_않으면_예외가_발생하지_않는다() {
         // given
         String email = "new-user@example.com";
-
-        // userRepository.findByEmail 호출 시 빈 Optional 반환 설정
         given(userRepository.findByEmail(email)).willReturn(Optional.empty());
 
         // when & then
         assertDoesNotThrow(() -> userSignUpValidator.validateEmailConflict(email));
-
         verify(userRepository, times(1)).findByEmail(email);
     }
 }
