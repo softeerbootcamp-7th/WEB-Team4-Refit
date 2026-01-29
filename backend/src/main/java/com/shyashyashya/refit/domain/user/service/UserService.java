@@ -25,11 +25,11 @@ public class UserService {
     public Long signUp(UserSignUpRequest userSignUpRequest) {
         var industry = industryRepository
                 .findById(userSignUpRequest.industryId())
-                .orElseThrow(() -> new CustomException(ErrorCode.INDUSTRY_ID_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.INDUSTRY_NOT_FOUND));
 
         var jobCategory = jobCategoryRepository
                 .findById(userSignUpRequest.jobCategoryId())
-                .orElseThrow(() -> new CustomException(ErrorCode.JOB_CATEGORY_ID_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.JOB_CATEGORY_NOT_FOUND));
 
         userSignUpValidator.validateEmailConflict(userSignUpRequest.email());
 
