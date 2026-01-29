@@ -22,7 +22,7 @@ public class Company {
     @Column(name = "company_id", nullable = false, updatable = false)
     private Long id;
 
-    @Column(name = "company_name", columnDefinition = "varchar(20)")
+    @Column(name = "company_name", columnDefinition = "varchar(20)", unique = true)
     private String name;
 
     @Column(name = "company_logo_url", columnDefinition = "varchar(2048)")

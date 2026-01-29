@@ -1,8 +1,8 @@
 package com.shyashyashya.refit.domain.interview.service;
 
 import static com.shyashyashya.refit.global.exception.ErrorCode.INDUSTRY_NOT_FOUND;
-import static com.shyashyashya.refit.global.exception.ErrorCode.JOB_CATEGORY_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_FOUND;
+import static com.shyashyashya.refit.global.exception.ErrorCode.JOB_CATEGORY_NOT_FOUND;
 
 import com.shyashyashya.refit.domain.company.model.Company;
 import com.shyashyashya.refit.domain.company.repository.CompanyRepository;
@@ -11,9 +11,9 @@ import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
 import com.shyashyashya.refit.domain.interview.dto.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
+import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
-import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
@@ -34,11 +34,17 @@ public class InterviewService {
     @Transactional
     public void createInterview(User user, InterviewCreateRequest request) {
 
-        // company 테이블에 해당 name을 갖는 엔트리가 없을 때에만 생성
-        // 유저가 생성한 company는 기본적으로 검색 허용 X
         Company company = companyRepository.findByName(request.companyName()).orElseGet(() -> {
-            Company newCompany = Company.create(request.companyName(), null, false);
-            return companyRepository.save(newCompany);
+            try {
+                Company newCompany = Company.create(request.companyName(), null, false);
+                return companyRepository.save(newCompany);
+            } catch (org.springframework.dao.DataIntegrityViolationException e) {
+                // Race condition
+                return companyRepository
+                        .findByName(request.companyName())
+                        .orElseThrow(
+                                () -> new IllegalStateException("Company not found after concurrent save attempt"));
+            }
         });
 
         Industry industry = industryRepository
@@ -50,13 +56,7 @@ public class InterviewService {
                 .orElseThrow(() -> new CustomException(JOB_CATEGORY_NOT_FOUND));
 
         Interview interview = Interview.create(
-                request.jobRole(),
-                request.interviewType(),
-                request.startAt(),
-                user,
-                company,
-                industry,
-                jobCategory);
+                request.jobRole(), request.interviewType(), request.startAt(), user, company, industry, jobCategory);
 
         Interview createdInterview = interviewRepository.save(interview);
     }
