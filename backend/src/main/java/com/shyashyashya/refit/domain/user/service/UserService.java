@@ -38,7 +38,7 @@ public class UserService {
                         userSignUpRequest.email(),
                         userSignUpRequest.nickname(),
                         userSignUpRequest.profileImageUrl(),
-                        true,
+                        false,
                         industry,
                         jobCategory))
                 .getId();
