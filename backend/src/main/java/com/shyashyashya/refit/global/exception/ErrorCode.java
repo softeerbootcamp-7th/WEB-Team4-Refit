@@ -14,6 +14,7 @@ public enum ErrorCode {
 
     INDUSTRY_NOT_FOUND(NOT_FOUND, "존재하지 않는 산업군입니다."),
     JOB_CATEGORY_NOT_FOUND(NOT_FOUND, "존재하지 않는 직업군입니다."),
+    USER_NOT_FOUND(NOT_FOUND, "유효하지 않은 사용자 ID입니다."),
 
     USER_SIGNUP_EMAIL_CONFLICT(CONFLICT, "이미 사용 중인 이메일입니다.");
 
