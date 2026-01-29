@@ -27,6 +27,6 @@ public class InterviewService {
 
         interviewValidator.validateInterviewOwner(interview, currentUser);
 
-        interviewRepository.deleteById(interviewId);
+        interviewRepository.delete(interview);
     }
 }
