@@ -78,8 +78,6 @@ public class Interview extends BaseEntity {
      */
     public static Interview create(
             String jobRole,
-            InterviewReviewStatus reviewStatus,
-            InterviewResultStatus resultStatus,
             InterviewType interviewType,
             LocalDateTime startAt,
             String rawText,
@@ -90,8 +88,8 @@ public class Interview extends BaseEntity {
             JobCategory jobCategory) {
         return Interview.builder()
                 .jobRole(jobRole)
-                .reviewStatus(reviewStatus)
-                .resultStatus(resultStatus)
+                .reviewStatus(InterviewReviewStatus.NOT_LOGGED)
+                .resultStatus(InterviewResultStatus.WAIT)
                 .interviewType(interviewType)
                 .startAt(startAt)
                 .rawText(rawText)
