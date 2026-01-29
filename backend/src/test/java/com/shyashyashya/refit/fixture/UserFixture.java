@@ -7,9 +7,9 @@ import com.shyashyashya.refit.domain.user.model.User;
 
 public class UserFixture {
 
-    public static User TEST_USER_1 =
+    public static final User TEST_USER_1 =
             User.create("test@email.com", "test", "test.com/test.png", true, TEST_INDUSTRY, TEST_JOB_CATEGORY);
 
-    public static User TEST_USER_2 =
+    public static final User TEST_USER_2 =
             User.create("test2@email.com", "test2", "test.com/test2.png", true, TEST_INDUSTRY, TEST_JOB_CATEGORY);
 }
