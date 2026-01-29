@@ -1,7 +1,14 @@
 import { createBrowserRouter, RouterProvider } from 'react-router'
 import { ROUTES } from '@/constants/routes'
-import { DashboardLayout, RootLayout } from '@/routes/layouts'
-import { Dashboard, NotFound, SharedComponentExample } from '@/routes/pages'
+import { DashboardLayout, MobileLayout, RootLayout } from '@/routes/layouts'
+import {
+  Dashboard,
+  MobilePage,
+  MobileUnrecordedPage,
+  NotFound,
+  SharedComponentExample,
+  SigninPage,
+} from '@/routes/pages'
 
 const getChildPath = (fullPath: string, rootPath: string): string => {
   return fullPath.replace(rootPath, '').replace(/^\//, '')
@@ -10,7 +17,18 @@ const getChildPath = (fullPath: string, rootPath: string): string => {
 const router = createBrowserRouter([
   { path: ROUTES.HOME, Component: Dashboard },
   { path: ROUTES.SIGNUP, Component: Dashboard },
-  { path: ROUTES.SIGNIN, Component: Dashboard },
+  { path: ROUTES.SIGNIN, Component: SigninPage },
+  {
+    path: ROUTES.MOBILE,
+    Component: MobileLayout,
+    children: [
+      { index: true, Component: MobilePage },
+      {
+        path: getChildPath(ROUTES.MOBILE_UNRECORDED, ROUTES.MOBILE),
+        Component: MobileUnrecordedPage,
+      },
+    ],
+  },
   { path: ROUTES.TERMS, Component: Dashboard },
   {
     Component: RootLayout,

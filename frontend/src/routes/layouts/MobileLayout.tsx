@@ -1,10 +1,10 @@
 import { Outlet } from 'react-router'
-import NavBar from '@/shared/Navbar'
+import MobileNavbar from '@/shared/MobileNavbar'
 
-export default function RootLayout() {
+export default function MobileLayout() {
   return (
     <div className="min-h-screen">
-      <NavBar />
+      <MobileNavbar />
       <main className="pt-15">
         <Outlet />
       </main>
