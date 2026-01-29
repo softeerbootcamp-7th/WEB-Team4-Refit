@@ -8,9 +8,9 @@ import com.shyashyashya.refit.domain.user.repository.UserRepository;
 import com.shyashyashya.refit.domain.user.service.validator.UserSignUpValidator;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.exception.ErrorCode;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
