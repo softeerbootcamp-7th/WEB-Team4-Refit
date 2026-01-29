@@ -25,9 +25,7 @@ public class RequestUserContext {
 
     public User getRequestUser() {
         if (user == null && userId != null) {
-            user = userRepository
-                .findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+            user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         }
         return user;
     }
