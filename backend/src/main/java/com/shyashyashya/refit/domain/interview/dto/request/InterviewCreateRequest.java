@@ -1,4 +1,4 @@
-package com.shyashyashya.refit.domain.interview.dto;
+package com.shyashyashya.refit.domain.interview.dto.request;
 
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
 import java.time.LocalDateTime;
