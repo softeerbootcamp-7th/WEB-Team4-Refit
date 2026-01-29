@@ -23,7 +23,7 @@ public class RequestUserContext {
     private Long userId;
     private User user;
 
-    public User getCurrentUser() {
+    public User getRequestUser() {
         if (user == null && userId != null) {
             user = userRepository
                 .findById(userId)
