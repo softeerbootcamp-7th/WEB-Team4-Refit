@@ -22,10 +22,8 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<CommonResponse<Long>> signUp(
-        @Valid @RequestBody UserSignUpDto userSignUpDto
-    ) {
+    public ResponseEntity<CommonResponse<Long>> signUp(@Valid @RequestBody UserSignUpDto userSignUpDto) {
         Long userId = userService.signUp(userSignUpDto);
-        return ResponseEntity.ok(CommonResponse.success(ResponseCode.CREATED, userId));
+        return ResponseEntity.ok(CommonResponse.success(ResponseCode.COMMON201, userId));
     }
 }

@@ -1,8 +1,8 @@
 package com.shyashyashya.refit.global.exception;
 
+import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.CONFLICT;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

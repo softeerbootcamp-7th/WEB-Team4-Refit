@@ -35,14 +35,14 @@ public class UserService {
 
         userSignupConflictValidator.validateEmailConflict(userSignUpDto.email());
 
-        return userRepository.save(
-            User.create(
-                userSignUpDto.email(),
-                userSignUpDto.nickname(),
-                userSignUpDto.profileImageUrl(),
-                true,
-                industry,
-                jobCategory))
-            .getId();
+        return userRepository
+                .save(User.create(
+                        userSignUpDto.email(),
+                        userSignUpDto.nickname(),
+                        userSignUpDto.profileImageUrl(),
+                        true,
+                        industry,
+                        jobCategory))
+                .getId();
     }
 }
