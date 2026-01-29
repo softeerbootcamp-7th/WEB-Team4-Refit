@@ -1,13 +1,13 @@
 package com.shyashyashya.refit.interview.validator;
 
-import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import static com.shyashyashya.refit.fixture.InterviewFixture.TEST_USER_1_INTERVIEW;
 import static com.shyashyashya.refit.fixture.UserFixture.TEST_USER_1;
 import static com.shyashyashya.refit.fixture.UserFixture.TEST_USER_2;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_ACCESSIBLE;
+
+import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class InterviewValidatorTest {
 
@@ -29,7 +29,7 @@ public class InterviewValidatorTest {
 
         // when & then
         Assertions.assertThatThrownBy(
-                () -> interviewValidator.validateInterviewOwner(TEST_USER_1_INTERVIEW, TEST_USER_2))
+                        () -> interviewValidator.validateInterviewOwner(TEST_USER_1_INTERVIEW, TEST_USER_2))
                 .hasMessage(INTERVIEW_NOT_ACCESSIBLE.getMessage());
     }
 }

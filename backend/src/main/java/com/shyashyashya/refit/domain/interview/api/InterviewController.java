@@ -1,18 +1,15 @@
 package com.shyashyashya.refit.domain.interview.api;
 
+import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON204;
+
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
-import com.shyashyashya.refit.domain.common.model.ResponseCode;
-import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
 import com.shyashyashya.refit.domain.interview.service.InterviewService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON204;
 
 @RestController
 @RequiredArgsConstructor

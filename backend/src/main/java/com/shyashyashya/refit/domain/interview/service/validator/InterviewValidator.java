@@ -1,11 +1,11 @@
 package com.shyashyashya.refit.domain.interview.service.validator;
 
+import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_ACCESSIBLE;
+
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
 import org.springframework.stereotype.Component;
-
-import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_ACCESSIBLE;
 
 @Component
 public class InterviewValidator {

@@ -1,16 +1,15 @@
 package com.shyashyashya.refit.fixture;
 
-import com.shyashyashya.refit.domain.interview.model.Interview;
-import com.shyashyashya.refit.domain.interview.model.InterviewResultStatus;
-import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
-import com.shyashyashya.refit.domain.interview.model.InterviewType;
-
-import java.time.LocalDateTime;
-
 import static com.shyashyashya.refit.fixture.CompanyFixture.TEST_COMPANY;
 import static com.shyashyashya.refit.fixture.IndustryFixture.TEST_INDUSTRY;
 import static com.shyashyashya.refit.fixture.JobCategoryFixture.TEST_JOB_CATEGORY;
 import static com.shyashyashya.refit.fixture.UserFixture.TEST_USER_1;
+
+import com.shyashyashya.refit.domain.interview.model.Interview;
+import com.shyashyashya.refit.domain.interview.model.InterviewResultStatus;
+import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
+import com.shyashyashya.refit.domain.interview.model.InterviewType;
+import java.time.LocalDateTime;
 
 public class InterviewFixture {
 

@@ -1,5 +1,7 @@
 package com.shyashyashya.refit.domain.interview.service;
 
+import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_EXISTS;
+
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
 import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
@@ -8,8 +10,6 @@ import com.shyashyashya.refit.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_EXISTS;
 
 @Service
 @RequiredArgsConstructor
@@ -22,8 +22,8 @@ public class InterviewService {
     public void deleteInterview(Long interviewId) {
         User currentUser = null; // TODO: 로그인 구현 이후 현재 로그인 유저 조회 로직 수정
 
-        Interview interview = interviewRepository.findById(interviewId)
-                .orElseThrow(() -> new CustomException(INTERVIEW_NOT_EXISTS));
+        Interview interview =
+                interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_EXISTS));
 
         interviewValidator.validateInterviewOwner(interview, currentUser);
 
