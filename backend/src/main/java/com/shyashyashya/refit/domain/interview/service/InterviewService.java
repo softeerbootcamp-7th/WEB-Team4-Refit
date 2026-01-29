@@ -16,6 +16,7 @@ import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
+import com.shyashyashya.refit.global.util.RequestUserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -31,9 +32,12 @@ public class InterviewService {
     private final JobCategoryRepository jobCategoryRepository;
 
     private final InterviewValidator interviewValidator;
+    private final RequestUserContext requestUserContext;
 
     @Transactional
-    public void createInterview(User user, InterviewCreateRequest request) {
+    public void createInterview(InterviewCreateRequest request) {
+
+        User user = requestUserContext.getRequestUser();
 
         Company company = findOrSaveCompany(request);
 
@@ -48,17 +52,17 @@ public class InterviewService {
         Interview interview = Interview.create(
                 request.jobRole(), request.interviewType(), request.startAt(), user, company, industry, jobCategory);
 
-        Interview createdInterview = interviewRepository.save(interview);
+        Interview createdInterview = interviewRepository.save(interview); // 미사용?
     }
 
     @Transactional
     public void deleteInterview(Long interviewId) {
-        User currentUser = null; // TODO: 로그인 구현 이후 현재 로그인 유저 조회 로직 수정
+        User requestUser = requestUserContext.getRequestUser();
 
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
 
-        interviewValidator.validateInterviewOwner(interview, currentUser);
+        interviewValidator.validateInterviewOwner(interview, requestUser);
 
         interviewRepository.delete(interview);
     }
