@@ -5,6 +5,7 @@ import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepositor
 import com.shyashyashya.refit.domain.user.dto.request.UserSignUpDto;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
+import com.shyashyashya.refit.domain.user.service.validator.UserSignupConflictValidator;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.exception.ErrorCode;
 import jakarta.transaction.Transactional;
