@@ -3,9 +3,9 @@ import MobileNavbar from '@/shared/MobileNavbar'
 
 export default function MobileLayout() {
   return (
-    <div className="min-h-screen">
+    <div className="bg-gray-white flex min-h-dvh flex-col">
       <MobileNavbar />
-      <main className="pt-15">
+      <main className="flex flex-1 flex-col pt-15">
         <Outlet />
       </main>
     </div>

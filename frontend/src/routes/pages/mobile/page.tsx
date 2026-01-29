@@ -20,18 +20,16 @@ export default function MobilePage() {
   }, [])
 
   return (
-    <div className="from-orange-050 via-gray-white flex min-h-[calc(100dvh-60px)] flex-col items-center justify-center bg-gradient-to-b to-gray-100 px-6">
-      <div className="mx-auto flex w-full max-w-md flex-col items-center justify-center">
-        <div className={`mb-8 flex items-center justify-center ${fadeUpClass(isVisible, 'delay-0')}`} aria-hidden>
+    <div className="from-orange-050 via-gray-white flex flex-1 flex-col items-center justify-center bg-gradient-to-b to-gray-100 px-6">
+      <div className="mx-auto flex w-full max-w-md flex-col items-center">
+        <div className={`mb-8 flex justify-center ${fadeUpClass(isVisible, 'delay-0')}`} aria-hidden>
           <SpeakingChickIcon className="h-48 w-48 max-w-[240px]" />
         </div>
 
-        <h1 className={`headline-m-bold mb-2 text-center text-gray-900 ${fadeUpClass(isVisible, 'delay-100')}`}>
-          방금 본 면접,
-        </h1>
-        <h1 className={`headline-m-bold mb-16 text-center text-gray-900 ${fadeUpClass(isVisible, 'delay-200')}`}>
-          바로 기록해볼까요?
-        </h1>
+        <div className="headline-m-bold text-center text-gray-900">
+          <h1 className={`mb-2 ${fadeUpClass(isVisible, 'delay-100')}`}>방금 본 면접,</h1>
+          <h1 className={`mb-16 ${fadeUpClass(isVisible, 'delay-200')}`}>바로 기록해볼까요?</h1>
+        </div>
 
         <div className={`w-full ${fadeUpClass(isVisible, 'delay-500')}`}>
           <Button
