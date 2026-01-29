@@ -5,7 +5,7 @@ import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepositor
 import com.shyashyashya.refit.domain.user.dto.request.UserSignUpRequest;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
-import com.shyashyashya.refit.domain.user.service.validator.UserSignupConflictValidator;
+import com.shyashyashya.refit.domain.user.service.validator.UserSignUpValidator;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.exception.ErrorCode;
 import jakarta.transaction.Transactional;
@@ -19,7 +19,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final IndustryRepository industryRepository;
     private final JobCategoryRepository jobCategoryRepository;
-    private final UserSignupConflictValidator userSignupConflictValidator;
+    private final UserSignUpValidator userSignUpValidator;
 
     @Transactional
     public Long signUp(UserSignUpRequest userSignUpRequest) {
@@ -31,7 +31,7 @@ public class UserService {
                 .findById(userSignUpRequest.jobCategoryId())
                 .orElseThrow(() -> new CustomException(ErrorCode.JOB_CATEGORY_ID_NOT_FOUND));
 
-        userSignupConflictValidator.validateEmailConflict(userSignUpRequest.email());
+        userSignUpValidator.validateEmailConflict(userSignUpRequest.email());
 
         return userRepository
                 .save(User.create(

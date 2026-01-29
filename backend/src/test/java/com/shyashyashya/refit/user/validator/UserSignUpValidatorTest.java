@@ -9,7 +9,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
-import com.shyashyashya.refit.domain.user.service.validator.UserSignupConflictValidator;
+import com.shyashyashya.refit.domain.user.service.validator.UserSignUpValidator;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.exception.ErrorCode;
 import java.util.Optional;
@@ -20,13 +20,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class UserSignupConflictValidatorTest {
+class UserSignUpValidatorTest {
 
     @Mock
     private UserRepository userRepository;
 
     @InjectMocks
-    private UserSignupConflictValidator userSignupConflictValidator;
+    private UserSignUpValidator userSignUpValidator;
 
     @Test
     void 이메일이_이미_존재하면_USER_SIGNUP_EMAIL_CONFLICT_예외가_발생한다() {
@@ -38,7 +38,7 @@ class UserSignupConflictValidatorTest {
 
         // when & then
         CustomException exception =
-                assertThrows(CustomException.class, () -> userSignupConflictValidator.validateEmailConflict(email));
+                assertThrows(CustomException.class, () -> userSignUpValidator.validateEmailConflict(email));
 
         assertEquals(ErrorCode.USER_SIGNUP_EMAIL_CONFLICT, exception.getErrorCode());
         verify(userRepository, times(1)).findByEmail(email);
@@ -53,7 +53,7 @@ class UserSignupConflictValidatorTest {
         given(userRepository.findByEmail(email)).willReturn(Optional.empty());
 
         // when & then
-        assertDoesNotThrow(() -> userSignupConflictValidator.validateEmailConflict(email));
+        assertDoesNotThrow(() -> userSignUpValidator.validateEmailConflict(email));
 
         verify(userRepository, times(1)).findByEmail(email);
     }
