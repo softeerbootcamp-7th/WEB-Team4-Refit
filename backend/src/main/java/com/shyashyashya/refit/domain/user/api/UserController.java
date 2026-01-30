@@ -1,7 +1,8 @@
 package com.shyashyashya.refit.domain.user.api;
 
+import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON201;
+
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
-import com.shyashyashya.refit.domain.common.model.ResponseCode;
 import com.shyashyashya.refit.domain.user.dto.request.UserSignUpRequest;
 import com.shyashyashya.refit.domain.user.service.UserService;
 import jakarta.validation.Valid;
@@ -22,7 +23,7 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<CommonResponse<Void>> signUp(@Valid @RequestBody UserSignUpRequest userSignUpRequest) {
         userService.signUp(userSignUpRequest);
-        var response = CommonResponse.success(ResponseCode.COMMON201);
+        var response = CommonResponse.success(COMMON201);
         return ResponseEntity.ok(response);
     }
 }

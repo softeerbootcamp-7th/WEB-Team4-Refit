@@ -1,9 +1,10 @@
 package com.shyashyashya.refit.global.util;
 
+import static com.shyashyashya.refit.global.exception.ErrorCode.USER_NOT_FOUND;
+
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
 import com.shyashyashya.refit.global.exception.CustomException;
-import com.shyashyashya.refit.global.exception.ErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -26,7 +27,7 @@ public class RequestUserContext {
 
     public User getRequestUser() {
         if (user == null && userId != null) {
-            user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+            user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         }
         return user;
     }

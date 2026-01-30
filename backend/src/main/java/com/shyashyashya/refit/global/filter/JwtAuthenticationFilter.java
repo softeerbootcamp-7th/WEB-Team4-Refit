@@ -1,8 +1,9 @@
 package com.shyashyashya.refit.global.filter;
 
+import static com.shyashyashya.refit.global.exception.ErrorCode.LOGIN_REQUIRED;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
-import com.shyashyashya.refit.global.exception.ErrorCode;
 import com.shyashyashya.refit.global.property.AuthProperty;
 import com.shyashyashya.refit.global.util.RequestUserContext;
 import jakarta.servlet.FilterChain;
@@ -51,7 +52,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = resolveToken(request);
 
             if (token == null || !validateToken(token)) {
-                var errorCode = ErrorCode.LOGIN_REQUIRED;
+                var errorCode = LOGIN_REQUIRED;
                 handleFilterException(response, errorCode.getHttpStatus(), CommonResponse.customException(errorCode));
                 return;
             }
