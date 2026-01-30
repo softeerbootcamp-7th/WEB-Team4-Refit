@@ -23,6 +23,9 @@ public class InterviewController {
 
     private final InterviewService interviewService;
 
+    @GetMapping
+    public ResponseEntity<CommonResponse<>>
+
     @DeleteMapping("/{interviewId}")
     public ResponseEntity<CommonResponse<Void>> deleteInterview(@PathVariable Long interviewId) {
         interviewService.deleteInterview(interviewId);
