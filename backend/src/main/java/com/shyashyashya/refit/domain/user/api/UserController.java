@@ -1,5 +1,6 @@
 package com.shyashyashya.refit.domain.user.api;
 
+import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
 import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON201;
 
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
@@ -25,5 +26,11 @@ public class UserController {
         userService.signUp(userSignUpRequest);
         var response = CommonResponse.success(COMMON201);
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/my/terms/agree")
+    public ResponseEntity<CommonResponse<Void>> agreeToTerms() {
+        userService.agreeToTerms();
+        return ResponseEntity.ok(CommonResponse.success(COMMON200));
     }
 }

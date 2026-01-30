@@ -49,6 +49,13 @@ public class User extends BaseEntity {
     private JobCategory jobCategory;
 
     /*
+    Business Method
+    */
+    public void agreeToTerms() {
+        this.isAgreedToTerms = true;
+    }
+
+    /*
      Factory Method
     */
     public static User create(

@@ -11,6 +11,7 @@ import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
 import com.shyashyashya.refit.domain.user.service.validator.UserSignUpValidator;
 import com.shyashyashya.refit.global.exception.CustomException;
+import com.shyashyashya.refit.global.util.RequestUserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,9 @@ public class UserService {
     private final UserRepository userRepository;
     private final IndustryRepository industryRepository;
     private final JobCategoryRepository jobCategoryRepository;
+
     private final UserSignUpValidator userSignUpValidator;
+    private final RequestUserContext requestUserContext;
 
     @Transactional
     public void signUp(UserSignUpRequest userSignUpRequest) {
@@ -50,5 +53,11 @@ public class UserService {
         } catch (DataIntegrityViolationException e) {
             throw new CustomException(USER_SIGNUP_EMAIL_CONFLICT);
         }
+    }
+
+    @Transactional
+    public void agreeToTerms() {
+        User user = requestUserContext.getRequestUser();
+        user.agreeToTerms();
     }
 }
