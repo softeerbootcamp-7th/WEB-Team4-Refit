@@ -2,8 +2,8 @@ package com.shyashyashya.refit.global.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
-import com.shyashyashya.refit.global.property.AuthProperty;
 import com.shyashyashya.refit.global.exception.ErrorCode;
+import com.shyashyashya.refit.global.property.AuthProperty;
 import com.shyashyashya.refit.global.util.RequestUserContext;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -40,8 +40,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
-            @NonNull FilterChain filterChain) throws ServletException, IOException
-    {
+            @NonNull FilterChain filterChain)
+            throws ServletException, IOException {
         if (isWhitelisted(request)) {
             filterChain.doFilter(request, response);
             return;
@@ -87,8 +87,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     // filter 에서의 예외는 GlobalExceptionHandler로 처리되지 않으므로 직접 응답 작성
     private <T> void handleFilterException(HttpServletResponse response, HttpStatus status, CommonResponse<T> body)
-            throws IOException
-    {
+            throws IOException {
         response.setStatus(status.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
