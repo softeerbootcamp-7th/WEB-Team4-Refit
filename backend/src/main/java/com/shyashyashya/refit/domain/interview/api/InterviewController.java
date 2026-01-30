@@ -1,11 +1,9 @@
 package com.shyashyashya.refit.domain.interview.api;
 
-import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON201;
-import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON204;
-
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.response.GuideQuestionResponse;
+import com.shyashyashya.refit.domain.interview.service.GuideQuestionService;
 import com.shyashyashya.refit.domain.interview.service.InterviewService;
 import com.shyashyashya.refit.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +16,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.shyashyashya.refit.domain.common.model.ResponseCode.*;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/interview")
 public class InterviewController {
 
     private final InterviewService interviewService;
+    private final GuideQuestionService guideQuestionService;
 
     @DeleteMapping("/{interviewId}")
     public ResponseEntity<CommonResponse<Void>> deleteInterview(@PathVariable Long interviewId) {
@@ -45,7 +46,9 @@ public class InterviewController {
 
     @GetMapping("/{interviewId}/guide-question")
     public ResponseEntity<CommonResponse<GuideQuestionResponse>> getGuideQuestion(@PathVariable Long interviewId) {
+        String guideQuestion = guideQuestionService.getGuideQuestion(interviewId);
 
-        return null;
+        var response = CommonResponse.success(COMMON200, new GuideQuestionResponse(guideQuestion));
+        return ResponseEntity.ok(response);
     }
 }
