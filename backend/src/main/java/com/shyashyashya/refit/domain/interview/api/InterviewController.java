@@ -1,5 +1,7 @@
 package com.shyashyashya.refit.domain.interview.api;
 
+import static com.shyashyashya.refit.domain.common.model.ResponseCode.*;
+
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.response.GuideQuestionResponse;
@@ -15,8 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import static com.shyashyashya.refit.domain.common.model.ResponseCode.*;
 
 @RestController
 @RequiredArgsConstructor
