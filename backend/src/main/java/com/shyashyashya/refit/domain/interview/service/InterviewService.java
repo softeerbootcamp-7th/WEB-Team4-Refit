@@ -36,13 +36,12 @@ public class InterviewService {
 
     @Transactional(readOnly = true)
     public Interview getInterview(Long interviewId) {
-        // TODO 요청 user 가져오기
-        User currentUser = null;
+        User requestUser = requestUserContext.getRequestUser();
 
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
 
-        interviewValidator.validateInterviewOwner(interview, currentUser);
+        interviewValidator.validateInterviewOwner(interview, requestUser);
 
         return interview;
     }
