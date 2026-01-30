@@ -1,4 +1,4 @@
-package com.shyashyashya.refit.domain.interview.dto.response;
+package com.shyashyashya.refit.domain.interview.dto;
 
 import com.shyashyashya.refit.domain.company.model.Company;
 import com.shyashyashya.refit.domain.interview.model.Interview;
