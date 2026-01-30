@@ -5,10 +5,9 @@ import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewResultStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
-
 import java.time.LocalDateTime;
 
-public record InterviewDto (
+public record InterviewDto(
         Long interviewId,
         InterviewType interviewType,
         LocalDateTime interviewStartAt,
@@ -18,8 +17,7 @@ public record InterviewDto (
         Long jobCategoryId,
         String jobCategoryName,
         LocalDateTime updatedAt,
-        LocalDateTime createdAt
-) {
+        LocalDateTime createdAt) {
     public static InterviewDto from(Interview interview) {
         Company company = interview.getCompany();
         JobCategory jobCategory = interview.getJobCategory();
@@ -34,7 +32,6 @@ public record InterviewDto (
                 jobCategory.getId(),
                 jobCategory.getName(),
                 interview.getUpdatedAt(),
-                interview.getCreatedAt()
-        );
+                interview.getCreatedAt());
     }
 }

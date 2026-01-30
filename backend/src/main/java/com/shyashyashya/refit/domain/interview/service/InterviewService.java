@@ -32,6 +32,11 @@ public class InterviewService {
 
     private final InterviewValidator interviewValidator;
 
+    @Transactional(readOnly = true)
+    public Interview getInterview(Long interviewId) {
+        return interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
+    }
+
     @Transactional
     public void createInterview(User user, InterviewCreateRequest request) {
 
