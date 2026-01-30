@@ -24,18 +24,12 @@ export default defineConfig([
       import: importPlugin,
     },
     rules: {
+      'import/no-unresolved': 'error',
+      'import/named': 'error',
       'import/order': [
         'error',
         {
-          groups: [
-            'builtin',
-            'external',
-            'internal',
-            'parent',
-            'sibling',
-            'index',
-            'type',
-          ],
+          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'type'],
           alphabetize: { order: 'asc', caseInsensitive: true },
           pathGroups: [
             { pattern: 'react', group: 'external', position: 'before' },
