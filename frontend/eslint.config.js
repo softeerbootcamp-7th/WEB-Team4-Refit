@@ -5,6 +5,7 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 import importPlugin from 'eslint-plugin-import'
+import path from 'path'
 
 export default defineConfig([
   globalIgnores(['dist']),
@@ -22,6 +23,13 @@ export default defineConfig([
     },
     plugins: {
       import: importPlugin,
+    },
+    settings: {
+      'import/resolver': {
+        typescript: {
+          project: path.resolve('./tsconfig.app.json'),
+        },
+      },
     },
     rules: {
       'import/no-unresolved': 'error',
