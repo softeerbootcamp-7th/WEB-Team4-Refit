@@ -39,7 +39,6 @@ public class InterviewService {
 
     @Transactional
     public void createInterview(User user, InterviewCreateRequest request) {
-
         Company company = findOrSaveCompany(request);
 
         Industry industry = industryRepository
@@ -53,7 +52,7 @@ public class InterviewService {
         Interview interview = Interview.create(
                 request.jobRole(), request.interviewType(), request.startAt(), user, company, industry, jobCategory);
 
-        Interview createdInterview = interviewRepository.save(interview);
+        interviewRepository.save(interview);
     }
 
     @Transactional
