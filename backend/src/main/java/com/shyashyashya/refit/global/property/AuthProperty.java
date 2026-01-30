@@ -7,9 +7,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
+@ConfigurationProperties(prefix = "spring.auth")
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "spring.auth")
 public class AuthProperty {
 
     private List<String> whitelistApiUrls;
