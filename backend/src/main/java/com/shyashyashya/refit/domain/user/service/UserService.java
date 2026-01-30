@@ -31,22 +31,22 @@ public class UserService {
     @Transactional
     public void signUp(UserSignUpRequest userSignUpRequest) {
         var industry = industryRepository
-            .findById(userSignUpRequest.industryId())
-            .orElseThrow(() -> new CustomException(INDUSTRY_NOT_FOUND));
+                .findById(userSignUpRequest.industryId())
+                .orElseThrow(() -> new CustomException(INDUSTRY_NOT_FOUND));
 
         var jobCategory = jobCategoryRepository
-            .findById(userSignUpRequest.jobCategoryId())
-            .orElseThrow(() -> new CustomException(JOB_CATEGORY_NOT_FOUND));
+                .findById(userSignUpRequest.jobCategoryId())
+                .orElseThrow(() -> new CustomException(JOB_CATEGORY_NOT_FOUND));
 
         userSignUpValidator.validateEmailConflict(userSignUpRequest.email());
 
         var user = User.create(
-            userSignUpRequest.email(),
-            userSignUpRequest.nickname(),
-            userSignUpRequest.profileImageUrl(),
-            false,
-            industry,
-            jobCategory);
+                userSignUpRequest.email(),
+                userSignUpRequest.nickname(),
+                userSignUpRequest.profileImageUrl(),
+                false,
+                industry,
+                jobCategory);
 
         try {
             userRepository.save(user);
@@ -56,7 +56,7 @@ public class UserService {
     }
 
     @Transactional
-    public void agreeToTerms()  {
+    public void agreeToTerms() {
         User user = requestUserContext.getRequestUser();
         user.agreeToTerms();
     }
