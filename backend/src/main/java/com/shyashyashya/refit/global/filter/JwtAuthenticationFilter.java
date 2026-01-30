@@ -50,7 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String token = resolveToken(request);
 
-            if (!validateToken(token)) {
+            if (token == null || !validateToken(token)) {
                 var errorCode = ErrorCode.LOGIN_REQUIRED;
                 handleFilterException(response, errorCode.getHttpStatus(), CommonResponse.customException(errorCode));
                 return;

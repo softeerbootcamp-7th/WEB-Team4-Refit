@@ -9,6 +9,7 @@ import com.shyashyashya.refit.domain.user.service.validator.UserSignUpValidator;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +23,7 @@ public class UserService {
     private final UserSignUpValidator userSignUpValidator;
 
     @Transactional
-    public Long signUp(UserSignUpRequest userSignUpRequest) {
+    public void signUp(UserSignUpRequest userSignUpRequest) {
         var industry = industryRepository
                 .findById(userSignUpRequest.industryId())
                 .orElseThrow(() -> new CustomException(ErrorCode.INDUSTRY_NOT_FOUND));
@@ -33,14 +34,18 @@ public class UserService {
 
         userSignUpValidator.validateEmailConflict(userSignUpRequest.email());
 
-        return userRepository
-                .save(User.create(
-                        userSignUpRequest.email(),
-                        userSignUpRequest.nickname(),
-                        userSignUpRequest.profileImageUrl(),
-                        false,
-                        industry,
-                        jobCategory))
-                .getId();
+        var user = User.create(
+                userSignUpRequest.email(),
+                userSignUpRequest.nickname(),
+                userSignUpRequest.profileImageUrl(),
+                false,
+                industry,
+                jobCategory);
+
+        try {
+            userRepository.save(user);
+        } catch (DataIntegrityViolationException e) {
+            throw new CustomException(ErrorCode.USER_SIGNUP_EMAIL_CONFLICT);
+        }
     }
 }

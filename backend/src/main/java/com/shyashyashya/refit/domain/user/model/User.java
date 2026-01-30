@@ -28,7 +28,7 @@ public class User extends BaseEntity {
     @Column(name = "user_id", updatable = false, nullable = false)
     private Long id;
 
-    @Column(columnDefinition = "varchar(255)")
+    @Column(columnDefinition = "varchar(255)", nullable = false, unique = true)
     private String email;
 
     @Column(columnDefinition = "varchar(30)", nullable = false, unique = true)

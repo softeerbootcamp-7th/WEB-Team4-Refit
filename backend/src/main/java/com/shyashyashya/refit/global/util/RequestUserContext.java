@@ -10,17 +10,18 @@ import lombok.Setter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 
-// TODO: [논의사항] 패키지가 여기가 맞는지 검토 필요
+// TODO: 패키지 위치 다시 생각해보기
 @Component
-@RequestScope // RequestScope를 사용하여 요청 당 하나의 인스턴스 생성
+@RequestScope
 @Getter
-@Setter
 @RequiredArgsConstructor
 public class RequestUserContext {
 
     private final UserRepository userRepository;
 
+    @Setter
     private Long userId;
+
     private User user;
 
     public User getRequestUser() {

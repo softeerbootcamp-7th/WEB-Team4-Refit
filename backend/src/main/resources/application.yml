@@ -5,10 +5,11 @@ spring:
     active: "${SPRING_PROFILES_ACTIVE}"
     group:
       test: "test"
-      local: "local, datasource, auth"
-      dev: "dev, datasource, auth"
+      local: "local, datasource"
+      dev: "dev, datasource"
     include:
       - s3
+      - auth
 
 server:
   tomcat:
