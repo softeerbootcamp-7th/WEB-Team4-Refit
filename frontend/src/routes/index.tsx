@@ -4,6 +4,7 @@ import { DashboardLayout, MobileLayout, RootLayout } from '@/routes/layouts'
 import {
   Dashboard,
   MobilePage,
+  MobileRecordPage,
   MobileUnrecordedPage,
   NotFound,
   SharedComponentExample,
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
       {
         path: getChildPath(ROUTES.MOBILE_UNRECORDED, ROUTES.MOBILE),
         Component: MobileUnrecordedPage,
+      },
+      {
+        path: getChildPath(ROUTES.MOBILE_RECORD, ROUTES.MOBILE),
+        Component: MobileRecordPage,
       },
     ],
   },

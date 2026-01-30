@@ -12,6 +12,7 @@ export const ROUTES = {
 
   MOBILE: '/mobile',
   MOBILE_UNRECORDED: '/mobile/unrecorded',
+  MOBILE_RECORD: '/mobile/record/:interviewId',
 
   RECORD: '/record/:interviewId',
   RECORD_CONFIRM: '/record/:interviewId/confirm',

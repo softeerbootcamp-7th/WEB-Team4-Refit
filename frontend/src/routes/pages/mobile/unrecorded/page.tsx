@@ -1,3 +1,6 @@
+import { useNavigate } from 'react-router'
+import { ROUTES } from '@/constants/routes'
+
 const MOCK_INTERVIEWS = [
   {
     id: '1',
@@ -49,19 +52,27 @@ const MOCK_INTERVIEWS = [
   },
 ]
 
+const CARD_CLASS = 'border-gray-150 bg-gray-white flex w-full items-center gap-3 border-b px-5 py-4 text-left'
+
 function InterviewCard({
   company,
   title,
   timeAgo,
   logoUrl,
+  onClick,
 }: {
   company: string
   title: string
   timeAgo: string
   logoUrl: string
+  onClick: () => void
 }) {
   return (
-    <article className="border-gray-150 bg-gray-white flex items-center gap-3 border-b px-5 py-4 last:border-b-0">
+    <button
+      type="button"
+      className={`cursor-pointer active:bg-gray-100 ${CARD_CLASS}`}
+      onClick={onClick}
+    >
       <div className="border-gray-150 flex h-10 w-10 shrink-0 overflow-hidden rounded-full border">
         <img src={logoUrl} alt={`${company} 로고`} className="h-full w-full object-cover" />
       </div>
@@ -73,21 +84,29 @@ function InterviewCard({
           </p>
         </div>
       </div>
-    </article>
+    </button>
   )
 }
 
 export default function MobileUnrecordedPage() {
+  const navigate = useNavigate()
+
   return (
     <div className="flex flex-col pb-8">
       <div className="px-5 pt-[18px]">
         <h1 className="title-l-bold text-gray-800">어떤 면접을 복기할까요?</h1>
       </div>
 
-      <ul className="mt-2 flex flex-col">
+      <ul className="mt-2 flex flex-col [&_li:last-child_button]:border-b-0">
         {MOCK_INTERVIEWS.map((item) => (
           <li key={item.id}>
-            <InterviewCard company={item.company} title={item.title} timeAgo={item.timeAgo} logoUrl={item.logoUrl} />
+            <InterviewCard
+              company={item.company}
+              title={item.title}
+              timeAgo={item.timeAgo}
+              logoUrl={item.logoUrl}
+              onClick={() => navigate(ROUTES.MOBILE_RECORD.replace(':interviewId', item.id))}
+            />
           </li>
         ))}
       </ul>
