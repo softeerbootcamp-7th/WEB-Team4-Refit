@@ -8,6 +8,8 @@ import com.shyashyashya.refit.domain.interview.service.validator.InterviewValida
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
 import java.util.List;
+
+import com.shyashyashya.refit.global.util.RequestUserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,16 +21,18 @@ public class GuideQuestionService {
     private final InterviewRepository interviewRepository;
 
     private final InterviewValidator interviewValidator;
+    private final RequestUserContext requestUserContext;
 
     @Transactional(readOnly = true)
     public String getGuideQuestion(Long interviewId) {
-        // TODO 현재 사용자 가져오기
-        User currentUser = null;
+        User currentUser = requestUserContext.getRequestUser();
+
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, currentUser);
 
         String rawText = interview.getRawText();
+
         return randomGuideQuestion.generate(rawText);
     }
 
