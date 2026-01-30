@@ -1,4 +1,4 @@
-package com.shyashyashya.refit.domain.user.service;
+package com.shyashyashya.refit.domain.user.service.validator;
 
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
 import com.shyashyashya.refit.global.exception.CustomException;
