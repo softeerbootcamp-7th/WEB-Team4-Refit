@@ -1,35 +1,29 @@
-package com.shyashyashya.refit.global.filter;
+package com.shyashyashya.refit.global.auth;
 
 import static com.shyashyashya.refit.global.exception.ErrorCode.LOGIN_REQUIRED;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.shyashyashya.refit.domain.common.dto.CommonResponse;
+import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.property.AuthProperty;
 import com.shyashyashya.refit.global.util.RequestUserContext;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 @Component
 @Order(1)
 @RequiredArgsConstructor
-@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final AuthProperty authProperty;
     private final RequestUserContext requestUserContext;
-    private final ObjectMapper objectMapper;
+    private final HandlerExceptionResolver handlerExceptionResolver;
 
     // TODO: JwtUtil 구현 후 실제 jwt에서 userId 추출하기
     // private final JwtUtil jwtUtil;
@@ -41,20 +35,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
-            @NonNull FilterChain filterChain)
-            throws ServletException, IOException {
-        if (isWhitelisted(request)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+            @NonNull FilterChain filterChain) {
 
         try {
+            if (isWhitelisted(request)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
             String token = resolveToken(request);
 
-            if (token == null || !validateToken(token)) {
-                var errorCode = LOGIN_REQUIRED;
-                handleFilterException(response, errorCode.getHttpStatus(), CommonResponse.customException(errorCode));
-                return;
+            // TODO: token null 체크는 추후 제대로 된 JwtUtil 구현 후 적용
+            if (
+            /* token == null || */ !validateToken(token)) {
+                throw new CustomException(LOGIN_REQUIRED);
             }
 
             // TODO: JwtUtil 구현 후 실제 jwt에서 userId 추출하기
@@ -65,7 +58,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
 
         } catch (Exception e) {
-            handleFilterException(response, HttpStatus.INTERNAL_SERVER_ERROR, CommonResponse.unknownException(e));
+            handlerExceptionResolver.resolveException(request, response, null, e);
         }
     }
 
@@ -84,14 +77,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return bearerToken.substring(7);
         }
         return null;
-    }
-
-    // filter 에서의 예외는 GlobalExceptionHandler로 처리되지 않으므로 직접 응답 작성
-    private <T> void handleFilterException(HttpServletResponse response, HttpStatus status, CommonResponse<T> body)
-            throws IOException {
-        response.setStatus(status.value());
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(objectMapper.writeValueAsString(body));
     }
 }
