@@ -1,0 +1,55 @@
+package com.shyashyashya.refit.user.validator;
+
+import static com.shyashyashya.refit.fixture.UserFixture.TEST_USER_1;
+import static com.shyashyashya.refit.global.exception.ErrorCode.USER_SIGNUP_EMAIL_CONFLICT;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+import com.shyashyashya.refit.domain.user.repository.UserRepository;
+import com.shyashyashya.refit.domain.user.service.validator.UserSignUpValidator;
+import com.shyashyashya.refit.global.exception.CustomException;
+import java.util.Optional;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+@ExtendWith(MockitoExtension.class)
+class UserSignUpValidatorTest {
+
+    @Mock
+    private UserRepository userRepository;
+
+    @InjectMocks
+    private UserSignUpValidator userSignUpValidator;
+
+    @Test
+    void 이메일이_이미_존재하면_USER_SIGNUP_EMAIL_CONFLICT_예외가_발생한다() {
+        // given
+        String email = TEST_USER_1.getEmail();
+        given(userRepository.findByEmail(email)).willReturn(Optional.of(TEST_USER_1));
+
+        // when & then
+        CustomException exception =
+                assertThrows(CustomException.class, () -> userSignUpValidator.validateEmailConflict(email));
+
+        assertEquals(USER_SIGNUP_EMAIL_CONFLICT, exception.getErrorCode());
+        verify(userRepository, times(1)).findByEmail(email);
+    }
+
+    @Test
+    void 이메일이_존재하지_않으면_예외가_발생하지_않는다() {
+        // given
+        String email = "new-user@example.com";
+        given(userRepository.findByEmail(email)).willReturn(Optional.empty());
+
+        // when & then
+        assertDoesNotThrow(() -> userSignUpValidator.validateEmailConflict(email));
+        verify(userRepository, times(1)).findByEmail(email);
+    }
+}
