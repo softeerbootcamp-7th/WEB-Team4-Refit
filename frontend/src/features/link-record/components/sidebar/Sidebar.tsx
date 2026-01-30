@@ -18,7 +18,7 @@ export const RecordLinkSidebar = () => {
   }
 
   return (
-    <SidebarLayout size="small">
+    <SidebarLayout isMinimized>
       <NoteIcon width="24" height="24" className="shrink-0" />
       <Border />
       <div className="flex w-full flex-col items-center gap-0.5">
