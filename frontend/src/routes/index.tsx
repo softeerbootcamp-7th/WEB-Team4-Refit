@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router'
 import { ROUTES } from '@/constants/routes'
 import { DashboardLayout, RootLayout } from '@/routes/layouts'
-import { DashboardPage, MyInterviewsPage, NotFound, SharedComponentExample } from '@/routes/pages'
+import { DashboardPage, RecordConfirmPage, RecordLinkPage, NotFound, SharedComponentExample } from '@/routes/pages'
 
 const getChildPath = (fullPath: string, rootPath: string): string => {
   return fullPath.replace(rootPath, '').replace(/^\//, '')
@@ -22,7 +22,7 @@ const router = createBrowserRouter([
           { index: true, Component: DashboardPage },
           {
             path: getChildPath(ROUTES.DASHBOARD_MY_INTERVIEWS, ROUTES.DASHBOARD),
-            Component: MyInterviewsPage,
+            Component: DashboardPage,
           },
           {
             path: getChildPath(ROUTES.DASHBOARD_TREND_QUESTIONS, ROUTES.DASHBOARD),
@@ -44,11 +44,11 @@ const router = createBrowserRouter([
           { index: true, Component: DashboardPage },
           {
             path: getChildPath(ROUTES.RECORD_CONFIRM, ROUTES.RECORD),
-            Component: DashboardPage,
+            Component: RecordConfirmPage,
           },
           {
             path: getChildPath(ROUTES.RECORD_LINK, ROUTES.RECORD),
-            Component: DashboardPage,
+            Component: RecordLinkPage,
           },
         ],
       },
