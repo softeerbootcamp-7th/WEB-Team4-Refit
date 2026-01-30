@@ -7,7 +7,6 @@ import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateReques
 import com.shyashyashya.refit.domain.interview.dto.response.GuideQuestionResponse;
 import com.shyashyashya.refit.domain.interview.service.GuideQuestionService;
 import com.shyashyashya.refit.domain.interview.service.InterviewService;
-import com.shyashyashya.refit.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,11 +34,7 @@ public class InterviewController {
 
     @PostMapping
     public ResponseEntity<CommonResponse<Void>> createInterview(@RequestBody InterviewCreateRequest request) {
-
-        // TODO 요청 유저 받아오기
-        User reqUser = null;
-        interviewService.createInterview(reqUser, request);
-
+        interviewService.createInterview(request);
         var response = CommonResponse.success(COMMON201);
         return ResponseEntity.ok(response);
     }

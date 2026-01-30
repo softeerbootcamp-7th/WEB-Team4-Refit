@@ -1,6 +1,7 @@
 package com.shyashyashya.refit.user.validator;
 
 import static com.shyashyashya.refit.fixture.UserFixture.TEST_USER_1;
+import static com.shyashyashya.refit.global.exception.ErrorCode.USER_SIGNUP_EMAIL_CONFLICT;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -11,7 +12,6 @@ import static org.mockito.Mockito.verify;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
 import com.shyashyashya.refit.domain.user.service.validator.UserSignUpValidator;
 import com.shyashyashya.refit.global.exception.CustomException;
-import com.shyashyashya.refit.global.exception.ErrorCode;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,7 +38,7 @@ class UserSignUpValidatorTest {
         CustomException exception =
                 assertThrows(CustomException.class, () -> userSignUpValidator.validateEmailConflict(email));
 
-        assertEquals(ErrorCode.USER_SIGNUP_EMAIL_CONFLICT, exception.getErrorCode());
+        assertEquals(USER_SIGNUP_EMAIL_CONFLICT, exception.getErrorCode());
         verify(userRepository, times(1)).findByEmail(email);
     }
 
