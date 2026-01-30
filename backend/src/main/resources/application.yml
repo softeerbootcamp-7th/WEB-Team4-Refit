@@ -9,6 +9,7 @@ spring:
       dev: "dev, datasource"
     include:
       - s3
+      - auth
 
 server:
   tomcat:
