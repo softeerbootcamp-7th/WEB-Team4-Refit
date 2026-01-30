@@ -27,9 +27,12 @@ export const ListItemSmall = ({ content, active = false, onClick, className }: L
 export const ListItemLarge = ({ content, active = false, onClick, className }: ListItemProps) => {
   return (
     <div
-      className={[baseStyles, 'body-s-medium', active ? 'bg-primary-100 text-primary-700' : '', className ?? ''].join(
-        ' ',
-      )}
+      className={[
+        baseStyles,
+        'body-s-medium px-2.5',
+        active ? 'bg-primary-100 text-primary-700' : '',
+        className ?? '',
+      ].join(' ')}
       tabIndex={0}
       role="button"
       aria-pressed={active}
