@@ -5,6 +5,7 @@ import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON201;
 import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON204;
 
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
+import com.shyashyashya.refit.domain.interview.dto.InterviewFullDto;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.model.QnaSet;
 import com.shyashyashya.refit.domain.interview.service.InterviewService;
@@ -42,7 +43,8 @@ public class InterviewController {
     }
 
     @GetMapping("/{interviewId}/qna-sets")
-    public ResponseEntity<CommonResponse<>> getQnaSetList(@PathVariable Long interviewId) {
+    public ResponseEntity<CommonResponse<InterviewFullDto>> getQnaSetList(@PathVariable Long interviewId) {
+
         var response = CommonResponse.success(COMMON200);
         return ResponseEntity.ok(response);
     }
