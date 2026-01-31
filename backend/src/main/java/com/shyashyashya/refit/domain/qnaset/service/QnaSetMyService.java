@@ -36,7 +36,8 @@ public class QnaSetMyService {
         return new PageImpl<>(pageContent, pageable, qnaSetCategoryCounts.size());
     }
 
-    private List<FrequentQnaSetCategoryResponse> getPageContent(Pageable pageable, Map<QnaSetCategory, Long> qnaSetCategoryCounts) {
+    private List<FrequentQnaSetCategoryResponse> getPageContent(
+            Pageable pageable, Map<QnaSetCategory, Long> qnaSetCategoryCounts) {
         var sortedList = qnaSetCategoryCounts.entrySet().stream()
                 .sorted(Map.Entry.<QnaSetCategory, Long>comparingByValue(Comparator.reverseOrder())
                         .thenComparing(entry -> entry.getKey().getCategoryName()))
