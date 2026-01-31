@@ -5,6 +5,7 @@ import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetCategoryResponse;
 import com.shyashyashya.refit.domain.qnaset.service.QnaSetMyService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,9 @@ public class QnaSetMyController {
 
     private final QnaSetMyService qnaSetMyService;
 
+    @Operation(
+            summary = "나의 빈출 질문 카테고리 리스트와 각 카테고리 별 질문 개수를 조회합니다.",
+            description = "나의 빈출 질문 카테고리 리스트와 각 카테고리 별 질문 개수를 질문 개수가 많은 카테고리 순으로 정렬하여 조회합니다.")
     @GetMapping("/frequent/category")
     public ResponseEntity<CommonResponse<Page<FrequentQnaSetCategoryResponse>>> getMyFrequentQnaSetCategories(
             Pageable pageable) {
