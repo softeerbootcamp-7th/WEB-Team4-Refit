@@ -57,7 +57,7 @@ Button.displayName = 'Button'
 export default Button
 
 const BASE_STYLES =
-  'relative inline-flex align-middle items-center justify-center gap-2 transition-colors outline-none disabled:pointer-events-none disabled:opacity-50'
+  'relative inline-flex align-middle items-center justify-center gap-2 transition-colors outline-none disabled:pointer-events-none disabled:opacity-50 cursor-pointer'
 
 const VARIANT_STYLES = {
   'fill-orange-500':
