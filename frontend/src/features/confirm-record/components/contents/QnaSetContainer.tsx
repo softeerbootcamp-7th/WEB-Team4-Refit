@@ -4,12 +4,12 @@ import { Border } from '@/shared/sidebar/Border'
 
 type QnAType = Pick<QnaSetType, 'qnaSetId' | 'questionText' | 'answerText'>
 
-type ContentsContainerProps = {
+type QnaSetContainerProps = {
   qnaData: QnAType
   idx: number
 }
 
-export const ContentsContainer = ({ qnaData, idx }: ContentsContainerProps) => {
+export const QnaSetContainer = ({ qnaData, idx }: QnaSetContainerProps) => {
   return (
     <div className="bg-gray-white flex flex-col gap-4 rounded-lg p-5">
       <div className="inline-flex flex-wrap gap-2.5">
