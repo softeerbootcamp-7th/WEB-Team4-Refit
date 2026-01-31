@@ -5,6 +5,7 @@ import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON204;
 
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
+import com.shyashyashya.refit.domain.interview.dto.request.LogDraftSaveRequest;
 import com.shyashyashya.refit.domain.interview.service.InterviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ResourceLoader;
@@ -40,7 +41,7 @@ public class InterviewController {
     }
 
     @PutMapping("/{interviewId}/log-draft")
-    public ResponseEntity<CommonResponse<Void>> saveLogDraft(@PathVariable Long interviewId, @RequestBody ) {
+    public ResponseEntity<CommonResponse<Void>> saveLogDraft(@PathVariable Long interviewId, @RequestBody LogDraftSaveRequest request) {
         var response = CommonResponse.success(COMMON201);
         return ResponseEntity.ok(response);
     }
