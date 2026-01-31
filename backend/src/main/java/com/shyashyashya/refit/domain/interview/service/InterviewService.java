@@ -9,6 +9,7 @@ import com.shyashyashya.refit.domain.company.repository.CompanyRepository;
 import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
+import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatusUpdateRequest;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
 import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
@@ -65,6 +66,18 @@ public class InterviewService {
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
         interviewRepository.delete(interview);
+    }
+
+    @Transactional
+    public void updateResultStatus(Long interviewId, InterviewResultStatusUpdateRequest request) {
+        User requestUser = requestUserContext.getRequestUser();
+
+        Interview interview =
+                interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
+
+        interviewValidator.validateInterviewOwner(interview, requestUser);
+
+        interview.updateResultStatus(request.interviewResultStatus());
     }
 
     private Company findOrSaveCompany(InterviewCreateRequest request) {
