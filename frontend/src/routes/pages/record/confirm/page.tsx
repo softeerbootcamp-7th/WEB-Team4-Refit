@@ -5,9 +5,7 @@ export default function RecordConfirmPage() {
   return (
     <div className="grid h-full grid-cols-[320px_1fr]">
       <RecordConfirmSidebar />
-      <div className="overflow-y-auto">
-        <RecordContents />
-      </div>
+      <RecordContents />
     </div>
   )
 }
