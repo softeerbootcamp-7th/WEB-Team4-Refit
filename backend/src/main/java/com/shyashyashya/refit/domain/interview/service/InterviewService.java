@@ -78,7 +78,6 @@ public class InterviewService {
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
         interview.updateRawText(request.draft());
-        interviewRepository.save(interview);
     }
 
     private Company findOrSaveCompany(InterviewCreateRequest request) {
