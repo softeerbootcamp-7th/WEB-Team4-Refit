@@ -70,12 +70,12 @@ public class InterviewService {
 
     @Transactional
     public void updateResultStatus(Long interviewId, InterviewResultStatusUpdateRequest request) {
-        User currentUser = null; // TODO: 로그인 구현 이후 현재 로그인 유저 조회 로직 수정
+        User requestUser = requestUserContext.getRequestUser();
 
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
 
-        interviewValidator.validateInterviewOwner(interview, currentUser);
+        interviewValidator.validateInterviewOwner(interview, requestUser);
 
         interview.updateResultStatus(request.interviewResultStatus());
     }
