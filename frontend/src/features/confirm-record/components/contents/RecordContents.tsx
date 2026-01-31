@@ -27,7 +27,7 @@ export function RecordContents() {
   return (
     <div className="flex h-full flex-col gap-5 p-6">
       <h1 className="title-xl-bold">작성 내용을 확인해주세요.</h1>
-      <FadeScrollArea className="space-y-3 pr-4">
+      <FadeScrollArea className="-mr-4 space-y-3 pr-4">
         {example.map((qnaData, idx) => (
           <ContentsContainer qnaData={qnaData} idx={idx + 1} />
         ))}
