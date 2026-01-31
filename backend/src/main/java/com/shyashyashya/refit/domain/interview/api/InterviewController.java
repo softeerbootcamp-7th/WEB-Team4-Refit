@@ -7,10 +7,12 @@ import com.shyashyashya.refit.domain.common.dto.CommonResponse;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.service.InterviewService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class InterviewController {
 
     private final InterviewService interviewService;
+    private final ResourceLoader resourceLoader;
 
     @DeleteMapping("/{interviewId}")
     public ResponseEntity<CommonResponse<Void>> deleteInterview(@PathVariable Long interviewId) {
@@ -32,6 +35,12 @@ public class InterviewController {
     @PostMapping
     public ResponseEntity<CommonResponse<Void>> createInterview(@RequestBody InterviewCreateRequest request) {
         interviewService.createInterview(request);
+        var response = CommonResponse.success(COMMON201);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{interviewId}/log-draft")
+    public ResponseEntity<CommonResponse<Void>> saveLogDraft(@PathVariable Long interviewId, @RequestBody ) {
         var response = CommonResponse.success(COMMON201);
         return ResponseEntity.ok(response);
     }
