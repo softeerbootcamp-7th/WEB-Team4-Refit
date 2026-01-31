@@ -1,4 +1,6 @@
 import { ContentsContainer } from '@/features/confirm-record/components/contents/ContentsContainer'
+import Button from '@/shared/Button'
+import { FadeScrollArea } from '@/shared/components/FadeScrollArea'
 
 const example = [
   {
@@ -20,15 +22,23 @@ const example = [
       '답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다.',
   },
 ]
-/* 스크롤 테스트 */
+
 export function RecordContents() {
   return (
-    <div className="p-6">
-      <h1 className="mb-4 text-2xl font-bold">작성 내용을 확인해주세요.</h1>
-      <div className="space-y-6">
+    <div className="flex h-full flex-col gap-5 p-6">
+      <h1 className="title-xl-bold">작성 내용을 확인해주세요.</h1>
+      <FadeScrollArea className="space-y-3 pr-4">
         {example.map((qnaData, idx) => (
           <ContentsContainer qnaData={qnaData} idx={idx + 1} />
         ))}
+      </FadeScrollArea>
+      <div className="flex shrink-0 justify-end gap-3">
+        <Button variant="outline-gray-100" size="lg" className="w-35">
+          임시 저장
+        </Button>
+        <Button variant="fill-orange-500" size="lg" className="w-60">
+          다음 단계
+        </Button>
       </div>
     </div>
   )
