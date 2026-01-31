@@ -9,7 +9,7 @@ public record QnaSetDto(
         @NotNull Long qnaSetId,
         @NotNull Long interviewId,
         @NotNull @Size(max = 200) String questionText,
-        @NotNull String anwserText,
+        @NotNull String answerText,
         @NotNull String qnaSetSelfReviewText,
         StarAnalysisDto starAnalysis,
         @NotNull Boolean isMarkedDifficult) {
