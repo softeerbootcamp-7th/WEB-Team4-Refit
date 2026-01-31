@@ -12,6 +12,7 @@ import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateReques
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.QnaSet;
 import com.shyashyashya.refit.domain.interview.model.QnaSetSelfReview;
+import com.shyashyashya.refit.domain.interview.model.StarAnalysis;
 import com.shyashyashya.refit.domain.interview.service.InterviewService;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +55,8 @@ public class InterviewController {
         List<QnaSetDto> qnaSetDtos = new ArrayList<>(qnaSets.size());
         for (QnaSet qnaSet : qnaSets) {
             QnaSetSelfReview selfReview = interviewService.getSelfReview(qnaSet.getId());
-            StarAnalysisDto starAnalysisDto = interviewService.getStarAnalysis(qnaSet.getId());
+            StarAnalysis starAnalysis = interviewService.getStarAnalysis(qnaSet.getId());
+            StarAnalysisDto starAnalysisDto = StarAnalysisDto.from(starAnalysis);
             QnaSetDto qnaSetDto = QnaSetDto.from(qnaSet, selfReview, starAnalysisDto);
             qnaSetDtos.add(qnaSetDto);
         }

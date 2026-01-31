@@ -3,6 +3,7 @@ package com.shyashyashya.refit.domain.interview.service;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INDUSTRY_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.JOB_CATEGORY_NOT_FOUND;
+import static com.shyashyashya.refit.global.exception.ErrorCode.QNA_SET_NOT_FOUND;
 
 import com.shyashyashya.refit.domain.company.model.Company;
 import com.shyashyashya.refit.domain.company.repository.CompanyRepository;
@@ -11,8 +12,12 @@ import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.QnaSet;
+import com.shyashyashya.refit.domain.interview.model.QnaSetSelfReview;
+import com.shyashyashya.refit.domain.interview.model.StarAnalysis;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
 import com.shyashyashya.refit.domain.interview.repository.QnaSetRepository;
+import com.shyashyashya.refit.domain.interview.repository.QnaSetSelfReviewRepository;
+import com.shyashyashya.refit.domain.interview.repository.StarAnalysisRepository;
 import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
@@ -34,6 +39,8 @@ public class InterviewService {
     private final IndustryRepository industryRepository;
     private final JobCategoryRepository jobCategoryRepository;
     private final QnaSetRepository qnaSetRepository;
+    private final QnaSetSelfReviewRepository qnaSetSelfReviewRepository;
+    private final StarAnalysisRepository starAnalysisRepository;
 
     private final InterviewValidator interviewValidator;
     private final RequestUserContext requestUserContext;
@@ -81,6 +88,16 @@ public class InterviewService {
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
         return qnaSetRepository.findAllByInterviewId(interviewId);
+    }
+
+    @Transactional(readOnly = true)
+    public QnaSetSelfReview getSelfReview(Long qnaSetId) {
+        return qnaSetSelfReviewRepository.findByQnaSetId(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
+    }
+
+    @Transactional(readOnly = true)
+    public StarAnalysis getStarAnalysis(Long qnaSetId) {
+        return starAnalysisRepository.findByQnaSetId(qnaSetId).orElse(null);
     }
 
     private Company findOrSaveCompany(InterviewCreateRequest request) {
