@@ -31,6 +31,12 @@ public class QnaSetMyService {
         Map<QnaSetCategory, Long> qnaSetCategoryCounts =
                 qna.stream().collect(Collectors.groupingBy(QnaSet::getQnaSetCategory, Collectors.counting()));
 
+        List<FrequentQnaSetCategoryResponse> pageContent = getPageContent(pageable, qnaSetCategoryCounts);
+
+        return new PageImpl<>(pageContent, pageable, qnaSetCategoryCounts.size());
+    }
+
+    private List<FrequentQnaSetCategoryResponse> getPageContent(Pageable pageable, Map<QnaSetCategory, Long> qnaSetCategoryCounts) {
         var sortedList = qnaSetCategoryCounts.entrySet().stream()
                 .sorted(Map.Entry.<QnaSetCategory, Long>comparingByValue(Comparator.reverseOrder())
                         .thenComparing(entry -> entry.getKey().getCategoryName()))
@@ -40,8 +46,6 @@ public class QnaSetMyService {
         int start = (int) pageable.getOffset();
         int end = Math.min(start + pageable.getPageSize(), sortedList.size());
 
-        List<FrequentQnaSetCategoryResponse> pageContent = sortedList.subList(start, end);
-
-        return new PageImpl<>(pageContent, pageable, sortedList.size());
+        return sortedList.subList(start, end);
     }
 }
