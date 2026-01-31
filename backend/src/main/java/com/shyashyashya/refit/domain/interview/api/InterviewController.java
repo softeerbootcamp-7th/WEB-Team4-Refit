@@ -6,8 +6,12 @@ import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON204;
 
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
 import com.shyashyashya.refit.domain.interview.dto.InterviewFullDto;
+import com.shyashyashya.refit.domain.interview.dto.QnaSetDto;
+import com.shyashyashya.refit.domain.interview.dto.StarAnalysisDto;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
+import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.QnaSet;
+import com.shyashyashya.refit.domain.interview.model.QnaSetSelfReview;
 import com.shyashyashya.refit.domain.interview.service.InterviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -44,8 +49,19 @@ public class InterviewController {
 
     @GetMapping("/{interviewId}/qna-sets")
     public ResponseEntity<CommonResponse<InterviewFullDto>> getQnaSetList(@PathVariable Long interviewId) {
+        Interview interview = InterviewService.getInterview();
+        List<QnaSet> qnaSets = InterviewService.getQnaSets();
 
-        var response = CommonResponse.success(COMMON200);
+        List<QnaSetDto> qnaSetDtos = new ArrayList<>(qnaSets.size());
+        for (QnaSet qnaSet : qnaSets) {
+            QnaSetSelfReview selfReview = InterviewService.getSelfReview(qnaSet.getId());
+            StarAnalysisDto starAnalysisDto = InterviewService.getStarAnalysis(qnaSet.getId());
+            QnaSetDto qnaSetDto = QnaSetDto.from(qnaSet, selfReview, starAnalysisDto);
+            qnaSetDtos.add(qnaSetDto);
+        }
+
+        InterviewFullDto interviewFullDto = InterviewFullDto.from(interview, qnaSetDtos);
+        var response = CommonResponse.success(COMMON200, interviewFullDto);
         return ResponseEntity.ok(response);
     }
 }

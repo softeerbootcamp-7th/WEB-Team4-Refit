@@ -4,6 +4,7 @@ import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewResultStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
 import com.shyashyashya.refit.domain.interview.model.QnaSet;
+import com.shyashyashya.refit.domain.interview.model.QnaSetSelfReview;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -24,12 +25,7 @@ public record InterviewFullDto(
         @Size(max = 2048) String pdfUrl,
         @NotNull List<QnaSetDto> qnaSets
         ) {
-    public static InterviewFullDto from (Interview interview, List<QnaSet> qnaSets) {
-        List<QnaSetDto> qnaSetDtos = new ArrayList<>(qnaSets.size());
-        for (QnaSet qnaSet : qnaSets) {
-            qnaSetDtos.add(QnaSetDto.from(qnaSet));
-        }
-
+    public static InterviewFullDto from(Interview interview, List<QnaSetDto> qnaSetDtos) {
         return new InterviewFullDto(
                 interview.getId(),
                 interview.getInterviewType(),
