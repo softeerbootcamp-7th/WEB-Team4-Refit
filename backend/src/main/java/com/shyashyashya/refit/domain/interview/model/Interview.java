@@ -99,6 +99,10 @@ public class Interview extends BaseEntity {
                 .build();
     }
 
+    public void updateRawText(String rawText) {
+        this.rawText = rawText;
+    }
+
     @Builder(access = AccessLevel.PRIVATE)
     private Interview(
             String jobRole,

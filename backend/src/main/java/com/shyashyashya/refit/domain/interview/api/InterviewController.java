@@ -42,6 +42,7 @@ public class InterviewController {
 
     @PutMapping("/{interviewId}/log-draft")
     public ResponseEntity<CommonResponse<Void>> saveLogDraft(@PathVariable Long interviewId, @RequestBody LogDraftSaveRequest request) {
+        interviewService.saveLogDarft(interviewId, request);
         var response = CommonResponse.success(COMMON201);
         return ResponseEntity.ok(response);
     }
