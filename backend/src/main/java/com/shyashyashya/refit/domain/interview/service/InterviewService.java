@@ -92,7 +92,9 @@ public class InterviewService {
 
     @Transactional(readOnly = true)
     public QnaSetSelfReview getSelfReview(Long qnaSetId) {
-        return qnaSetSelfReviewRepository.findByQnaSetId(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
+        return qnaSetSelfReviewRepository
+                .findByQnaSetId(qnaSetId)
+                .orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)
