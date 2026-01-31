@@ -59,7 +59,7 @@
 리핏 팀에서 22명의 취준생을 대상으로 유저 인터뷰를 시행한 결과, **면접 복기를 제대로 하지 못해서 면접 경험이 유의미한 자산으로 남지 못하는** 문제를 발견했어요. 이를 해결하기 위해 면접 복기를 세 단계로 구조화하고, 각 단계에 맞는 핵심기능을 설계했어요.
 <br/>
 
-<img src="https://github.com/user-attachments/assets/e6246550-349e-4342-b0cc-36bd562657c7" />
+<img alt="Screenshot 2026-01-30 at 2 17 15 PM" src="https://github.com/user-attachments/assets/f289d34a-25cf-49b7-9868-8abbc499a2c0" />
 
 ### 면접 질답 기록 단계
 * 형식 고민 없이 글이나 음성으로 편하게 면접 내용을 입력하면, AI가 질문과 답변을 자동으로 분류해줘요.

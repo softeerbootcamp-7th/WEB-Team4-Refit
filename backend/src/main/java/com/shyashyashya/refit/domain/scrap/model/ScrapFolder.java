@@ -16,9 +16,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
 @Entity
 @Table(name = "scrap_folders")
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ScrapFolder extends BaseEntity {
 

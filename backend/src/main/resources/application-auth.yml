@@ -1,0 +1,7 @@
+spring:
+  auth:
+    # TODO: public한 API 경로가 더 있는지 검토 필요
+    whitelist-api-urls:
+      - /auth/login/**
+      - /swagger-ui/**
+      - /v3/api-docs/**
