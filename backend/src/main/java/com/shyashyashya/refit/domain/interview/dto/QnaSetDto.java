@@ -1,10 +1,12 @@
 package com.shyashyashya.refit.domain.interview.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.shyashyashya.refit.domain.interview.model.QnaSet;
 import com.shyashyashya.refit.domain.interview.model.QnaSetSelfReview;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record QnaSetDto(
         @NotNull Long qnaSetId,
         @NotNull Long interviewId,

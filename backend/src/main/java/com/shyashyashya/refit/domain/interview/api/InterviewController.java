@@ -56,7 +56,7 @@ public class InterviewController {
         for (QnaSet qnaSet : qnaSets) {
             QnaSetSelfReview selfReview = interviewService.getSelfReview(qnaSet.getId());
             StarAnalysis starAnalysis = interviewService.getStarAnalysis(qnaSet.getId());
-            StarAnalysisDto starAnalysisDto = StarAnalysisDto.from(starAnalysis);
+            StarAnalysisDto starAnalysisDto = (starAnalysis == null) ? null : StarAnalysisDto.from(starAnalysis);  ;
             QnaSetDto qnaSetDto = QnaSetDto.from(qnaSet, selfReview, starAnalysisDto);
             qnaSetDtos.add(qnaSetDto);
         }
