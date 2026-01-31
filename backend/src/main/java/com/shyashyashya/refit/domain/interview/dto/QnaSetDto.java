@@ -19,8 +19,8 @@ public record QnaSetDto(
                 qnaSet.getInterview().getId(),
                 qnaSet.getQuestionText(),
                 qnaSet.getAnswerText(),
-                null,
-                null,
+                qnaSetSelfReview.getSelfReviewText(),
+                starAnalysisDto,
                 qnaSet.isMarkedDifficult());
     }
 }
