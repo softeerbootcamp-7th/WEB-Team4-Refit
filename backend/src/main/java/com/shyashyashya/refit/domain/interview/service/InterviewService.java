@@ -10,13 +10,16 @@ import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.model.Interview;
+import com.shyashyashya.refit.domain.interview.model.QnaSet;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
+import com.shyashyashya.refit.domain.interview.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.util.RequestUserContext;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -30,6 +33,7 @@ public class InterviewService {
     private final CompanyRepository companyRepository;
     private final IndustryRepository industryRepository;
     private final JobCategoryRepository jobCategoryRepository;
+    private final QnaSetRepository qnaSetRepository;
 
     private final InterviewValidator interviewValidator;
     private final RequestUserContext requestUserContext;
@@ -65,6 +69,18 @@ public class InterviewService {
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
         interviewRepository.delete(interview);
+    }
+
+    @Transactional(readOnly = true)
+    public List<QnaSet> getQnaSets(Long interviewId) {
+        User requestUser = requestUserContext.getRequestUser();
+
+        Interview interview =
+                interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
+
+        interviewValidator.validateInterviewOwner(interview, requestUser);
+
+        return qnaSetRepository.findAllByInterviewId(interviewId);
     }
 
     private Company findOrSaveCompany(InterviewCreateRequest request) {
