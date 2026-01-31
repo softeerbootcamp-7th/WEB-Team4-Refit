@@ -2,11 +2,7 @@ import { useState } from 'react'
 import Badge from '@/shared/Badge'
 import { Border } from '@/shared/sidebar/Border'
 
-type QnAType = {
-  question: string
-  questionId: number
-  answer: string
-}
+type QnAType = Pick<QnaSetType, 'qnaSetId' | 'questionText' | 'answerText'>
 
 type ContentsContainerProps = {
   qnaData: QnAType
@@ -18,11 +14,11 @@ export const ContentsContainer = ({ qnaData, idx }: ContentsContainerProps) => {
     <div className="bg-gray-white flex flex-col gap-4 rounded-lg p-5">
       <div className="inline-flex flex-wrap gap-2.5">
         <Badge type="question-label" theme="orange-100" content={`${idx}번 질문`} />
-        <span className="title-m-semibold">{qnaData.question}</span>
-        <HardQuestionToggle id={qnaData.questionId} />
+        <span className="title-m-semibold">{qnaData.questionText}</span>
+        <HardQuestionToggle id={qnaData.qnaSetId} />
       </div>
       <Border />
-      <div>{qnaData.answer}</div>
+      <div>{qnaData.answerText}</div>
     </div>
   )
 }
