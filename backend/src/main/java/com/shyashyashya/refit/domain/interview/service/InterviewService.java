@@ -8,6 +8,8 @@ import com.shyashyashya.refit.domain.company.model.Company;
 import com.shyashyashya.refit.domain.company.repository.CompanyRepository;
 import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
+import com.shyashyashya.refit.domain.interview.dto.InterviewMyResponse;
+import com.shyashyashya.refit.domain.interview.dto.InterviewSimpleDto;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatusUpdateRequest;
 import com.shyashyashya.refit.domain.interview.model.Interview;
@@ -18,6 +20,7 @@ import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepositor
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.util.RequestUserContext;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -78,6 +81,17 @@ public class InterviewService {
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
         interview.updateResultStatus(request.interviewResultStatus());
+    }
+
+    @Transactional(readOnly = true)
+    public InterviewMyResponse getMyInterviews() {
+        User requestUser = requestUserContext.getRequestUser();
+
+        List<InterviewSimpleDto> myInterviews = interviewRepository.findAllByUser(requestUser).stream()
+                .map(InterviewSimpleDto::from)
+                .toList();
+
+        return InterviewMyResponse.from(myInterviews);
     }
 
     private Company findOrSaveCompany(InterviewCreateRequest request) {
