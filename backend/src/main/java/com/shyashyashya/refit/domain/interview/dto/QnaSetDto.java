@@ -2,7 +2,6 @@ package com.shyashyashya.refit.domain.interview.dto;
 
 import com.shyashyashya.refit.domain.interview.model.QnaSet;
 import com.shyashyashya.refit.domain.interview.model.QnaSetSelfReview;
-import com.shyashyashya.refit.domain.interview.model.StarAnalysis;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -13,9 +12,8 @@ public record QnaSetDto(
         @NotNull String anwserText,
         @NotNull String qnaSetSelfReviewText,
         StarAnalysisDto starAnalysis,
-        @NotNull Boolean isMarkedDifficult
-) {
-    public static QnaSetDto from (QnaSet qnaSet, QnaSetSelfReview qnaSetSelfReview, StarAnalysisDto starAnalysisDto) {
+        @NotNull Boolean isMarkedDifficult) {
+    public static QnaSetDto from(QnaSet qnaSet, QnaSetSelfReview qnaSetSelfReview, StarAnalysisDto starAnalysisDto) {
         return new QnaSetDto(
                 qnaSet.getId(),
                 qnaSet.getInterview().getId(),
@@ -23,7 +21,6 @@ public record QnaSetDto(
                 qnaSet.getAnswerText(),
                 null,
                 null,
-                qnaSet.isMarkedDifficult()
-        );
+                qnaSet.isMarkedDifficult());
     }
 }
