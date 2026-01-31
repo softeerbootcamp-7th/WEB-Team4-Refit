@@ -1,0 +1,30 @@
+package com.shyashyashya.refit.domain.interview.dto;
+
+import com.shyashyashya.refit.domain.company.model.Company;
+import com.shyashyashya.refit.domain.interview.model.Interview;
+import com.shyashyashya.refit.domain.interview.model.InterviewResultStatus;
+import com.shyashyashya.refit.domain.interview.model.InterviewType;
+import com.shyashyashya.refit.domain.interview.model.QnaSet;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+public record InterviewFullDto(
+        @NotNull Long interviewId,
+        @NotNull InterviewType interviewType,
+        @NotNull LocalDateTime interviewStartAt,
+        @NotNull InterviewResultStatus interviewResultStatus,
+        @NotNull String company,
+        @NotNull Long industryId,
+        @NotNull Long jobCategoryId,
+        @Size(max = 50) String JobRole,
+        @NotNull LocalDateTime updatedAt,
+        @Size(max = 2048) String pdfUrl,
+        @NotNull List<QnaSetDto> qnaSets
+        ) {
+    public InterviewFullDto from (Interview interview, List<QnaSet> qnaSets) {
+        return null;
+    }
+}
