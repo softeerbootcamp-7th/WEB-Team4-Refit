@@ -1,16 +1,30 @@
 package com.shyashyashya.refit.global.property;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import java.time.Duration;
 import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
 
-@Component
 @ConfigurationProperties(prefix = "spring.auth")
-@Getter
-@Setter
-public class AuthProperty {
+@Validated
+public record AuthProperty(
+        List<String> whitelistApiUrls,
+        String signUpUrl,
+        @Valid @NotNull Jwt jwt,
+        @Valid @NotNull Google google) {
 
-    private List<String> whitelistApiUrls;
+    public record Jwt(
+            @NotBlank String secret, @Valid @NotNull TokenExpiration tokenExpiration) {
+        public record TokenExpiration(
+                @NotNull Duration accessToken, @NotNull Duration refreshToken) {}
+    }
+
+    public record Google(
+            @NotBlank String clientId,
+            @NotBlank String clientSecret,
+            @NotBlank String redirectUri,
+            List<String> scope) {}
 }
