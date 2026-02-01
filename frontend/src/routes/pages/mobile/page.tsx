@@ -35,7 +35,7 @@ export default function MobilePage() {
           <Button
             variant="fill-orange-500"
             size="md"
-            className="w-full shadow-lg hover:bg-orange-600 active:scale-[0.98]"
+            className="w-full cursor-pointer"
             onClick={() => navigate(ROUTES.MOBILE_UNRECORDED)}
           >
             면접 기록 시작하기

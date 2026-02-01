@@ -64,13 +64,13 @@ export default function MobileRecordPage() {
             <button
               type="button"
               onClick={handleBackToRecord}
-              className="body-m-regular mt-3 text-gray-500 underline"
+              className="body-m-regular mt-3 cursor-pointer text-gray-500 underline"
             >
               다시 녹음하기
             </button>
           </div>
           <div className="flex shrink-0 flex-col px-5 pt-6">
-            <Button variant="fill-orange-500" size="md" className="w-full">
+            <Button variant="fill-orange-500" size="md" className="w-full cursor-pointer">
               기록 저장하기
             </Button>
           </div>
