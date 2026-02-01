@@ -23,6 +23,9 @@ public class RequestUserContext {
     @Setter
     private Long userId;
 
+    @Setter
+    private String email;
+
     private User user;
 
     public User getRequestUser() {

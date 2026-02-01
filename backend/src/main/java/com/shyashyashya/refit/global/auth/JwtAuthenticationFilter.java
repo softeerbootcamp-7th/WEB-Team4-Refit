@@ -1,7 +1,9 @@
 package com.shyashyashya.refit.global.auth;
 
 import static com.shyashyashya.refit.global.exception.ErrorCode.LOGIN_REQUIRED;
+import static com.shyashyashya.refit.global.exception.ErrorCode.USER_SIGNUP_REQUIRED;
 
+import com.shyashyashya.refit.global.auth.service.JwtUtil;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.property.AuthProperty;
 import com.shyashyashya.refit.global.util.RequestUserContext;
@@ -13,6 +15,7 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
@@ -24,11 +27,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final AuthProperty authProperty;
     private final RequestUserContext requestUserContext;
     private final HandlerExceptionResolver handlerExceptionResolver;
+    private final JwtUtil jwtUtil;
 
-    // TODO: JwtUtil 구현 후 실제 jwt에서 userId 추출하기
-    // private final JwtUtil jwtUtil;
-
-    // whitelist 패턴 매칭하기 위해 사용
     private static final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     @Override
@@ -43,17 +43,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
             String token = resolveToken(request);
-
-            // TODO: token null 체크는 추후 제대로 된 JwtUtil 구현 후 적용
-            if (
-            /* token == null || */ !validateToken(token)) {
+            if (token == null) {
                 throw new CustomException(LOGIN_REQUIRED);
             }
+            jwtUtil.validateToken(token);
 
-            // TODO: JwtUtil 구현 후 실제 jwt에서 userId 추출하기
-            // Long userId = jwtUtil.getUserIdFromToken(token);
-            Long userId = 1L; // 임시 하드코딩
+            Long userId = jwtUtil.getUserId(token); // Guest면 null, 정회원이면 값 존재
+            String email = jwtUtil.getEmail(token);
 
+            if (userId == null && !pathMatcher.match(authProperty.signUpUrl(), request.getRequestURI())) {
+                throw new CustomException(USER_SIGNUP_REQUIRED);
+            }
+
+            requestUserContext.setEmail(email);
             requestUserContext.setUserId(userId);
             filterChain.doFilter(request, response);
 
@@ -63,17 +65,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private boolean isWhitelisted(HttpServletRequest request) {
-        return authProperty.getWhitelistApiUrls().stream()
+        return authProperty.whitelistApiUrls().stream()
                 .anyMatch(pattern -> pathMatcher.match(pattern, request.getRequestURI()));
     }
 
-    private boolean validateToken(String token) {
-        return true; // TODO: JwtUtil 구현 후 실제 토큰 검증 로직 추가
-    }
-
+    // Authorization 헤더에서 Bearer 토큰 추출
     private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
         }
         return null;
