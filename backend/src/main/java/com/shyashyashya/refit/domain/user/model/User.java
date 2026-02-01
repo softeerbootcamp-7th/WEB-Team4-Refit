@@ -17,9 +17,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
 @Entity
 @Table(name = "users")
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity {
 
@@ -28,7 +28,7 @@ public class User extends BaseEntity {
     @Column(name = "user_id", updatable = false, nullable = false)
     private Long id;
 
-    @Column(columnDefinition = "varchar(255)")
+    @Column(columnDefinition = "varchar(255)", nullable = false, unique = true)
     private String email;
 
     @Column(columnDefinition = "varchar(30)", nullable = false, unique = true)
@@ -47,6 +47,13 @@ public class User extends BaseEntity {
     @JoinColumn(name = "job_category_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private JobCategory jobCategory;
+
+    /*
+    Business Method
+    */
+    public void agreeToTerms() {
+        this.isAgreedToTerms = true;
+    }
 
     /*
      Factory Method

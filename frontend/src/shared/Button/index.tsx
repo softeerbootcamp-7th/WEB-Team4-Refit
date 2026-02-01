@@ -31,11 +31,17 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     // 최종 비활성화 상태 계산
     const isButtonDisabled = disabled || isLoading
-    
+
     const disabledVariant = variant.startsWith('outline') ? 'outline-gray-100' : 'fill-gray-150'
     const finalVariant = isButtonDisabled ? disabledVariant : variant
 
-    const combinedStyles = [BASE_STYLES, VARIANT_STYLES[finalVariant], SIZE_STYLES[size], RADIUS_STYLES[radius], className]
+    const combinedStyles = [
+      BASE_STYLES,
+      VARIANT_STYLES[finalVariant],
+      SIZE_STYLES[size],
+      RADIUS_STYLES[radius],
+      className,
+    ]
       .filter(Boolean)
       .join(' ')
 

@@ -3,9 +3,11 @@ import NavBar from '@/shared/Navbar'
 
 export default function RootLayout() {
   return (
-    <div className="min-h-screen">
-      <NavBar />
-      <main className="pt-15">
+    <div className="flex h-screen flex-col overflow-hidden">
+      <header className="h-15 shrink-0">
+        <NavBar />
+      </header>
+      <main className="flex-1 overflow-auto">
         <Outlet />
       </main>
     </div>

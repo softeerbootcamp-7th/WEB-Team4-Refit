@@ -16,9 +16,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
 @Entity
 @Table(name = "qna_sets_scrap_folders")
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class QnaSetScrapFolder extends BaseEntity {
 
