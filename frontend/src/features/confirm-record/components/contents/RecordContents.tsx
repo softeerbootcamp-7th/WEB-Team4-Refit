@@ -35,7 +35,7 @@ export function RecordContents() {
       <h1 className="title-xl-bold">작성 내용을 확인해주세요.</h1>
       <FadeScrollArea className="-mr-4 space-y-3 pr-4">
         {example.map((qnaData, idx) => (
-          <QnaSetContainer qnaData={qnaData} idx={idx + 1} />
+          <QnaSetContainer key={qnaData.qnaSetId} qnaData={qnaData} idx={idx + 1} />
         ))}
       </FadeScrollArea>
       <div className="flex shrink-0 justify-end gap-3">
