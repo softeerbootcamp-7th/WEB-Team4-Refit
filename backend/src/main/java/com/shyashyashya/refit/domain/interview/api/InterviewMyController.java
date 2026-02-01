@@ -24,8 +24,7 @@ public class InterviewMyController {
 
     @GetMapping
     public ResponseEntity<CommonResponse<Page<InterviewSimpleDto>>> getMyInterviews(
-            @RequestParam InterviewReviewStatus interviewReviewStatus,
-            Pageable pageable) {
+            @RequestParam InterviewReviewStatus interviewReviewStatus, Pageable pageable) {
         var body = interviewService.getMyInterviewsByReviewStatus(interviewReviewStatus, pageable);
         var response = CommonResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
