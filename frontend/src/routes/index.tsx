@@ -8,6 +8,7 @@ import {
   NotFound,
   SharedComponentExample,
   SigninPage,
+  SignupPage,
   MobilePage,
   MobileSignupPage,
   MobileUnrecordedPage,
@@ -20,7 +21,7 @@ const getChildPath = (fullPath: string, rootPath: string): string => {
 
 const router = createBrowserRouter([
   { path: ROUTES.HOME, Component: DashboardPage },
-  { path: ROUTES.SIGNUP, Component: DashboardPage },
+  { path: ROUTES.SIGNUP, Component: SignupPage },
   { path: ROUTES.SIGNIN, Component: SigninPage },
   {
     path: ROUTES.MOBILE,
