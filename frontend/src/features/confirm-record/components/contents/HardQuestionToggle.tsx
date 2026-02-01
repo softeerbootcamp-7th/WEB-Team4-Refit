@@ -14,7 +14,7 @@ export const HardQuestionToggle = ({ id, defaultActive = false }: HardQuestionTo
     console.log('이 질문 어려웠어요!', id)
   }
 
-  const theme = isActive ? 'gray-white-outline' : 'red-50'
+  const theme = isActive ? 'red-50' : 'gray-white-outline'
   return (
     <button type="button" onClick={handleHardToggleClick} className="cursor-pointer">
       <Badge type="hard-label" theme={theme} content="이 질문 어려웠어요!" />
