@@ -1,9 +1,8 @@
-package com.shyashyashya.refit.global.auth;
+package com.shyashyashya.refit.global.auth.service;
 
 import static com.shyashyashya.refit.global.exception.ErrorCode.LOGIN_REQUIRED;
 import static com.shyashyashya.refit.global.exception.ErrorCode.USER_SIGNUP_REQUIRED;
 
-import com.shyashyashya.refit.global.auth.service.JwtUtil;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.property.AuthProperty;
 import com.shyashyashya.refit.global.util.RequestUserContext;
