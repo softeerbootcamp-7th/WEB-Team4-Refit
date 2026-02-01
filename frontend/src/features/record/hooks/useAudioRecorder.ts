@@ -1,5 +1,40 @@
 import { useEffect, useRef, useState } from 'react'
 
+const FFT_SIZE = 256
+const BAR_COUNT = 20
+const BAR_WIDTH = 2
+const BAR_COLOR = '#fe6f0f'
+const UPDATE_INTERVAL = 50 // 밀리세컨드 기준
+
+/**
+ * RMS(Root Mean Square)를 계산하여 오디오의 평균 볼륨을 구합니다.
+ * @param dataArray Time Domain Data (0~255, 128이 무음)
+ */
+const calculateRMS = (dataArray: Uint8Array): number => {
+  const sum = dataArray.reduce((acc, value) => {
+    // 8-bit 오디오 데이터는 0~255 범위이며, 128이 0(무음)에 해당합니다.
+    // 128을 빼서 -128~127 범위의 진폭(amplitude)으로 변환합니다.
+    const amplitude = value - 128
+    return acc + amplitude ** 2
+  }, 0)
+  return Math.sqrt(sum / dataArray.length)
+}
+
+const drawVisualizerBars = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, history: number[]) => {
+  ctx.clearRect(0, 0, canvas.width, canvas.height)
+  const sliceWidth = canvas.width / BAR_COUNT
+
+  history.forEach((value, i) => {
+    const barHeight = Math.min((value / 40) * canvas.height, canvas.height)
+
+    const x = i * sliceWidth + (sliceWidth - BAR_WIDTH) / 2
+    const y = (canvas.height - barHeight) / 2
+
+    ctx.fillStyle = BAR_COLOR
+    ctx.fillRect(x, y, BAR_WIDTH, barHeight)
+  })
+}
+
 type UseAudioRecorderOptions = {
   onCancel?: () => void
   onComplete?: () => void
@@ -9,46 +44,50 @@ type UseAudioRecorderOptions = {
 
 type AudioVisualizerRefs = {
   canvasRef: React.RefObject<HTMLCanvasElement | null>
-  audioContextRef: React.MutableRefObject<AudioContext | null>
-  analyserRef: React.MutableRefObject<AnalyserNode | null>
-  animationFrameRef: React.MutableRefObject<number | null>
+  audioContextRef: React.RefObject<AudioContext | null>
+  analyserRef: React.RefObject<AnalyserNode | null>
+  animationFrameRef: React.RefObject<number | null>
+  volumeHistoryRef: React.RefObject<number[]>
 }
 
 function setupAudioVisualizer(stream: MediaStream, refs: AudioVisualizerRefs): void {
   const audioContext = new window.AudioContext()
   const source = audioContext.createMediaStreamSource(stream)
   const analyser = audioContext.createAnalyser()
-  analyser.fftSize = 256
+  analyser.fftSize = FFT_SIZE
   source.connect(analyser)
 
   refs.audioContextRef.current = audioContext
   refs.analyserRef.current = analyser
+  refs.volumeHistoryRef.current = new Array(BAR_COUNT).fill(0)
+  
+  let lastUpdateTime = 0
 
-  const draw = () => {
-    const { canvasRef, analyserRef, animationFrameRef } = refs
+  const draw = (time: number) => {
+    const { canvasRef, analyserRef, animationFrameRef, volumeHistoryRef } = refs
     if (!canvasRef.current || !analyserRef.current) return
 
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
     const bufferLength = analyserRef.current.frequencyBinCount
     const dataArray = new Uint8Array(bufferLength)
-    analyserRef.current.getByteFrequencyData(dataArray)
+    
+    analyserRef.current.getByteTimeDomainData(dataArray)
+
+    if (time - lastUpdateTime >= UPDATE_INTERVAL) {
+      const volume = calculateRMS(dataArray)
+      const history = volumeHistoryRef.current
+      history.shift()
+      history.push(volume)
+      lastUpdateTime = time
+    }
 
     if (ctx) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
-      const barWidth = (canvas.width / bufferLength) * 2.5
-      const barColor = '#fe6f0f'
-      let x = 0
-      for (let i = 0; i < bufferLength; i++) {
-        const barHeight = (dataArray[i] / 255) * canvas.height
-        ctx.fillStyle = barColor
-        ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight)
-        x += barWidth + 1
-      }
+      drawVisualizerBars(ctx, canvas, volumeHistoryRef.current)
     }
     animationFrameRef.current = requestAnimationFrame(draw)
   }
-  draw()
+  requestAnimationFrame(draw)
 }
 
 export function useAudioRecorder({ onCancel, onComplete, onRealtimeTranscript }: UseAudioRecorderOptions = {}) {
@@ -56,6 +95,7 @@ export function useAudioRecorder({ onCancel, onComplete, onRealtimeTranscript }:
   const audioContextRef = useRef<AudioContext | null>(null)
   const analyserRef = useRef<AnalyserNode | null>(null)
   const animationFrameRef = useRef<number | null>(null)
+  const volumeHistoryRef = useRef<number[]>(new Array(BAR_COUNT).fill(0))
   const streamRef = useRef<MediaStream | null>(null)
   const onRealtimeTranscriptRef = useRef(onRealtimeTranscript)
   onRealtimeTranscriptRef.current = onRealtimeTranscript
@@ -64,7 +104,9 @@ export function useAudioRecorder({ onCancel, onComplete, onRealtimeTranscript }:
   const [seconds, setSeconds] = useState(0)
   const [isRequestingPermission, setIsRequestingPermission] = useState(false)
 
-  const timerText = `00:${String(seconds).padStart(2, '0')}`
+  const minutes = Math.floor(seconds / 60)
+  const secs = seconds % 60
+  const timerText = `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`
 
   const stopAudio = () => {
     if (animationFrameRef.current) {
@@ -91,7 +133,7 @@ export function useAudioRecorder({ onCancel, onComplete, onRealtimeTranscript }:
       setSeconds(0)
       setIsRecording(true)
     } catch {
-      // 마이크 권한 허용 팝업
+      // 마이크 권한 관련 로직
     } finally {
       setIsRequestingPermission(false)
     }
@@ -120,6 +162,7 @@ export function useAudioRecorder({ onCancel, onComplete, onRealtimeTranscript }:
         audioContextRef,
         analyserRef,
         animationFrameRef,
+        volumeHistoryRef,
       })
     }
 

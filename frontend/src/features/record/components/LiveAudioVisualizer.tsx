@@ -30,17 +30,25 @@ export default function LiveAudioVisualizer({ onCancel, onComplete, onRealtimeTr
         <div
           role="region"
           aria-label="녹음 중"
-          className="flex h-full w-full items-center gap-3 rounded-[100px] bg-gray-900 px-[5px] py-3"
+          className="flex h-full w-full items-center justify-between gap-3 rounded-[100px] bg-gray-900 px-4 py-3"
         >
-          <div className="flex flex-1 items-center justify-between rounded-[100px] bg-gray-800 px-5 py-1.5">
-            <span className="body-m-semibold shrink-0 text-orange-500">{timerText}</span>
-            <canvas ref={canvasRef} width={200} height={32} className="h-8 w-full max-w-[120px]" aria-hidden />
+          <span className="body-m-semibold shrink-0 text-orange-500 tabular-nums">{timerText}</span>
+          <div className="flex min-w-0 flex-1 items-center overflow-hidden px-2">
+            <div className="flex w-full min-w-0 items-center justify-center rounded-[100px] bg-gray-800 py-1.5 px-5">
+              <canvas
+                ref={canvasRef}
+                width={200}
+                height={32}
+                className="h-8 min-w-0 max-w-full"
+                aria-hidden
+              />
+            </div>
           </div>
           <div className="flex shrink-0 gap-4">
-            <button type="button" onClick={cancel} className="body-m-semibold text-gray-400">
+            <button type="button" onClick={cancel} className="body-m-semibold cursor-pointer text-gray-400">
               취소
             </button>
-            <button type="button" onClick={complete} className="body-m-semibold text-orange-500">
+            <button type="button" onClick={complete} className="body-m-semibold cursor-pointer text-orange-500">
               완료
             </button>
           </div>
