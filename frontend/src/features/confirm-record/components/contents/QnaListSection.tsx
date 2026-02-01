@@ -25,6 +25,7 @@ export function QnaListSection() {
   }
   const handleAddSave = (question: string, answer: string) => {
     setQnaList((list) => {
+      // TODO: API 연동하면서 임시 ID 생성 로직 제거
       const newId = list.length > 0 ? Math.max(...list.map((q) => q.qnaSetId)) + 1 : 1
       return [...list, { qnaSetId: newId, questionText: question, answerText: answer }]
     })
