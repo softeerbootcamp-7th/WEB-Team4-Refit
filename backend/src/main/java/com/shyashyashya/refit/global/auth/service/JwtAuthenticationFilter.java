@@ -3,6 +3,7 @@ package com.shyashyashya.refit.global.auth.service;
 import static com.shyashyashya.refit.global.exception.ErrorCode.LOGIN_REQUIRED;
 import static com.shyashyashya.refit.global.exception.ErrorCode.USER_SIGNUP_REQUIRED;
 
+import com.shyashyashya.refit.global.constant.AuthConstant;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.property.AuthProperty;
 import com.shyashyashya.refit.global.util.RequestUserContext;
@@ -30,7 +31,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
 
     private static final AntPathMatcher pathMatcher = new AntPathMatcher();
-    private static final String ACCESS_TOKEN_COOKIE_NAME = "access_token";
 
     @Override
     protected void doFilterInternal(
@@ -78,7 +78,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         return Arrays.stream(cookies)
-                .filter(cookie -> ACCESS_TOKEN_COOKIE_NAME.equals(cookie.getName()))
+                .filter(cookie -> AuthConstant.ACCESS_TOKEN_COOKIE_NAME.equals(cookie.getName()))
                 .findFirst()
                 .map(Cookie::getValue)
                 .orElse(null);
