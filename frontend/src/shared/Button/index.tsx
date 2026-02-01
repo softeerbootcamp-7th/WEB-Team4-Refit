@@ -50,8 +50,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         type={type}
         className={combinedStyles}
-        disabled={isButtonDisabled}
-        aria-disabled={isButtonDisabled}
+        disabled={isDisabled}
+        aria-disabled={isDisabled}
         aria-busy={isLoading}
         {...props}
       >
