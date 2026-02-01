@@ -94,13 +94,12 @@ public class GoogleOAuthService implements OAuthService {
     }
 
     private record GoogleTokenResponse(
-        String access_token,
-        String expires_in,
-        String refresh_token,
-        String scope,
-        String token_type,
-        String id_token) {}
+            String access_token,
+            String expires_in,
+            String refresh_token,
+            String scope,
+            String token_type,
+            String id_token) {}
 
     private record GoogleUserInfo(String sub, String name, String email, String picture) {}
-
 }
