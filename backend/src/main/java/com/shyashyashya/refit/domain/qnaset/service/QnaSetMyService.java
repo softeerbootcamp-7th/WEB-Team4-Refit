@@ -1,10 +1,13 @@
 package com.shyashyashya.refit.domain.qnaset.service;
 
+import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetCategoryQuestionResponse;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetCategoryResponse;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetCategory;
+import com.shyashyashya.refit.domain.qnaset.repository.QnaSetCategoryRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.user.model.User;
+import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.util.RequestUserContext;
 import java.util.Comparator;
 import java.util.List;
@@ -17,12 +20,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.shyashyashya.refit.global.exception.ErrorCode.QNA_SET_CATEGORY_NOT_FOUND;
+
 @Service
 @RequiredArgsConstructor
 public class QnaSetMyService {
 
     private final RequestUserContext requestUserContext;
     private final QnaSetRepository qnaSetRepository;
+    private final QnaSetCategoryRepository qnaSetCategoryRepository;
 
     @Transactional(readOnly = true)
     public Page<FrequentQnaSetCategoryResponse> getFrequentQnaSetCategories(Pageable pageable) {
@@ -36,6 +42,17 @@ public class QnaSetMyService {
         List<FrequentQnaSetCategoryResponse> pageContent = getPageContent(pageable, qnaSetCategoryCounts);
 
         return new PageImpl<>(pageContent, pageable, qnaSetCategoryCounts.size());
+    }
+
+    @Transactional(readOnly = true)
+    public Page<FrequentQnaSetCategoryQuestionResponse> getFrequentQnaSetCategoryQuestions(Long categoryId, Pageable pageable) {
+        User requestUser = requestUserContext.getUser();
+
+        QnaSetCategory category = qnaSetCategoryRepository.findById(categoryId)
+                .orElseThrow(() -> new CustomException(QNA_SET_CATEGORY_NOT_FOUND));
+
+        return qnaSetRepository.findAllByUserAndQnaSetCategory(requestUser, category, pageable)
+                .map(FrequentQnaSetCategoryQuestionResponse::from);
     }
 
     private List<FrequentQnaSetCategoryResponse> getPageContent(

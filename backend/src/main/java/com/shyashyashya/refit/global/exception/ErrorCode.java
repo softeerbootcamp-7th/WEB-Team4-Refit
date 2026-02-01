@@ -13,6 +13,8 @@ public enum ErrorCode {
     INTERVIEW_NOT_FOUND(NOT_FOUND, "인터뷰가 존재하지 않습니다."),
     INTERVIEW_NOT_ACCESSIBLE(FORBIDDEN, "인터뷰에 접근할 수 없습니다."),
 
+    QNA_SET_CATEGORY_NOT_FOUND(NOT_FOUND, "질문 카테고리가 존재하지 않습니다."),
+
     INDUSTRY_NOT_FOUND(NOT_FOUND, "산업군이 존재하지 않습니다."),
     JOB_CATEGORY_NOT_FOUND(NOT_FOUND, "직군이 존재하지 않습니다."),
     USER_NOT_FOUND(NOT_FOUND, "사용자가 존재하지 않습니다."),
