@@ -1,6 +1,7 @@
 export { default as Dashboard } from './Dashboard'
 export { default as MobilePage } from './mobile/page'
 export { default as MobileRecordPage } from './mobile/record/page'
+export { default as MobileSignupPage } from './mobile/signup/page'
 export { default as MobileUnrecordedPage } from './mobile/unrecorded/page'
 export { default as NotFound } from './NotFound'
 export { default as SharedComponentExample } from './SharedComponentExample'

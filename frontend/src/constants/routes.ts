@@ -11,6 +11,7 @@ export const ROUTES = {
   DASHBOARD_COLLECTION_DETAIL: '/dashboard/my-collections/:folderId',
 
   MOBILE: '/mobile',
+  MOBILE_SIGNUP: '/mobile/signup',
   MOBILE_UNRECORDED: '/mobile/unrecorded',
   MOBILE_RECORD: '/mobile/record/:interviewId',
 

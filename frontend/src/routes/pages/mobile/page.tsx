@@ -36,7 +36,7 @@ export default function MobilePage() {
             variant="fill-orange-500"
             size="md"
             className="w-full cursor-pointer"
-            onClick={() => navigate(ROUTES.MOBILE_UNRECORDED)}
+            onClick={() => navigate(ROUTES.MOBILE_SIGNUP)}
           >
             면접 기록 시작하기
           </Button>

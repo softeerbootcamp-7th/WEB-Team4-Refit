@@ -29,9 +29,13 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref,
   ) => {
-    const isDisabled = disabled || isLoading
+    // 최종 비활성화 상태 계산
+    const isButtonDisabled = disabled || isLoading
+    
+    const disabledVariant = variant.startsWith('outline') ? 'outline-gray-100' : 'fill-gray-150'
+    const finalVariant = isButtonDisabled ? disabledVariant : variant
 
-    const combinedStyles = [BASE_STYLES, VARIANT_STYLES[variant], SIZE_STYLES[size], RADIUS_STYLES[radius], className]
+    const combinedStyles = [BASE_STYLES, VARIANT_STYLES[finalVariant], SIZE_STYLES[size], RADIUS_STYLES[radius], className]
       .filter(Boolean)
       .join(' ')
 
@@ -40,8 +44,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         type={type}
         className={combinedStyles}
-        disabled={isDisabled}
-        aria-disabled={isDisabled}
+        disabled={isButtonDisabled}
+        aria-disabled={isButtonDisabled}
         aria-busy={isLoading}
         {...props}
       >
@@ -57,7 +61,7 @@ Button.displayName = 'Button'
 export default Button
 
 const BASE_STYLES =
-  'relative inline-flex align-middle items-center justify-center gap-2 transition-colors outline-none disabled:pointer-events-none disabled:opacity-50'
+  'relative inline-flex align-middle items-center justify-center gap-2 transition-colors outline-none cursor-pointer disabled:opacity-50 disabled:pointer-events-none'
 
 const VARIANT_STYLES = {
   'fill-orange-500':
