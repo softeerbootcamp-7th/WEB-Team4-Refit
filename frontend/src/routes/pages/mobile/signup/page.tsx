@@ -39,6 +39,7 @@ export default function MobileSignupPage() {
             onChange={(e) => setNickname(e.target.value)}
             placeholder="5글자 이내로 입력해주세요"
             maxLength={5}
+            required
           />
           <Combobox
             label="관심 산업군"
@@ -46,6 +47,7 @@ export default function MobileSignupPage() {
             onChange={(e) => setIndustry(e.target.value)}
             options={INDUSTRY_OPTIONS}
             placeholder="주로 지원하시는 산업군을 알려주세요"
+            required
           />
           <Combobox
             label="관심 직군"
@@ -53,6 +55,7 @@ export default function MobileSignupPage() {
             onChange={(e) => setJob(e.target.value)}
             options={JOB_OPTIONS}
             placeholder="주로 지원하시는 직군을 알려주세요"
+            required
           />
         </div>
       </div>

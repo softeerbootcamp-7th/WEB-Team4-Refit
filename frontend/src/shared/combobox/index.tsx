@@ -5,21 +5,28 @@ export interface ComboboxAccessoryProps {
   options: { value: string; label: string }[]
   placeholder?: string
   error?: string
+  required?: boolean
 }
 
 export interface ComboboxProps extends SelectHTMLAttributes<HTMLSelectElement>, ComboboxAccessoryProps {}
 
 const Combobox = forwardRef<HTMLSelectElement, ComboboxProps>(
-  ({ label, options, placeholder, error, className = '', value, ...props }, ref) => {
+  ({ label, options, placeholder, error, required, className = '', value, ...props }, ref) => {
     const isPlaceholderSelected = value === ''
 
     return (
       <div className="flex flex-col gap-2">
-        {label && <label className="body-l-semibold text-gray-600">{label}</label>}
+        {label && (
+          <label className="body-l-semibold text-gray-600">
+            {label}
+            {required && <span className="text-red-400" aria-hidden> *</span>}
+          </label>
+        )}
         <div className="relative">
           <select
             ref={ref}
             value={value}
+            required={required}
             className={`body-l-medium border-gray-200 focus:border-orange-500 w-full appearance-none rounded-xl border px-4 py-3 outline-none ${
               isPlaceholderSelected ? 'text-gray-300' : 'text-gray-900'
             } ${className}`}
