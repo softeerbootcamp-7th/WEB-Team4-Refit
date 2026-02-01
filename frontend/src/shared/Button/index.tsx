@@ -68,6 +68,8 @@ const VARIANT_STYLES = {
     'bg-orange-500 text-white hover:bg-orange-600 active:bg-orange-700 focus-visible:ring-2 focus-visible:ring-orange-500',
   'fill-orange-100':
     'bg-orange-100 text-orange-500 hover:bg-orange-200 active:bg-orange-300 focus-visible:ring-2 focus-visible:ring-orange-100',
+  'fill-orange-050':
+    'bg-orange-050 text-orange-500 hover:bg-orange-100 active:bg-orange-200 focus-visible:ring-2 focus-visible:ring-orange-050',
   'fill-gray-150':
     'bg-gray-150 text-gray-600 hover:bg-gray-200 active:bg-gray-300 focus-visible:ring-2 focus-visible:ring-gray-200',
   'fill-gray-800': 'bg-gray-800 text-white hover:bg-gray-900 focus-visible:ring-2 focus-visible:ring-gray-800',

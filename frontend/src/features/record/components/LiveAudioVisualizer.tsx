@@ -1,5 +1,6 @@
 import { MicIcon } from '@/assets'
 import { useAudioRecorder } from '@/features/record/hooks/useAudioRecorder'
+import Button from '@/shared/Button'
 
 type LiveAudioVisualizerProps = {
   onCancel?: () => void
@@ -15,17 +16,17 @@ export default function LiveAudioVisualizer({ onCancel, onComplete, onRealtimeTr
   return (
     <div className="relative h-14 w-full">
       {!isRecording ? (
-        <button
-          type="button"
+        <Button
           onClick={startRecording}
           disabled={isRequestingPermission}
-          className="bg-orange-050 flex h-full w-full items-center justify-center gap-2 rounded-[100px] py-3.5 text-orange-500 transition-all duration-300 ease-out active:bg-orange-100 disabled:pointer-events-none disabled:opacity-70"
+          variant="fill-orange-050"
+          radius="full"
+          size="md"
+          className="w-full"
         >
           <MicIcon className="h-5 w-5 shrink-0" aria-hidden />
-          <span className="body-m-semibold">
-            {isRequestingPermission ? '마이크 권한 요청 중…' : '음성으로 기록하기'}
-          </span>
-        </button>
+          {isRequestingPermission ? '마이크 권한 요청 중…' : '음성으로 기록하기'}
+        </Button>
       ) : (
         <div
           role="region"
