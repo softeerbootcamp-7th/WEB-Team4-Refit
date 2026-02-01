@@ -30,10 +30,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref,
   ) => {
     // 최종 비활성화 상태 계산
-    const isButtonDisabled = disabled || isLoading
+    const isDisabled = disabled || isLoading
 
     const disabledVariant = variant.startsWith('outline') ? 'outline-gray-100' : 'fill-gray-150'
-    const finalVariant = isButtonDisabled ? disabledVariant : variant
+    const finalVariant = isDisabled ? disabledVariant : variant
 
     const combinedStyles = [
       BASE_STYLES,
