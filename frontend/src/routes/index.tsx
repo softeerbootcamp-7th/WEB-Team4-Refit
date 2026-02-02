@@ -1,6 +1,5 @@
 import { createBrowserRouter, RouterProvider } from 'react-router'
-import { ROUTES } from '@/constants/routes'
-import { DashboardLayout, MobileLayout, RootLayout } from '@/routes/layouts'
+import { DashboardLayout, MobileLayout, RootLayout } from '@/layouts'
 import {
   DashboardPage,
   RecordConfirmPage,
@@ -13,7 +12,8 @@ import {
   MobileSignupPage,
   MobileUnrecordedPage,
   MobileRecordPage,
-} from '@/routes/pages'
+} from '@/pages'
+import { ROUTES } from '@/shared/constants/routes'
 
 const getChildPath = (fullPath: string, rootPath: string): string => {
   return fullPath.replace(rootPath, '').replace(/^\//, '')
