@@ -1,4 +1,4 @@
-package com.shyashyashya.refit.domain.interview.repository;
+package com.shyashyashya.refit.domain.qnaset.repository;
 
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetSelfReview;
