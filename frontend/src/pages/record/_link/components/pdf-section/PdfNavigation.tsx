@@ -13,13 +13,13 @@ export function PdfNavigation({ currentPage, totalPages, onPageChange }: PdfNavi
 
   return (
     <div className="flex shrink-0 items-center justify-center gap-4 py-3">
-      <Button size="xs" variant="ghost" onClick={goToPrev} disabled={currentPage <= 1}>
+      <Button size="xs" onClick={goToPrev} disabled={currentPage <= 1}>
         <CaretUpIcon className="rotate-270" />
       </Button>
       <span className="body-s-regular text-gray-500">
         {currentPage} / {totalPages}
       </span>
-      <Button size="xs" variant="ghost" onClick={goToNext} disabled={currentPage >= totalPages}>
+      <Button size="xs" onClick={goToNext} disabled={currentPage >= totalPages}>
         <CaretUpIcon className="rotate-90" />
       </Button>
     </div>

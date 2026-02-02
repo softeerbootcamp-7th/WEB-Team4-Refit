@@ -17,7 +17,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
-      variant = 'fill-orange-500',
+      variant = 'ghost',
       size = 'md',
       radius = 'default',
       children,
