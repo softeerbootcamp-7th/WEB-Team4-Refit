@@ -1,10 +1,10 @@
 package com.shyashyashya.refit.global.auth.service;
 
-import com.shyashyashya.refit.global.auth.dto.OAuthResult;
+import com.shyashyashya.refit.global.auth.dto.OAuthResultDto;
 
 public interface OAuthService {
 
     String getOAuthLoginUrl();
 
-    OAuthResult handleOAuthCallback(String code);
+    OAuthResultDto handleOAuthCallback(String code);
 }
