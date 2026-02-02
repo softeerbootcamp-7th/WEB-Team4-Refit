@@ -3,7 +3,6 @@ package com.shyashyashya.refit.global.auth.api;
 import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
 
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
-import com.shyashyashya.refit.global.auth.dto.TokenPairDto;
 import com.shyashyashya.refit.global.auth.service.AuthService;
 import com.shyashyashya.refit.global.auth.service.CookieUtil;
 import com.shyashyashya.refit.global.constant.AuthConstant;
@@ -27,20 +26,19 @@ public class AuthController {
     public ResponseEntity<CommonResponse<Void>> reissue(
             @CookieValue(value = AuthConstant.ACCESS_TOKEN) String accessToken,
             @CookieValue(value = AuthConstant.REFRESH_TOKEN) String refreshToken) {
-        var tokenPairOpt = authService.reissue(accessToken, refreshToken);
-        if (tokenPairOpt.isEmpty()) {
-            var body = CommonResponse.success(COMMON200);
-            return ResponseEntity.ok(body);
-        }
 
-        TokenPairDto tokenPair = tokenPairOpt.get();
-        String accessTokenCookie = cookieUtil.createAccessTokenCookie(tokenPair.accessToken());
-        String refreshTokenCookie = cookieUtil.createResponseTokenCookie(tokenPair.refreshToken());
+        return authService
+                .reissue(accessToken, refreshToken)
+                .map(tokenPair -> {
+                    String accessTokenCookie = cookieUtil.createAccessTokenCookie(tokenPair.accessToken());
+                    String refreshTokenCookie = cookieUtil.createResponseTokenCookie(tokenPair.refreshToken());
 
-        var body = CommonResponse.success(COMMON200);
-        return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, accessTokenCookie)
-                .header(HttpHeaders.SET_COOKIE, refreshTokenCookie)
-                .body(body);
+                    var body = CommonResponse.success(COMMON200);
+                    return ResponseEntity.ok()
+                            .header(HttpHeaders.SET_COOKIE, accessTokenCookie)
+                            .header(HttpHeaders.SET_COOKIE, refreshTokenCookie)
+                            .body(body);
+                })
+                .orElse(ResponseEntity.ok(CommonResponse.success(COMMON200)));
     }
 }
