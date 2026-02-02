@@ -5,24 +5,22 @@ import com.shyashyashya.refit.domain.interview.model.InterviewResultStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetSelfReview;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 public record InterviewFullDto(
-        @NotNull Long interviewId,
-        @NotNull InterviewType interviewType,
-        @NotNull LocalDateTime interviewStartAt,
-        @NotNull InterviewResultStatus interviewResultStatus,
-        @NotNull String company,
-        @NotNull Long industryId,
-        @NotNull Long jobCategoryId,
-        @Size(max = 50) String JobRole,
-        @NotNull LocalDateTime updatedAt,
-        @Size(max = 2048) String pdfUrl,
-        @NotNull List<QnaSetDto> qnaSets) {
+        Long interviewId,
+        InterviewType interviewType,
+        LocalDateTime interviewStartAt,
+        InterviewResultStatus interviewResultStatus,
+        String company,
+        Long industryId,
+        Long jobCategoryId,
+        String JobRole,
+        LocalDateTime updatedAt,
+        String pdfUrl,
+        List<QnaSetDto> qnaSets) {
     public static InterviewFullDto fromInterviewWithEmptyQnaSets(Interview interview) {
         return new InterviewFullDto(
                 interview.getId(),
