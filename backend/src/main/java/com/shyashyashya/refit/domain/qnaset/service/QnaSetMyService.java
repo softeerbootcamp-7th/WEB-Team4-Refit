@@ -1,7 +1,9 @@
 package com.shyashyashya.refit.domain.qnaset.service;
 
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetCategoryQuestionResponse;
+import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetSearchRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetCategoryResponse;
+import com.shyashyashya.refit.domain.qnaset.dto.response.QnaSetSearchResponse;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetCategory;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetCategoryRepository;
@@ -53,6 +55,20 @@ public class QnaSetMyService {
 
         return qnaSetRepository.findAllByUserAndQnaSetCategory(requestUser, category, pageable)
                 .map(FrequentQnaSetCategoryQuestionResponse::from);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<QnaSetSearchResponse> searchQnaSets(QnaSetSearchRequest request, Pageable pageable) {
+        User requestUser = requestUserContext.getUser();
+
+        return qnaSetRepository.searchQnaSet(
+                requestUser,
+                request.keyword(),
+                request.searchFilter().sInclusionLevels(),
+                request.searchFilter().tInclusionLevels(),
+                request.searchFilter().aInclusionLevels(),
+                request.searchFilter().rInclusionLevels(),
+                pageable).map(QnaSetSearchResponse::from);
     }
 
     private List<FrequentQnaSetCategoryResponse> getPageContent(
