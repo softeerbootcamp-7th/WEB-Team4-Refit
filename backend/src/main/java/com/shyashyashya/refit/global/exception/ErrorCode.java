@@ -18,7 +18,9 @@ public enum ErrorCode {
     USER_NOT_FOUND(NOT_FOUND, "사용자가 존재하지 않습니다."),
 
     USER_SIGNUP_EMAIL_CONFLICT(CONFLICT, "이미 사용 중인 이메일입니다."),
+    USER_SIGNUP_REQUIRED(UNAUTHORIZED, "회원가입이 필요합니다."),
 
+    TOKEN_EXPIRED(UNAUTHORIZED, "토큰이 만료되었습니다."),
     LOGIN_REQUIRED(UNAUTHORIZED, "로그인이 필요합니다.");
 
     private final HttpStatus httpStatus;
