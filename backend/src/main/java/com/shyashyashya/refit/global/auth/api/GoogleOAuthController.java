@@ -22,9 +22,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 public class GoogleOAuthController {
 
-    public final GoogleOAuthService googleOAuthService;
-    public final OAuth2Property oAuth2Property;
-    public final CookieUtil cookieUtil;
+    private final GoogleOAuthService googleOAuthService;
+    private final OAuth2Property oAuth2Property;
+    private final CookieUtil cookieUtil;
 
     @GetMapping
     public ResponseEntity<CommonResponse<OAuthLoginUrlResponse>> OAuthLogin() {
