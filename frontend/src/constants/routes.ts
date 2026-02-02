@@ -10,6 +10,11 @@ export const ROUTES = {
   DASHBOARD_MY_COLLECTIONS: '/dashboard/my-collections',
   DASHBOARD_COLLECTION_DETAIL: '/dashboard/my-collections/:folderId',
 
+  MOBILE: '/mobile',
+  MOBILE_SIGNUP: '/mobile/signup',
+  MOBILE_UNRECORDED: '/mobile/unrecorded',
+  MOBILE_RECORD: '/mobile/record/:interviewId',
+
   RECORD: '/record/:interviewId',
   RECORD_CONFIRM: '/record/:interviewId/confirm',
   RECORD_LINK: '/record/:interviewId/link',

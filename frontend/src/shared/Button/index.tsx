@@ -29,9 +29,19 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref,
   ) => {
+    // 최종 비활성화 상태 계산
     const isDisabled = disabled || isLoading
 
-    const combinedStyles = [BASE_STYLES, VARIANT_STYLES[variant], SIZE_STYLES[size], RADIUS_STYLES[radius], className]
+    const disabledVariant = variant.startsWith('outline') ? 'outline-gray-100' : 'fill-gray-150'
+    const finalVariant = isDisabled ? disabledVariant : variant
+
+    const combinedStyles = [
+      BASE_STYLES,
+      VARIANT_STYLES[finalVariant],
+      SIZE_STYLES[size],
+      RADIUS_STYLES[radius],
+      className,
+    ]
       .filter(Boolean)
       .join(' ')
 
@@ -57,13 +67,15 @@ Button.displayName = 'Button'
 export default Button
 
 const BASE_STYLES =
-  'relative inline-flex align-middle items-center justify-center gap-2 transition-colors outline-none disabled:pointer-events-none disabled:opacity-50 cursor-pointer'
+  'relative inline-flex align-middle items-center justify-center gap-2 transition-colors outline-none cursor-pointer disabled:opacity-50 disabled:pointer-events-none'
 
 const VARIANT_STYLES = {
   'fill-orange-500':
     'bg-orange-500 text-white hover:bg-orange-600 active:bg-orange-700 focus-visible:ring-2 focus-visible:ring-orange-500',
   'fill-orange-100':
     'bg-orange-100 text-orange-500 hover:bg-orange-200 active:bg-orange-300 focus-visible:ring-2 focus-visible:ring-orange-100',
+  'fill-orange-050':
+    'bg-orange-050 text-orange-500 hover:bg-orange-100 active:bg-orange-200 focus-visible:ring-2 focus-visible:ring-orange-050',
   'fill-gray-150':
     'bg-gray-150 text-gray-600 hover:bg-gray-200 active:bg-gray-300 focus-visible:ring-2 focus-visible:ring-gray-200',
   'fill-gray-800': 'bg-gray-800 text-white hover:bg-gray-900 focus-visible:ring-2 focus-visible:ring-gray-800',

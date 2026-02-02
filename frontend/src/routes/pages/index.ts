@@ -1,6 +1,11 @@
+export { default as MobilePage } from './mobile/page'
+export { default as MobileRecordPage } from './mobile/record/page'
+export { default as MobileSignupPage } from './mobile/signup/page'
+export { default as MobileUnrecordedPage } from './mobile/unrecorded/page'
 export { default as DashboardPage } from './dashboard/page'
 export { default as RecordConfirmPage } from './record/confirm/page'
 export { default as RecordLinkPage } from './record/link/page'
 export { default as NotFound } from './NotFound'
-
 export { default as SharedComponentExample } from './SharedComponentExample'
+export { default as SigninPage } from './signin/page'
+export { default as SignupPage } from './signup/page'
