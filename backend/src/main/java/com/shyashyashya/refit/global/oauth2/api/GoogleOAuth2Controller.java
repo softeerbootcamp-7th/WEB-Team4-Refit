@@ -20,19 +20,21 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RestController
 @RequestMapping("/auth/login/google")
 @RequiredArgsConstructor
-public class GoogleOAuth2Controller {
+public class GoogleOAuth2Controller implements OAuth2Controller {
 
     private final GoogleOAuth2Service googleOAuthService;
     private final OAuth2Property oAuth2Property;
     private final CookieUtil cookieUtil;
 
     @GetMapping
+    @Override
     public ResponseEntity<CommonResponse<OAuthLoginUrlResponse>> getOAuth2LoginUrl() {
         var body = CommonResponse.success(COMMON200, new OAuthLoginUrlResponse(googleOAuthService.getOAuthLoginUrl()));
         return ResponseEntity.ok(body);
     }
 
     @GetMapping("/callback")
+    @Override
     public ResponseEntity<Void> handleOAuth2Callback(@RequestParam String code) {
         var result = googleOAuthService.handleOAuthCallback(code);
         var accessTokenCookie =
