@@ -2,6 +2,7 @@ package com.shyashyashya.refit.domain.interview.service;
 
 import static com.shyashyashya.refit.global.exception.ErrorCode.INDUSTRY_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_FOUND;
+import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_IN_DRAFT_STATUS;
 import static com.shyashyashya.refit.global.exception.ErrorCode.JOB_CATEGORY_NOT_FOUND;
 
 import com.shyashyashya.refit.domain.company.model.Company;
@@ -99,13 +100,16 @@ public class InterviewService {
     }
 
     @Transactional(readOnly = true)
-    public Page<InterviewSimpleDto> getMyInterviewsByReviewStatus(
+    public Page<InterviewSimpleDto> getMyInterviewDraftsByReviewStatus(
             InterviewReviewStatus reviewStatus, Pageable pageable) {
         User requestUser = requestUserContext.getRequestUser();
 
-        return interviewRepository
-                .findAllByUserAndReviewStatus(requestUser, reviewStatus, pageable)
-                .map(InterviewSimpleDto::from);
+        return switch (reviewStatus) {
+            case LOG_DRAFT, SELF_REVIEW_DRAFT -> interviewRepository
+                    .findAllByUserAndReviewStatus(requestUser, reviewStatus, pageable)
+                    .map(InterviewSimpleDto::from);
+            default -> throw new CustomException(INTERVIEW_NOT_IN_DRAFT_STATUS);
+        };
     }
 
     @Transactional

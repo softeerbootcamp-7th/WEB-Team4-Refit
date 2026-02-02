@@ -22,10 +22,10 @@ public class InterviewMyController {
 
     private final InterviewService interviewService;
 
-    @GetMapping
-    public ResponseEntity<CommonResponse<Page<InterviewSimpleDto>>> getMyInterviews(
+    @GetMapping("/draft")
+    public ResponseEntity<CommonResponse<Page<InterviewSimpleDto>>> getMyInterviewDrafts(
             @RequestParam InterviewReviewStatus interviewReviewStatus, Pageable pageable) {
-        var body = interviewService.getMyInterviewsByReviewStatus(interviewReviewStatus, pageable);
+        var body = interviewService.getMyInterviewDraftsByReviewStatus(interviewReviewStatus, pageable);
         var response = CommonResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
