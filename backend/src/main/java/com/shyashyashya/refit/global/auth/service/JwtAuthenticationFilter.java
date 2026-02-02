@@ -1,13 +1,16 @@
-package com.shyashyashya.refit.global.auth;
+package com.shyashyashya.refit.global.auth.service;
 
-import static com.shyashyashya.refit.global.exception.ErrorCode.LOGIN_REQUIRED;
+import static com.shyashyashya.refit.global.exception.ErrorCode.USER_SIGNUP_REQUIRED;
 
+import com.shyashyashya.refit.global.constant.AuthConstant;
 import com.shyashyashya.refit.global.exception.CustomException;
-import com.shyashyashya.refit.global.property.AuthProperty;
+import com.shyashyashya.refit.global.property.AuthUrlProperty;
 import com.shyashyashya.refit.global.util.RequestUserContext;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.core.annotation.Order;
@@ -21,14 +24,11 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final AuthProperty authProperty;
+    private final AuthUrlProperty authUrlProperty;
     private final RequestUserContext requestUserContext;
     private final HandlerExceptionResolver handlerExceptionResolver;
+    private final JwtUtil jwtUtil;
 
-    // TODO: JwtUtil 구현 후 실제 jwt에서 userId 추출하기
-    // private final JwtUtil jwtUtil;
-
-    // whitelist 패턴 매칭하기 위해 사용
     private static final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     @Override
@@ -43,17 +43,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
             String token = resolveToken(request);
+            jwtUtil.validateToken(token);
 
-            // TODO: token null 체크는 추후 제대로 된 JwtUtil 구현 후 적용
-            if (
-            /* token == null || */ !validateToken(token)) {
-                throw new CustomException(LOGIN_REQUIRED);
+            Long userId = jwtUtil.getUserId(token); // Guest면 null, 정회원이면 값 존재
+            String email = jwtUtil.getEmail(token);
+
+            if (isIllegalGuestAccess(userId, request)) {
+                throw new CustomException(USER_SIGNUP_REQUIRED);
             }
 
-            // TODO: JwtUtil 구현 후 실제 jwt에서 userId 추출하기
-            // Long userId = jwtUtil.getUserIdFromToken(token);
-            Long userId = 1L; // 임시 하드코딩
-
+            requestUserContext.setEmail(email);
             requestUserContext.setUserId(userId);
             filterChain.doFilter(request, response);
 
@@ -63,19 +62,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private boolean isWhitelisted(HttpServletRequest request) {
-        return authProperty.getWhitelistApiUrls().stream()
+        return authUrlProperty.whitelists().stream()
                 .anyMatch(pattern -> pathMatcher.match(pattern, request.getRequestURI()));
     }
 
-    private boolean validateToken(String token) {
-        return true; // TODO: JwtUtil 구현 후 실제 토큰 검증 로직 추가
+    private boolean isIllegalGuestAccess(Long userId, HttpServletRequest request) {
+        return userId == null && !pathMatcher.match(authUrlProperty.signUp(), request.getRequestURI());
     }
 
+    // 쿠키에서 토큰 추출
     private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            return null;
         }
-        return null;
+
+        return Arrays.stream(cookies)
+                .filter(cookie -> AuthConstant.ACCESS_TOKEN_COOKIE_NAME.equals(cookie.getName()))
+                .findFirst()
+                .map(Cookie::getValue)
+                .orElse(null);
     }
 }
