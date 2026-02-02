@@ -8,6 +8,7 @@ import com.shyashyashya.refit.domain.company.model.Company;
 import com.shyashyashya.refit.domain.company.repository.CompanyRepository;
 import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
+import com.shyashyashya.refit.domain.interview.dto.InterviewDto;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
@@ -35,7 +36,7 @@ public class InterviewService {
     private final RequestUserContext requestUserContext;
 
     @Transactional(readOnly = true)
-    public Interview getInterview(Long interviewId) {
+    public InterviewDto getInterview(Long interviewId) {
         User requestUser = requestUserContext.getRequestUser();
 
         Interview interview =
@@ -43,7 +44,7 @@ public class InterviewService {
 
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
-        return interview;
+        return InterviewDto.from(interview);
     }
 
     @Transactional

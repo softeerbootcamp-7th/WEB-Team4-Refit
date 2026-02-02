@@ -27,8 +27,8 @@ public class InterviewController {
 
     @GetMapping("/{interviewId}")
     public ResponseEntity<CommonResponse<InterviewDto>> getInterview(@PathVariable Long interviewId) {
-        InterviewDto interviewDto = InterviewDto.from(interviewService.getInterview(interviewId));
-        var response = CommonResponse.success(COMMON200, interviewDto);
+        var body = interviewService.getInterview(interviewId);
+        var response = CommonResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
 
