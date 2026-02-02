@@ -27,7 +27,7 @@ public class GoogleOAuth2Controller {
     private final CookieUtil cookieUtil;
 
     @GetMapping
-    public ResponseEntity<CommonResponse<OAuthLoginUrlResponse>> OAuthLogin() {
+    public ResponseEntity<CommonResponse<OAuthLoginUrlResponse>> getOAuthLoginUrl() {
         var body = CommonResponse.success(COMMON200, new OAuthLoginUrlResponse(googleOAuthService.getOAuthLoginUrl()));
         return ResponseEntity.ok(body);
     }
@@ -35,8 +35,10 @@ public class GoogleOAuth2Controller {
     @GetMapping("/callback")
     public ResponseEntity<Void> OAuthCallback(@RequestParam String code) {
         var result = googleOAuthService.handleOAuthCallback(code);
-        var accessTokenCookie = cookieUtil.createAccessTokenCookie(result.accessToken());
-        var refreshTokenCookie = cookieUtil.createResponseTokenCookie(result.refreshToken());
+        var accessTokenCookie =
+                cookieUtil.createAccessTokenCookie(result.tokenPair().accessToken());
+        var refreshTokenCookie =
+                cookieUtil.createResponseTokenCookie(result.tokenPair().refreshToken());
 
         String redirectUrl = buildRedirectUrl(result.isNeedSignup(), result.nickname(), result.profileImageUrl());
 
