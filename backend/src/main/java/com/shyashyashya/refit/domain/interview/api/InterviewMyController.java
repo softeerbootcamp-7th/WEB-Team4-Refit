@@ -40,4 +40,12 @@ public class InterviewMyController {
         var response = CommonResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/draft")
+    public ResponseEntity<CommonResponse<Page<InterviewSimpleDto>>> getMyInterviewDrafts(
+            @RequestParam InterviewReviewStatus interviewReviewStatus, Pageable pageable) {
+        var body = interviewService.getMyInterviewDraftsByReviewStatus(interviewReviewStatus, pageable);
+        var response = CommonResponse.success(COMMON200, body);
+        return ResponseEntity.ok(response);
+    }
 }
