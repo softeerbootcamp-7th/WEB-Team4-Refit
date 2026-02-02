@@ -3,6 +3,7 @@ package com.shyashyashya.refit.domain.qnaset.repository;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetCategoryResponse;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetCategory;
+import com.shyashyashya.refit.domain.qnaset.model.StarInclusionLevel;
 import com.shyashyashya.refit.domain.user.model.User;
 import java.util.List;
 
@@ -29,4 +30,24 @@ public interface QnaSetRepository extends JpaRepository<QnaSet, Long> {
            AND q.qnaSetCategory = :qnaSetCategory
     """)
     Page<QnaSet> findAllByUserAndQnaSetCategory(User user, QnaSetCategory qnaSetCategory, Pageable pageable);
+
+    // TODO : queryDSL 적용
+    @Query("""
+        SELECT q
+          FROM QnaSet q
+          JOIN StarAnalysis s
+         WHERE q.interview.user = :user
+           AND q.questionText LIKE %:keyword%
+           AND s.qnaSet = q
+           AND s.sInclusionLevel IN :sInclusionLevel
+           AND s.tInclusionLevel IN :tInclusionLevel
+           AND s.aInclusionLevel IN :aInclusionLevel
+           AND s.rInclusionLevel IN :rInclusionLevel
+    """)
+    Page<QnaSet> searchQnaSet(User user, String keyword,
+                              List<StarInclusionLevel> sInclusionLevels,
+                              List<StarInclusionLevel> tInclusionLevels,
+                              List<StarInclusionLevel> aInclusionLevels,
+                              List<StarInclusionLevel> rInclusionLevels,
+                              Pageable pageable);
 }
