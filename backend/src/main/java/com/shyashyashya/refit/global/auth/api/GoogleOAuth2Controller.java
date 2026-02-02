@@ -20,7 +20,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RestController
 @RequestMapping("/auth/login/google")
 @RequiredArgsConstructor
-public class GoogleOAuthController {
+public class GoogleOAuth2Controller {
 
     private final GoogleOAuthService googleOAuthService;
     private final OAuth2Property oAuth2Property;
