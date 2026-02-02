@@ -5,10 +5,9 @@ import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON204;
 
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
-import com.shyashyashya.refit.domain.interview.dto.request.LogDraftUpdateRequest;
+import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
 import com.shyashyashya.refit.domain.interview.service.InterviewService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,10 +38,10 @@ public class InterviewController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/{interviewId}/log-draft")
-    public ResponseEntity<CommonResponse<Void>> updateLogDraft(
-            @PathVariable Long interviewId, @RequestBody LogDraftUpdateRequest request) {
-        interviewService.updateLogDarft(interviewId, request);
+    @PutMapping("/{interviewId}/raw-text")
+    public ResponseEntity<CommonResponse<Void>> updateRawText(
+            @PathVariable Long interviewId, @RequestBody RawTextUpdateRequest request) {
+        interviewService.updateRawText(interviewId, request);
         var response = CommonResponse.success(COMMON201);
         return ResponseEntity.ok(response);
     }

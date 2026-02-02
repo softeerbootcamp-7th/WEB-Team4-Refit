@@ -9,7 +9,7 @@ import com.shyashyashya.refit.domain.company.repository.CompanyRepository;
 import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
-import com.shyashyashya.refit.domain.interview.dto.request.LogDraftUpdateRequest;
+import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
 import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
@@ -69,7 +69,7 @@ public class InterviewService {
     }
 
     @Transactional
-    public void updateLogDarft(Long interviewId, LogDraftUpdateRequest request) {
+    public void updateRawText(Long interviewId, RawTextUpdateRequest request) {
         User requestUser = requestUserContext.getRequestUser();
 
         Interview interview =
@@ -77,7 +77,7 @@ public class InterviewService {
 
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
-        interview.updateRawText(request.draft());
+        interview.updateRawText(request.rawText());
     }
 
     private Company findOrSaveCompany(InterviewCreateRequest request) {
