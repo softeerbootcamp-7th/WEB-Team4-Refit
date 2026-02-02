@@ -4,11 +4,11 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.EXTERNAL_OAUTH_S
 import static com.shyashyashya.refit.global.exception.ErrorCode.INVALID_OAUTH_ACCESS_TOKEN;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INVALID_OAUTH_CODE;
 
+import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
-import com.shyashyashya.refit.global.auth.dto.OAuthResult;
+import com.shyashyashya.refit.global.auth.dto.OAuthResultDto;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.property.OAuth2Property;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;
@@ -28,7 +28,7 @@ public class GoogleOAuthService implements OAuthService {
     private final OAuth2Property oauth2Property;
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
-    private final RestClient.Builder restClientBuilder;
+    private final RestClient restClient;
 
     @Override
     public String getOAuthLoginUrl() {
@@ -45,33 +45,18 @@ public class GoogleOAuthService implements OAuthService {
     }
 
     @Override
-    public OAuthResult handleOAuthCallback(String code) {
+    public OAuthResultDto handleOAuthCallback(String code) {
         var tokenResponse = fetchAccessToken(code);
         var userInfo = fetchUserInfo(tokenResponse.access_token());
 
-        return userRepository
-                .findByEmail(userInfo.email())
-                .map(user -> {
-                    var accessToken = jwtUtil.createAccessToken(user.getEmail(), user.getId());
-                    var refreshToken = jwtUtil.createRefreshToken(user.getEmail(), user.getId());
-                    return OAuthResult.builder()
-                            .accessToken(accessToken)
-                            .refreshToken(Optional.of(refreshToken))
-                            .nickname(user.getNickname())
-                            .profileImageUrl(user.getProfileImageUrl())
-                            .isNeedSignup(false)
-                            .build();
-                })
-                .orElseGet(() -> {
-                    var accessToken = jwtUtil.createAccessToken(userInfo.email(), null);
-                    return OAuthResult.builder()
-                            .accessToken(accessToken)
-                            .refreshToken(Optional.empty())
-                            .isNeedSignup(true)
-                            .nickname(userInfo.name())
-                            .profileImageUrl(userInfo.picture())
-                            .build();
-                });
+        var userOptional = userRepository.findByEmail(userInfo.email());
+        var userId = userOptional.map(User::getId).orElse(null);
+
+        var accessToken = jwtUtil.createAccessToken(userInfo.email(), userId);
+        var refreshToken = jwtUtil.createRefreshToken(userInfo.email());
+        return userOptional
+                .map(user -> OAuthResultDto.createUser(accessToken, refreshToken, user))
+                .orElseGet(() -> OAuthResultDto.createGuest(accessToken, refreshToken, userInfo));
     }
 
     private GoogleTokenResponse fetchAccessToken(String code) {
@@ -82,8 +67,7 @@ public class GoogleOAuthService implements OAuthService {
         body.add("redirect_uri", oauth2Property.google().redirectUri());
         body.add("grant_type", "authorization_code");
 
-        return restClientBuilder
-                .build()
+        return restClient
                 .post()
                 .uri("https://oauth2.googleapis.com/token")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED) // OAuth 2.0 표준 규격
@@ -101,8 +85,7 @@ public class GoogleOAuthService implements OAuthService {
     }
 
     private GoogleUserInfo fetchUserInfo(String accessToken) {
-        return restClientBuilder
-                .build()
+        return restClient
                 .get()
                 .uri("https://www.googleapis.com/oauth2/v3/userinfo")
                 .header("Authorization", "Bearer " + accessToken) // 액세스 토큰 전송
@@ -118,7 +101,7 @@ public class GoogleOAuthService implements OAuthService {
                 .body(GoogleUserInfo.class);
     }
 
-    private record GoogleTokenResponse(
+    public record GoogleTokenResponse(
             String access_token,
             String expires_in,
             String refresh_token,
@@ -126,5 +109,5 @@ public class GoogleOAuthService implements OAuthService {
             String token_type,
             String id_token) {}
 
-    private record GoogleUserInfo(String sub, String name, String email, String picture) {}
+    public record GoogleUserInfo(String sub, String name, String email, String picture) {}
 }

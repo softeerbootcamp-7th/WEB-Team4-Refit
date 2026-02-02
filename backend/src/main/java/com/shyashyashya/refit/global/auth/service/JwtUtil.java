@@ -51,13 +51,12 @@ public class JwtUtil {
         return builder.compact();
     }
 
-    public String createRefreshToken(@NotNull String email, @NotNull Long userId) {
+    public String createRefreshToken(@NotNull String email) {
         Date now = new Date();
         Date expiration = new Date(now.getTime() + refreshTokenExpiration.toMillis());
 
         return Jwts.builder()
                 .setSubject(email)
-                .claim("userId", userId)
                 .setIssuedAt(now)
                 .setExpiration(expiration)
                 .signWith(key, SignatureAlgorithm.HS256)
