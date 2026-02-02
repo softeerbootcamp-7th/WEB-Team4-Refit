@@ -1,4 +1,4 @@
-package com.shyashyashya.refit.domain.interview.model;
+package com.shyashyashya.refit.domain.qnaset.model;
 
 import lombok.Getter;
 
