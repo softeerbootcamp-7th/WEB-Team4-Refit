@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router'
 import { Logo } from '@/assets'
 import { ROUTES } from '@/constants/routes'
-import UserProfile from '@/shared/Navbar/UserProfile'
+import UserProfile from '@/shared/NavBar/UserProfile'
 
 const navItems = [
   { to: ROUTES.DASHBOARD, label: '홈', end: true },
