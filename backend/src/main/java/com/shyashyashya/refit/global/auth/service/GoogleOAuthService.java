@@ -7,6 +7,8 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.INVALID_OAUTH_CO
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
 import com.shyashyashya.refit.global.auth.dto.OAuthResultDto;
+import com.shyashyashya.refit.global.auth.model.RefreshToken;
+import com.shyashyashya.refit.global.auth.repository.RefreshTokenRepository;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.property.OAuth2Property;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
@@ -27,8 +30,10 @@ public class GoogleOAuthService implements OAuthService {
 
     private final OAuth2Property oauth2Property;
     private final JwtUtil jwtUtil;
-    private final UserRepository userRepository;
     private final RestClient restClient;
+
+    private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
     public String getOAuthLoginUrl() {
@@ -44,6 +49,7 @@ public class GoogleOAuthService implements OAuthService {
                 .toUriString();
     }
 
+    @Transactional
     @Override
     public OAuthResultDto handleOAuthCallback(String code) {
         var tokenResponse = fetchAccessToken(code);
@@ -54,6 +60,11 @@ public class GoogleOAuthService implements OAuthService {
 
         var accessToken = jwtUtil.createAccessToken(userInfo.email(), userId);
         var refreshToken = jwtUtil.createRefreshToken(userInfo.email());
+
+        refreshTokenRepository.deleteByEmail(userInfo.email());
+        refreshTokenRepository.save(
+                RefreshToken.create(refreshToken, userInfo.email(), jwtUtil.getExpiration(refreshToken)));
+
         return userOptional
                 .map(user -> OAuthResultDto.createUser(accessToken, refreshToken, user))
                 .orElseGet(() -> OAuthResultDto.createGuest(accessToken, refreshToken, userInfo));
