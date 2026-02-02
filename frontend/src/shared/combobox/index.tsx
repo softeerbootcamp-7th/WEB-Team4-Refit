@@ -1,3 +1,4 @@
+import { CaretDownIcon } from '@/assets'
 import { forwardRef, type SelectHTMLAttributes } from 'react'
 
 export interface ComboboxAccessoryProps {
@@ -19,7 +20,11 @@ const Combobox = forwardRef<HTMLSelectElement, ComboboxProps>(
         {label && (
           <label className="body-l-semibold text-gray-600">
             {label}
-            {required && <span className="text-red-400" aria-hidden> *</span>}
+            {required && (
+              <span className="text-red-400" aria-hidden>
+                *
+              </span>
+            )}
           </label>
         )}
         <div className="relative">
@@ -27,7 +32,7 @@ const Combobox = forwardRef<HTMLSelectElement, ComboboxProps>(
             ref={ref}
             value={value}
             required={required}
-            className={`body-l-medium border-gray-200 focus:border-orange-500 w-full appearance-none rounded-xl border px-4 py-3 outline-none ${
+            className={`body-l-medium w-full appearance-none rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-orange-500 ${
               isPlaceholderSelected ? 'text-gray-300' : 'text-gray-900'
             } ${className}`}
             {...props}
@@ -44,12 +49,7 @@ const Combobox = forwardRef<HTMLSelectElement, ComboboxProps>(
             ))}
           </select>
           <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
-            <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M10.59 0.590088L6 5.17009L1.41 0.590088L0 2.00009L6 8.00009L12 2.00009L10.59 0.590088Z"
-                fill="#D5D5D5"
-              />
-            </svg>
+            <CaretDownIcon className="w-3 text-gray-300" />
           </div>
         </div>
         {error && <p className="body-s-medium text-red-500">{error}</p>}

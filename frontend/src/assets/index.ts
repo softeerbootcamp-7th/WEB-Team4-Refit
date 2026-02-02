@@ -1,4 +1,6 @@
 export { default as CalendarStarIcon } from './calendar_star_icon.svg?react'
+export { default as CaretDownIcon } from './caret_down_icon.svg?react'
+export { default as CaretUpIcon } from './caret_up_icon.svg?react'
 export { default as CirclePlusIcon } from './circle_plus_icon.svg?react'
 export { default as ClockIcon } from './clock_icon.svg?react'
 export { default as CloseIcon } from './close_icon.svg?react'
@@ -15,4 +17,3 @@ export { default as MoreIcon } from './more_icon.svg?react'
 export { default as NoteIcon } from './note_icon.svg?react'
 export { default as PencilIcon } from './pencil_icon.svg?react'
 export { default as SearchIcon } from './search_icon.svg?react'
-
