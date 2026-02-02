@@ -9,6 +9,8 @@ import com.shyashyashya.refit.domain.interview.dto.InterviewDto;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatusUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
+import com.shyashyashya.refit.domain.interview.dto.response.GuideQuestionResponse;
+import com.shyashyashya.refit.domain.interview.service.GuideQuestionService;
 import com.shyashyashya.refit.domain.interview.service.InterviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class InterviewController {
 
     private final InterviewService interviewService;
+    private final GuideQuestionService guideQuestionService;
 
     @GetMapping("/{interviewId}")
     public ResponseEntity<CommonResponse<InterviewDto>> getInterview(@PathVariable Long interviewId) {
@@ -58,6 +61,14 @@ public class InterviewController {
     public ResponseEntity<CommonResponse<Void>> createInterview(@RequestBody InterviewCreateRequest request) {
         interviewService.createInterview(request);
         var response = CommonResponse.success(COMMON201);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{interviewId}/guide-question")
+    public ResponseEntity<CommonResponse<GuideQuestionResponse>> getGuideQuestion(@PathVariable Long interviewId) {
+        String guideQuestion = guideQuestionService.getGuideQuestion(interviewId);
+
+        var response = CommonResponse.success(COMMON200, new GuideQuestionResponse(guideQuestion));
         return ResponseEntity.ok(response);
     }
 
