@@ -5,7 +5,7 @@ import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
 import com.shyashyashya.refit.global.auth.service.CookieUtil;
 import com.shyashyashya.refit.global.auth.service.GoogleOAuthService;
-import com.shyashyashya.refit.global.property.AuthProperty;
+import com.shyashyashya.refit.global.property.OAuth2Property;
 import java.time.Duration;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class GoogleOAuthController {
 
     public final GoogleOAuthService googleOAuthService;
-    public final AuthProperty authProperty;
+    public final OAuth2Property oAuth2Property;
     public final CookieUtil cookieUtil;
 
     // TODO: PR 머지 후 제거
@@ -55,7 +55,7 @@ public class GoogleOAuthController {
 
         // 프론트엔드 리다이렉트 URL 생성
         // TODO: 로그인 성공시 바로 메인페이지로 리다이렉션 가능한지 고민해보기
-        String redirectUrl = UriComponentsBuilder.fromUriString(authProperty.frontendOAuthRedirectUri())
+        String redirectUrl = UriComponentsBuilder.fromUriString(oAuth2Property.frontendRedirectUri())
                 .queryParam("status", result.isNeedSignup() ? "signUpRequired" : "loginSuccess")
                 .queryParam("nickname", result.nickname())
                 .queryParam("profileImageUrl", result.profileImageUrl())
