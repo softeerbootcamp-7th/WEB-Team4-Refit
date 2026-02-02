@@ -9,8 +9,8 @@ import com.shyashyashya.refit.domain.company.model.Company;
 import com.shyashyashya.refit.domain.company.repository.CompanyRepository;
 import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
-import com.shyashyashya.refit.domain.interview.dto.InterviewSimpleDto;
 import com.shyashyashya.refit.domain.interview.dto.InterviewDto;
+import com.shyashyashya.refit.domain.interview.dto.InterviewSimpleDto;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatusUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
@@ -105,9 +105,10 @@ public class InterviewService {
         User requestUser = requestUserContext.getRequestUser();
 
         return switch (reviewStatus) {
-            case LOG_DRAFT, SELF_REVIEW_DRAFT -> interviewRepository
-                    .findAllByUserAndReviewStatus(requestUser, reviewStatus, pageable)
-                    .map(InterviewSimpleDto::from);
+            case LOG_DRAFT, SELF_REVIEW_DRAFT ->
+                interviewRepository
+                        .findAllByUserAndReviewStatus(requestUser, reviewStatus, pageable)
+                        .map(InterviewSimpleDto::from);
             default -> throw new CustomException(INTERVIEW_NOT_IN_DRAFT_STATUS);
         };
     }

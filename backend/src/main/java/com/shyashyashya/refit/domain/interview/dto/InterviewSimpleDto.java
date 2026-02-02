@@ -2,8 +2,6 @@ package com.shyashyashya.refit.domain.interview.dto;
 
 import com.shyashyashya.refit.domain.company.dto.CompanyDto;
 import com.shyashyashya.refit.domain.interview.model.Interview;
-import com.shyashyashya.refit.domain.interview.model.InterviewResultStatus;
-import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
 import java.time.LocalDateTime;
 
