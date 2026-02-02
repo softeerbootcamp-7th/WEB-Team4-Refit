@@ -3,6 +3,7 @@ package com.shyashyashya.refit.domain.interview.api;
 import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
 
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
+import com.shyashyashya.refit.domain.interview.dto.InterviewDto;
 import com.shyashyashya.refit.domain.interview.dto.InterviewSimpleDto;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewSearchRequest;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
@@ -34,7 +35,7 @@ public class InterviewMyController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<CommonResponse<Page<InterviewSimpleDto>>> searchInterviews(
+    public ResponseEntity<CommonResponse<Page<InterviewDto>>> searchInterviews(
             @RequestBody InterviewSearchRequest request, Pageable pageable) {
         var body = interviewService.searchMyInterviews(request, pageable);
         var response = CommonResponse.success(COMMON200, body);
