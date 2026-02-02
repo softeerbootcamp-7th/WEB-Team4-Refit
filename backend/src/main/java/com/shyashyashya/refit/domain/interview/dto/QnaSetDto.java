@@ -12,12 +12,17 @@ public record QnaSetDto(
         StarAnalysisDto starAnalysis,
         Boolean isMarkedDifficult) {
     public static QnaSetDto from(QnaSet qnaSet, QnaSetSelfReview qnaSetSelfReview, StarAnalysisDto starAnalysisDto) {
+        String selfReviewText = "";
+        if (qnaSetSelfReview != null) {
+            selfReviewText = qnaSetSelfReview.getSelfReviewText();
+        }
+
         return new QnaSetDto(
                 qnaSet.getId(),
                 qnaSet.getInterview().getId(),
                 qnaSet.getQuestionText(),
                 qnaSet.getAnswerText(),
-                qnaSetSelfReview.getSelfReviewText(),
+                selfReviewText,
                 starAnalysisDto,
                 qnaSet.isMarkedDifficult());
     }

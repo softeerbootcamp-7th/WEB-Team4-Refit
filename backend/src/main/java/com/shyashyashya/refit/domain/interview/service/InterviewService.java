@@ -4,7 +4,6 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.INDUSTRY_NOT_FOU
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_IN_DRAFT_STATUS;
 import static com.shyashyashya.refit.global.exception.ErrorCode.JOB_CATEGORY_NOT_FOUND;
-import static com.shyashyashya.refit.global.exception.ErrorCode.QNA_SET_NOT_FOUND;
 
 import com.shyashyashya.refit.domain.company.model.Company;
 import com.shyashyashya.refit.domain.company.repository.CompanyRepository;
@@ -13,7 +12,6 @@ import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
 import com.shyashyashya.refit.domain.interview.dto.InterviewDto;
 import com.shyashyashya.refit.domain.interview.dto.InterviewFullDto;
 import com.shyashyashya.refit.domain.interview.dto.InterviewSimpleDto;
-import com.shyashyashya.refit.domain.interview.dto.QnaSetDto;
 import com.shyashyashya.refit.domain.interview.dto.StarAnalysisDto;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatusUpdateRequest;
@@ -29,13 +27,13 @@ import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetSelfReview;
-import com.shyashyashya.refit.domain.qnaset.model.StarAnalysis;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.util.RequestUserContext;
-
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -79,16 +77,19 @@ public class InterviewService {
 
         List<QnaSet> qnaSets = qnaSetRepository.findAllByInterview(interview);
 
-        List<QnaSetDto> qnaSetDtos = new ArrayList<>(qnaSets.size());
-        for (QnaSet qnaSet : qnaSets) {
-            QnaSetSelfReview selfReview = qnaSetSelfReviewRepository.findByQnaSet(qnaSet).orElse(null);
-            StarAnalysis starAnalysis = starAnalysisRepository.findByQnaSet(qnaSet).orElse(null);
-            StarAnalysisDto starAnalysisDto = (starAnalysis == null) ? null : StarAnalysisDto.from(starAnalysis);
-            QnaSetDto qnaSetDto = QnaSetDto.from(qnaSet, selfReview, starAnalysisDto);
-            qnaSetDtos.add(qnaSetDto);
+        if (qnaSets.isEmpty()) {
+            return InterviewFullDto.fromInterviewWithEmptyQnaSets(interview);
         }
 
-        return InterviewFullDto.from(interview, qnaSetDtos);
+        List<Long> qnaSetIds = qnaSets.stream().map(QnaSet::getId).toList();
+
+        Map<Long, QnaSetSelfReview> selfReviewMap = qnaSetSelfReviewRepository.findAllByQnaSetIdIn(qnaSetIds).stream()
+                .collect(Collectors.toMap(r -> r.getQnaSet().getId(), Function.identity()));
+
+        Map<Long, StarAnalysisDto> starAnalysisDtoMap = starAnalysisRepository.findAllByQnaSetIdIn(qnaSetIds).stream()
+                .collect(Collectors.toMap(r -> r.getQnaSet().getId(), StarAnalysisDto::from));
+
+        return InterviewFullDto.fromInterviewWithQnaSets(interview, qnaSets, selfReviewMap, starAnalysisDtoMap);
     }
 
     @Transactional
