@@ -2,11 +2,10 @@ package com.shyashyashya.refit.domain.industry.service;
 
 import com.shyashyashya.refit.domain.industry.dto.IndustryResponse;
 import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

@@ -1,20 +1,18 @@
 package com.shyashyashya.refit.domain.industry.api;
 
+import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
+
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
-import com.shyashyashya.refit.domain.common.model.ResponseCode;
 import com.shyashyashya.refit.domain.industry.dto.IndustryResponse;
 import com.shyashyashya.refit.domain.industry.service.IndustryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-
-import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
 
 @Tag(name = "Industry API", description = "산업군 관련 API 입니다.")
 @RestController
