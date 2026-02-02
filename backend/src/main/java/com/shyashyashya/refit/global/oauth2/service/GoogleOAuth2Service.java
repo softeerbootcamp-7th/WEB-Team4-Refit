@@ -1,4 +1,4 @@
-package com.shyashyashya.refit.global.auth.service;
+package com.shyashyashya.refit.global.oauth2.service;
 
 import static com.shyashyashya.refit.global.exception.ErrorCode.EXTERNAL_OAUTH_SERVER_ERROR;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INVALID_OAUTH_ACCESS_TOKEN;
@@ -6,10 +6,11 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.INVALID_OAUTH_CO
 
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
-import com.shyashyashya.refit.global.auth.dto.OAuthResultDto;
 import com.shyashyashya.refit.global.auth.model.RefreshToken;
 import com.shyashyashya.refit.global.auth.repository.RefreshTokenRepository;
+import com.shyashyashya.refit.global.auth.service.JwtUtil;
 import com.shyashyashya.refit.global.exception.CustomException;
+import com.shyashyashya.refit.global.oauth2.dto.OAuthResultDto;
 import com.shyashyashya.refit.global.property.OAuth2Property;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

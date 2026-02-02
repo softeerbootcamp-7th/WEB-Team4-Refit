@@ -1,6 +1,6 @@
-package com.shyashyashya.refit.global.auth.service;
+package com.shyashyashya.refit.global.oauth2.service;
 
-import com.shyashyashya.refit.global.auth.dto.OAuthResultDto;
+import com.shyashyashya.refit.global.oauth2.dto.OAuthResultDto;
 
 public interface OAuth2Service {
 
