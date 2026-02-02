@@ -1,5 +1,6 @@
 spring:
   auth:
+    using-https: false
     url:
       # TODO: public한 API 경로가 더 있는지 검토 필요
       sign-up: "/user/signup"

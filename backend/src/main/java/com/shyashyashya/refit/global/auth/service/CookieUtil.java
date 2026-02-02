@@ -1,20 +1,44 @@
 package com.shyashyashya.refit.global.auth.service;
 
+import com.shyashyashya.refit.global.constant.AuthConstant;
+import com.shyashyashya.refit.global.property.AuthJwtProperty;
+import com.shyashyashya.refit.global.property.AuthProperty;
 import java.time.Duration;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class CookieUtil {
+
+    private final AuthProperty authProperty;
+    private final AuthJwtProperty authJwtProperty;
 
     public ResponseCookie createCookie(String name, String value, Duration maxAge) {
         return ResponseCookie.from(name, value)
                 .httpOnly(true)
-                //            .secure(true) // TODO: 추후 HTTPS 적용 시 활성화 (배포 환경에서만 적용되게 고민필요)
+                .secure(authProperty.usingHttps())
                 .path("/")
                 .maxAge(maxAge)
                 .sameSite("Lax")
                 .build();
+    }
+
+    public String createAccessTokenCookie(String accessToken) {
+        return createCookie(
+                        AuthConstant.ACCESS_TOKEN,
+                        accessToken,
+                        authJwtProperty.tokenExpiration().accessToken())
+                .toString();
+    }
+
+    public String createResponseTokenCookie(String refreshToken) {
+        return createCookie(
+                        AuthConstant.REFRESH_TOKEN,
+                        refreshToken,
+                        authJwtProperty.tokenExpiration().refreshToken())
+                .toString();
     }
 
     public ResponseCookie deleteCookie(String name) {
