@@ -35,9 +35,7 @@ public class JwtUtil {
         this.key = Keys.hmacShaKeyFor(authJwtProperty.secret().getBytes());
         this.accessTokenExpiration = authJwtProperty.tokenExpiration().accessToken();
         this.refreshTokenExpiration = authJwtProperty.tokenExpiration().refreshToken();
-        this.jwtParser = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build();
+        this.jwtParser = Jwts.parserBuilder().setSigningKey(key).build();
     }
 
     public String createAccessToken(@NotNull String email, @Nullable Long userId) {
