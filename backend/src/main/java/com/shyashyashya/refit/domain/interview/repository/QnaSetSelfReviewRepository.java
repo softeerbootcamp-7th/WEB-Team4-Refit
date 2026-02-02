@@ -1,7 +1,8 @@
 package com.shyashyashya.refit.domain.interview.repository;
 
-import com.shyashyashya.refit.domain.interview.model.QnaSetSelfReview;
 import java.util.Optional;
+
+import com.shyashyashya.refit.domain.qnaset.model.QnaSetSelfReview;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface QnaSetSelfReviewRepository extends JpaRepository<QnaSetSelfReview, Long> {

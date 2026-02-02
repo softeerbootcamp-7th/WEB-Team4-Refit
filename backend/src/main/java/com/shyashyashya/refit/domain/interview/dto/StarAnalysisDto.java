@@ -1,7 +1,7 @@
 package com.shyashyashya.refit.domain.interview.dto;
 
-import com.shyashyashya.refit.domain.interview.model.StarAnalysis;
-import com.shyashyashya.refit.domain.interview.model.StarInclusionLevel;
+import com.shyashyashya.refit.domain.qnaset.model.StarAnalysis;
+import com.shyashyashya.refit.domain.qnaset.model.StarInclusionLevel;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 

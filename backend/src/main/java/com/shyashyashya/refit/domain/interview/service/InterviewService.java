@@ -16,9 +16,6 @@ import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateReques
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatusUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
 import com.shyashyashya.refit.domain.interview.model.Interview;
-import com.shyashyashya.refit.domain.interview.model.QnaSet;
-import com.shyashyashya.refit.domain.interview.model.QnaSetSelfReview;
-import com.shyashyashya.refit.domain.interview.model.StarAnalysis;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
 import com.shyashyashya.refit.domain.interview.repository.QnaSetRepository;
@@ -27,6 +24,9 @@ import com.shyashyashya.refit.domain.interview.repository.StarAnalysisRepository
 import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
+import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
+import com.shyashyashya.refit.domain.qnaset.model.QnaSetSelfReview;
+import com.shyashyashya.refit.domain.qnaset.model.StarAnalysis;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.util.RequestUserContext;

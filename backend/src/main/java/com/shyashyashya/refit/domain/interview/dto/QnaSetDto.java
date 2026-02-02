@@ -1,8 +1,8 @@
 package com.shyashyashya.refit.domain.interview.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.shyashyashya.refit.domain.interview.model.QnaSet;
-import com.shyashyashya.refit.domain.interview.model.QnaSetSelfReview;
+import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
+import com.shyashyashya.refit.domain.qnaset.model.QnaSetSelfReview;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
