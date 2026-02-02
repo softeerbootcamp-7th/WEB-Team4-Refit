@@ -1,5 +1,6 @@
 package com.shyashyashya.refit.global.exception;
 
+import static org.springframework.http.HttpStatus.BAD_GATEWAY;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
@@ -22,7 +23,9 @@ public enum ErrorCode {
     USER_SIGNUP_EMAIL_CONFLICT(CONFLICT, "이미 사용 중인 이메일입니다."),
     USER_SIGNUP_REQUIRED(UNAUTHORIZED, "회원가입이 필요합니다."),
 
-    TOKEN_EXPIRED(UNAUTHORIZED, "토큰이 만료되었습니다."),
+    INVALID_OAUTH_CODE(BAD_REQUEST, "유효하지 않은 OAuth 코드입니다."),
+    EXTERNAL_OAUTH_SERVER_ERROR(BAD_GATEWAY, "외부 OAuth 서버와의 통신에 실패했습니다."),
+    INVALID_OAUTH_ACCESS_TOKEN(UNAUTHORIZED, "유효하지 않은 OAuth 액세스 토큰입니다."),
     LOGIN_REQUIRED(UNAUTHORIZED, "로그인이 필요합니다.");
 
     private final HttpStatus httpStatus;

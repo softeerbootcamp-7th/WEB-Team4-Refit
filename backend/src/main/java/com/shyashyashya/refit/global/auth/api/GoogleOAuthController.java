@@ -43,19 +43,15 @@ public class GoogleOAuthController {
         var responseBuilder = ResponseEntity.status(HttpStatus.FOUND);
 
         // accessToken, refreshToken 쿠키 생성
-        var accessCookie = cookieUtil.createCookie(
-                ACCESS_TOKEN_COOKIE_NAME, result.accessToken(), Duration.ofHours(1) // TODO: PR 머지되면 대체하기
-                // authProperty.jwt().tokenExpiration().accessToken()
-                );
-        responseBuilder.header(HttpHeaders.SET_COOKIE, accessCookie.toString());
+        // TODO: PR 머지되면 대체하기
+        var accessTokenDuration = Duration.ofHours(1); // authProperty.jwt().tokenExpiration().accessToken();
+        setCookie(ACCESS_TOKEN_COOKIE_NAME, result.accessToken(), accessTokenDuration, responseBuilder);
 
-        if (result.refreshToken().isPresent()) {
-            var refreshCookie = cookieUtil.createCookie(
-                    REFRESH_TOKEN_COOKIE_NAME, result.refreshToken().get(), Duration.ofDays(7) // TODO: PR 머지되면 대체하기
-                    // authProperty.jwt().tokenExpiration().refreshToken()
-                    );
-            responseBuilder.header(HttpHeaders.SET_COOKIE, refreshCookie.toString());
-        }
+        result.refreshToken().ifPresent(refreshToken -> {
+            // TODO: PR 머지되면 대체하기
+            var refreshTokenDuration = Duration.ofDays(7); // authProperty.jwt().tokenExpiration().refreshToken();
+            setCookie(REFRESH_TOKEN_COOKIE_NAME, refreshToken, Duration.ofDays(7), responseBuilder);
+        });
 
         // 프론트엔드 리다이렉트 URL 생성
         // TODO: 로그인 성공시 바로 메인페이지로 리다이렉션 가능한지 고민해보기
@@ -68,5 +64,10 @@ public class GoogleOAuthController {
                 .toUriString();
 
         return responseBuilder.header(HttpHeaders.LOCATION, redirectUrl).build();
+    }
+
+    private void setCookie(String name, String value, Duration duration, ResponseEntity.BodyBuilder responseBuilder) {
+        var cookie = cookieUtil.createCookie(name, value, duration);
+        responseBuilder.header(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 }
