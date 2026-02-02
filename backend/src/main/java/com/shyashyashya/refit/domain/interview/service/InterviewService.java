@@ -11,7 +11,10 @@ import com.shyashyashya.refit.domain.company.repository.CompanyRepository;
 import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
 import com.shyashyashya.refit.domain.interview.dto.InterviewDto;
+import com.shyashyashya.refit.domain.interview.dto.InterviewFullDto;
 import com.shyashyashya.refit.domain.interview.dto.InterviewSimpleDto;
+import com.shyashyashya.refit.domain.interview.dto.QnaSetDto;
+import com.shyashyashya.refit.domain.interview.dto.StarAnalysisDto;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatusUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
@@ -30,6 +33,8 @@ import com.shyashyashya.refit.domain.qnaset.model.StarAnalysis;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.util.RequestUserContext;
+
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -63,6 +68,27 @@ public class InterviewService {
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
         return InterviewDto.from(interview);
+    }
+
+    @Transactional(readOnly = true)
+    public InterviewFullDto getInterviewFull(Long interviewId) {
+        User requestUser = requestUserContext.getRequestUser();
+        Interview interview =
+                interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
+        interviewValidator.validateInterviewOwner(interview, requestUser);
+
+        List<QnaSet> qnaSets = qnaSetRepository.findAllByInterview(interview);
+
+        List<QnaSetDto> qnaSetDtos = new ArrayList<>(qnaSets.size());
+        for (QnaSet qnaSet : qnaSets) {
+            QnaSetSelfReview selfReview = qnaSetSelfReviewRepository.findByQnaSet(qnaSet).orElse(null);
+            StarAnalysis starAnalysis = starAnalysisRepository.findByQnaSet(qnaSet).orElse(null);
+            StarAnalysisDto starAnalysisDto = (starAnalysis == null) ? null : StarAnalysisDto.from(starAnalysis);
+            QnaSetDto qnaSetDto = QnaSetDto.from(qnaSet, selfReview, starAnalysisDto);
+            qnaSetDtos.add(qnaSetDto);
+        }
+
+        return InterviewFullDto.from(interview, qnaSetDtos);
     }
 
     @Transactional
@@ -134,30 +160,6 @@ public class InterviewService {
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
         interview.updateRawText(request.rawText());
-    }
-
-    @Transactional(readOnly = true)
-    public List<QnaSet> getQnaSets(Long interviewId) {
-        User requestUser = requestUserContext.getRequestUser();
-
-        Interview interview =
-                interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
-
-        interviewValidator.validateInterviewOwner(interview, requestUser);
-
-        return qnaSetRepository.findAllByInterviewId(interviewId);
-    }
-
-    @Transactional(readOnly = true)
-    public QnaSetSelfReview getSelfReview(Long qnaSetId) {
-        return qnaSetSelfReviewRepository
-                .findByQnaSetId(qnaSetId)
-                .orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
-    }
-
-    @Transactional(readOnly = true)
-    public StarAnalysis getStarAnalysis(Long qnaSetId) {
-        return starAnalysisRepository.findByQnaSetId(qnaSetId).orElse(null);
     }
 
     private Company findOrSaveCompany(InterviewCreateRequest request) {

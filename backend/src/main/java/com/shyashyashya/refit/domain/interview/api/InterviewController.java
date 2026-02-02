@@ -75,20 +75,8 @@ public class InterviewController {
 
     @GetMapping("/{interviewId}/qna-sets")
     public ResponseEntity<CommonResponse<InterviewFullDto>> getInterviewFull(@PathVariable Long interviewId) {
-        Interview interview = interviewService.getInterview(interviewId); // 머지 대기중인 #147 PR에서 구현되어 있음
-        List<QnaSet> qnaSets = interviewService.getQnaSets(interviewId);
-
-        List<QnaSetDto> qnaSetDtos = new ArrayList<>(qnaSets.size());
-        for (QnaSet qnaSet : qnaSets) {
-            QnaSetSelfReview selfReview = interviewService.getSelfReview(qnaSet.getId());
-            StarAnalysis starAnalysis = interviewService.getStarAnalysis(qnaSet.getId());
-            StarAnalysisDto starAnalysisDto = (starAnalysis == null) ? null : StarAnalysisDto.from(starAnalysis);
-            QnaSetDto qnaSetDto = QnaSetDto.from(qnaSet, selfReview, starAnalysisDto);
-            qnaSetDtos.add(qnaSetDto);
-        }
-
-        InterviewFullDto interviewFullDto = InterviewFullDto.from(interview, qnaSetDtos);
-        var response = CommonResponse.success(COMMON200, interviewFullDto);
+        var body = interviewService.getInterviewFull(interviewId);
+        var response = CommonResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
 
