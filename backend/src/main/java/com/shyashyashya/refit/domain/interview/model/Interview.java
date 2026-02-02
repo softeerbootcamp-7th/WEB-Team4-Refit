@@ -99,6 +99,10 @@ public class Interview extends BaseEntity {
                 .build();
     }
 
+    public void updateRawText(String rawText) {
+        this.rawText = rawText;
+    }
+
     @Builder(access = AccessLevel.PRIVATE)
     private Interview(
             String jobRole,
@@ -123,5 +127,9 @@ public class Interview extends BaseEntity {
         this.company = company;
         this.industry = industry;
         this.jobCategory = jobCategory;
+    }
+
+    public void updateResultStatus(InterviewResultStatus interviewResultStatus) {
+        this.resultStatus = interviewResultStatus;
     }
 }

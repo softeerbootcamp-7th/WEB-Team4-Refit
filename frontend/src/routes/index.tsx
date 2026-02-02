@@ -1,17 +1,47 @@
 import { createBrowserRouter, RouterProvider } from 'react-router'
-import { ROUTES } from '@/constants/routes'
-import { DashboardLayout, RootLayout } from '@/routes/layouts'
-import { Dashboard, NotFound, SharedComponentExample } from '@/routes/pages'
+import { DashboardLayout, MobileLayout, RootLayout } from '@/layouts'
+import {
+  DashboardPage,
+  RecordConfirmPage,
+  RecordLinkPage,
+  NotFound,
+  SharedComponentExample,
+  SigninPage,
+  SignupPage,
+  MobilePage,
+  MobileSignupPage,
+  MobileUnrecordedPage,
+  MobileRecordPage,
+} from '@/pages'
+import { ROUTES } from '@/shared/constants/routes'
 
 const getChildPath = (fullPath: string, rootPath: string): string => {
   return fullPath.replace(rootPath, '').replace(/^\//, '')
 }
 
 const router = createBrowserRouter([
-  { path: ROUTES.HOME, Component: Dashboard },
-  { path: ROUTES.SIGNUP, Component: Dashboard },
-  { path: ROUTES.SIGNIN, Component: Dashboard },
-  { path: ROUTES.TERMS, Component: Dashboard },
+  { path: ROUTES.HOME, Component: DashboardPage },
+  { path: ROUTES.SIGNUP, Component: SignupPage },
+  { path: ROUTES.SIGNIN, Component: SigninPage },
+  {
+    path: ROUTES.MOBILE,
+    Component: MobileLayout,
+    children: [
+      { index: true, Component: MobilePage },
+      {
+        path: getChildPath(ROUTES.MOBILE_SIGNUP, ROUTES.MOBILE),
+        Component: MobileSignupPage,
+      },
+      {
+        path: getChildPath(ROUTES.MOBILE_UNRECORDED, ROUTES.MOBILE),
+        Component: MobileUnrecordedPage,
+      },
+      {
+        path: getChildPath(ROUTES.MOBILE_RECORD, ROUTES.MOBILE),
+        Component: MobileRecordPage,
+      },
+    ],
+  },
   {
     Component: RootLayout,
     children: [
@@ -19,36 +49,36 @@ const router = createBrowserRouter([
         path: ROUTES.DASHBOARD,
         Component: DashboardLayout,
         children: [
-          { index: true, Component: Dashboard },
+          { index: true, Component: DashboardPage },
           {
             path: getChildPath(ROUTES.DASHBOARD_MY_INTERVIEWS, ROUTES.DASHBOARD),
-            Component: Dashboard,
+            Component: DashboardPage,
           },
           {
             path: getChildPath(ROUTES.DASHBOARD_TREND_QUESTIONS, ROUTES.DASHBOARD),
-            Component: Dashboard,
+            Component: DashboardPage,
           },
           {
             path: getChildPath(ROUTES.DASHBOARD_MY_COLLECTIONS, ROUTES.DASHBOARD),
-            Component: Dashboard,
+            Component: DashboardPage,
           },
           {
             path: getChildPath(ROUTES.DASHBOARD_COLLECTION_DETAIL, ROUTES.DASHBOARD),
-            Component: Dashboard,
+            Component: DashboardPage,
           },
         ],
       },
       {
         path: ROUTES.RECORD,
         children: [
-          { index: true, Component: Dashboard },
+          { index: true, Component: DashboardPage },
           {
             path: getChildPath(ROUTES.RECORD_CONFIRM, ROUTES.RECORD),
-            Component: Dashboard,
+            Component: RecordConfirmPage,
           },
           {
             path: getChildPath(ROUTES.RECORD_LINK, ROUTES.RECORD),
-            Component: Dashboard,
+            Component: RecordLinkPage,
           },
         ],
       },
@@ -57,11 +87,11 @@ const router = createBrowserRouter([
         children: [
           {
             path: getChildPath(ROUTES.RETRO_QUESTION, ROUTES.RETRO),
-            Component: Dashboard,
+            Component: DashboardPage,
           },
           {
             path: getChildPath(ROUTES.RETRO_DETAILS, ROUTES.RETRO),
-            Component: Dashboard,
+            Component: DashboardPage,
           },
         ],
       },
