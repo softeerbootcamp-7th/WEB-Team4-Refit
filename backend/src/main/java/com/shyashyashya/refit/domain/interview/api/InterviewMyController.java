@@ -34,7 +34,8 @@ public class InterviewMyController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<CommonResponse<Page<InterviewSimpleDto>>> searchInterviews(@RequestBody InterviewSearchRequest request, Pageable pageable) {
+    public ResponseEntity<CommonResponse<Page<InterviewSimpleDto>>> searchInterviews(
+            @RequestBody InterviewSearchRequest request, Pageable pageable) {
         var body = interviewService.searchMyInterviews(request, pageable);
         var response = CommonResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);

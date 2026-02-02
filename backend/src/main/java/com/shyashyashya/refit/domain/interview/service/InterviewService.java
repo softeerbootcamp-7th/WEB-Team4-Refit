@@ -99,7 +99,8 @@ public class InterviewService {
     public Page<InterviewSimpleDto> searchMyInterviews(InterviewSearchRequest request, Pageable pageable) {
         User requestUser = requestUserContext.getRequestUser();
 
-        return interviewRepository.searchInterviews(
+        return interviewRepository
+                .searchInterviews(
                         requestUser,
                         request.keyword(),
                         request.searchFilter().interviewType(),
