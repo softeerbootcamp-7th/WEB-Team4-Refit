@@ -5,7 +5,7 @@ import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
 import com.shyashyashya.refit.global.auth.dto.OAuthLoginUrlResponse;
 import com.shyashyashya.refit.global.auth.service.CookieUtil;
-import com.shyashyashya.refit.global.auth.service.GoogleOAuthService;
+import com.shyashyashya.refit.global.auth.service.GoogleOAuth2Service;
 import com.shyashyashya.refit.global.property.OAuth2Property;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -22,7 +22,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 public class GoogleOAuth2Controller {
 
-    private final GoogleOAuthService googleOAuthService;
+    private final GoogleOAuth2Service googleOAuthService;
     private final OAuth2Property oAuth2Property;
     private final CookieUtil cookieUtil;
 

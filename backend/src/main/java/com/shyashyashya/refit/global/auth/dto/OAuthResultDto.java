@@ -1,7 +1,7 @@
 package com.shyashyashya.refit.global.auth.dto;
 
 import com.shyashyashya.refit.domain.user.model.User;
-import com.shyashyashya.refit.global.auth.service.GoogleOAuthService.GoogleUserInfo;
+import com.shyashyashya.refit.global.auth.service.GoogleOAuth2Service.GoogleUserInfo;
 import lombok.Builder;
 
 @Builder
