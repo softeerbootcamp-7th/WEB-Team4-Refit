@@ -27,18 +27,18 @@ public class AuthController {
             @CookieValue(value = AuthConstant.ACCESS_TOKEN) String accessToken,
             @CookieValue(value = AuthConstant.REFRESH_TOKEN) String refreshToken) {
 
+        var response = CommonResponse.success(COMMON200);
         return authService
                 .reissue(accessToken, refreshToken)
                 .map(tokenPair -> {
                     String accessTokenCookie = cookieUtil.createAccessTokenCookie(tokenPair.accessToken());
                     String refreshTokenCookie = cookieUtil.createResponseTokenCookie(tokenPair.refreshToken());
 
-                    var body = CommonResponse.success(COMMON200);
                     return ResponseEntity.ok()
                             .header(HttpHeaders.SET_COOKIE, accessTokenCookie)
                             .header(HttpHeaders.SET_COOKIE, refreshTokenCookie)
-                            .body(body);
+                            .body(response);
                 })
-                .orElse(ResponseEntity.ok(CommonResponse.success(COMMON200)));
+                .orElse(ResponseEntity.ok(response));
     }
 }
