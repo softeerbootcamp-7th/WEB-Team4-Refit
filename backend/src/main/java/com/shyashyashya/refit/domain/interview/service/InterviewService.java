@@ -8,9 +8,11 @@ import com.shyashyashya.refit.domain.company.model.Company;
 import com.shyashyashya.refit.domain.company.repository.CompanyRepository;
 import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
+import com.shyashyashya.refit.domain.interview.dto.InterviewSimpleDto;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatusUpdateRequest;
 import com.shyashyashya.refit.domain.interview.model.Interview;
+import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
 import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
@@ -20,6 +22,8 @@ import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.util.RequestUserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,6 +82,16 @@ public class InterviewService {
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
         interview.updateResultStatus(request.interviewResultStatus());
+    }
+
+    @Transactional(readOnly = true)
+    public Page<InterviewSimpleDto> getMyInterviewsByReviewStatus(
+            InterviewReviewStatus reviewStatus, Pageable pageable) {
+        User requestUser = requestUserContext.getRequestUser();
+
+        return interviewRepository
+                .findAllByUserAndReviewStatus(requestUser, reviewStatus, pageable)
+                .map(InterviewSimpleDto::from);
     }
 
     private Company findOrSaveCompany(InterviewCreateRequest request) {

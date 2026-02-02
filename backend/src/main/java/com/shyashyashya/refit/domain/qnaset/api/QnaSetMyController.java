@@ -3,6 +3,7 @@ package com.shyashyashya.refit.domain.qnaset.api;
 import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
 
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
+import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetCategoryQuestionResponse;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetCategoryResponse;
 import com.shyashyashya.refit.domain.qnaset.service.QnaSetMyService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,6 +31,17 @@ public class QnaSetMyController {
     public ResponseEntity<CommonResponse<Page<FrequentQnaSetCategoryResponse>>> getMyFrequentQnaSetCategories(
             Pageable pageable) {
         var body = qnaSetMyService.getFrequentQnaSetCategories(pageable);
+        var response = CommonResponse.success(COMMON200, body);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+            summary = "나의 빈출 질문 중 특정 카테고리에 속한 질문들을 조회합니다.",
+            description = "나의 빈출 질문 중 특정 카테고리에 속한 질문들을 조회합니다.")
+    @GetMapping("/frequent/category/{categoryId}")
+    public ResponseEntity<CommonResponse<Page<FrequentQnaSetCategoryQuestionResponse>>> getMyFrequentQnaSetCategoryQuestions(
+            Long categoryId, Pageable pageable) {
+        var body = qnaSetMyService.getFrequentQnaSetCategoryQuestions(categoryId, pageable);
         var response = CommonResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
