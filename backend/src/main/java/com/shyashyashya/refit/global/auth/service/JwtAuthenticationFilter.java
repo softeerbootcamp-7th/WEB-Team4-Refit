@@ -1,11 +1,10 @@
 package com.shyashyashya.refit.global.auth.service;
 
-import static com.shyashyashya.refit.global.exception.ErrorCode.LOGIN_REQUIRED;
 import static com.shyashyashya.refit.global.exception.ErrorCode.USER_SIGNUP_REQUIRED;
 
 import com.shyashyashya.refit.global.constant.AuthConstant;
 import com.shyashyashya.refit.global.exception.CustomException;
-import com.shyashyashya.refit.global.property.AuthProperty;
+import com.shyashyashya.refit.global.property.AuthUrlProperty;
 import com.shyashyashya.refit.global.util.RequestUserContext;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
@@ -25,7 +24,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final AuthProperty authProperty;
+    private final AuthUrlProperty authUrlProperty;
     private final RequestUserContext requestUserContext;
     private final HandlerExceptionResolver handlerExceptionResolver;
     private final JwtUtil jwtUtil;
@@ -44,15 +43,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
             String token = resolveToken(request);
-            if (token == null) {
-                throw new CustomException(LOGIN_REQUIRED);
-            }
             jwtUtil.validateToken(token);
 
             Long userId = jwtUtil.getUserId(token); // Guest면 null, 정회원이면 값 존재
             String email = jwtUtil.getEmail(token);
 
-            if (userId == null && !pathMatcher.match(authProperty.signUpUrl(), request.getRequestURI())) {
+            if (isIllegalGuestAccess(userId, request)) {
                 throw new CustomException(USER_SIGNUP_REQUIRED);
             }
 
@@ -66,8 +62,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private boolean isWhitelisted(HttpServletRequest request) {
-        return authProperty.whitelistApiUrls().stream()
+        return authUrlProperty.whitelists().stream()
                 .anyMatch(pattern -> pathMatcher.match(pattern, request.getRequestURI()));
+    }
+
+    private boolean isIllegalGuestAccess(Long userId, HttpServletRequest request) {
+        return userId == null && !pathMatcher.match(authUrlProperty.signUp(), request.getRequestURI());
     }
 
     // 쿠키에서 토큰 추출

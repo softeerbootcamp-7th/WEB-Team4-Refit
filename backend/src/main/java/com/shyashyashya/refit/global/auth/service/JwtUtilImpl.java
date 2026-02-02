@@ -4,7 +4,7 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.LOGIN_REQUIRED;
 import static com.shyashyashya.refit.global.exception.ErrorCode.TOKEN_EXPIRED;
 
 import com.shyashyashya.refit.global.exception.CustomException;
-import com.shyashyashya.refit.global.property.AuthProperty;
+import com.shyashyashya.refit.global.property.AuthJwtProperty;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -28,10 +28,10 @@ public class JwtUtilImpl implements JwtUtil {
     private final Duration accessTokenExpiration;
     private final Duration refreshTokenExpiration;
 
-    public JwtUtilImpl(AuthProperty authProperty) {
-        this.key = Keys.hmacShaKeyFor(authProperty.jwt().secret().getBytes());
-        this.accessTokenExpiration = authProperty.jwt().tokenExpiration().accessToken();
-        this.refreshTokenExpiration = authProperty.jwt().tokenExpiration().refreshToken();
+    public JwtUtilImpl(AuthJwtProperty authJwtProperty) {
+        this.key = Keys.hmacShaKeyFor(authJwtProperty.secret().getBytes());
+        this.accessTokenExpiration = authJwtProperty.tokenExpiration().accessToken();
+        this.refreshTokenExpiration = authJwtProperty.tokenExpiration().refreshToken();
     }
 
     public String createAccessToken(@NotNull String email, @Nullable Long userId) {
@@ -73,9 +73,12 @@ public class JwtUtilImpl implements JwtUtil {
     }
 
     public void validateToken(String token) {
+
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return;
+            if (token != null) {
+                Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+                return;
+            }
         } catch (SecurityException | MalformedJwtException e) {
             log.warn("Invalid JWT signature: {}", e.getMessage());
         } catch (UnsupportedJwtException e) {
