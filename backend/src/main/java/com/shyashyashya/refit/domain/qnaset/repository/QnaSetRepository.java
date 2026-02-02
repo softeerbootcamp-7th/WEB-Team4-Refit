@@ -5,7 +5,6 @@ import com.shyashyashya.refit.domain.qnaset.model.QnaSetCategory;
 import com.shyashyashya.refit.domain.qnaset.model.StarInclusionLevel;
 import com.shyashyashya.refit.domain.user.model.User;
 import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -43,10 +42,12 @@ public interface QnaSetRepository extends JpaRepository<QnaSet, Long> {
            AND s.aInclusionLevel IN :aInclusionLevel
            AND s.rInclusionLevel IN :rInclusionLevel
     """)
-    Page<QnaSet> searchQnaSet(User user, String keyword,
-                              List<StarInclusionLevel> sInclusionLevels,
-                              List<StarInclusionLevel> tInclusionLevels,
-                              List<StarInclusionLevel> aInclusionLevels,
-                              List<StarInclusionLevel> rInclusionLevels,
-                              Pageable pageable);
+    Page<QnaSet> searchQnaSet(
+            User user,
+            String keyword,
+            List<StarInclusionLevel> sInclusionLevels,
+            List<StarInclusionLevel> tInclusionLevels,
+            List<StarInclusionLevel> aInclusionLevels,
+            List<StarInclusionLevel> rInclusionLevels,
+            Pageable pageable);
 }
