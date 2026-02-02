@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { CloseIcon, MoreIcon, PencilIcon } from '@/assets'
+import { useOnClickOutside } from '@/shared/hooks/useOnClickOutside'
 import { Border } from '@/shared/sidebar/Border'
 
 type QnaSetDropdownMenuProps = {
@@ -9,6 +10,10 @@ type QnaSetDropdownMenuProps = {
 
 export const QnaSetDropdownMenu = ({ onEdit, onDelete }: QnaSetDropdownMenuProps) => {
   const [menuOpen, setMenuOpen] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  const closeMenu = () => setMenuOpen(false)
+  useOnClickOutside(containerRef, closeMenu, menuOpen)
 
   const handleClickEditButton = () => {
     setMenuOpen(false)
@@ -19,7 +24,7 @@ export const QnaSetDropdownMenu = ({ onEdit, onDelete }: QnaSetDropdownMenuProps
     onDelete()
   }
   return (
-    <div className="relative ml-auto">
+    <div ref={containerRef} className="relative ml-auto">
       <button onClick={() => setMenuOpen((v) => !v)} className="flex h-8 w-8 items-center justify-center">
         <MoreIcon />
       </button>
