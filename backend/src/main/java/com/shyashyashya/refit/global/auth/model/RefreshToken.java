@@ -27,7 +27,7 @@ public class RefreshToken extends BaseEntity {
     @Column(name = "refresh_token", nullable = false, unique = true, columnDefinition = "varchar(2048)")
     private String token;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
