@@ -128,4 +128,8 @@ public class Interview extends BaseEntity {
         this.industry = industry;
         this.jobCategory = jobCategory;
     }
+
+    public void updateResultStatus(InterviewResultStatus interviewResultStatus) {
+        this.resultStatus = interviewResultStatus;
+    }
 }
