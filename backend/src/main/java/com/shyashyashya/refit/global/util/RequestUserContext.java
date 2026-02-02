@@ -14,15 +14,16 @@ import org.springframework.web.context.annotation.RequestScope;
 // TODO: 패키지 위치 다시 생각해보기
 @Component
 @RequestScope
-@Getter
 @RequiredArgsConstructor
 public class RequestUserContext {
 
     private final UserRepository userRepository;
 
+    @Getter
     @Setter
     private Long userId;
 
+    @Getter
     @Setter
     private String email;
 
