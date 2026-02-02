@@ -15,4 +15,12 @@ public interface QnaSetRepository extends JpaRepository<QnaSet, Long> {
          WHERE q.interview.user = :user
     """)
     List<QnaSet> findAllByUser(User user);
+
+    @Query("""
+        SELECT q
+          FROM QnaSet q
+         WHERE q.interview.industry.id = :industryId
+           AND q.interview.jobCategory.id = :jobCategoryId
+    """)
+    List<QnaSet> findAllByIndustryAndJobCategory(Long industryId, Long jobCategoryId);
 }
