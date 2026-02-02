@@ -2,15 +2,18 @@ package com.shyashyashya.refit.domain.interview.service;
 
 import static com.shyashyashya.refit.global.exception.ErrorCode.INDUSTRY_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_FOUND;
+import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_IN_DRAFT_STATUS;
 import static com.shyashyashya.refit.global.exception.ErrorCode.JOB_CATEGORY_NOT_FOUND;
 
 import com.shyashyashya.refit.domain.company.model.Company;
 import com.shyashyashya.refit.domain.company.repository.CompanyRepository;
 import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
+import com.shyashyashya.refit.domain.interview.dto.InterviewDto;
 import com.shyashyashya.refit.domain.interview.dto.InterviewSimpleDto;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatusUpdateRequest;
+import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
@@ -39,6 +42,18 @@ public class InterviewService {
     private final InterviewValidator interviewValidator;
     private final RequestUserContext requestUserContext;
 
+    @Transactional(readOnly = true)
+    public InterviewDto getInterview(Long interviewId) {
+        User requestUser = requestUserContext.getRequestUser();
+
+        Interview interview =
+                interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
+
+        interviewValidator.validateInterviewOwner(interview, requestUser);
+
+        return InterviewDto.from(interview);
+    }
+
     @Transactional
     public void createInterview(InterviewCreateRequest request) {
 
@@ -57,7 +72,7 @@ public class InterviewService {
         Interview interview = Interview.create(
                 request.jobRole(), request.interviewType(), request.startAt(), user, company, industry, jobCategory);
 
-        Interview createdInterview = interviewRepository.save(interview); // 미사용?
+        interviewRepository.save(interview);
     }
 
     @Transactional
@@ -85,13 +100,29 @@ public class InterviewService {
     }
 
     @Transactional(readOnly = true)
-    public Page<InterviewSimpleDto> getMyInterviewsByReviewStatus(
+    public Page<InterviewSimpleDto> getMyInterviewDraftsByReviewStatus(
             InterviewReviewStatus reviewStatus, Pageable pageable) {
         User requestUser = requestUserContext.getRequestUser();
 
-        return interviewRepository
-                .findAllByUserAndReviewStatus(requestUser, reviewStatus, pageable)
-                .map(InterviewSimpleDto::from);
+        return switch (reviewStatus) {
+            case LOG_DRAFT, SELF_REVIEW_DRAFT ->
+                interviewRepository
+                        .findAllByUserAndReviewStatus(requestUser, reviewStatus, pageable)
+                        .map(InterviewSimpleDto::from);
+            default -> throw new CustomException(INTERVIEW_NOT_IN_DRAFT_STATUS);
+        };
+    }
+
+    @Transactional
+    public void updateRawText(Long interviewId, RawTextUpdateRequest request) {
+        User requestUser = requestUserContext.getRequestUser();
+
+        Interview interview =
+                interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
+
+        interviewValidator.validateInterviewOwner(interview, requestUser);
+
+        interview.updateRawText(request.rawText());
     }
 
     private Company findOrSaveCompany(InterviewCreateRequest request) {
