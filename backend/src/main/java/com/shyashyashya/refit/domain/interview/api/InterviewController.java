@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class InterviewController {
 
     private final InterviewService interviewService;
-    private final ResourceLoader resourceLoader;
 
     @DeleteMapping("/{interviewId}")
     public ResponseEntity<CommonResponse<Void>> deleteInterview(@PathVariable Long interviewId) {
