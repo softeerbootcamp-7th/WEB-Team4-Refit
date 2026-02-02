@@ -6,6 +6,7 @@ import com.shyashyashya.refit.domain.common.dto.CommonResponse;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetCategoryQuestionResponse;
 import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetSearchRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetCategoryResponse;
+import com.shyashyashya.refit.domain.qnaset.dto.response.QnaSetSearchResponse;
 import com.shyashyashya.refit.domain.qnaset.service.QnaSetMyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -52,7 +53,7 @@ public class QnaSetMyController {
 
     @Operation(summary = "나의 면접 질문들을 검색합니다.", description = "나의 면접 질문들을 검색합니다. 조건을 넣지 않으면 전체 데이터를 조회합니다.")
     @PostMapping("/search")
-    public ResponseEntity<CommonResponse<Page<?>>> searchMyQnaSet(@Valid @RequestBody QnaSetSearchRequest request, Pageable pageable) {
+    public ResponseEntity<CommonResponse<Page<QnaSetSearchResponse>>> searchMyQnaSet(@Valid @RequestBody QnaSetSearchRequest request, Pageable pageable) {
         var body = qnaSetMyService.searchQnaSets(request, pageable);
         var response = CommonResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
