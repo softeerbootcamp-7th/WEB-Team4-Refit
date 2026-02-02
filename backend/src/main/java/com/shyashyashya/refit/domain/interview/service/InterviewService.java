@@ -111,7 +111,7 @@ public class InterviewService {
     }
 
     @Transactional(readOnly = true)
-    public Page<InterviewSimpleDto> searchMyInterviews(InterviewSearchRequest request, Pageable pageable) {
+    public Page<InterviewDto> searchMyInterviews(InterviewSearchRequest request, Pageable pageable) {
         User requestUser = requestUserContext.getRequestUser();
 
         return interviewRepository
@@ -122,7 +122,7 @@ public class InterviewService {
                         request.searchFilter().interviewResultStatus(),
                         request.searchFilter().startDate(),
                         request.searchFilter().endDate())
-                .map(InterviewSimpleDto::from);
+                .map(InterviewDto::from);
     }
 
     public Page<InterviewSimpleDto> getMyInterviewDraftsByReviewStatus(
