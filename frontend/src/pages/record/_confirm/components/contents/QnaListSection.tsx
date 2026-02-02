@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { QnaSetContainer } from '@/pages/record/_confirm/components/contents/QnaSetContainer'
-import { QnaSetEditForm } from '@/pages/record/_confirm/components/contents/QnaSetEditForm'
+import { QnaSetContainer } from './QnaSetContainer'
+import { QnaSetEditForm } from './QnaSetEditForm'
 import { CirclePlusIcon } from '@/shared/assets'
 import { Button, FadeScrollArea } from '@/shared/components'
 
