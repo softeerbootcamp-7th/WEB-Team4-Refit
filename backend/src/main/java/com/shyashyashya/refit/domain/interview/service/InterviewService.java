@@ -11,6 +11,7 @@ import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
 import com.shyashyashya.refit.domain.interview.dto.InterviewSimpleDto;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatusUpdateRequest;
+import com.shyashyashya.refit.domain.interview.dto.request.InterviewSearchRequest;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
@@ -91,6 +92,20 @@ public class InterviewService {
 
         return interviewRepository
                 .findAllByUserAndReviewStatus(requestUser, reviewStatus, pageable)
+                .map(InterviewSimpleDto::from);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<InterviewSimpleDto> searchMyInterviews(InterviewSearchRequest request, Pageable pageable) {
+        User requestUser = requestUserContext.getRequestUser();
+
+        return interviewRepository.searchInterviews(
+                        requestUser,
+                        request.keyword(),
+                        request.searchFilter().interviewType(),
+                        request.searchFilter().interviewResultStatus(),
+                        request.searchFilter().startDate(),
+                        request.searchFilter().endDate())
                 .map(InterviewSimpleDto::from);
     }
 
