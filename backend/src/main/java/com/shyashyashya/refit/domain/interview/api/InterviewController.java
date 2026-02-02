@@ -1,5 +1,6 @@
 package com.shyashyashya.refit.domain.interview.api;
 
+import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
 import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON201;
 import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON204;
 
@@ -42,7 +43,7 @@ public class InterviewController {
     public ResponseEntity<CommonResponse<Void>> updateRawText(
             @PathVariable Long interviewId, @RequestBody RawTextUpdateRequest request) {
         interviewService.updateRawText(interviewId, request);
-        var response = CommonResponse.success(COMMON201);
+        var response = CommonResponse.success(COMMON200);
         return ResponseEntity.ok(response);
     }
 }
