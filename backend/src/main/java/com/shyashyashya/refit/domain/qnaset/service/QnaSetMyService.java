@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,8 +24,9 @@ public class QnaSetMyService {
     private final RequestUserContext requestUserContext;
     private final QnaSetRepository qnaSetRepository;
 
+    @Transactional(readOnly = true)
     public Page<FrequentQnaSetCategoryResponse> getFrequentQnaSetCategories(Pageable pageable) {
-        User requestUser = requestUserContext.getRequestUser();
+        User requestUser = requestUserContext.getUser();
 
         // TODO : 로직 고도화 (쿼리로 한번에 조회할 수 있도록)
         List<QnaSet> qna = qnaSetRepository.findAllByUser(requestUser);

@@ -2,6 +2,7 @@ package com.shyashyashya.refit.domain.interview.service;
 
 import static com.shyashyashya.refit.global.exception.ErrorCode.INDUSTRY_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_FOUND;
+import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_IN_DRAFT_STATUS;
 import static com.shyashyashya.refit.global.exception.ErrorCode.JOB_CATEGORY_NOT_FOUND;
 
 import com.shyashyashya.refit.domain.company.model.Company;
@@ -9,10 +10,12 @@ import com.shyashyashya.refit.domain.company.repository.CompanyRepository;
 import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
 import com.shyashyashya.refit.domain.interview.dto.InterviewDto;
+import com.shyashyashya.refit.domain.interview.dto.InterviewSimpleDto;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatusUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
 import com.shyashyashya.refit.domain.interview.model.Interview;
+import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
 import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
@@ -22,6 +25,8 @@ import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.util.RequestUserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -92,6 +97,20 @@ public class InterviewService {
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
         interview.updateResultStatus(request.interviewResultStatus());
+    }
+
+    @Transactional(readOnly = true)
+    public Page<InterviewSimpleDto> getMyInterviewDraftsByReviewStatus(
+            InterviewReviewStatus reviewStatus, Pageable pageable) {
+        User requestUser = requestUserContext.getRequestUser();
+
+        return switch (reviewStatus) {
+            case LOG_DRAFT, SELF_REVIEW_DRAFT ->
+                interviewRepository
+                        .findAllByUserAndReviewStatus(requestUser, reviewStatus, pageable)
+                        .map(InterviewSimpleDto::from);
+            default -> throw new CustomException(INTERVIEW_NOT_IN_DRAFT_STATUS);
+        };
     }
 
     @Transactional
