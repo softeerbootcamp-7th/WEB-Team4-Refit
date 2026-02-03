@@ -46,7 +46,7 @@ export function InterviewScheduleContent({ values, onChange, onPrev, onNext }: I
                   type="button"
                   onClick={() => onChange({ ...values, interviewType: option.value })}
                   className={`body-l-medium cursor-pointer rounded-[10px] p-4 transition-colors ${
-                    isSelected ? 'bg-orange-500 text-white' : 'bg-gray-150 text-gray-300'
+                    isSelected ? 'bg-orange-500 text-white' : 'border-gray-150 border bg-white text-gray-600'
                   }`}
                 >
                   {option.label}
