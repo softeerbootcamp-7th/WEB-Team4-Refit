@@ -27,10 +27,12 @@ export const DATE_CELL_STYLE = {
   otherMonth: 'text-gray-300',
 } as const
 
-export const SCHEDULE_MODAL_STEP_CONFIG = {
-  1: { title: '면접 일정 추가', description: '면접 정보를 입력해주세요' },
-  2: {
+export type ScheduleModalStep = 'info' | 'schedule'
+
+export const SCHEDULE_MODAL_STEP_CONFIG: Record<ScheduleModalStep, { title: string; description: string }> = {
+  info: { title: '면접 일정 추가', description: '면접 정보를 입력해주세요' },
+  schedule: {
     title: '면접 일정 추가',
     description: '면접 유형과 일시를 알려주세요',
   },
-} as const
+}

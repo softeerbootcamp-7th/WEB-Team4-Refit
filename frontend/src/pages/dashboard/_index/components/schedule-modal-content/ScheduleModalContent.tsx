@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import type { ScheduleModalStep } from '@/pages/dashboard/_index/constants/interviewCalendar'
 import { InterviewInfoContent } from '@/pages/dashboard/_index/components/schedule-modal-content/InterviewInfoContent'
 import type { InterviewInfoFormValues } from '@/pages/dashboard/_index/components/schedule-modal-content/InterviewInfoContent'
 import { InterviewScheduleContent } from '@/pages/dashboard/_index/components/schedule-modal-content/InterviewScheduleContent'
@@ -7,8 +8,8 @@ import type { InterviewScheduleFormValues } from '@/pages/dashboard/_index/compo
 export interface ScheduleFormSubmitValues extends InterviewInfoFormValues, InterviewScheduleFormValues {}
 
 export interface ScheduleModalContentProps {
-  step: 1 | 2
-  onStepChange: (step: 1 | 2) => void
+  step: ScheduleModalStep
+  onStepChange: (step: ScheduleModalStep) => void
   onSubmit?: (values: ScheduleFormSubmitValues) => void
 }
 
@@ -28,12 +29,12 @@ export function ScheduleModalContent({ step, onStepChange, onSubmit }: ScheduleM
     onSubmit?.({ ...interviewInfoValues, ...interviewScheduleValues })
   }
 
-  if (step === 2) {
+  if (step === 'schedule') {
     return (
       <InterviewScheduleContent
         values={interviewScheduleValues}
         onChange={setInterviewScheduleValues}
-        onPrev={() => onStepChange(1)}
+        onPrev={() => onStepChange('info')}
         onNext={handleSubmit}
       />
     )
@@ -43,7 +44,7 @@ export function ScheduleModalContent({ step, onStepChange, onSubmit }: ScheduleM
     <InterviewInfoContent
       values={interviewInfoValues}
       onChange={setInterviewInfoValues}
-      onNext={() => onStepChange(2)}
+      onNext={() => onStepChange('schedule')}
     />
   )
 }

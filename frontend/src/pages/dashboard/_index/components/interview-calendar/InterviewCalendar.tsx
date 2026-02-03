@@ -3,13 +3,16 @@ import { CalendarFooter } from '@/pages/dashboard/_index/components/interview-ca
 import { CalendarGrid } from '@/pages/dashboard/_index/components/interview-calendar/CalendarGrid'
 import { CalendarHeader } from '@/pages/dashboard/_index/components/interview-calendar/CalendarHeader'
 import { ScheduleModalContent } from '@/pages/dashboard/_index/components/schedule-modal-content/ScheduleModalContent'
-import { SCHEDULE_MODAL_STEP_CONFIG } from '@/pages/dashboard/_index/constants/interviewCalendar'
+import {
+  SCHEDULE_MODAL_STEP_CONFIG,
+  type ScheduleModalStep,
+} from '@/pages/dashboard/_index/constants/interviewCalendar'
 import { useInterviewCalendar } from '@/pages/dashboard/_index/hooks/useInterviewCalendar'
 import { Modal } from '@/shared/components'
 
 export default function InterviewCalendar() {
   const [isAddScheduleModalOpen, setIsAddScheduleModalOpen] = useState(false)
-  const [scheduleStep, setScheduleStep] = useState<1 | 2>(1)
+  const [scheduleStep, setScheduleStep] = useState<ScheduleModalStep>('info')
   const {
     today,
     viewDate,
@@ -21,6 +24,11 @@ export default function InterviewCalendar() {
     handleDateClick,
     getEventColor,
   } = useInterviewCalendar()
+
+  const handleModalClose = () => {
+    setIsAddScheduleModalOpen(false)
+    setScheduleStep('info')
+  }
 
   return (
     <>
@@ -46,21 +54,11 @@ export default function InterviewCalendar() {
       </aside>
       <Modal
         open={isAddScheduleModalOpen}
-        onClose={() => {
-          setIsAddScheduleModalOpen(false)
-          setScheduleStep(1)
-        }}
+        onClose={handleModalClose}
         title={SCHEDULE_MODAL_STEP_CONFIG[scheduleStep].title}
         description={SCHEDULE_MODAL_STEP_CONFIG[scheduleStep].description}
       >
-        <ScheduleModalContent
-          step={scheduleStep}
-          onStepChange={setScheduleStep}
-          onSubmit={() => {
-            setIsAddScheduleModalOpen(false)
-            setScheduleStep(1)
-          }}
-        />
+        <ScheduleModalContent step={scheduleStep} onStepChange={setScheduleStep} onSubmit={handleModalClose} />
       </Modal>
     </>
   )

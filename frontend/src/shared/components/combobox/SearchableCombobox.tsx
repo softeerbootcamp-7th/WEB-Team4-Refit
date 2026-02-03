@@ -8,7 +8,6 @@ export interface SearchableComboboxProps {
   placeholder?: string
   error?: string
   required?: boolean
-  /** 검색 입력 placeholder */
   searchPlaceholder?: string
   /** 검색 결과 없을 경우 검색어로 커스텀 추가 가능 */
   creatable?: boolean
