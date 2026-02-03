@@ -1,19 +1,20 @@
-import { forwardRef, type SelectHTMLAttributes } from 'react'
+import { forwardRef } from 'react'
+import type { SelectHTMLAttributes } from 'react'
 import { CaretDownIcon } from '@/shared/assets'
 
-export interface ComboboxAccessoryProps {
+export interface NativeComboboxProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label?: string
   options: { value: string; label: string }[]
   placeholder?: string
-  error?: string
   required?: boolean
 }
 
-export interface ComboboxProps extends SelectHTMLAttributes<HTMLSelectElement>, ComboboxAccessoryProps {}
-
-const Combobox = forwardRef<HTMLSelectElement, ComboboxProps>(
-  ({ label, options, placeholder, error, required, className = '', value, ...props }, ref) => {
-    const isPlaceholderSelected = value === ''
+const NativeCombobox = forwardRef<HTMLSelectElement, NativeComboboxProps>(
+  (
+    { label, options, placeholder = '선택해 주세요', required, className = '', value, disabled, onChange, ...props },
+    ref,
+  ) => {
+    const isPlaceholderSelected = value === '' || value === undefined
 
     return (
       <div className="flex flex-col gap-2">
@@ -22,6 +23,7 @@ const Combobox = forwardRef<HTMLSelectElement, ComboboxProps>(
             {label}
             {required && (
               <span className="text-red-400" aria-hidden>
+                {' '}
                 *
               </span>
             )}
@@ -32,7 +34,9 @@ const Combobox = forwardRef<HTMLSelectElement, ComboboxProps>(
             ref={ref}
             value={value}
             required={required}
-            className={`body-l-medium w-full appearance-none rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-orange-500 ${
+            disabled={disabled}
+            onChange={onChange}
+            className={`body-l-medium w-full cursor-pointer appearance-none rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-orange-500 ${
               isPlaceholderSelected ? 'text-gray-300' : 'text-gray-900'
             } ${className}`}
             {...props}
@@ -49,15 +53,14 @@ const Combobox = forwardRef<HTMLSelectElement, ComboboxProps>(
             ))}
           </select>
           <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
-            <CaretDownIcon className="w-3 text-gray-300" />
+            <CaretDownIcon className="h-3 w-3 text-gray-300" />
           </div>
         </div>
-        {error && <p className="body-s-medium text-red-500">{error}</p>}
       </div>
     )
   },
 )
 
-Combobox.displayName = 'Combobox'
+NativeCombobox.displayName = 'NativeCombobox'
 
-export default Combobox
+export default NativeCombobox
