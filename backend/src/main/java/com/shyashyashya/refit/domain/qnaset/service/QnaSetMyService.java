@@ -62,7 +62,7 @@ public class QnaSetMyService {
 
     @Transactional(readOnly = true)
     public Page<QnaSetSearchResponse> searchQnaSets(QnaSetSearchRequest request, Pageable pageable) {
-        User requestUser = requestUserContext.getUser();
+        User requestUser = requestUserContext.getRequestUser();
 
         return qnaSetRepository
                 .searchQnaSet(
