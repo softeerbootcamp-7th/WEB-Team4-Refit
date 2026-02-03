@@ -33,7 +33,7 @@ public class DashboardController {
     }
 
     @Operation(summary = "대시보드에서 '곧 있을 면접' 영역의 데이터를 조회합니다.")
-    @GetMapping("/interview/upcomping")
+    @GetMapping("/interview/upcoming")
     public ResponseEntity<CommonResponse<Page<DashboardUpcomingInterviewResponse>>> getUpcomingInterviews(
             Pageable pageable) {
         var body = dashboardService.getUpcomingInterviews(pageable);
