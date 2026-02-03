@@ -6,6 +6,7 @@ import static com.shyashyashya.refit.domain.interview.model.InterviewReviewStatu
 
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardHeadlineResponse;
 import com.shyashyashya.refit.domain.interview.model.Interview;
+import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.util.RequestUserContext;
@@ -19,6 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class DashboardService {
+
+    private static final List<InterviewReviewStatus> REVIEW_NEEDED_STATUSES =
+            List.of(NOT_LOGGED, LOG_DRAFT, SELF_REVIEW_DRAFT);
 
     private final RequestUserContext requestUserContext;
     private final InterviewRepository interviewRepository;
@@ -51,7 +55,6 @@ public class DashboardService {
     }
 
     private boolean existInterviewsToLog(User user) {
-        return interviewRepository.existsByUserAndReviewStatusIn(
-                user, List.of(NOT_LOGGED, LOG_DRAFT, SELF_REVIEW_DRAFT));
+        return interviewRepository.existsByUserAndReviewStatusIn(user, REVIEW_NEEDED_STATUSES);
     }
 }
