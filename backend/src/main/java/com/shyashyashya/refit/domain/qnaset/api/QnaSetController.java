@@ -41,7 +41,7 @@ public class QnaSetController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/qna-set/{qnaSetId}/pdf-highlightings")
+    @GetMapping("/{qnaSetId}/pdf-highlightings")
     public ResponseEntity<CommonResponse<List<PdfHighlightingDto>>> getPdfHighlightings(@PathVariable Long qnaSetId) {
         var body = qnaSetService.getPdfHighlightings(qnaSetId);
         var response = CommonResponse.success(COMMON200, body);
