@@ -65,8 +65,9 @@ public class AuthService {
         } catch (ObjectOptimisticLockingFailureException e) {
             // 동시성 문제 발생 시, 승자의 리프레시 토큰을 찾아 반환, AccessToken은 새로 발급
             entityManager.clear();
-            RefreshToken winnerToken = refreshTokenRepository.findById(storedToken.getId())
-                .orElseThrow(() -> new CustomException(LOGIN_REQUIRED));
+            RefreshToken winnerToken = refreshTokenRepository
+                    .findById(storedToken.getId())
+                    .orElseThrow(() -> new CustomException(LOGIN_REQUIRED));
 
             String recoveryAccessToken = jwtUtil.createAccessToken(email, userId);
             return Optional.of(TokenPairDto.of(recoveryAccessToken, winnerToken.getToken()));
