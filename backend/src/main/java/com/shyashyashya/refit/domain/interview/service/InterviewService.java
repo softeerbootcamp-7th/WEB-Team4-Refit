@@ -10,9 +10,12 @@ import com.shyashyashya.refit.domain.company.repository.CompanyRepository;
 import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
 import com.shyashyashya.refit.domain.interview.dto.InterviewDto;
+import com.shyashyashya.refit.domain.interview.dto.InterviewFullDto;
 import com.shyashyashya.refit.domain.interview.dto.InterviewSimpleDto;
+import com.shyashyashya.refit.domain.interview.dto.StarAnalysisDto;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatusUpdateRequest;
+import com.shyashyashya.refit.domain.interview.dto.request.InterviewSearchRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
@@ -20,9 +23,18 @@ import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
 import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
+import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
+import com.shyashyashya.refit.domain.qnaset.model.QnaSetSelfReview;
+import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
+import com.shyashyashya.refit.domain.qnaset.repository.QnaSetSelfReviewRepository;
+import com.shyashyashya.refit.domain.qnaset.repository.StarAnalysisRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.util.RequestUserContext;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -38,6 +50,9 @@ public class InterviewService {
     private final CompanyRepository companyRepository;
     private final IndustryRepository industryRepository;
     private final JobCategoryRepository jobCategoryRepository;
+    private final QnaSetRepository qnaSetRepository;
+    private final QnaSetSelfReviewRepository qnaSetSelfReviewRepository;
+    private final StarAnalysisRepository starAnalysisRepository;
 
     private final InterviewValidator interviewValidator;
     private final RequestUserContext requestUserContext;
@@ -52,6 +67,30 @@ public class InterviewService {
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
         return InterviewDto.from(interview);
+    }
+
+    @Transactional(readOnly = true)
+    public InterviewFullDto getInterviewFull(Long interviewId) {
+        User requestUser = requestUserContext.getRequestUser();
+        Interview interview =
+                interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
+        interviewValidator.validateInterviewOwner(interview, requestUser);
+
+        List<QnaSet> qnaSets = qnaSetRepository.findAllByInterview(interview);
+
+        if (qnaSets.isEmpty()) {
+            return InterviewFullDto.fromInterviewWithEmptyQnaSets(interview);
+        }
+
+        List<Long> qnaSetIds = qnaSets.stream().map(QnaSet::getId).toList();
+
+        Map<Long, QnaSetSelfReview> selfReviewMap = qnaSetSelfReviewRepository.findAllByQnaSetIdIn(qnaSetIds).stream()
+                .collect(Collectors.toMap(r -> r.getQnaSet().getId(), Function.identity()));
+
+        Map<Long, StarAnalysisDto> starAnalysisDtoMap = starAnalysisRepository.findAllByQnaSetIdIn(qnaSetIds).stream()
+                .collect(Collectors.toMap(r -> r.getQnaSet().getId(), StarAnalysisDto::from));
+
+        return InterviewFullDto.fromInterviewWithQnaSets(interview, qnaSets, selfReviewMap, starAnalysisDtoMap);
     }
 
     @Transactional
@@ -100,6 +139,31 @@ public class InterviewService {
     }
 
     @Transactional(readOnly = true)
+    public Page<InterviewSimpleDto> getMyInterviewsByReviewStatus(
+            InterviewReviewStatus reviewStatus, Pageable pageable) {
+        User requestUser = requestUserContext.getRequestUser();
+
+        return interviewRepository
+                .findAllByUserAndReviewStatus(requestUser, reviewStatus, pageable)
+                .map(InterviewSimpleDto::from);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<InterviewDto> searchMyInterviews(InterviewSearchRequest request, Pageable pageable) {
+        User requestUser = requestUserContext.getRequestUser();
+
+        return interviewRepository
+                .searchInterviews(
+                        requestUser,
+                        request.keyword(),
+                        request.searchFilter().interviewType(),
+                        request.searchFilter().interviewResultStatus(),
+                        request.searchFilter().startDate().atStartOfDay(),
+                        request.searchFilter().endDate().plusDays(1).atStartOfDay(),
+                        pageable)
+                .map(InterviewDto::from);
+    }
+
     public Page<InterviewSimpleDto> getMyInterviewDraftsByReviewStatus(
             InterviewReviewStatus reviewStatus, Pageable pageable) {
         User requestUser = requestUserContext.getRequestUser();
