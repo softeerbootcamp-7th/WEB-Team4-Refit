@@ -49,7 +49,7 @@ public class QnaSetMyService {
     @Transactional(readOnly = true)
     public Page<FrequentQnaSetCategoryQuestionResponse> getFrequentQnaSetCategoryQuestions(
             Long categoryId, Pageable pageable) {
-        User requestUser = requestUserContext.getUser();
+        User requestUser = requestUserContext.getRequestUser();
 
         QnaSetCategory category = qnaSetCategoryRepository
                 .findById(categoryId)
