@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,7 +43,7 @@ public class QnaSetMyController {
     @Operation(summary = "나의 빈출 질문 중 특정 카테고리에 속한 질문들을 조회합니다.", description = "나의 빈출 질문 중 특정 카테고리에 속한 질문들을 조회합니다.")
     @GetMapping("/frequent/category/{categoryId}")
     public ResponseEntity<CommonResponse<Page<FrequentQnaSetCategoryQuestionResponse>>>
-            getMyFrequentQnaSetCategoryQuestions(Long categoryId, Pageable pageable) {
+            getMyFrequentQnaSetCategoryQuestions(@PathVariable Long categoryId, Pageable pageable) {
         var body = qnaSetMyService.getFrequentQnaSetCategoryQuestions(categoryId, pageable);
         var response = CommonResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
