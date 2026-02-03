@@ -4,9 +4,10 @@ interface CalendarHeaderProps {
   monthLabel: string
   onPrevMonth: () => void
   onNextMonth: () => void
+  onAddClick: () => void
 }
 
-export function CalendarHeader({ monthLabel, onPrevMonth, onNextMonth }: CalendarHeaderProps) {
+export function CalendarHeader({ monthLabel, onPrevMonth, onNextMonth, onAddClick }: CalendarHeaderProps) {
   return (
     <div className="mb-3.5 flex items-center justify-between px-1">
       <div className="flex items-center gap-2">
@@ -30,6 +31,7 @@ export function CalendarHeader({ monthLabel, onPrevMonth, onNextMonth }: Calenda
       </div>
       <button
         type="button"
+        onClick={onAddClick}
         className="flex h-6.5 w-6.5 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full bg-white text-gray-400 hover:text-gray-600"
         aria-label="추가"
       >
