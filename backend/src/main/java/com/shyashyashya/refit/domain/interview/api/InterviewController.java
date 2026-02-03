@@ -6,6 +6,7 @@ import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON204;
 
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
 import com.shyashyashya.refit.domain.interview.dto.InterviewDto;
+import com.shyashyashya.refit.domain.interview.dto.InterviewFullDto;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatusUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
@@ -61,6 +62,13 @@ public class InterviewController {
     public ResponseEntity<CommonResponse<Void>> createInterview(@RequestBody InterviewCreateRequest request) {
         interviewService.createInterview(request);
         var response = CommonResponse.success(COMMON201);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{interviewId}/qna-sets")
+    public ResponseEntity<CommonResponse<InterviewFullDto>> getInterviewFull(@PathVariable Long interviewId) {
+        var body = interviewService.getInterviewFull(interviewId);
+        var response = CommonResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
 

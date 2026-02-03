@@ -1,5 +1,6 @@
 package com.shyashyashya.refit.domain.qnaset.repository;
 
+import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetCategory;
 import com.shyashyashya.refit.domain.user.model.User;
@@ -27,4 +28,6 @@ public interface QnaSetRepository extends JpaRepository<QnaSet, Long> {
            AND q.qnaSetCategory = :qnaSetCategory
     """)
     Page<QnaSet> findAllByUserAndQnaSetCategory(User user, QnaSetCategory qnaSetCategory, Pageable pageable);
+
+    List<QnaSet> findAllByInterview(Interview interview);
 }
