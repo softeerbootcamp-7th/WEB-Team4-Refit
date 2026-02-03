@@ -8,12 +8,7 @@ type ListItemProps = {
 export const ListItemSmall = ({ content, active = false, onClick, className }: ListItemProps) => {
   return (
     <div
-      className={[
-        baseStyles,
-        'body-s-semibold justify-center',
-        active ? 'text-primary-700 bg-gray-100' : '',
-        className ?? '',
-      ].join(' ')}
+      className={[baseStyles, 'body-s-semibold justify-center', active ? 'bg-gray-100' : '', className ?? ''].join(' ')}
       tabIndex={0}
       role="button"
       aria-pressed={active}
@@ -27,12 +22,7 @@ export const ListItemSmall = ({ content, active = false, onClick, className }: L
 export const ListItemLarge = ({ content, active = false, onClick, className }: ListItemProps) => {
   return (
     <div
-      className={[
-        baseStyles,
-        'body-s-medium px-2.5',
-        active ? 'bg-primary-100 text-primary-700' : '',
-        className ?? '',
-      ].join(' ')}
+      className={[baseStyles, 'body-s-medium px-2.5', active ? 'bg-gray-100' : '', className ?? ''].join(' ')}
       tabIndex={0}
       role="button"
       aria-pressed={active}
@@ -44,4 +34,4 @@ export const ListItemLarge = ({ content, active = false, onClick, className }: L
 }
 
 const baseStyles =
-  'flex w-full items-center rounded-[10px] py-2.5 hover:bg-gray-100 cursor-pointer focus:outline-none focus:bg-gray-200'
+  'flex w-full items-center rounded-[10px] py-2.5 hover:bg-gray-100 cursor-pointer focus:outline-none focus:bg-gray-100'
