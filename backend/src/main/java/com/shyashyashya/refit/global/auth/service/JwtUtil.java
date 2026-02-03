@@ -22,8 +22,8 @@ import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-@Slf4j
 @Component
+@Slf4j
 public class JwtUtil {
 
     private final Key key;
@@ -102,17 +102,17 @@ public class JwtUtil {
         throw new CustomException(LOGIN_REQUIRED);
     }
 
-    public boolean isSignatureInvalid(String token) {
+    public void validateTokenIgnoringExpiration(String token) {
         try {
             if (token == null) {
-                return true;
+                throw new CustomException(LOGIN_REQUIRED);
             }
             parseClaims(token);
-            return false;
+            return;
         } catch (SecurityException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException e) {
             log.warn("Invalid JWT token: {}", e.getMessage());
         }
-        return true;
+        throw new CustomException(LOGIN_REQUIRED);
     }
 
     private Claims parseClaims(String token) {
