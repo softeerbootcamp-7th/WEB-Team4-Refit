@@ -10,7 +10,7 @@ public record OAuthResultDto(TokenPairDto tokenPair, boolean isNeedSignup, Strin
 
     public static OAuthResultDto createUser(String accessToken, String refreshToken, User user) {
         return OAuthResultDto.builder()
-                .tokenPair(new TokenPairDto(accessToken, refreshToken))
+                .tokenPair(TokenPairDto.of(accessToken, refreshToken))
                 .isNeedSignup(false)
                 .nickname(user.getNickname())
                 .profileImageUrl(user.getProfileImageUrl())
@@ -19,7 +19,7 @@ public record OAuthResultDto(TokenPairDto tokenPair, boolean isNeedSignup, Strin
 
     public static OAuthResultDto createGuest(String accessToken, String refreshToken, GoogleUserInfo userInfo) {
         return OAuthResultDto.builder()
-                .tokenPair(new TokenPairDto(accessToken, refreshToken))
+                .tokenPair(TokenPairDto.of(accessToken, refreshToken))
                 .isNeedSignup(true)
                 .nickname(userInfo.name())
                 .profileImageUrl(userInfo.picture())

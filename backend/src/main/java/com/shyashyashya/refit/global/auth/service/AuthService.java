@@ -59,6 +59,6 @@ public class AuthService {
         Instant newExpiryDate = jwtUtil.getExpiration(newRefreshToken);
 
         storedToken.rotate(newRefreshToken, newExpiryDate);
-        return Optional.of(new TokenPairDto(newAccessToken, newRefreshToken));
+        return Optional.of(TokenPairDto.of(newAccessToken, newRefreshToken));
     }
 }
