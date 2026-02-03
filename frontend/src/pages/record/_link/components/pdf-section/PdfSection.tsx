@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useHighlightContext } from '@/pages/record/_link/contexts'
 import { FilePlusIcon } from '@/shared/assets'
 import { Button } from '@/shared/components'
@@ -8,6 +8,14 @@ export function PdfSection() {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { linkingQnaSetId, setHasPdf } = useHighlightContext()
+
+  useEffect(() => {
+    return () => {
+      if (pdfUrl) {
+        URL.revokeObjectURL(pdfUrl)
+      }
+    }
+  }, [pdfUrl])
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
