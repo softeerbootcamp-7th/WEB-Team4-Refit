@@ -1,5 +1,6 @@
 package com.shyashyashya.refit.domain.qnaset.repository;
 
+import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.user.model.User;
 import java.util.List;
@@ -15,4 +16,6 @@ public interface QnaSetRepository extends JpaRepository<QnaSet, Long> {
          WHERE q.interview.user = :user
     """)
     List<QnaSet> findAllByUser(User user);
+
+    List<QnaSet> findAllByInterview(Interview interview);
 }
