@@ -32,7 +32,7 @@ public class AuthService {
 
         // 리프레시 토큰이 만료되었으면 로그인 필요
         if (jwtUtil.isTokenExpired(refreshToken)) {
-            refreshTokenRepository.findByToken(refreshToken).ifPresent(refreshTokenRepository::delete);
+            refreshTokenRepository.deleteByToken(refreshToken);
             throw new CustomException(LOGIN_REQUIRED);
         }
         // 액세스 토큰이 만료되지 않았으면 재발급 불필요
