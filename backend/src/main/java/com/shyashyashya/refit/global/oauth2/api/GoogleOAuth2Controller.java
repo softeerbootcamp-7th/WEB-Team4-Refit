@@ -1,11 +1,11 @@
-package com.shyashyashya.refit.global.auth.api;
+package com.shyashyashya.refit.global.oauth2.api;
 
 import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
 
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
-import com.shyashyashya.refit.global.auth.dto.OAuthLoginUrlResponse;
 import com.shyashyashya.refit.global.auth.service.CookieUtil;
-import com.shyashyashya.refit.global.auth.service.GoogleOAuthService;
+import com.shyashyashya.refit.global.oauth2.dto.OAuthLoginUrlResponse;
+import com.shyashyashya.refit.global.oauth2.service.GoogleOAuth2Service;
 import com.shyashyashya.refit.global.property.OAuth2Property;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -20,23 +20,27 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RestController
 @RequestMapping("/auth/login/google")
 @RequiredArgsConstructor
-public class GoogleOAuthController {
+public class GoogleOAuth2Controller implements OAuth2Controller {
 
-    private final GoogleOAuthService googleOAuthService;
+    private final GoogleOAuth2Service googleOAuthService;
     private final OAuth2Property oAuth2Property;
     private final CookieUtil cookieUtil;
 
     @GetMapping
-    public ResponseEntity<CommonResponse<OAuthLoginUrlResponse>> OAuthLogin() {
+    @Override
+    public ResponseEntity<CommonResponse<OAuthLoginUrlResponse>> getOAuth2LoginUrl() {
         var body = CommonResponse.success(COMMON200, new OAuthLoginUrlResponse(googleOAuthService.getOAuthLoginUrl()));
         return ResponseEntity.ok(body);
     }
 
     @GetMapping("/callback")
-    public ResponseEntity<Void> OAuthCallback(@RequestParam String code) {
+    @Override
+    public ResponseEntity<Void> handleOAuth2Callback(@RequestParam String code) {
         var result = googleOAuthService.handleOAuthCallback(code);
-        var accessTokenCookie = cookieUtil.createAccessTokenCookie(result.accessToken());
-        var refreshTokenCookie = cookieUtil.createResponseTokenCookie(result.refreshToken());
+        var accessTokenCookie =
+                cookieUtil.createAccessTokenCookie(result.tokenPair().accessToken());
+        var refreshTokenCookie =
+                cookieUtil.createResponseTokenCookie(result.tokenPair().refreshToken());
 
         String redirectUrl = buildRedirectUrl(result.isNeedSignup(), result.nickname(), result.profileImageUrl());
 
