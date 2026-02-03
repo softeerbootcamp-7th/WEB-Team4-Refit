@@ -1,5 +1,6 @@
 package com.shyashyashya.refit.domain.qnaset.repository;
 
+import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetCategory;
 import com.shyashyashya.refit.domain.qnaset.model.StarInclusionLevel;
@@ -60,4 +61,6 @@ public interface QnaSetRepository extends JpaRepository<QnaSet, Long> {
             List<StarInclusionLevel> aInclusionLevels,
             List<StarInclusionLevel> rInclusionLevels,
             Pageable pageable);
+
+    List<QnaSet> findAllByInterview(Interview interview);
 }
