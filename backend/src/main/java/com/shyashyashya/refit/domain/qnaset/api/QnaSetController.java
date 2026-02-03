@@ -3,6 +3,7 @@ package com.shyashyashya.refit.domain.qnaset.api;
 import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
 
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
+import com.shyashyashya.refit.domain.qnaset.dto.request.PdfHighlightingUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetResponse;
 import com.shyashyashya.refit.domain.qnaset.dto.response.PdfHighlightingResponse;
 import com.shyashyashya.refit.domain.qnaset.service.QnaSetService;
@@ -11,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,10 +33,17 @@ public class QnaSetController {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping("/{qnaSetId}/pdf-highlightings")
+    public ResponseEntity<CommonResponse<Void>> updatePdfHighlighting(
+            @PathVariable Long qnaSetId, @RequestBody List<PdfHighlightingUpdateRequest> request) {
+        qnaSetService.updatePdfHighlighting(qnaSetId, request);
+        var response = CommonResponse.success(COMMON200);
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/qna-set/{qnaSetId}/pdf-highlightings")
     public ResponseEntity<CommonResponse<List<PdfHighlightingResponse>>> getPdfHighlightings(
-            @PathVariable Long qnaSetId
-    ) {
+            @PathVariable Long qnaSetId) {
         var body = qnaSetService.getPdfHighlightings(qnaSetId);
         var response = CommonResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
