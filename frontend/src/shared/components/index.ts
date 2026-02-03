@@ -1,7 +1,6 @@
 export { default as Badge } from './badge'
 export { default as Border } from './border'
 export { default as Button } from './button'
-export { default as Checkbox } from './checkbox'
 export { NativeCombobox, SearchableCombobox } from './combobox'
 export { default as Input } from './input'
 export { default as Modal } from './modal/index.tsx'

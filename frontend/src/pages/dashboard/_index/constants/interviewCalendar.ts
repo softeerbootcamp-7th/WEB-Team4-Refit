@@ -26,3 +26,11 @@ export const DATE_CELL_STYLE = {
   today: 'bg-orange-100 text-orange-500',
   otherMonth: 'text-gray-300',
 } as const
+
+export const SCHEDULE_MODAL_STEP_CONFIG = {
+  1: { title: '면접 일정 추가', description: '면접 정보를 입력해주세요' },
+  2: {
+    title: '면접 일정 추가',
+    description: '면접 유형과 일시를 알려주세요',
+  },
+} as const

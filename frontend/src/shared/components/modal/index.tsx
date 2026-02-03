@@ -7,6 +7,7 @@ export interface ModalProps {
   open: boolean
   onClose: () => void
   title?: React.ReactNode
+  description?: React.ReactNode
   children: React.ReactNode
   showCloseButton?: boolean
   className?: string
@@ -17,6 +18,7 @@ const Modal = ({
   open,
   onClose,
   title,
+  description,
   children,
   showCloseButton = true,
   className = '',
@@ -51,7 +53,7 @@ const Modal = ({
 
   if (!open) return null
   const portalRoot = document.getElementById('modal-root') as HTMLElement
-  const hasHeader = title != null || showCloseButton
+  const hasHeader = title != null || description != null || showCloseButton
 
   const modalContent = (
     <div
@@ -68,13 +70,16 @@ const Modal = ({
         <div className="px-6 py-8">
           {hasHeader && (
             <div className="mb-8 flex items-start justify-between gap-4">
-              {title != null ? (
-                <h2 id={titleId} className="title-xl-bold wrap-break-words text-gray-900">
-                  {title}
-                </h2>
-              ) : (
-                <div aria-hidden="true" />
-              )}
+              <div className="min-w-0 flex-1">
+                {title != null ? (
+                  <h2 id={titleId} className="title-xl-bold wrap-break-words text-gray-900">
+                    {title}
+                  </h2>
+                ) : (
+                  <div aria-hidden="true" />
+                )}
+                {description != null && <p className="body-m-regular mt-2 text-gray-500">{description}</p>}
+              </div>
 
               {showCloseButton && (
                 <button

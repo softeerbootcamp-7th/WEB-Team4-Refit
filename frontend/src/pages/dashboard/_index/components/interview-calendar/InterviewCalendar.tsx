@@ -3,11 +3,13 @@ import { CalendarFooter } from '@/pages/dashboard/_index/components/interview-ca
 import { CalendarGrid } from '@/pages/dashboard/_index/components/interview-calendar/CalendarGrid'
 import { CalendarHeader } from '@/pages/dashboard/_index/components/interview-calendar/CalendarHeader'
 import { ScheduleModalContent } from '@/pages/dashboard/_index/components/schedule-modal-content/ScheduleModalContent'
+import { SCHEDULE_MODAL_STEP_CONFIG } from '@/pages/dashboard/_index/constants/interviewCalendar'
 import { useInterviewCalendar } from '@/pages/dashboard/_index/hooks/useInterviewCalendar'
 import { Modal } from '@/shared/components'
 
 export default function InterviewCalendar() {
   const [isAddScheduleModalOpen, setIsAddScheduleModalOpen] = useState(false)
+  const [scheduleStep, setScheduleStep] = useState<1 | 2>(1)
   const {
     today,
     viewDate,
@@ -42,8 +44,23 @@ export default function InterviewCalendar() {
         </div>
         <CalendarFooter />
       </aside>
-      <Modal open={isAddScheduleModalOpen} onClose={() => setIsAddScheduleModalOpen(false)} title="면접 일정 추가">
-        <ScheduleModalContent />
+      <Modal
+        open={isAddScheduleModalOpen}
+        onClose={() => {
+          setIsAddScheduleModalOpen(false)
+          setScheduleStep(1)
+        }}
+        title={SCHEDULE_MODAL_STEP_CONFIG[scheduleStep].title}
+        description={SCHEDULE_MODAL_STEP_CONFIG[scheduleStep].description}
+      >
+        <ScheduleModalContent
+          step={scheduleStep}
+          onStepChange={setScheduleStep}
+          onSubmit={() => {
+            setIsAddScheduleModalOpen(false)
+            setScheduleStep(1)
+          }}
+        />
       </Modal>
     </>
   )

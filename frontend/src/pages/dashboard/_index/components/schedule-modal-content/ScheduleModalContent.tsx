@@ -1,113 +1,49 @@
 import { useState } from 'react'
-import { SearchableCombobox } from '@/shared/components'
-import Button from '@/shared/components/button'
+import { InterviewInfoContent } from '@/pages/dashboard/_index/components/schedule-modal-content/InterviewInfoContent'
+import type { InterviewInfoFormValues } from '@/pages/dashboard/_index/components/schedule-modal-content/InterviewInfoContent'
+import { InterviewScheduleContent } from '@/pages/dashboard/_index/components/schedule-modal-content/InterviewScheduleContent'
+import type { InterviewScheduleFormValues } from '@/pages/dashboard/_index/components/schedule-modal-content/InterviewScheduleContent'
 
-const INDUSTRY_OPTIONS: { value: string; label: string }[] = [
-  { value: 'it', label: 'IT / 소프트웨어' },
-  { value: 'finance', label: '금융' },
-  { value: 'manufacturing', label: '제조' },
-  { value: 'ecommerce', label: '이커머스' },
-  { value: 'media', label: '미디어' },
-  { value: 'healthcare', label: '의료 / 헬스케어' },
-  { value: 'education', label: '교육' },
-  { value: 'other', label: '기타' },
-]
+export interface ScheduleFormSubmitValues extends InterviewInfoFormValues, InterviewScheduleFormValues {}
 
-/** 회사명-산업군 한 쌍 (리스트에서 선택 시 산업군 고정) */
-const COMPANY_WITH_INDUSTRY: { value: string; label: string; industryValue: string; industryLabel: string }[] = [
-  { value: 'kakao', label: '카카오', industryValue: 'it', industryLabel: 'IT / 소프트웨어' },
-  { value: 'naver', label: '네이버', industryValue: 'it', industryLabel: 'IT / 소프트웨어' },
-  { value: 'coupang', label: '쿠팡', industryValue: 'ecommerce', industryLabel: '이커머스' },
-  { value: 'toss', label: '토스', industryValue: 'finance', industryLabel: '금융' },
-  { value: 'line', label: '라인', industryValue: 'it', industryLabel: 'IT / 소프트웨어' },
-  { value: 'samsung', label: '삼성전자', industryValue: 'manufacturing', industryLabel: '제조' },
-  { value: 'hyundai', label: '현대자동차', industryValue: 'manufacturing', industryLabel: '제조' },
-  { value: 'lg', label: 'LG전자', industryValue: 'manufacturing', industryLabel: '제조' },
-  { value: 'sk', label: 'SK', industryValue: 'manufacturing', industryLabel: '제조' },
-  { value: 'other', label: '기타', industryValue: 'other', industryLabel: '기타' },
-]
+export interface ScheduleModalContentProps {
+  step: 1 | 2
+  onStepChange: (step: 1 | 2) => void
+  onSubmit?: (values: ScheduleFormSubmitValues) => void
+}
 
-const COMPANY_OPTIONS = COMPANY_WITH_INDUSTRY.map(({ value, label }) => ({ value, label }))
+export function ScheduleModalContent({ step, onStepChange, onSubmit }: ScheduleModalContentProps) {
+  const [interviewInfoValues, setInterviewInfoValues] = useState<InterviewInfoFormValues>({
+    companyName: '',
+    industry: '',
+    jobTitle: '',
+  })
+  const [interviewScheduleValues, setInterviewScheduleValues] = useState<InterviewScheduleFormValues>({
+    interviewType: '',
+    interviewDate: '',
+    interviewTime: '',
+  })
 
-const JOB_TITLE_OPTIONS: { value: string; label: string }[] = [
-  { value: 'frontend', label: '프론트엔드 개발' },
-  { value: 'backend', label: '백엔드 개발' },
-  { value: 'fullstack', label: '풀스택 개발' },
-  { value: 'mobile', label: '모바일 개발' },
-  { value: 'design', label: '디자인' },
-  { value: 'product', label: '프로덕트' },
-  { value: 'marketing', label: '마케팅' },
-  { value: 'data', label: '데이터' },
-  { value: 'other', label: '기타' },
-]
-
-export function ScheduleModalContent() {
-  const [companyName, setCompanyName] = useState('')
-  const [industry, setIndustry] = useState('')
-  const [jobTitle, setJobTitle] = useState('')
-
-  const handleCompanyChange = (e: { target: { value: string } }) => {
-    const value = e.target.value
-    setCompanyName(value)
-    const pair = COMPANY_WITH_INDUSTRY.find((c) => c.value === value)
-    if (pair) {
-      setIndustry(pair.industryValue)
-    } else {
-      setIndustry('')
-    }
+  const handleSubmit = () => {
+    onSubmit?.({ ...interviewInfoValues, ...interviewScheduleValues })
   }
 
-  const isIndustryFromList = COMPANY_WITH_INDUSTRY.some((c) => c.value === companyName)
-
-  const handleNextStep = () => {
-    // TODO: step 2로 이동 또는 제출
+  if (step === 2) {
+    return (
+      <InterviewScheduleContent
+        values={interviewScheduleValues}
+        onChange={setInterviewScheduleValues}
+        onPrev={() => onStepChange(1)}
+        onNext={handleSubmit}
+      />
+    )
   }
-
-  const isFormValid = companyName.trim() !== '' && industry.trim() !== '' && jobTitle.trim() !== ''
 
   return (
-    <>
-      <div className="flex flex-col gap-6">
-        <SearchableCombobox
-          label="회사명"
-          placeholder="회사명을 선택해 주세요"
-          options={COMPANY_OPTIONS}
-          value={companyName}
-          onChange={handleCompanyChange}
-          required
-          searchPlaceholder="Search"
-          creatable
-        />
-        <SearchableCombobox
-          label="산업군"
-          placeholder="산업군을 선택해 주세요"
-          options={INDUSTRY_OPTIONS}
-          value={industry}
-          onChange={(e: { target: { value: string } }) => setIndustry(e.target.value)}
-          required
-          searchPlaceholder="검색"
-          disabled={isIndustryFromList}
-        />
-        <SearchableCombobox
-          label="직무"
-          placeholder="직무를 선택해 주세요"
-          options={JOB_TITLE_OPTIONS}
-          value={jobTitle}
-          onChange={(e: { target: { value: string } }) => setJobTitle(e.target.value)}
-          required
-          searchPlaceholder="검색"
-        />
-      </div>
-      <Button
-        type="button"
-        variant="fill-gray-800"
-        size="md"
-        className="mt-8 w-full"
-        disabled={!isFormValid}
-        onClick={handleNextStep}
-      >
-        다음 단계
-      </Button>
-    </>
+    <InterviewInfoContent
+      values={interviewInfoValues}
+      onChange={setInterviewInfoValues}
+      onNext={() => onStepChange(2)}
+    />
   )
 }
