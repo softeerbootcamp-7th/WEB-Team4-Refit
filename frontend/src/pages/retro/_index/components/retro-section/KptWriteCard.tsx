@@ -10,7 +10,11 @@ const KPT_SECTIONS = [
   { key: 'try_text' as const, label: 'Try', question: '새롭게 시도해 볼 내용은 무엇인가요?' },
 ]
 
-export function KptWriteCard() {
+type KptWriteCardProps = {
+  readOnly?: boolean
+}
+
+export function KptWriteCard({ readOnly = false }: KptWriteCardProps) {
   const [kptTexts, setKptTexts] = useState<KptTextsType>({ keep_text: '', problem_text: '', try_text: '' })
   const handleChange = (key: keyof KptTextsType, value: string) => {
     if (value.length <= KPT_MAX_LENGTH) {
@@ -32,6 +36,7 @@ export function KptWriteCard() {
           question={question}
           value={kptTexts[key]}
           onChange={(v) => handleChange(key, v)}
+          readOnly={readOnly}
         />
       ))}
     </div>
@@ -43,9 +48,10 @@ type KptSectionProps = {
   question: string
   value: string
   onChange: (value: string) => void
+  readOnly?: boolean
 }
 
-function KptSection({ label, question, value, onChange }: KptSectionProps) {
+function KptSection({ label, question, value, onChange, readOnly }: KptSectionProps) {
   return (
     <div className="flex flex-col gap-3">
       <div className="inline-flex items-center gap-2.5">
@@ -58,7 +64,8 @@ function KptSection({ label, question, value, onChange }: KptSectionProps) {
           className="body-m-regular border-gray-150 min-h-36 w-full resize-none rounded-[10px] border p-4 focus-visible:border-gray-200 focus-visible:outline-none"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          placeholder={`${label}에 대해 작성해주세요.`}
+          readOnly={readOnly}
+          placeholder={readOnly ? undefined : `${label}에 대해 작성해주세요.`}
           maxLength={KPT_MAX_LENGTH}
         />
         <span className="body-s-regular absolute right-4 bottom-4 text-gray-300">
