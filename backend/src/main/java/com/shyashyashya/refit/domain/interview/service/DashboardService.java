@@ -5,15 +5,19 @@ import static com.shyashyashya.refit.domain.interview.model.InterviewReviewStatu
 import static com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus.SELF_REVIEW_DRAFT;
 
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardHeadlineResponse;
+import com.shyashyashya.refit.domain.interview.dto.response.DashboardMyDifficultQuestionResponse;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
+import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.util.RequestUserContext;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +30,7 @@ public class DashboardService {
 
     private final RequestUserContext requestUserContext;
     private final InterviewRepository interviewRepository;
+    private final QnaSetRepository qnaSetRepository;
 
     @Transactional(readOnly = true)
     public DashboardHeadlineResponse getDashboardHeadlineData() {
@@ -56,5 +61,12 @@ public class DashboardService {
 
     private boolean existInterviewsToLog(User user) {
         return interviewRepository.existsByUserAndReviewStatusIn(user, REVIEW_NEEDED_STATUSES);
+    }
+
+    public Page<DashboardMyDifficultQuestionResponse> getMyDifficultQnaSets(Pageable pageable) {
+        User requestUser = requestUserContext.getRequestUser();
+
+        return qnaSetRepository.findAllDifficultByUser(requestUser, pageable)
+                .map(DashboardMyDifficultQuestionResponse::from);
     }
 }
