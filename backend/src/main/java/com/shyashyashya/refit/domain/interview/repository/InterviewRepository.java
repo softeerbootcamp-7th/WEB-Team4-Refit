@@ -23,7 +23,7 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
          WHERE i.user = :user
            AND i.company.name LIKE %:keyword%
            AND i.interviewType IN :interviewTypes
-           ANd i.resultStatus IN :interviewResultStatuses
+           AND i.resultStatus IN :interviewResultStatuses
            AND i.startAt BETWEEN :startDate AND :endDate
     """)
     Page<Interview> searchInterviews(
