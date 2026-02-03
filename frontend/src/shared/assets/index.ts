@@ -1,6 +1,7 @@
 export { default as CalendarStarIcon } from './calendar_star_icon.svg?react'
 export { default as CaretDownIcon } from './caret_down_icon.svg?react'
 export { default as CaretUpIcon } from './caret_up_icon.svg?react'
+export { default as CheckIcon } from './check_icon.svg?react'
 export { default as CirclePlusIcon } from './circle_plus_icon.svg?react'
 export { default as ClockIcon } from './clock_icon.svg?react'
 export { default as CloseIcon } from './close_icon.svg?react'

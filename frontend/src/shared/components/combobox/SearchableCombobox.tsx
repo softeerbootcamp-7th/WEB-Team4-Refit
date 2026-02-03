@@ -1,5 +1,5 @@
 import { forwardRef, useRef, useState } from 'react'
-import { CaretDownIcon } from '@/shared/assets'
+import { CaretDownIcon, CheckIcon } from '@/shared/assets'
 import { useOnClickOutside } from '@/shared/hooks/useOnClickOutside'
 
 export interface SearchableComboboxProps {
@@ -16,12 +16,6 @@ export interface SearchableComboboxProps {
   disabled?: boolean
   className?: string
 }
-
-const CheckIcon = () => (
-  <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-    <path d="M1 6L5.5 10.5L15 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-)
 
 const SearchableCombobox = forwardRef<HTMLDivElement, SearchableComboboxProps>(
   (
