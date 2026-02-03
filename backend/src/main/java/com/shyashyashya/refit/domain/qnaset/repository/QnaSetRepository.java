@@ -1,6 +1,8 @@
 package com.shyashyashya.refit.domain.qnaset.repository;
 
+import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.interview.model.Interview;
+import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetCategory;
 import com.shyashyashya.refit.domain.qnaset.model.StarInclusionLevel;
@@ -20,6 +22,14 @@ public interface QnaSetRepository extends JpaRepository<QnaSet, Long> {
          WHERE q.interview.user = :user
     """)
     List<QnaSet> findAllByUser(User user);
+
+    @Query("""
+        SELECT q
+          FROM QnaSet q
+         WHERE q.interview.industry.id = :industryId
+           AND q.interview.jobCategory.id = :jobCategoryId
+    """)
+    List<QnaSet> findAllByIndustryAndJobCategory(Industry industry, JobCategory jobCategory);
 
     // TODO : queryDSL 적용
     @Query("""
