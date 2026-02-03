@@ -16,9 +16,8 @@ import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
-import java.util.List;
-
 import com.shyashyashya.refit.global.util.RequestUserContext;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,7 +55,5 @@ public class QnaSetService {
         User requestUser = requestUserContext.getRequestUser();
         Interview interview = qnaSet.getInterview();
         interviewValidator.validateInterviewOwner(interview, requestUser);
-
-
     }
 }
