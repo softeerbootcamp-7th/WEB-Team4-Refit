@@ -8,9 +8,10 @@ import com.shyashyashya.refit.domain.qnaset.model.QnaSetSelfReview;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import lombok.AccessLevel;
 import lombok.Builder;
 
-@Builder
+@Builder(access = AccessLevel.PRIVATE)
 public record InterviewFullDto(
         Long interviewId,
         InterviewType interviewType,
