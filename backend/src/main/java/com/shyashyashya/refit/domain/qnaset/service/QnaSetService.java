@@ -49,7 +49,7 @@ public class QnaSetService {
     }
 
     @Transactional
-    public void updatePdfHighlighting(Long qnaSetId, PdfHighlightingUpdateRequest request) {
+    public void updatePdfHighlighting(Long qnaSetId, List<PdfHighlightingUpdateRequest> request) {
         QnaSet qnaSet = qnaSetRepository.findById(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
 
         User requestUser = requestUserContext.getRequestUser();
