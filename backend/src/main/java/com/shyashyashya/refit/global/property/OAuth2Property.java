@@ -9,7 +9,9 @@ import org.springframework.validation.annotation.Validated;
 
 @ConfigurationProperties(prefix = "spring.auth.oauth2")
 @Validated
-public record OAuth2Property(@Valid @NotNull Google google) {
+public record OAuth2Property(
+        @NotBlank String frontendRedirectUri,
+        @Valid @NotNull Google google) {
     public record Google(
             @NotBlank String clientId,
             @NotBlank String clientSecret,

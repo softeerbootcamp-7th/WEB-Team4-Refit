@@ -32,7 +32,7 @@ public class QnaSetMyService {
 
     @Transactional(readOnly = true)
     public Page<FrequentQnaSetCategoryResponse> getFrequentQnaSetCategories(Pageable pageable) {
-        User requestUser = requestUserContext.getUser();
+        User requestUser = requestUserContext.getRequestUser();
 
         // TODO : 로직 고도화 (쿼리로 한번에 조회할 수 있도록)
         List<QnaSet> qna = qnaSetRepository.findAllByUser(requestUser);

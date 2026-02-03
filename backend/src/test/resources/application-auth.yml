@@ -1,5 +1,6 @@
 spring:
   auth:
+    using-https: false
     url:
       # TODO: public한 API 경로가 더 있는지 검토 필요
       sign-up: "/user/signup"
@@ -13,6 +14,7 @@ spring:
         access-token: 1h
         refresh-token: 7d
     oauth2:
+      frontend-redirect-uri: "${OAUTH2_FRONTEND_REDIRECT_URI}"
       google:
         client-id: "${GOOGLE_CLIENT_ID}"
         client-secret: "${GOOGLE_CLIENT_SECRET}"
