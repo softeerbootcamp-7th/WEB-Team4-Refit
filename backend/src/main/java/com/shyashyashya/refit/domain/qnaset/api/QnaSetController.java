@@ -32,7 +32,7 @@ public class QnaSetController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/{qnaSetId}/pdf-highlighting")
+    @PutMapping("/{qnaSetId}/pdf-highlightings")
     public ResponseEntity<CommonResponse<Void>> updatePdfHighlighting(
             @PathVariable Long qnaSetId, @RequestBody PdfHighlightingUpdateRequest request) {
         qnaSetService.updatePdfHighlighting(qnaSetId, request);
