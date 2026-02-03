@@ -19,7 +19,7 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
     SELECT i
       FROM Interview i
      WHERE i.user = :user
-       AND i.startAt BETWEEN :statDate AND :endDate
+       AND i.startAt BETWEEN :startDate AND :endDate
      ORDER BY i.startAt
     """)
     Optional<Interview> getUpcomingInterview(User user, LocalDateTime startDate, LocalDateTime endDate);
