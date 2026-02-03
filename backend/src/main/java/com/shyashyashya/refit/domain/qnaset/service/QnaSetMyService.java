@@ -68,6 +68,7 @@ public class QnaSetMyService {
                 .searchQnaSet(
                         requestUser,
                         request.keyword(),
+                        request.searchFilter().hasStarAnalysis(),
                         request.searchFilter().sInclusionLevels(),
                         request.searchFilter().tInclusionLevels(),
                         request.searchFilter().aInclusionLevels(),

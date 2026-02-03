@@ -31,20 +31,30 @@ public interface QnaSetRepository extends JpaRepository<QnaSet, Long> {
 
     // TODO : queryDSL 적용
     @Query("""
-        SELECT q
-          FROM QnaSet q
-          JOIN StarAnalysis s
-         WHERE q.interview.user = :user
-           AND q.questionText LIKE %:keyword%
-           AND s.qnaSet = q
-           AND s.sInclusionLevel IN :sInclusionLevel
-           AND s.tInclusionLevel IN :tInclusionLevel
-           AND s.aInclusionLevel IN :aInclusionLevel
-           AND s.rInclusionLevel IN :rInclusionLevel
+    SELECT q
+      FROM QnaSet q
+      LEFT JOIN StarAnalysis s ON s.qnaSet = q
+     WHERE q.interview.user = :user
+       AND (:keyword IS NULL OR q.questionText LIKE %:keyword%)
+       AND (
+             :hasStarAnalysis IS NULL
+          OR (:hasStarAnalysis = TRUE  AND s IS NOT NULL)
+          OR (:hasStarAnalysis = FALSE AND s IS NULL)
+       )
+       AND (
+            s IS NULL
+            OR (
+                 (:sInclusionLevels IS NULL OR s.sInclusionLevel IN :sInclusionLevels)
+             AND (:tInclusionLevels IS NULL OR s.tInclusionLevel IN :tInclusionLevels)
+             AND (:aInclusionLevels IS NULL OR s.aInclusionLevel IN :aInclusionLevels)
+             AND (:rInclusionLevels IS NULL OR s.rInclusionLevel IN :rInclusionLevels)
+            )
+       )
     """)
     Page<QnaSet> searchQnaSet(
             User user,
             String keyword,
+            Boolean hasStarAnalysis,
             List<StarInclusionLevel> sInclusionLevels,
             List<StarInclusionLevel> tInclusionLevels,
             List<StarInclusionLevel> aInclusionLevels,
