@@ -52,7 +52,8 @@ const Modal = ({
   }, [open, onClose])
 
   if (!open) return null
-  const portalRoot = document.getElementById('modal-root') as HTMLElement
+  const portalRoot = document.getElementById('modal-root')
+  if (!portalRoot) return null
   const hasHeader = title != null || description != null || showCloseButton
 
   const modalContent = (
