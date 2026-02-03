@@ -4,6 +4,7 @@ import static com.shyashyashya.refit.domain.interview.model.InterviewReviewStatu
 import static com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus.NOT_LOGGED;
 import static com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus.SELF_REVIEW_DRAFT;
 
+import com.shyashyashya.refit.domain.interview.dto.response.DashboardDebriefIncompletedInterviewResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardHeadlineResponse;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
@@ -14,6 +15,8 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,6 +51,17 @@ public class DashboardService {
                     }
                     return DashboardHeadlineResponse.checkInterviewHistory(requestUser);
                 });
+    }
+
+    @Transactional(readOnly = true)
+    public Page<DashboardDebriefIncompletedInterviewResponse> getDebriefIncompletedInterviews(Pageable pageable) {
+        User requestUser = requestUserContext.getRequestUser();
+
+        LocalDateTime now = LocalDateTime.now();
+        return interviewRepository
+                .findAllByUserAndReviewStatusIn(requestUser, REVIEW_NEEDED_STATUSES, pageable)
+                .map(interview ->
+                        DashboardDebriefIncompletedInterviewResponse.of(interview, getInterviewDday(now, interview)));
     }
 
     private long getInterviewDday(LocalDateTime now, Interview interview) {

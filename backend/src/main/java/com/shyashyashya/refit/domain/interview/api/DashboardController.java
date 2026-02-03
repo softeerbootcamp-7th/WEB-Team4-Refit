@@ -3,11 +3,14 @@ package com.shyashyashya.refit.domain.interview.api;
 import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
 
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
+import com.shyashyashya.refit.domain.interview.dto.response.DashboardDebriefIncompletedInterviewResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardHeadlineResponse;
 import com.shyashyashya.refit.domain.interview.service.DashboardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +28,15 @@ public class DashboardController {
     @GetMapping("/headline")
     public ResponseEntity<CommonResponse<DashboardHeadlineResponse>> getDashboardHeadline() {
         var body = dashboardService.getDashboardHeadlineData();
+        var response = CommonResponse.success(COMMON200, body);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "대시보드에서 복기 대기중인 면접 리스트를 조회합니다.")
+    @GetMapping("/interview/debrief-uncompleted")
+    public ResponseEntity<CommonResponse<Page<DashboardDebriefIncompletedInterviewResponse>>>
+            getDebriefIncompletedInterviews(Pageable pageable) {
+        var body = dashboardService.getDebriefIncompletedInterviews(pageable);
         var response = CommonResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
