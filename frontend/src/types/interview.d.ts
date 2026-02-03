@@ -1,4 +1,4 @@
-type QnaSetType = {
+export type QnaSetType = {
   qnaSetId: number
   interviewId: number
   questionText: string
@@ -8,13 +8,13 @@ type QnaSetType = {
   isMarkedDifficult: boolean
 }
 
-type InclusionLevel = 'present' | 'insufficient' | 'absent'
+export type StarStatus = 'present' | 'insufficient' | 'absent'
 
-type StarAnalysisType = {
-  sInclusionLevel: InclusionLevel
-  tInclusionLevel: InclusionLevel
-  aInclusionLevel: InclusionLevel
-  rInclusionLevel: InclusionLevel
+export type StarAnalysisResult = {
+  sInclusionLevel: StarStatus
+  tInclusionLevel: StarStatus
+  aInclusionLevel: StarStatus
+  rInclusionLevel: StarStatus
   overallSummary: string
 }
 
@@ -32,4 +32,10 @@ type InterviewFullType = {
   pdfUrl: string | null
   qnaSets: QnaSetType[]
   questions: string[]
+}
+
+type KptTextsType = {
+  keep_text: string
+  problem_text: string
+  try_text: string
 }
