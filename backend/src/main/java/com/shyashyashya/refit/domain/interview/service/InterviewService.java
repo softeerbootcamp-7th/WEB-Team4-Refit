@@ -15,10 +15,13 @@ import com.shyashyashya.refit.domain.interview.dto.InterviewSimpleDto;
 import com.shyashyashya.refit.domain.interview.dto.StarAnalysisDto;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatusUpdateRequest;
+import com.shyashyashya.refit.domain.interview.dto.request.KptSelfReviewUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
+import com.shyashyashya.refit.domain.interview.model.InterviewSelfReview;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
+import com.shyashyashya.refit.domain.interview.repository.InterviewSelfReviewRepository;
 import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
@@ -32,6 +35,7 @@ import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.util.RequestUserContext;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +56,7 @@ public class InterviewService {
     private final QnaSetRepository qnaSetRepository;
     private final QnaSetSelfReviewRepository qnaSetSelfReviewRepository;
     private final StarAnalysisRepository starAnalysisRepository;
+    private final InterviewSelfReviewRepository interviewSelfReviewRepository;
 
     private final InterviewValidator interviewValidator;
     private final RequestUserContext requestUserContext;
@@ -161,6 +166,37 @@ public class InterviewService {
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
         interview.updateRawText(request.rawText());
+    }
+
+    @Transactional
+    public void updateKptSelfReview(Long interviewId, KptSelfReviewUpdateRequest request) {
+        User requestUser = requestUserContext.getRequestUser();
+        Interview interview =
+                interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
+        interviewValidator.validateInterviewOwner(interview, requestUser);
+
+        String reqKeepText = request.keepText();
+        String reqProblemText = request.problemText();
+        String reqTryText = request.tryText();
+
+        Optional<InterviewSelfReview> optional = interviewSelfReviewRepository.findByInterview(interview);
+
+        // interviewSelfReview가 존재
+        if (optional.isPresent()) {
+            InterviewSelfReview selfReview = optional.get();
+            if (reqKeepText != null) selfReview.updateKeepText(reqKeepText);
+            if (reqProblemText != null) selfReview.updateProblemText(reqProblemText);
+            if (reqTryText != null) selfReview.updateTryText(reqTryText);
+            return;
+        }
+
+        // interviewSelfReview가 없음 -> 신규 생성
+        InterviewSelfReview created = InterviewSelfReview.create(
+                reqKeepText == null ? "" : reqKeepText,
+                reqProblemText == null ? "" : reqProblemText,
+                reqTryText == null ? "" : reqTryText,
+                interview);
+        interviewSelfReviewRepository.save(created);
     }
 
     private Company findOrSaveCompany(InterviewCreateRequest request) {

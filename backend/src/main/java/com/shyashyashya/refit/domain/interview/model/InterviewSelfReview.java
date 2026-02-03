@@ -51,6 +51,18 @@ public class InterviewSelfReview extends BaseEntity {
                 .build();
     }
 
+    public void updateKeepText(String keepText) {
+        this.keepText = keepText;
+    }
+
+    public void updateProblemText(String problemText) {
+        this.problemText = problemText;
+    }
+
+    public void updateTryText(String tryText) {
+        this.tryText = tryText;
+    }
+
     @Builder(access = AccessLevel.PRIVATE)
     private InterviewSelfReview(String keepText, String problemText, String tryText, Interview interview) {
         this.keepText = keepText;
