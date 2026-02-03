@@ -120,8 +120,8 @@ public class InterviewService {
                         request.keyword(),
                         request.searchFilter().interviewType(),
                         request.searchFilter().interviewResultStatus(),
-                        request.searchFilter().startDate(),
-                        request.searchFilter().endDate(),
+                        request.searchFilter().startDate().atStartOfDay(),
+                        request.searchFilter().endDate().plusDays(1).atStartOfDay(),
                         pageable)
                 .map(InterviewDto::from);
     }
