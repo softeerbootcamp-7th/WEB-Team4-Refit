@@ -61,7 +61,8 @@ public class PdfHighlightingRect extends BaseEntity {
     }
 
     @Builder(access = AccessLevel.PRIVATE)
-    private PdfHighlightingRect(double x, double y, double width, double height, int pageNum, PdfHighlighting pdfHighlighting) {
+    private PdfHighlightingRect(
+            double x, double y, double width, double height, int pageNum, PdfHighlighting pdfHighlighting) {
         this.x = x;
         this.y = y;
         this.width = width;
