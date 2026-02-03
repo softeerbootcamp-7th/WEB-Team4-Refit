@@ -8,7 +8,9 @@ import com.shyashyashya.refit.domain.qnaset.model.QnaSetSelfReview;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import lombok.Builder;
 
+@Builder
 public record InterviewFullDto(
         Long interviewId,
         InterviewType interviewType,
@@ -17,23 +19,24 @@ public record InterviewFullDto(
         String company,
         Long industryId,
         Long jobCategoryId,
-        String JobRole,
+        String jobRole,
         LocalDateTime updatedAt,
         String pdfUrl,
         List<QnaSetDto> qnaSets) {
     public static InterviewFullDto fromInterviewWithEmptyQnaSets(Interview interview) {
-        return new InterviewFullDto(
-                interview.getId(),
-                interview.getInterviewType(),
-                interview.getStartAt(),
-                interview.getResultStatus(),
-                interview.getCompany().getName(),
-                interview.getIndustry().getId(),
-                interview.getJobCategory().getId(),
-                interview.getJobRole(),
-                interview.getUpdatedAt(),
-                interview.getPdfUrl(),
-                List.of());
+        return InterviewFullDto.builder()
+                .interviewId(interview.getId())
+                .interviewType(interview.getInterviewType())
+                .interviewStartAt(interview.getStartAt())
+                .interviewResultStatus(interview.getResultStatus())
+                .company(interview.getCompany().getName())
+                .industryId(interview.getIndustry().getId())
+                .jobCategoryId(interview.getJobCategory().getId())
+                .jobRole(interview.getJobRole())
+                .updatedAt(interview.getUpdatedAt())
+                .pdfUrl(interview.getPdfUrl())
+                .qnaSets(List.of())
+                .build();
     }
 
     public static InterviewFullDto fromInterviewWithQnaSets(
@@ -50,17 +53,18 @@ public record InterviewFullDto(
                 })
                 .toList();
 
-        return new InterviewFullDto(
-                interview.getId(),
-                interview.getInterviewType(),
-                interview.getStartAt(),
-                interview.getResultStatus(),
-                interview.getCompany().getName(),
-                interview.getIndustry().getId(),
-                interview.getJobCategory().getId(),
-                interview.getJobRole(),
-                interview.getUpdatedAt(),
-                interview.getPdfUrl(),
-                qnaSetDtos);
+        return InterviewFullDto.builder()
+                .interviewId(interview.getId())
+                .interviewType(interview.getInterviewType())
+                .interviewStartAt(interview.getStartAt())
+                .interviewResultStatus(interview.getResultStatus())
+                .company(interview.getCompany().getName())
+                .industryId(interview.getIndustry().getId())
+                .jobCategoryId(interview.getJobCategory().getId())
+                .jobRole(interview.getJobRole())
+                .updatedAt(interview.getUpdatedAt())
+                .pdfUrl(interview.getPdfUrl())
+                .qnaSets(qnaSetDtos)
+                .build();
     }
 }
