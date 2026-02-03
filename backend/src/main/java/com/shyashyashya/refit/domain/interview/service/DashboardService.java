@@ -71,8 +71,7 @@ public class DashboardService {
                     List<Interview> similarInterviews = interviewRepository.findAllSimilarInterviewsByUser(
                             requestUser, interview.getIndustry(), interview.getJobCategory());
                     return DashboardUpcomingInterviewResponse.of(interview, similarTrendQuestions, similarInterviews);
-                })
-                .toList();
+                });
     }
 
     private long getInterviewDday(LocalDateTime now, Interview interview) {
