@@ -39,7 +39,7 @@ export function PdfSection() {
   const isLinking = linkingQnaSetId !== null
 
   return (
-    <div className={`relative flex h-full flex-col gap-5 p-6 ${isLinking ? 'relative z-50 bg-gray-100' : ''}`}>
+    <div className={`relative flex h-full flex-col gap-5 p-6 ${isLinking ? 'z-50 bg-gray-100' : ''}`}>
       <div className="absolute top-10 right-10 flex items-center justify-end">
         {pdfUrl && (
           <Button variant="outline-gray-100" onClick={handleRemovePdf} size="xs">

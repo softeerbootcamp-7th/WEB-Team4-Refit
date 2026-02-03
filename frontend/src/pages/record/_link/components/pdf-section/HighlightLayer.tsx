@@ -8,8 +8,8 @@ type HighlightLayerProps = {
 export function HighlightLayer({ savedRects, pendingRects }: HighlightLayerProps) {
   return (
     <>
-      {savedRects.map((rect, i) => (
-        <HighlightRectDiv key={`saved-${i}`} rect={rect} variant="saved" />
+      {savedRects.map((rect) => (
+        <HighlightRectDiv key={`saved-${rect.pageNum}-${rect.x}-${rect.y}`} rect={rect} variant="saved" />
       ))}
       {pendingRects.map((rect, i) => (
         <HighlightRectDiv key={`pending-${i}`} rect={rect} variant="pending" />
