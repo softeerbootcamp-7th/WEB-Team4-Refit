@@ -87,4 +87,12 @@ public class InterviewController {
         var response = CommonResponse.success(COMMON200);
         return ResponseEntity.ok(response);
     }
+
+    @PutMapping("/{interviewId}/kpt-self-reivew")
+    public ResponseEntity<CommonResponse<Void>> updateKptSelfReview(
+            @PathVariable Long interviewId, @RequestBody KptSelfReviewUpdateRequest request) {
+        interviewService.updateKptSelfReview(interviewId, request);
+        var response = CommonResponse.success(COMMON200);
+        return ResponseEntity.ok(response);
+    }
 }
