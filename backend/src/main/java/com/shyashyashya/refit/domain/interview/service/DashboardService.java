@@ -51,7 +51,7 @@ public class DashboardService {
     }
 
     private boolean existInterviewsToLog(User user) {
-        return interviewRepository.existsByUserAndReviewStatuses(
+        return interviewRepository.existsByUserAndReviewStatusIn(
                 user, List.of(NOT_LOGGED, LOG_DRAFT, SELF_REVIEW_DRAFT));
     }
 }

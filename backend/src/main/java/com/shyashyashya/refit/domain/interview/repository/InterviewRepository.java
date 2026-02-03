@@ -26,11 +26,5 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
 
     boolean existsByUser(User user);
 
-    @Query("""
-    SELECT count(*) > 0
-      FROM Interview i
-     WHERE i.user = :user
-       AND i.reviewStatus IN :reviewStatuses
-    """)
-    boolean existsByUserAndReviewStatuses(User user, List<InterviewReviewStatus> reviewStatuses);
+    boolean existsByUserAndReviewStatusIn(User user, List<InterviewReviewStatus> reviewStatuses);
 }
