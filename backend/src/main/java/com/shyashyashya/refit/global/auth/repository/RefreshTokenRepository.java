@@ -8,8 +8,6 @@ import org.springframework.data.jpa.repository.Modifying;
 
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
 
-    Optional<RefreshToken> findByEmail(String email);
-
     Optional<RefreshToken> findByToken(String token);
 
     void deleteByEmail(String email);

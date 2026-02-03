@@ -6,6 +6,7 @@ import com.shyashyashya.refit.global.auth.dto.TokenPairDto;
 import com.shyashyashya.refit.global.auth.model.RefreshToken;
 import com.shyashyashya.refit.global.auth.repository.RefreshTokenRepository;
 import com.shyashyashya.refit.global.exception.CustomException;
+import com.shyashyashya.refit.global.exception.RefreshTokenTheftException;
 import java.time.Instant;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +24,6 @@ public class AuthService {
     public Optional<TokenPairDto> reissue(String accessToken, String refreshToken) {
 
         // 토큰이 없거나 서명이 불일치하는 경우 새로 발급 필요(로그인 유도)
-        if (accessToken == null || refreshToken == null) {
-            throw new CustomException(LOGIN_REQUIRED);
-        }
         if (jwtUtil.isSignatureInvalid(accessToken) || jwtUtil.isSignatureInvalid(refreshToken)) {
             throw new CustomException(LOGIN_REQUIRED);
         }
@@ -43,13 +41,15 @@ public class AuthService {
         String email = jwtUtil.getEmail(refreshToken);
         Long userId = jwtUtil.getUserId(accessToken);
 
-        // 리프레시 토큰이 저장소에 없으면 로그인 필요
-        RefreshToken storedToken =
-                refreshTokenRepository.findByEmail(email).orElseThrow(() -> new CustomException(LOGIN_REQUIRED));
+        // 리프레시 토큰이 저장소에 없으면 탈취 의심, 재로그인 필요
+        RefreshToken storedToken = refreshTokenRepository
+                .findByToken(refreshToken)
+                .orElseThrow(() -> {
+                    refreshTokenRepository.deleteByEmail(email);
+                    return new RefreshTokenTheftException();
+                });
 
-        // 리프레시 토큰이 저장된 토큰과 다르면 탈취 의심, 재로그인 필요
-        if (!storedToken.getToken().equals(refreshToken)) {
-            refreshTokenRepository.delete(storedToken);
+        if (!storedToken.getEmail().equals(email)) {
             throw new CustomException(LOGIN_REQUIRED);
         }
 
