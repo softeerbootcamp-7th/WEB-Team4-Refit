@@ -4,6 +4,7 @@ import static com.shyashyashya.refit.domain.interview.model.InterviewReviewStatu
 import static com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus.NOT_LOGGED;
 import static com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus.SELF_REVIEW_DRAFT;
 
+import com.shyashyashya.refit.domain.interview.dto.response.DashboardCalendarResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardHeadlineResponse;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
@@ -13,6 +14,8 @@ import com.shyashyashya.refit.global.util.RequestUserContext;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,6 +51,21 @@ public class DashboardService {
                     }
                     return DashboardHeadlineResponse.checkInterviewHistory(requestUser);
                 });
+    }
+
+    @Transactional(readOnly = true)
+    public List<DashboardCalendarResponse> getDashboardCalendarInterviews(Integer year, Integer month) {
+        User requestUser = requestUserContext.getRequestUser();
+
+        LocalDateTime monthStart = LocalDateTime.of(year, month, 1, 0, 0, 0);
+        LocalDateTime monthEnd = LocalDateTime.of(year, month + 1, 1, 0, 0, 0);
+        Map<LocalDateTime, List<Interview>> interviews =
+                interviewRepository.findAllByUserAndYearMonth(requestUser, monthStart, monthEnd).stream()
+                        .collect(Collectors.groupingBy(Interview::getStartAt, Collectors.toList()));
+
+        return interviews.entrySet().stream()
+                .map(entry -> DashboardCalendarResponse.of(entry.getKey().toLocalDate(), entry.getValue()))
+                .toList();
     }
 
     private long getInterviewDday(LocalDateTime now, Interview interview) {
