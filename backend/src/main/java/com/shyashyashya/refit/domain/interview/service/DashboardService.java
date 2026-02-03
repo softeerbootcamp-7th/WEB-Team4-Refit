@@ -1,21 +1,20 @@
 package com.shyashyashya.refit.domain.interview.service;
 
+import static com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus.LOG_DRAFT;
+import static com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus.NOT_LOGGED;
+import static com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus.SELF_REVIEW_DRAFT;
+
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardHeadlineResponse;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.util.RequestUserContext;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-
-import static com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus.LOG_DRAFT;
-import static com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus.NOT_LOGGED;
-import static com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus.SELF_REVIEW_DRAFT;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +32,8 @@ public class DashboardService {
         }
 
         LocalDateTime now = LocalDateTime.now();
-        return interviewRepository.getUpcomingInterviewDday(requestUser, now, now.plusDays(7))
+        return interviewRepository
+                .getUpcomingInterviewDday(requestUser, now, now.plusDays(7))
                 .map(interview -> {
                     long dDay = getInterviewDday(now, interview);
                     return DashboardHeadlineResponse.prepareInterview(requestUser, dDay);

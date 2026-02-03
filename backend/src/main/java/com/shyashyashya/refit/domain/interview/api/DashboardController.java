@@ -1,7 +1,8 @@
 package com.shyashyashya.refit.domain.interview.api;
 
+import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
+
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
-import com.shyashyashya.refit.domain.common.model.ResponseCode;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardHeadlineResponse;
 import com.shyashyashya.refit.domain.interview.service.DashboardService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
 
 @Tag(name = "Dashboard API", description = "대시보드 화면에서 사용하는 API 입니다.")
 @RestController
