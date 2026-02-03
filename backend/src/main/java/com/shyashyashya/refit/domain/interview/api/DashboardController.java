@@ -4,9 +4,11 @@ import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
 
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardHeadlineResponse;
+import com.shyashyashya.refit.domain.interview.dto.response.DashboardUpcomingInterviewResponse;
 import com.shyashyashya.refit.domain.interview.service.DashboardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +27,14 @@ public class DashboardController {
     @GetMapping("/headline")
     public ResponseEntity<CommonResponse<DashboardHeadlineResponse>> getDashboardHeadline() {
         var body = dashboardService.getDashboardHeadlineData();
+        var response = CommonResponse.success(COMMON200, body);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "대시보드에서 '곧 있을 면접' 영역의 데이터를 조회합니다.")
+    @GetMapping("/interview/upcomping")
+    public ResponseEntity<CommonResponse<List<DashboardUpcomingInterviewResponse>>> getUpcomingInterviews() {
+        var body = dashboardService.getUpcomingInterviews();
         var response = CommonResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
