@@ -1,5 +1,7 @@
 package com.shyashyashya.refit.domain.qnaset.repository;
 
+import com.shyashyashya.refit.domain.industry.model.Industry;
+import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.user.model.User;
 import java.util.List;
@@ -22,5 +24,5 @@ public interface QnaSetRepository extends JpaRepository<QnaSet, Long> {
          WHERE q.interview.industry.id = :industryId
            AND q.interview.jobCategory.id = :jobCategoryId
     """)
-    List<QnaSet> findAllByIndustryAndJobCategory(Long industryId, Long jobCategoryId);
+    List<QnaSet> findAllByIndustryAndJobCategory(Industry industry, JobCategory jobCategory);
 }
