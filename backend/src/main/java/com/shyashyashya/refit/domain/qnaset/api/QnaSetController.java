@@ -4,11 +4,13 @@ import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
 
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetResponse;
+import com.shyashyashya.refit.domain.qnaset.dto.response.PdfHighlightingResponse;
 import com.shyashyashya.refit.domain.qnaset.service.QnaSetService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +26,15 @@ public class QnaSetController {
     public ResponseEntity<CommonResponse<List<FrequentQnaSetResponse>>> getFrequentQuestions(
             @RequestParam Long industryId, @RequestParam Long jobCategoryId) {
         var body = qnaSetService.getFrequentQuestions(industryId, jobCategoryId);
+        var response = CommonResponse.success(COMMON200, body);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/qna-set/{qnaSetId}/pdf-highlightings")
+    public ResponseEntity<CommonResponse<List<PdfHighlightingResponse>>> getPdfHighlightings(
+            @PathVariable Long qnaSetId
+    ) {
+        var body = qnaSetService.getPdfHighlightings(qnaSetId);
         var response = CommonResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }

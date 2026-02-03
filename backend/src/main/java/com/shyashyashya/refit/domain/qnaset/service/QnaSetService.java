@@ -8,6 +8,7 @@ import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetResponse;
+import com.shyashyashya.refit.domain.qnaset.dto.response.PdfHighlightingResponse;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.global.exception.CustomException;
 import java.util.List;
@@ -36,5 +37,10 @@ public class QnaSetService {
         return qnaSetRepository.findAllByIndustryAndJobCategory(industry, jobCategory).stream()
                 .map(FrequentQnaSetResponse::from)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PdfHighlightingResponse> getPdfHighlightings(Long qnaSetId) {
+        return null;
     }
 }
