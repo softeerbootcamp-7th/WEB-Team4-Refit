@@ -6,6 +6,10 @@ import java.util.List;
 
 public record PdfHighlightingDto(Long pdfHighlightingId, String highlightingText, List<PdfHighlightingRectDto> rects) {
     public static PdfHighlightingDto of(PdfHighlighting pdfHighlighting, List<PdfHighlightingRect> rects) {
-        return new PdfHighlightingDto();
+        List<PdfHighlightingRectDto> pdfHighlightingRectDtos =
+                rects.stream().map(PdfHighlightingRectDto::from).toList();
+
+        return new PdfHighlightingDto(
+                pdfHighlighting.getId(), pdfHighlighting.getHighlightingText(), pdfHighlightingRectDtos);
     }
 }
