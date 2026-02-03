@@ -47,4 +47,12 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
             LocalDateTime startDate,
             LocalDateTime endDate,
             Pageable pageable);
+
+    @Query("""
+        SELECT i
+          FROM Interview i
+         WHERE i.user = :user
+           AND i.startAt BETWEEN :monthStart AND :monthEnd
+    """)
+    List<Interview> findAllByUserAndYearMonth(User user, LocalDateTime monthStart, LocalDateTime monthEnd);
 }
