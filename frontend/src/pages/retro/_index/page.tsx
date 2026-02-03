@@ -1,5 +1,5 @@
 import { RetroPdfPanel } from './components/pdf-panel/RetroPdfPanel'
-// import { RetroSection } from './components/retro-section/RetroSection'
+import { RetroSection } from './components/retro-section/RetroSection'
 import { RetroMinimizedSidebar, RetroSidebar } from './components/sidebar'
 import { RetroProvider, useRetroContext } from './contexts'
 
@@ -18,14 +18,14 @@ function RetroLayout() {
     return (
       <div className="grid h-full grid-cols-[320px_1fr]">
         <RetroSidebar />
-        {/* <RetroSection /> */}
+        <RetroSection />
       </div>
     )
   }
   return (
     <div className="grid h-full grid-cols-[80px_1fr_1fr]">
       <RetroMinimizedSidebar />
-      {/* <RetroSection /> */}
+      <RetroSection />
       <RetroPdfPanel />
     </div>
   )
