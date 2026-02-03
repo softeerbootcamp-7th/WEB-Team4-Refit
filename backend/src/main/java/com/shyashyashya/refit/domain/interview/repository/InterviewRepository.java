@@ -22,7 +22,7 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
        AND i.startAt BETWEEN :statDate AND :endDate
      ORDER BY i.startAt
     """)
-    Optional<Interview> getUpcomingInterviewDday(User user, LocalDateTime startDate, LocalDateTime endDate);
+    Optional<Interview> getUpcomingInterview(User user, LocalDateTime startDate, LocalDateTime endDate);
 
     boolean existsByUser(User user);
 

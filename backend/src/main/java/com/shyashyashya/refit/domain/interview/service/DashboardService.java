@@ -33,7 +33,7 @@ public class DashboardService {
 
         LocalDateTime now = LocalDateTime.now();
         return interviewRepository
-                .getUpcomingInterviewDday(requestUser, now, now.plusDays(7))
+                .getUpcomingInterview(requestUser, now, now.plusDays(7))
                 .map(interview -> {
                     long dDay = getInterviewDday(now, interview);
                     return DashboardHeadlineResponse.prepareInterview(requestUser, dDay);
