@@ -5,4 +5,7 @@ public final class InterviewConstant {
     private InterviewConstant() {}
 
     public static final int RAW_TEXT_MAX_LENGTH = 10_000;
+    public static final int KEEP_TEXT_MAX_LENGTH = 8_000;
+    public static final int PROBLEM_TEXT_MAX_LENGTH = 8_000;
+    public static final int TRY_TEXT_MAX_LENGTH = 8_000;
 }
