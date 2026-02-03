@@ -17,6 +17,9 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,9 +42,10 @@ public class DashboardService {
             return DashboardHeadlineResponse.registerInterview(requestUser);
         }
 
+        Pageable pageable = PageRequest.of(0, 1);
         LocalDateTime now = LocalDateTime.now();
-        return interviewRepository
-                .getUpcomingInterview(requestUser, now, now.plusDays(7))
+        return interviewRepository.getUpcomingInterview(requestUser, now, now.plusDays(7), pageable).stream()
+                .findFirst()
                 .map(interview -> {
                     long dDay = getInterviewDday(now, interview);
                     return DashboardHeadlineResponse.prepareInterview(requestUser, dDay);
@@ -55,12 +59,12 @@ public class DashboardService {
     }
 
     @Transactional(readOnly = true)
-    public List<DashboardUpcomingInterviewResponse> getUpcomingInterviews() {
+    public Page<DashboardUpcomingInterviewResponse> getUpcomingInterviews(Pageable pageable) {
         User requestUser = requestUserContext.getRequestUser();
 
         // TODO : 단일 쿼리로 조회해오도록 로직 수정
         LocalDateTime now = LocalDateTime.now();
-        return interviewRepository.getUpcomingInterview(requestUser, now, now.plusDays(7)).stream()
+        return interviewRepository.getUpcomingInterview(requestUser, now, now.plusDays(7), pageable).stream()
                 .map(interview -> {
                     List<QnaSet> similarTrendQuestions = qnaSetRepository.findAllByIndustryAndJobCategory(
                             interview.getIndustry(), interview.getJobCategory());
