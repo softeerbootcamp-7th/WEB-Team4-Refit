@@ -10,9 +10,9 @@ import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
+import com.shyashyashya.refit.domain.qnaset.dto.PdfHighlightingDto;
 import com.shyashyashya.refit.domain.qnaset.dto.request.PdfHighlightingUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetResponse;
-import com.shyashyashya.refit.domain.qnaset.dto.response.PdfHighlightingResponse;
 import com.shyashyashya.refit.domain.qnaset.model.PdfHighlighting;
 import com.shyashyashya.refit.domain.qnaset.model.PdfHighlightingRect;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
@@ -56,8 +56,23 @@ public class QnaSetService {
     }
 
     @Transactional(readOnly = true)
-    public List<PdfHighlightingResponse> getPdfHighlightings(Long qnaSetId) {
-        return null;
+    public List<PdfHighlightingDto> getPdfHighlightings(Long qnaSetId) {
+        QnaSet qnaSet = qnaSetRepository.findById(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
+
+        User requestUser = requestUserContext.getRequestUser();
+        Interview interview = qnaSet.getInterview();
+        interviewValidator.validateInterviewOwner(interview, requestUser);
+
+        List<PdfHighlighting> pdfHighlightings = pdfHighlightingRepository.findAllByQnaSet(qnaSet);
+        List<PdfHighlightingDto> pdfHighlightingDtos = pdfHighlightings.stream()
+                .map(pdfHighlighting -> {
+                    List<PdfHighlightingRect> rects =
+                            pdfHighlightingRectRepository.findAllByPdfHighlighting(pdfHighlighting);
+                    return PdfHighlightingDto.of(pdfHighlighting, rects);
+                })
+                .toList();
+
+        return pdfHighlightingDtos;
     }
 
     @Transactional
