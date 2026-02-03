@@ -7,6 +7,7 @@ import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
+import com.shyashyashya.refit.domain.qnaset.dto.request.PdfHighlightingUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetResponse;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.global.exception.CustomException;
@@ -37,4 +38,7 @@ public class QnaSetService {
                 .map(FrequentQnaSetResponse::from)
                 .toList();
     }
+
+    @Transactional
+    public void updatePdfHighlighting(Long qnaSetId, PdfHighlightingUpdateRequest request) {}
 }
