@@ -1,0 +1,44 @@
+import { useRetroContext } from '@/pages/retro/_index/contexts'
+import { Badge, Border } from '@/shared/components'
+
+const MAX_LENGTH = 500
+
+type RetroWriteCardProps = {
+  idx: number
+  qnaSetId: number
+}
+
+export function RetroWriteCard({ idx, qnaSetId }: RetroWriteCardProps) {
+  const { retroTexts, updateRetroText } = useRetroContext()
+
+  const value = retroTexts[qnaSetId] ?? ''
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const text = e.target.value
+    if (text.length <= MAX_LENGTH) {
+      updateRetroText(qnaSetId, text)
+    }
+  }
+
+  return (
+    <div className="bg-gray-white flex flex-col gap-4 rounded-lg p-5">
+      <div className="inline-flex flex-wrap items-center gap-2.5">
+        <Badge type="question-label" theme="orange-100" content={`${idx}번 회고`} />
+        <span className="title-m-semibold">{idx}번에 대한 회고를 작성해 보세요</span>
+      </div>
+      <Border />
+      <div className="relative">
+        <textarea
+          className="body-m-regular min-h-40 w-full resize-none rounded-[10px] border border-none p-4 focus-visible:outline-none"
+          value={value}
+          onChange={handleChange}
+          placeholder={`질문 ${idx}의 내 답변에 대한 회고를 작성해 보세요. 당시 면접장 분위기는 어땠나요? 기분은 어땠어요?\n준비한 질문이 나왔나요? 대답은 잘 한 것 같나요?\n아쉬웠던 점이나 배운 점도 좋아요. 자세히 작성할 수록 다음 면접을 대비하기 쉬워져요.`}
+          maxLength={MAX_LENGTH}
+        />
+        <span className="body-s-regular absolute right-4 bottom-4 text-gray-300">
+          {value.length}/{MAX_LENGTH}
+        </span>
+      </div>
+    </div>
+  )
+}

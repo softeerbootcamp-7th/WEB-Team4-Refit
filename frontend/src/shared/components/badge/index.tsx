@@ -1,7 +1,7 @@
 import type { HTMLAttributes } from 'react'
 
 type BadgeType = keyof typeof TYPE_STYLES
-type BadgeTheme = keyof typeof THEME_STYLES
+export type BadgeTheme = keyof typeof THEME_STYLES
 
 export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   type?: BadgeType
@@ -16,14 +16,7 @@ export default function Badge({
   className = '',
   ...props
 }: BadgeProps) {
-  const combinedStyles = [
-    BASE_STYLES,
-    TYPE_STYLES[type],
-    THEME_STYLES[theme],
-    className,
-  ]
-    .filter(Boolean)
-    .join(' ')
+  const combinedStyles = [BASE_STYLES, TYPE_STYLES[type], THEME_STYLES[theme], className].filter(Boolean).join(' ')
 
   return (
     <span className={combinedStyles} {...props}>
@@ -32,8 +25,7 @@ export default function Badge({
   )
 }
 
-const BASE_STYLES =
-  'inline-flex align-middle items-center justify-center rounded-lg'
+const BASE_STYLES = 'inline-flex align-middle items-center justify-center rounded-lg'
 
 const TYPE_STYLES = {
   'hard-label': 'py-1 px-2 caption-m-medium',
