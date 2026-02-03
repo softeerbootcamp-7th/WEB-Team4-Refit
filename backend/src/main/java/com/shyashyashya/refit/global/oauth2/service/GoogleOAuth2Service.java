@@ -26,7 +26,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-// TODO: RefreshToken 처리, RefreshToken redis 등에 저장 구현하기
+// TODO: RefreshToken을 redis 등에 저장하는 것 고려
 public class GoogleOAuth2Service implements OAuth2Service {
 
     private final OAuth2Property oauth2Property;
