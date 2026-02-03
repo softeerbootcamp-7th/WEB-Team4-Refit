@@ -4,7 +4,7 @@ import { Border, ListItemSmall, SidebarLayout } from '@/shared/components'
 import { MOCK_RETRO_LIST } from '../../example'
 
 export function RetroMinimizedSidebar() {
-  const { currentIndex, navigate } = useRetroContext()
+  const { currentIndex, updateCurrentIndex } = useRetroContext()
 
   return (
     <SidebarLayout isMinimized>
@@ -16,7 +16,7 @@ export function RetroMinimizedSidebar() {
             key={qnaSetId}
             content={`${index + 1}번`}
             active={currentIndex === index}
-            onClick={() => navigate(index)}
+            onClick={() => updateCurrentIndex(index)}
           />
         ))}
       </div>
