@@ -5,7 +5,7 @@ import { INTERVIEW_INFO_LABELS } from '@/shared/constants/retro'
 import { MOCK_INTERVIEW_INFO_DATA, MOCK_RETRO_LIST } from '../../example'
 
 export function RetroSidebar() {
-  const { currentIndex, navigate } = useRetroContext()
+  const { currentIndex, updateCurrentIndex } = useRetroContext()
 
   return (
     <SidebarLayout>
@@ -27,7 +27,7 @@ export function RetroSidebar() {
             key={qnaSetId}
             content={`${index + 1}. ${questionText}`}
             active={currentIndex === index}
-            onClick={() => navigate(index)}
+            onClick={() => updateCurrentIndex(index)}
           />
         ))}
       </ContainerWithHeader>
