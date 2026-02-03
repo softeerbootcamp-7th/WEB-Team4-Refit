@@ -1,0 +1,32 @@
+package com.shyashyashya.refit.domain.interview.api;
+
+import com.shyashyashya.refit.domain.common.dto.CommonResponse;
+import com.shyashyashya.refit.domain.common.model.ResponseCode;
+import com.shyashyashya.refit.domain.interview.dto.response.DashboardHeadlineResponse;
+import com.shyashyashya.refit.domain.interview.service.DashboardService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
+
+@Tag(name = "Dashboard API", description = "대시보드 화면에서 사용하는 API 입니다.")
+@RestController
+@RequestMapping("/dashboard")
+@RequiredArgsConstructor
+public class DashboardController {
+
+    private final DashboardService dashboardService;
+
+    @Operation(summary = "대시보드 헤드라인에 들어갈 정보를 조회합니다.")
+    @GetMapping("/headline")
+    public ResponseEntity<CommonResponse<DashboardHeadlineResponse>> getDashboardHeadline() {
+        var body = dashboardService.getDashboardHeadlineData();
+        var response = CommonResponse.success(COMMON200, body);
+        return ResponseEntity.ok(response);
+    }
+}
