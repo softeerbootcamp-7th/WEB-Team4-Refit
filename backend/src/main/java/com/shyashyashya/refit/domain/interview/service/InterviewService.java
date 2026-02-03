@@ -121,7 +121,8 @@ public class InterviewService {
                         request.searchFilter().interviewType(),
                         request.searchFilter().interviewResultStatus(),
                         request.searchFilter().startDate(),
-                        request.searchFilter().endDate())
+                        request.searchFilter().endDate(),
+                        pageable)
                 .map(InterviewDto::from);
     }
 

@@ -32,5 +32,6 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
             List<InterviewType> interviewTypes,
             List<InterviewResultStatus> interviewResultStatuses,
             LocalDate startDate,
-            LocalDate endDate);
+            LocalDate endDate,
+            Pageable pageable);
 }
