@@ -2,8 +2,10 @@ package com.shyashyashya.refit.domain.qnaset.service;
 
 import static com.shyashyashya.refit.global.exception.ErrorCode.QNA_SET_CATEGORY_NOT_FOUND;
 
+import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetSearchRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetCategoryQuestionResponse;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetCategoryResponse;
+import com.shyashyashya.refit.domain.qnaset.dto.response.QnaSetSearchResponse;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetCategory;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetCategoryRepository;
@@ -56,6 +58,23 @@ public class QnaSetMyService {
         return qnaSetRepository
                 .findAllByUserAndQnaSetCategory(requestUser, category, pageable)
                 .map(FrequentQnaSetCategoryQuestionResponse::from);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<QnaSetSearchResponse> searchQnaSets(QnaSetSearchRequest request, Pageable pageable) {
+        User requestUser = requestUserContext.getRequestUser();
+
+        return qnaSetRepository
+                .searchQnaSet(
+                        requestUser,
+                        request.keyword(),
+                        request.searchFilter().hasStarAnalysis(),
+                        request.searchFilter().sInclusionLevels(),
+                        request.searchFilter().tInclusionLevels(),
+                        request.searchFilter().aInclusionLevels(),
+                        request.searchFilter().rInclusionLevels(),
+                        pageable)
+                .map(QnaSetSearchResponse::from);
     }
 
     private List<FrequentQnaSetCategoryResponse> getPageContent(
