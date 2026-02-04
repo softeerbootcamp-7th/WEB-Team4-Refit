@@ -89,7 +89,7 @@ public class InterviewController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/{interviewId}/kpt-self-reivew")
+    @PutMapping("/{interviewId}/kpt-self-review")
     public ResponseEntity<CommonResponse<Void>> updateKptSelfReview(
             @PathVariable Long interviewId, @Valid @RequestBody KptSelfReviewUpdateRequest request) {
         interviewService.updateKptSelfReview(interviewId, request);
