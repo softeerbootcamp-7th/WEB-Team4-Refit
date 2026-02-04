@@ -55,18 +55,19 @@ public class DashboardService {
                 });
     }
 
+    @Transactional(readOnly = true)
+    public Page<DashboardMyDifficultQuestionResponse> getMyDifficultQnaSets(Pageable pageable) {
+        User requestUser = requestUserContext.getRequestUser();
+
+        return qnaSetRepository.findAllDifficultByUser(requestUser, pageable)
+                .map(DashboardMyDifficultQuestionResponse::from);
+    }
+
     private long getInterviewDday(LocalDateTime now, Interview interview) {
         return ChronoUnit.DAYS.between(now.toLocalDate(), interview.getStartAt().toLocalDate());
     }
 
     private boolean existInterviewsToLog(User user) {
         return interviewRepository.existsByUserAndReviewStatusIn(user, REVIEW_NEEDED_STATUSES);
-    }
-
-    public Page<DashboardMyDifficultQuestionResponse> getMyDifficultQnaSets(Pageable pageable) {
-        User requestUser = requestUserContext.getRequestUser();
-
-        return qnaSetRepository.findAllDifficultByUser(requestUser, pageable)
-                .map(DashboardMyDifficultQuestionResponse::from);
     }
 }
