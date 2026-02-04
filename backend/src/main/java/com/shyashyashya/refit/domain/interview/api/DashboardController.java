@@ -45,7 +45,7 @@ public class DashboardController {
     @Operation(summary = "대시보드에서 복기 대기중인 면접 리스트를 조회합니다.")
     @GetMapping("/interview/debrief-uncompleted")
     public ResponseEntity<CommonResponse<Page<DashboardDebriefIncompletedInterviewResponse>>>
-    getDebriefIncompletedInterviews(Pageable pageable) {
+            getDebriefIncompletedInterviews(Pageable pageable) {
         var body = dashboardService.getDebriefIncompletedInterviews(pageable);
         var response = CommonResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
