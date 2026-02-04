@@ -56,7 +56,6 @@ public class QnaSetService {
         QnaSet qnaSet = qnaSetRepository.findById(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
 
         User requestUser = requestUserContext.getRequestUser();
-        // FK가 설정되어 있다고 가정 -> Interview가 존재하지 않는 경우는 예외 처리 하지 않음
         Interview interview = qnaSet.getInterview();
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
