@@ -9,7 +9,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface PdfHighlightingRepository extends JpaRepository<PdfHighlighting, Long> {
-    List<PdfHighlighting> findAllByQnaSet(QnaSet qnaSet);
+    @Query("""
+        SELECT p.id
+        FROM PdfHighlighting p
+        WHERE p.qnaSet = :qnaSet
+    """)
+    List<Long> findIdsByQnaSet(@Param("qnaSet") QnaSet qnaSet);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("""

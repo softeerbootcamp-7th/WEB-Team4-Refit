@@ -67,10 +67,7 @@ public class QnaSetService {
     }
 
     private void deleteAllHighlightingsAndRects(QnaSet qnaSet) {
-        List<PdfHighlighting> pdfHighlightings = pdfHighlightingRepository.findAllByQnaSet(qnaSet);
-        List<Long> pdfHighlightingIds =
-                pdfHighlightings.stream().map(PdfHighlighting::getId).toList();
-
+        List<Long> pdfHighlightingIds = pdfHighlightingRepository.findIdsByQnaSet(qnaSet);
         pdfHighlightingRectRepository.deleteAllByPdfHighlightingIds(pdfHighlightingIds);
         pdfHighlightingRepository.deleteAllByQnaSet(qnaSet);
     }
