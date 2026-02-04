@@ -23,10 +23,9 @@ public class ScrapFolderService {
     public Page<ScrapFolderDto> getMyScrapFolders(Pageable pageable) {
         User user = requestUserContext.getRequestUser();
 
-        return scrapFolderRepository.getScrapFoldersByUser(user, pageable)
-            .map(scrapFolder -> {
-                Long qnaSetCount = qnaSetScrapFolderRepository.getQnaSetCountByScrapFolder(scrapFolder);
-                return ScrapFolderDto.from(scrapFolder, qnaSetCount);
-            });
+        return scrapFolderRepository.getScrapFoldersByUser(user, pageable).map(scrapFolder -> {
+            Long qnaSetCount = qnaSetScrapFolderRepository.getQnaSetCountByScrapFolder(scrapFolder);
+            return ScrapFolderDto.from(scrapFolder, qnaSetCount);
+        });
     }
 }

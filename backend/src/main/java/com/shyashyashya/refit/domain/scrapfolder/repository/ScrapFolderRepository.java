@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ScrapFolderRepository extends JpaRepository<ScrapFolder, Long> {
 
-     Page<ScrapFolder> getScrapFoldersByUser(User user, Pageable pageable);
+    Page<ScrapFolder> getScrapFoldersByUser(User user, Pageable pageable);
 }

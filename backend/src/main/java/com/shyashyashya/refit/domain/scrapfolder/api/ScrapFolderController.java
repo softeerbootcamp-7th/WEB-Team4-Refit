@@ -21,13 +21,9 @@ public class ScrapFolderController {
     private final ScrapFolderService scrapFolderService;
 
     @GetMapping
-    public ResponseEntity<CommonResponse<Page<ScrapFolderDto>>> getMyScrapFolders(
-        Pageable pageable) {
+    public ResponseEntity<CommonResponse<Page<ScrapFolderDto>>> getMyScrapFolders(Pageable pageable) {
         var body = scrapFolderService.getMyScrapFolders(pageable);
         var response = CommonResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
-
-
-
 }

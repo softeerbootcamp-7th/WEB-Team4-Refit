@@ -5,17 +5,13 @@ import lombok.AccessLevel;
 import lombok.Builder;
 
 @Builder(access = AccessLevel.PRIVATE)
-public record ScrapFolderDto(
-    Long scrapFolderId,
-    String scrapFolderName,
-    Long qnaSetCount
-    ) {
+public record ScrapFolderDto(Long scrapFolderId, String scrapFolderName, Long qnaSetCount) {
 
     public static ScrapFolderDto from(ScrapFolder scrapFolder, Long qnaSetCount) {
         return ScrapFolderDto.builder()
-            .scrapFolderId(scrapFolder.getId())
-            .scrapFolderName(scrapFolder.getName())
-            .qnaSetCount(qnaSetCount)
-            .build();
+                .scrapFolderId(scrapFolder.getId())
+                .scrapFolderName(scrapFolder.getName())
+                .qnaSetCount(qnaSetCount)
+                .build();
     }
 }
