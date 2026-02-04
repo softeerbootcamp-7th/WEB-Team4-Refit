@@ -41,7 +41,7 @@ public class CookieUtil {
                 .toString();
     }
 
-    public ResponseCookie deleteCookie(String name) {
-        return ResponseCookie.from(name, "").maxAge(0).path("/").build();
+    public String deleteCookie(String name) {
+        return ResponseCookie.from(name, "").maxAge(0).path("/").build().toString();
     }
 }

@@ -16,6 +16,7 @@ import com.shyashyashya.refit.domain.interview.dto.StarAnalysisDto;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatusUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.KptSelfReviewUpdateRequest;
+import com.shyashyashya.refit.domain.interview.dto.request.InterviewSearchRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
@@ -142,6 +143,31 @@ public class InterviewService {
     }
 
     @Transactional(readOnly = true)
+    public Page<InterviewSimpleDto> getMyInterviewsByReviewStatus(
+            InterviewReviewStatus reviewStatus, Pageable pageable) {
+        User requestUser = requestUserContext.getRequestUser();
+
+        return interviewRepository
+                .findAllByUserAndReviewStatus(requestUser, reviewStatus, pageable)
+                .map(InterviewSimpleDto::from);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<InterviewDto> searchMyInterviews(InterviewSearchRequest request, Pageable pageable) {
+        User requestUser = requestUserContext.getRequestUser();
+
+        return interviewRepository
+                .searchInterviews(
+                        requestUser,
+                        request.keyword(),
+                        request.searchFilter().interviewType(),
+                        request.searchFilter().interviewResultStatus(),
+                        request.searchFilter().startDate().atStartOfDay(),
+                        request.searchFilter().endDate().plusDays(1).atStartOfDay(),
+                        pageable)
+                .map(InterviewDto::from);
+    }
+
     public Page<InterviewSimpleDto> getMyInterviewDraftsByReviewStatus(
             InterviewReviewStatus reviewStatus, Pageable pageable) {
         User requestUser = requestUserContext.getRequestUser();
