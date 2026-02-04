@@ -17,7 +17,7 @@ export default function SectionHeader({
 }: SectionHeaderProps) {
   return (
     <div className="mb-4 flex items-center justify-between">
-      <div className="flex items-center gap-2">
+      <div className="flex items-baseline gap-3">
         <h2 className="title-m-bold text-gray-900">{title}</h2>
         {description && <span className="body-l-medium text-gray-500">{description}</span>}
       </div>
