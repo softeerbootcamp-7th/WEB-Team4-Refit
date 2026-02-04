@@ -63,6 +63,7 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
           FROM Interview i
          WHERE i.user = :user
            AND i.startAt BETWEEN :monthStart AND :monthEnd
+         ORDER BY i.startAt
     """)
     List<Interview> findAllByUserAndYearMonth(User user, LocalDateTime monthStart, LocalDateTime monthEnd);
 }
