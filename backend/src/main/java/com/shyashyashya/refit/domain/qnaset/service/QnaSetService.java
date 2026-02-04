@@ -37,4 +37,14 @@ public class QnaSetService {
                 .map(FrequentQnaSetResponse::from)
                 .toList();
     }
+
+    @Transactional
+    public void markDifficultQuestion(Long qnaSetId) {
+
+    }
+
+    @Transactional
+    public void unmarkDifficultQuestion(Long qnaSetId) {
+
+    }
 }

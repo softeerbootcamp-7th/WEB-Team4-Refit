@@ -9,6 +9,8 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +27,20 @@ public class QnaSetController {
             @RequestParam Long industryId, @RequestParam Long jobCategoryId) {
         var body = qnaSetService.getFrequentQuestions(industryId, jobCategoryId);
         var response = CommonResponse.success(COMMON200, body);
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/{qnaSetId}/difficult/mark")
+    public ResponseEntity<CommonResponse<Void>> markDifficultQuestion(@PathVariable Long qnaSetId) {
+        qnaSetService.markDifficultQuestion(qnaSetId);
+        var response = CommonResponse.success(COMMON200);
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/{qnaSetId}/difficult/unmark")
+    public ResponseEntity<CommonResponse<Void>> unmarkDifficultQuestion(@PathVariable Long qnaSetId) {
+        qnaSetService.unmarkDifficultQuestion(qnaSetId);
+        var response = CommonResponse.success(COMMON200);
         return ResponseEntity.ok(response);
     }
 }
