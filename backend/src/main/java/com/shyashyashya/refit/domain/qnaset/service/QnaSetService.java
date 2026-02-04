@@ -96,9 +96,9 @@ public class QnaSetService {
     private QnaSet getValidatedQnaSetForUser(Long qnaSetId) {
         QnaSet qnaSet = qnaSetRepository.findById(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
 
-        User requesetUser = requestUserContext.getRequestUser();
+        User requestUser = requestUserContext.getRequestUser();
         Interview interview = qnaSet.getInterview();
-        interviewValidator.validateInterviewOwner(interview, requesetUser);
+        interviewValidator.validateInterviewOwner(interview, requestUser);
 
         return qnaSet;
     }
