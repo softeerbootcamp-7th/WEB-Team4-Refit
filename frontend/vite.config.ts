@@ -9,4 +9,8 @@ export default defineConfig({
   resolve: {
     alias: [{ find: '@', replacement: '/src' }],
   },
+  server: {
+    host: true,
+    allowedHosts: ['habilimented-shon-subfulgently.ngrok-free.dev'],
+  },
 })
