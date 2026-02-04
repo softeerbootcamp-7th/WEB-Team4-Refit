@@ -86,7 +86,7 @@ public class QnaSetService {
                                 rectDto.y(),
                                 rectDto.width(),
                                 rectDto.height(),
-                                rectDto.pageNum(),
+                                rectDto.pageNumber(),
                                 pdfHighlighting))
                         .forEach(pdfHighlightingRectRepository::save);
             }
