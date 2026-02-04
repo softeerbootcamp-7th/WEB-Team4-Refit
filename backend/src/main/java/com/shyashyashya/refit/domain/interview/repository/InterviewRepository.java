@@ -1,13 +1,14 @@
 package com.shyashyashya.refit.domain.interview.repository;
 
+import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewResultStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
+import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.user.model.User;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,7 +25,7 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
        AND i.startAt BETWEEN :startDate AND :endDate
      ORDER BY i.startAt
     """)
-    Optional<Interview> getUpcomingInterview(User user, LocalDateTime startDate, LocalDateTime endDate);
+    Page<Interview> getUpcomingInterview(User user, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
 
     boolean existsByUser(User user);
 
@@ -47,6 +48,15 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
             LocalDateTime startDate,
             LocalDateTime endDate,
             Pageable pageable);
+
+    @Query("""
+        SELECT i
+          FROM Interview i
+         WHERE i.user = :user
+           AND i.industry = :industry
+           AND i.jobCategory = :jobCategory
+    """)
+    List<Interview> findAllSimilarInterviewsByUser(User user, Industry interview, JobCategory jobCategory);
 
     @Query("""
         SELECT i

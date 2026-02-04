@@ -43,6 +43,10 @@ public class QnaSetSelfReview extends BaseEntity {
                 .build();
     }
 
+    public void updateSelfReviewText(String selfReviewText) {
+        this.selfReviewText = selfReviewText;
+    }
+
     @Builder(access = AccessLevel.PRIVATE)
     private QnaSetSelfReview(String selfReviewText, QnaSet qnaSet) {
         this.selfReviewText = selfReviewText;
