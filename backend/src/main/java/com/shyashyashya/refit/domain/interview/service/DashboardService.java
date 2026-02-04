@@ -59,7 +59,8 @@ public class DashboardService {
     public Page<DashboardMyDifficultQuestionResponse> getMyDifficultQnaSets(Pageable pageable) {
         User requestUser = requestUserContext.getRequestUser();
 
-        return qnaSetRepository.findAllDifficultByUser(requestUser, pageable)
+        return qnaSetRepository
+                .findAllDifficultByUser(requestUser, pageable)
                 .map(DashboardMyDifficultQuestionResponse::from);
     }
 

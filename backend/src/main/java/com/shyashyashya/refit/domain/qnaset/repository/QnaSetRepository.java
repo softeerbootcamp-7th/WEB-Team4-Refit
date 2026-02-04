@@ -1,7 +1,6 @@
 package com.shyashyashya.refit.domain.qnaset.repository;
 
 import com.shyashyashya.refit.domain.industry.model.Industry;
-import com.shyashyashya.refit.domain.interview.dto.response.DashboardMyDifficultQuestionResponse;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
