@@ -7,6 +7,7 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.USER_SIGNUP_EMAI
 import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
 import com.shyashyashya.refit.domain.user.dto.request.UserSignUpRequest;
+import com.shyashyashya.refit.domain.user.dto.response.MyPageResponse;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
 import com.shyashyashya.refit.domain.user.service.validator.UserSignUpValidator;
@@ -59,5 +60,11 @@ public class UserService {
     public void agreeToTerms() {
         User user = requestUserContext.getRequestUser();
         user.agreeToTerms();
+    }
+
+    @Transactional(readOnly = true)
+    public MyPageResponse getMyPage() {
+        User user = requestUserContext.getRequestUser();
+        return MyPageResponse.from(user);
     }
 }
