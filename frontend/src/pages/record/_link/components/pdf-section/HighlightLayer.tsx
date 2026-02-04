@@ -24,7 +24,8 @@ type HighlightRectDivProps = {
 }
 
 function HighlightRectDiv({ rect, variant }: HighlightRectDivProps) {
-  const bgColor = variant === 'saved' ? 'bg-orange-400/40' : 'bg-orange-300/40'
+  // TODO: 색상 변경 (현재는 pending: gray, saved: yellow)
+  const bgColor = variant === 'saved' ? 'bg-yellow-400/40' : 'bg-gray-300/40'
 
   return (
     // TODO: div 대신 absolute position된 canvas로 변경 고려 / transform 등 GPU 가속 활용 고민
