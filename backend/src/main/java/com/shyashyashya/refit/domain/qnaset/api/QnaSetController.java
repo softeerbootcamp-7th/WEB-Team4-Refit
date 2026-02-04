@@ -7,6 +7,8 @@ import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetResponse;
 import com.shyashyashya.refit.domain.qnaset.service.QnaSetService;
 import java.util.List;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +36,7 @@ public class QnaSetController {
 
     @PutMapping("/{qnaSetId}")
     public ResponseEntity<CommonResponse<Void>> updateQnaSet(
-            @PathVariable Long qnaSetId, @RequestBody QnaSetUpdateRequest request) {
+            @PathVariable Long qnaSetId, @Valid @RequestBody QnaSetUpdateRequest request) {
         qnaSetService.updateQnaSet(qnaSetId, request);
         var response = CommonResponse.success(COMMON200);
         return ResponseEntity.ok(response);
