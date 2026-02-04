@@ -64,7 +64,8 @@ public class DashboardService {
 
         // TODO : 단일 쿼리로 조회해오도록 로직 수정
         LocalDateTime now = LocalDateTime.now();
-        return interviewRepository.getUpcomingInterview(requestUser, now, now.plusDays(7), pageable)
+        return interviewRepository
+                .getUpcomingInterview(requestUser, now, now.plusDays(7), pageable)
                 .map(interview -> {
                     List<QnaSet> similarTrendQuestions = qnaSetRepository.findAllByIndustryAndJobCategory(
                             interview.getIndustry(), interview.getJobCategory());
