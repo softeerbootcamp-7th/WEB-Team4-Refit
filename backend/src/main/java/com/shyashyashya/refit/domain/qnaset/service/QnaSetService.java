@@ -15,8 +15,11 @@ import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetResponse;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetSelfReview;
+import com.shyashyashya.refit.domain.qnaset.model.StarAnalysis;
+import com.shyashyashya.refit.domain.qnaset.model.StarInclusionLevel;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetSelfReviewRepository;
+import com.shyashyashya.refit.domain.qnaset.repository.StarAnalysisRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.util.RequestUserContext;
@@ -36,6 +39,7 @@ public class QnaSetService {
 
     private final InterviewValidator interviewValidator;
     private final RequestUserContext requestUserContext;
+    private final StarAnalysisRepository starAnalysisRepository;
 
     @Transactional(readOnly = true)
     public List<FrequentQnaSetResponse> getFrequentQuestions(Long industryId, Long jobCategoryId) {
@@ -69,7 +73,24 @@ public class QnaSetService {
     public StarAnalysisDto createStarAnalysis(Long qnaSetId) {
         QnaSet qnaSet = getValidatedQnaSetForUser(qnaSetId);
 
+        StarAnalysis starAnalysis = starAnalysisRepository.findByQnaSet(qnaSet).orElseGet(() -> {
+            StarAnalysis created = requestGeminiStarAnalysis(qnaSet);
+            return starAnalysisRepository.save(created);
+        });
 
+        return StarAnalysisDto.from(starAnalysis);
+    }
+
+    private StarAnalysis requestGeminiStarAnalysis(QnaSet qnaSet) {
+        // TODO Gemini 요청 보내기
+
+        return StarAnalysis.create(
+                StarInclusionLevel.ABSENT,
+                StarInclusionLevel.INSUFFICIENT,
+                StarInclusionLevel.PRESENT,
+                StarInclusionLevel.INSUFFICIENT,
+                "전체 요약 텍스트 임시 가짜 데이터",
+                qnaSet);
     }
 
     private QnaSet getValidatedQnaSetForUser(Long qnaSetId) {
