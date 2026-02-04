@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { DifficultQuestionCardData } from '../components/difficult-questions/types'
+import type { DifficultQuestionCardData } from '@/pages/dashboard/_index/components/difficult-questions/DifficultQuestionCard'
 
 const MOCK_DIFFICULT_QUESTIONS: DifficultQuestionCardData[] = [
   {

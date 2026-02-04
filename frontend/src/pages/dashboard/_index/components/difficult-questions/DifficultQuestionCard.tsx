@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { SmallLogoIcon } from '@/shared/assets'
 
-interface DifficultQuestionCardData {
+export interface DifficultQuestionCardData {
   id: number
   companyName: string
   companyLogo?: ReactNode
