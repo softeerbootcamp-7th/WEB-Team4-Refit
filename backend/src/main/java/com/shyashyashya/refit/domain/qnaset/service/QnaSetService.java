@@ -59,13 +59,9 @@ public class QnaSetService {
         Interview interview = qnaSet.getInterview();
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
-        String reqQuestionText = request.questionText();
-        String reqAnswerText = request.answerText();
-        String reqSelfReviewText = request.selfReviewText();
-
-        qnaSet.updateQuestionText(reqQuestionText);
-        qnaSet.updateAnswerText(reqAnswerText);
-        updateOrCreateSelfReview(qnaSet, reqSelfReviewText);
+        qnaSet.updateQuestionText(request.questionText());
+        qnaSet.updateAnswerText(request.answerText());
+        updateOrCreateSelfReview(qnaSet, request.selfReviewText());
     }
 
     private void updateOrCreateSelfReview(QnaSet qnaSet, String reqSelfReviewText) {
