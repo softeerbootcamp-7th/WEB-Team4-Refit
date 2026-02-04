@@ -65,7 +65,10 @@ public class QnaSetService {
 
         qnaSet.updateQuestionText(reqQuestionText);
         qnaSet.updateAnswerText(reqAnswerText);
+        updateOrCreateSelfReview(qnaSet, reqSelfReviewText);
+    }
 
+    private void updateOrCreateSelfReview(QnaSet qnaSet, String reqSelfReviewText) {
         if (reqSelfReviewText != null) {
             qnaSetSelfReviewRepository
                     .findByQnaSet(qnaSet)
