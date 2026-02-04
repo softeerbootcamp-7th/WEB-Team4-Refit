@@ -33,7 +33,7 @@ public class DashboardController {
     }
 
     @Operation(summary = "대시보드에서 '내가 어렵게 느낀 질문'을 조회합니다.")
-    @GetMapping("/headline")
+    @GetMapping("/qna-set/my/difficult")
     public ResponseEntity<CommonResponse<Page<DashboardMyDifficultQuestionResponse>>> getMyDifficultQnaSets(Pageable pageable) {
         var body = dashboardService.getMyDifficultQnaSets(pageable);
         var response = CommonResponse.success(COMMON200, body);
