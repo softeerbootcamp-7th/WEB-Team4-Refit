@@ -85,16 +85,15 @@ public class DashboardService {
 
         LocalDateTime monthStart = LocalDateTime.of(year, month, 1, 0, 0, 0);
         LocalDateTime monthEnd = monthStart.plusMonths(1).minusNanos(1);
-        Map<LocalDateTime, List<Interview>> interviews =
+        Map<LocalDate, List<Interview>> interviews =
                 interviewRepository.findAllByUserAndYearMonth(requestUser, monthStart, monthEnd).stream()
-                        .collect(Collectors.groupingBy(Interview::getStartAt, Collectors.toList()));
+                        .collect(Collectors.groupingBy(
+                                interview -> interview.getStartAt().toLocalDate(), Collectors.toList()));
 
         LocalDateTime now = LocalDateTime.now();
         return interviews.entrySet().stream()
                 .map(entry -> DashboardCalendarResponse.of(
-                        entry.getKey().toLocalDate(),
-                        calculateDday(now, entry.getKey().toLocalDate()),
-                        entry.getValue()))
+                        entry.getKey(), calculateDday(now, entry.getKey()), entry.getValue()))
                 .toList();
     }
 
