@@ -1,7 +1,7 @@
 import DifficultQuestionsSection from '@/pages/dashboard/_index/components/difficult-questions/DifficultQuestionsSection'
 import FrequentlyAskedSection from '@/pages/dashboard/_index/components/frequent-questions/FrequentQuestionsSection'
+import PopularQuestionsSection from '@/pages/dashboard/_index/components/popular-questions/PopularQuestionsSection'
 import SectionHeader from '@/pages/dashboard/_index/components/SectionHeader'
-import Top10QuestionsSection from '@/pages/dashboard/_index/components/top10-questions/Top10QuestionsSection'
 
 export default function PersonalizedQuestionsSection() {
   return (
@@ -11,7 +11,7 @@ export default function PersonalizedQuestionsSection() {
         <FrequentlyAskedSection />
         <DifficultQuestionsSection />
       </div>
-      <Top10QuestionsSection />
+      <PopularQuestionsSection />
     </div>
   )
 }

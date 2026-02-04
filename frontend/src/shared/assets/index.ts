@@ -1,3 +1,4 @@
+export { default as ArrowRightIcon } from './arrow_right_icon.svg?react'
 export { default as CalendarStarIcon } from './calendar_star_icon.svg?react'
 export { default as CaretDownIcon } from './caret_down_icon.svg?react'
 export { default as CaretUpIcon } from './caret_up_icon.svg?react'
