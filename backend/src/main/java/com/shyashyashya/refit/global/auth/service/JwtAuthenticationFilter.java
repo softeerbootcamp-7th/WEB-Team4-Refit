@@ -1,7 +1,9 @@
 package com.shyashyashya.refit.global.auth.service;
 
+import static com.shyashyashya.refit.global.exception.ErrorCode.USER_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.USER_SIGNUP_REQUIRED;
 
+import com.shyashyashya.refit.domain.user.repository.UserRepository;
 import com.shyashyashya.refit.global.constant.AuthConstant;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.property.AuthUrlProperty;
@@ -28,6 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final RequestUserContext requestUserContext;
     private final HandlerExceptionResolver handlerExceptionResolver;
     private final JwtUtil jwtUtil;
+    private final UserRepository userRepository;
 
     private static final AntPathMatcher pathMatcher = new AntPathMatcher();
 
@@ -52,6 +55,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 throw new CustomException(USER_SIGNUP_REQUIRED);
             }
 
+            if (isUserNotFound(userId)) {
+                throw new CustomException(USER_NOT_FOUND);
+            }
+
             requestUserContext.setEmail(email);
             requestUserContext.setUserId(userId);
             filterChain.doFilter(request, response);
@@ -68,6 +75,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private boolean isIllegalGuestAccess(Long userId, HttpServletRequest request) {
         return userId == null && !pathMatcher.match(authUrlProperty.signUp(), request.getRequestURI());
+    }
+
+    private boolean isUserNotFound(Long userId) {
+        // Guest인 경우 검사하지 않음
+        if (userId == null) {
+            return false;
+        }
+        return userRepository.findById(userId).isEmpty();
     }
 
     // 쿠키에서 토큰 추출
