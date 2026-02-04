@@ -12,6 +12,7 @@ import {
   MobileSignupPage,
   MobileUnrecordedPage,
   MobileRecordPage,
+  MyInterviewsPage,
 } from '@/pages'
 import { ROUTES } from '@/shared/constants/routes'
 
@@ -52,7 +53,7 @@ const router = createBrowserRouter([
           { index: true, Component: DashboardPage },
           {
             path: getChildPath(ROUTES.DASHBOARD_MY_INTERVIEWS, ROUTES.DASHBOARD),
-            Component: DashboardPage,
+            Component: MyInterviewsPage,
           },
           {
             path: getChildPath(ROUTES.DASHBOARD_TREND_QUESTIONS, ROUTES.DASHBOARD),
