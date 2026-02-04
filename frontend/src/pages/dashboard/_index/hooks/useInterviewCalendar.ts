@@ -16,7 +16,7 @@ const MOCK_EVENTS: Partial<Record<string, EventColor>> = {
 
 type CalendarDay = { day: number; isCurrentMonth: boolean }
 
-const toDay = (day: number, isCurrentMonth: boolean): CalendarDay => ({ day, isCurrentMonth })
+const createCalendarDay = (day: number, isCurrentMonth: boolean): CalendarDay => ({ day, isCurrentMonth })
 
 function getCalendarDays(year: number, month: number): CalendarDay[] {
   const first = new Date(year, month, 1)
@@ -25,10 +25,10 @@ function getCalendarDays(year: number, month: number): CalendarDay[] {
   const daysInMonth = last.getDate()
   const prevMonthDays = new Date(year, month, 0).getDate()
 
-  const prevDays = Array.from({ length: startPad }, (_, i) => toDay(prevMonthDays - startPad + 1 + i, false))
-  const currentDays = Array.from({ length: daysInMonth }, (_, i) => toDay(i + 1, true))
+  const prevDays = Array.from({ length: startPad }, (_, i) => createCalendarDay(prevMonthDays - startPad + 1 + i, false))
+  const currentDays = Array.from({ length: daysInMonth }, (_, i) => createCalendarDay(i + 1, true))
   const nextDaysCount = 42 - prevDays.length - currentDays.length
-  const nextDays = Array.from({ length: nextDaysCount }, (_, i) => toDay(i + 1, false))
+  const nextDays = Array.from({ length: nextDaysCount }, (_, i) => createCalendarDay(i + 1, false))
 
   return [...prevDays, ...currentDays, ...nextDays]
 }

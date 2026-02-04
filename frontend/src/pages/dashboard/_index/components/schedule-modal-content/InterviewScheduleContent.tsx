@@ -1,4 +1,15 @@
+import { useEffect } from 'react'
 import Button from '@/shared/components/button'
+
+const getTodayDateString = () => {
+  const now = new Date()
+  const y = now.getFullYear()
+  const m = String(now.getMonth() + 1).padStart(2, '0')
+  const d = String(now.getDate()).padStart(2, '0')
+  return `${y}-${m}-${d}`
+}
+
+const DEFAULT_INTERVIEW_TIME = '00:00'
 
 const INTERVIEW_TYPE_OPTIONS: { value: string; label: string }[] = [
   { value: 'first', label: '1차 면접' },
@@ -30,6 +41,22 @@ const inputBaseClass =
 
 export function InterviewScheduleContent({ values, onChange, onPrev, onNext }: InterviewScheduleContentProps) {
   const { interviewType, interviewDate, interviewTime } = values
+  const defaultDate = getTodayDateString()
+  const displayDate = interviewDate || defaultDate
+  const displayTime = interviewTime || DEFAULT_INTERVIEW_TIME
+
+  useEffect(() => {
+    const needsDate = interviewDate.trim() === ''
+    const needsTime = interviewTime.trim() === ''
+    if (needsDate || needsTime) {
+      onChange({
+        ...values,
+        ...(needsDate && { interviewDate: defaultDate }),
+        ...(needsTime && { interviewTime: DEFAULT_INTERVIEW_TIME }),
+      })
+    }
+  }, [])
+
   const isFormValid = interviewType !== '' && interviewDate.trim() !== '' && interviewTime.trim() !== ''
 
   return (
@@ -60,16 +87,14 @@ export function InterviewScheduleContent({ values, onChange, onPrev, onNext }: I
           <div className="flex gap-2">
             <input
               type="date"
-              value={interviewDate}
+              value={displayDate}
               onChange={(e) => onChange({ ...values, interviewDate: e.target.value })}
-              placeholder="YYYY. MM. DD."
               className={inputBaseClass}
             />
             <input
               type="time"
-              value={interviewTime}
+              value={displayTime}
               onChange={(e) => onChange({ ...values, interviewTime: e.target.value })}
-              placeholder="오전 00시 00분"
               className={inputBaseClass}
             />
           </div>

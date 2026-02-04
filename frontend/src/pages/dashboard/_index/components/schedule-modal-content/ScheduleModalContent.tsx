@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import type { ScheduleModalStep } from '@/pages/dashboard/_index/constants/interviewCalendar'
 import { InterviewInfoContent } from '@/pages/dashboard/_index/components/schedule-modal-content/InterviewInfoContent'
 import type { InterviewInfoFormValues } from '@/pages/dashboard/_index/components/schedule-modal-content/InterviewInfoContent'
 import { InterviewScheduleContent } from '@/pages/dashboard/_index/components/schedule-modal-content/InterviewScheduleContent'
 import type { InterviewScheduleFormValues } from '@/pages/dashboard/_index/components/schedule-modal-content/InterviewScheduleContent'
+import type { ScheduleModalStep } from '@/pages/dashboard/_index/constants/interviewCalendar'
 
 export interface ScheduleFormSubmitValues extends InterviewInfoFormValues, InterviewScheduleFormValues {}
 

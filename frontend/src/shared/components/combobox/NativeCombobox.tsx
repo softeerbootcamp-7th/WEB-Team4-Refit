@@ -19,11 +19,10 @@ const NativeCombobox = forwardRef<HTMLSelectElement, NativeComboboxProps>(
     return (
       <div className="flex flex-col gap-2">
         {label && (
-          <label className="body-l-semibold text-gray-600">
-            {label}
+          <label className="body-l-semibold flex gap-1 text-gray-600">
+            <span>{label}</span>
             {required && (
               <span className="text-red-400" aria-hidden>
-                {' '}
                 *
               </span>
             )}

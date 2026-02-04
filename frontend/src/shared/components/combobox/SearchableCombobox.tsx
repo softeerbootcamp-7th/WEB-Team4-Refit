@@ -1,5 +1,5 @@
 import { forwardRef, useRef, useState } from 'react'
-import { CaretDownIcon, CheckIcon } from '@/shared/assets'
+import { CaretDownIcon, CheckIcon, SearchIcon } from '@/shared/assets'
 import { useOnClickOutside } from '@/shared/hooks/useOnClickOutside'
 
 export interface SearchableComboboxProps {
@@ -64,14 +64,70 @@ const SearchableCombobox = forwardRef<HTMLDivElement, SearchableComboboxProps>(
       if (e.key === 'Escape') setOpen(false)
     }
 
+    const renderListContent = () => {
+      const trimmedQuery = searchQuery.trim()
+      const hasFilteredOptions = filteredOptions.length > 0
+      const canCreateOption = creatable && trimmedQuery !== ''
+      const emptyStateMessage = trimmedQuery !== '' ? '검색 결과가 없어요' : '목록에서 선택해 주세요'
+
+      if (hasFilteredOptions) {
+        return filteredOptions.map((option) => {
+          const isSelected = option.value === value
+          return (
+            <li
+              key={option.value}
+              role="option"
+              aria-selected={isSelected}
+              onClick={() => handleSelect(option.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  handleSelect(option.value)
+                }
+              }}
+              tabIndex={0}
+              className={`body-l-medium flex cursor-pointer items-center justify-between gap-2 px-4 py-3 text-gray-900 hover:bg-gray-100 ${
+                isSelected ? 'bg-gray-100' : ''
+              }`}
+            >
+              <span className="truncate">{option.label}</span>
+              {isSelected && (
+                <span className="shrink-0 text-orange-500" aria-hidden>
+                  <CheckIcon />
+                </span>
+              )}
+            </li>
+          )
+        })
+      }
+      if (canCreateOption) {
+        return (
+          <li
+            role="option"
+            tabIndex={0}
+            onClick={() => handleSelect(trimmedQuery)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                handleSelect(trimmedQuery)
+              }
+            }}
+            className="body-l-medium flex cursor-pointer items-center gap-2 px-4 py-3 text-orange-500 hover:bg-gray-100"
+          >
+            &quot;{trimmedQuery}&quot; 추가하기
+          </li>
+        )
+      }
+      return <li className="body-l-medium px-4 py-3 text-gray-400">{emptyStateMessage}</li>
+    }
+
     return (
       <div className="flex flex-col gap-2" ref={containerRef}>
         {label && (
-          <label className="body-l-semibold text-gray-600">
-            {label}
+          <label className="body-l-semibold flex gap-1 text-gray-600">
+            <span>{label}</span>
             {required && (
               <span className="text-red-400" aria-hidden>
-                {' '}
                 *
               </span>
             )}
@@ -86,7 +142,7 @@ const SearchableCombobox = forwardRef<HTMLDivElement, SearchableComboboxProps>(
             aria-haspopup="listbox"
             aria-expanded={open}
             aria-label={label ? `${label} 선택` : undefined}
-            className={`body-l-medium flex w-full cursor-pointer items-center justify-between rounded-xl border border-gray-200 px-4 py-3 text-left outline-none focus:border-orange-500 disabled:cursor-not-allowed disabled:opacity-50 ${
+            className={`body-l-medium flex w-full cursor-pointer items-center justify-between rounded-xl border border-gray-200 px-4 py-3 text-left outline-none hover:border-gray-300 disabled:cursor-not-allowed disabled:opacity-50 ${
               isPlaceholderSelected ? 'text-gray-300' : 'text-gray-900'
             } ${className}`}
           >
@@ -100,73 +156,24 @@ const SearchableCombobox = forwardRef<HTMLDivElement, SearchableComboboxProps>(
               role="listbox"
             >
               <div className="border-gray-150 border-b p-2">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder={searchPlaceholder}
-                  className="body-l-medium w-full rounded-lg border border-gray-200 bg-gray-100 px-3 py-2 outline-none placeholder:text-gray-400 focus:border-orange-500"
-                  autoFocus
-                  onKeyDown={(e) => e.stopPropagation()}
-                />
+                <div className="flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-100 px-3 py-2">
+                  <SearchIcon className="h-5 w-5 shrink-0 text-gray-400" aria-hidden />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder={searchPlaceholder}
+                    className="body-l-medium w-full bg-transparent outline-none placeholder:text-gray-400"
+                    autoFocus
+                    onKeyDown={(e) => e.stopPropagation()}
+                  />
+                </div>
               </div>
-              <ul className="max-h-[220px] overflow-y-auto py-1">
-                {filteredOptions.length === 0 ? (
-                  creatable && searchQuery.trim() !== '' ? (
-                    <li
-                      role="option"
-                      tabIndex={0}
-                      onClick={() => handleSelect(searchQuery.trim())}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault()
-                          handleSelect(searchQuery.trim())
-                        }
-                      }}
-                      className="body-l-medium flex cursor-pointer items-center gap-2 px-4 py-3 text-orange-500 hover:bg-gray-100"
-                    >
-                      &quot;{searchQuery.trim()}&quot; 추가하기
-                    </li>
-                  ) : (
-                    <li className="body-l-medium px-4 py-3 text-gray-400">
-                      {searchQuery.trim() !== '' ? '검색 결과가 없어요' : '목록에서 선택해 주세요'}
-                    </li>
-                  )
-                ) : (
-                  filteredOptions.map((option) => {
-                    const isSelected = option.value === value
-                    return (
-                      <li
-                        key={option.value}
-                        role="option"
-                        aria-selected={isSelected}
-                        onClick={() => handleSelect(option.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault()
-                            handleSelect(option.value)
-                          }
-                        }}
-                        tabIndex={0}
-                        className={`body-l-medium flex cursor-pointer items-center justify-between gap-2 px-4 py-3 text-gray-900 hover:bg-gray-100 ${
-                          isSelected ? 'bg-gray-100' : ''
-                        }`}
-                      >
-                        <span className="truncate">{option.label}</span>
-                        {isSelected && (
-                          <span className="shrink-0 text-orange-500" aria-hidden>
-                            <CheckIcon />
-                          </span>
-                        )}
-                      </li>
-                    )
-                  })
-                )}
-              </ul>
+              <ul className="max-h-40 overflow-y-auto py-1">{renderListContent()}</ul>
             </div>
           )}
         </div>
-        {error && <p className="body-s-medium text-red-500">{error}</p>}
+        {/* {error && <p className="body-s-medium text-red-500">{error}</p>} */}
       </div>
     )
   },

@@ -11,7 +11,7 @@ export interface ModalProps {
   children: React.ReactNode
   showCloseButton?: boolean
   className?: string
-  closeOnOutsideClick?: boolean
+  isOutsideClickClosable?: boolean
 }
 
 const Modal = ({
@@ -22,14 +22,14 @@ const Modal = ({
   children,
   showCloseButton = true,
   className = '',
-  closeOnOutsideClick = false,
+  isOutsideClickClosable = false,
 }: ModalProps) => {
   const contentRef = useRef<HTMLDivElement>(null)
   const titleId = useId()
   useOnClickOutside(
     contentRef,
     () => {
-      if (closeOnOutsideClick) onClose()
+      if (isOutsideClickClosable) onClose()
     },
     open,
   )
