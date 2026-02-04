@@ -33,3 +33,12 @@ type InterviewFullType = {
   qnaSets: QnaSetType[]
   questions: string[]
 }
+
+export type InterviewFilter = {
+  keyword: string
+  interviewType: string[]
+  resultStatus: string[]
+  startDate: string
+  endDate: string
+  sort: string
+}
