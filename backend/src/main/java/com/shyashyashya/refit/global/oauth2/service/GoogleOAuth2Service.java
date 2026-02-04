@@ -1,4 +1,4 @@
-package com.shyashyashya.refit.global.auth.service;
+package com.shyashyashya.refit.global.oauth2.service;
 
 import static com.shyashyashya.refit.global.exception.ErrorCode.EXTERNAL_OAUTH_SERVER_ERROR;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INVALID_OAUTH_ACCESS_TOKEN;
@@ -6,14 +6,18 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.INVALID_OAUTH_CO
 
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
-import com.shyashyashya.refit.global.auth.dto.OAuthResultDto;
+import com.shyashyashya.refit.global.auth.model.RefreshToken;
+import com.shyashyashya.refit.global.auth.repository.RefreshTokenRepository;
+import com.shyashyashya.refit.global.auth.service.JwtUtil;
 import com.shyashyashya.refit.global.exception.CustomException;
+import com.shyashyashya.refit.global.oauth2.dto.OAuthResultDto;
 import com.shyashyashya.refit.global.property.OAuth2Property;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
@@ -22,13 +26,15 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-// TODO: RefreshToken 처리, RefreshToken redis 등에 저장 구현하기
-public class GoogleOAuthService implements OAuthService {
+// TODO: RefreshToken을 redis 등에 저장하는 것 고려
+public class GoogleOAuth2Service implements OAuth2Service {
 
     private final OAuth2Property oauth2Property;
     private final JwtUtil jwtUtil;
-    private final UserRepository userRepository;
     private final RestClient restClient;
+
+    private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
     public String getOAuthLoginUrl() {
@@ -44,6 +50,7 @@ public class GoogleOAuthService implements OAuthService {
                 .toUriString();
     }
 
+    @Transactional
     @Override
     public OAuthResultDto handleOAuthCallback(String code) {
         var tokenResponse = fetchAccessToken(code);
@@ -54,6 +61,10 @@ public class GoogleOAuthService implements OAuthService {
 
         var accessToken = jwtUtil.createAccessToken(userInfo.email(), userId);
         var refreshToken = jwtUtil.createRefreshToken(userInfo.email());
+
+        refreshTokenRepository.save(
+                RefreshToken.create(refreshToken, userInfo.email(), jwtUtil.getExpiration(refreshToken)));
+
         return userOptional
                 .map(user -> OAuthResultDto.createUser(accessToken, refreshToken, user))
                 .orElseGet(() -> OAuthResultDto.createGuest(accessToken, refreshToken, userInfo));
