@@ -5,6 +5,7 @@ import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardDebriefIncompletedInterviewResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardHeadlineResponse;
+import com.shyashyashya.refit.domain.interview.dto.response.DashboardUpcomingInterviewResponse;
 import com.shyashyashya.refit.domain.interview.service.DashboardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,10 +33,19 @@ public class DashboardController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "대시보드에서 '곧 있을 면접' 영역의 데이터를 조회합니다.")
+    @GetMapping("/interview/upcoming")
+    public ResponseEntity<CommonResponse<Page<DashboardUpcomingInterviewResponse>>> getUpcomingInterviews(
+            Pageable pageable) {
+        var body = dashboardService.getUpcomingInterviews(pageable);
+        var response = CommonResponse.success(COMMON200, body);
+        return ResponseEntity.ok(response);
+    }
+
     @Operation(summary = "대시보드에서 복기 대기중인 면접 리스트를 조회합니다.")
     @GetMapping("/interview/debrief-uncompleted")
     public ResponseEntity<CommonResponse<Page<DashboardDebriefIncompletedInterviewResponse>>>
-            getDebriefIncompletedInterviews(Pageable pageable) {
+    getDebriefIncompletedInterviews(Pageable pageable) {
         var body = dashboardService.getDebriefIncompletedInterviews(pageable);
         var response = CommonResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);

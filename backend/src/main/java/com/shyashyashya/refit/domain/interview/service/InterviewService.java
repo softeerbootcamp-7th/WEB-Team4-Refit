@@ -16,10 +16,13 @@ import com.shyashyashya.refit.domain.interview.dto.StarAnalysisDto;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatusUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewSearchRequest;
+import com.shyashyashya.refit.domain.interview.dto.request.KptSelfReviewUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
+import com.shyashyashya.refit.domain.interview.model.InterviewSelfReview;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
+import com.shyashyashya.refit.domain.interview.repository.InterviewSelfReviewRepository;
 import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
@@ -53,6 +56,7 @@ public class InterviewService {
     private final QnaSetRepository qnaSetRepository;
     private final QnaSetSelfReviewRepository qnaSetSelfReviewRepository;
     private final StarAnalysisRepository starAnalysisRepository;
+    private final InterviewSelfReviewRepository interviewSelfReviewRepository;
 
     private final InterviewValidator interviewValidator;
     private final RequestUserContext requestUserContext;
@@ -187,6 +191,28 @@ public class InterviewService {
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
         interview.updateRawText(request.rawText());
+    }
+
+    @Transactional
+    public void updateKptSelfReview(Long interviewId, KptSelfReviewUpdateRequest request) {
+        User requestUser = requestUserContext.getRequestUser();
+        Interview interview =
+                interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
+        interviewValidator.validateInterviewOwner(interview, requestUser);
+
+        interviewSelfReviewRepository
+                .findByInterview(interview)
+                .ifPresentOrElse(
+                        selfReview -> {
+                            selfReview.updateKeepText(request.keepText());
+                            selfReview.updateProblemText(request.problemText());
+                            selfReview.updateTryText(request.tryText());
+                        },
+                        () -> {
+                            InterviewSelfReview created = InterviewSelfReview.create(
+                                    request.keepText(), request.problemText(), request.tryText(), interview);
+                            interviewSelfReviewRepository.save(created);
+                        });
     }
 
     private Company findOrSaveCompany(InterviewCreateRequest request) {

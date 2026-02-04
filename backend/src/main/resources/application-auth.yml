@@ -6,6 +6,7 @@ spring:
       sign-up: "/user/signup"
       whitelists:
         - "/auth/login/**"
+        - "/auth/reissue"
         - "/swagger-ui/**"
         - "/v3/api-docs/**"
     jwt:

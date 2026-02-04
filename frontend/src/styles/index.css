@@ -2,6 +2,7 @@
 @import './color.css';
 @import './typography.css';
 @import './globals.css';
+@import './pdf-text-layer.css';
 
 @utility no-scrollbar {
   @apply [scrollbar-width:none] [&::-webkit-scrollbar]:hidden;

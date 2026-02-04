@@ -17,7 +17,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
-      variant = 'fill-orange-500',
+      variant = 'ghost',
       size = 'md',
       radius = 'default',
       children,
@@ -29,11 +29,13 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref,
   ) => {
-    // 최종 비활성화 상태 계산
     const isDisabled = disabled || isLoading
 
-    const disabledVariant = variant.startsWith('outline') ? 'outline-gray-100' : 'fill-gray-150'
-    const finalVariant = isDisabled ? disabledVariant : variant
+    const getDisabledVariant = (): VariantType => {
+      if (variant === 'ghost') return 'ghost'
+      return variant.startsWith('outline') ? 'outline-gray-100' : 'fill-gray-150'
+    }
+    const finalVariant = isDisabled ? getDisabledVariant() : variant
 
     const combinedStyles = [
       BASE_STYLES,
@@ -83,6 +85,8 @@ const VARIANT_STYLES = {
     'bg-orange-100 border border-orange-300 text-orange-500 hover:bg-orange-200 active:bg-orange-300 focus-visible:ring-2 focus-visible:ring-orange-300',
   'outline-gray-100':
     'bg-gray-100 border border-gray-200 text-gray-300 hover:bg-gray-150 active:bg-gray-200 focus-visible:ring-2 focus-visible:ring-gray-200',
+  ghost:
+    'bg-transparent disabled:bg-transparent text-gray-600 hover:bg-gray-100 active:bg-gray-200 focus-visible:ring-2 focus-visible:ring-gray-200',
 } as const
 
 const SIZE_STYLES = {
