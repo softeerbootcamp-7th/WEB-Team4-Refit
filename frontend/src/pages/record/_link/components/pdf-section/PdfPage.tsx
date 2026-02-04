@@ -39,18 +39,27 @@ export function PdfPage({ pdf, pageNum, containerSize }: PdfPageProps) {
       const page = await pdf.getPage(pageNum)
       if (cancelled || !canvasRef.current || !textLayerRef.current || !containerRef.current) return
 
+      const devicePixelRatio = window.devicePixelRatio || 1
       const defaultViewport = page.getViewport({ scale: 1 })
       const scale = Math.min(containerSize.height / defaultViewport.height, containerSize.width / defaultViewport.width)
-      const viewport = page.getViewport({ scale })
 
-      canvasRef.current.width = viewport.width
-      canvasRef.current.height = viewport.height
-      renderTask = page.render({ canvas: canvasRef.current, viewport })
+      const renderViewport = page.getViewport({ scale: scale * devicePixelRatio })
+      const displayViewport = page.getViewport({ scale })
+
+      // Drawing Buffer: 실제로 그릴 픽셀 개수
+      canvasRef.current.width = renderViewport.width
+      canvasRef.current.height = renderViewport.height
+
+      // Display Size: CSS 화면 크기 계산
+      canvasRef.current.style.width = `${displayViewport.width}px`
+      canvasRef.current.style.height = `${displayViewport.height}px`
+
+      renderTask = page.render({ canvas: canvasRef.current, viewport: renderViewport })
       await renderTask.promise
 
       if (cancelled) return
 
-      containerRef.current.style.setProperty('--total-scale-factor', String(viewport.scale))
+      containerRef.current.style.setProperty('--total-scale-factor', String(displayViewport.scale))
       textLayerRef.current.innerHTML = ''
 
       const textContent = await page.getTextContent()
@@ -59,7 +68,7 @@ export function PdfPage({ pdf, pageNum, containerSize }: PdfPageProps) {
       textLayerInstance = new TextLayer({
         container: textLayerRef.current,
         textContentSource: textContent,
-        viewport,
+        viewport: displayViewport,
       })
       await textLayerInstance.render()
     }
