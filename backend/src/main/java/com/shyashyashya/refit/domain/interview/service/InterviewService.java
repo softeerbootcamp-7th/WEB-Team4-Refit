@@ -174,21 +174,17 @@ public class InterviewService {
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
-        String reqKeepText = request.keepText();
-        String reqProblemText = request.problemText();
-        String reqTryText = request.tryText();
-
         interviewSelfReviewRepository
                 .findByInterview(interview)
                 .ifPresentOrElse(
                         selfReview -> {
-                            selfReview.updateKeepText(reqKeepText);
-                            selfReview.updateProblemText(reqProblemText);
-                            selfReview.updateTryText(reqTryText);
+                            selfReview.updateKeepText(request.keepText());
+                            selfReview.updateProblemText(request.problemText());
+                            selfReview.updateTryText(request.tryText());
                         },
                         () -> {
-                            InterviewSelfReview created =
-                                    InterviewSelfReview.create(reqKeepText, reqProblemText, reqTryText, interview);
+                            InterviewSelfReview created = InterviewSelfReview.create(
+                                    request.keepText(), request.problemText(), request.tryText(), interview);
                             interviewSelfReviewRepository.save(created);
                         });
     }
