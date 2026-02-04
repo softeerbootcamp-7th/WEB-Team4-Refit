@@ -60,7 +60,7 @@ public class InterviewController {
     }
 
     @PostMapping
-    public ResponseEntity<CommonResponse<Void>> createInterview(@RequestBody InterviewCreateRequest request) {
+    public ResponseEntity<CommonResponse<Void>> createInterview(@Valid @RequestBody InterviewCreateRequest request) {
         interviewService.createInterview(request);
         var response = CommonResponse.success(COMMON201);
         return ResponseEntity.ok(response);
@@ -83,7 +83,7 @@ public class InterviewController {
 
     @PutMapping("/{interviewId}/raw-text")
     public ResponseEntity<CommonResponse<Void>> updateRawText(
-            @PathVariable Long interviewId, @RequestBody RawTextUpdateRequest request) {
+            @PathVariable Long interviewId, @Valid @RequestBody RawTextUpdateRequest request) {
         interviewService.updateRawText(interviewId, request);
         var response = CommonResponse.success(COMMON200);
         return ResponseEntity.ok(response);
@@ -91,7 +91,7 @@ public class InterviewController {
 
     @PutMapping("/{interviewId}/kpt-self-reivew")
     public ResponseEntity<CommonResponse<Void>> updateKptSelfReview(
-            @PathVariable Long interviewId, @RequestBody KptSelfReviewUpdateRequest request) {
+            @PathVariable Long interviewId, @Valid @RequestBody KptSelfReviewUpdateRequest request) {
         interviewService.updateKptSelfReview(interviewId, request);
         var response = CommonResponse.success(COMMON200);
         return ResponseEntity.ok(response);
