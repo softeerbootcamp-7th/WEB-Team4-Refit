@@ -59,7 +59,7 @@ public class DashboardService {
         User requestUser = requestUserContext.getRequestUser();
 
         LocalDateTime monthStart = LocalDateTime.of(year, month, 1, 0, 0, 0);
-        LocalDateTime monthEnd = LocalDateTime.of(year, month + 1, 1, 0, 0, 0);
+        LocalDateTime monthEnd = monthStart.plusMonths(1).minusNanos(1);
         Map<LocalDateTime, List<Interview>> interviews =
                 interviewRepository.findAllByUserAndYearMonth(requestUser, monthStart, monthEnd).stream()
                         .collect(Collectors.groupingBy(Interview::getStartAt, Collectors.toList()));
