@@ -35,7 +35,6 @@ import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.util.RequestUserContext;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -179,24 +178,22 @@ public class InterviewService {
         String reqProblemText = request.problemText();
         String reqTryText = request.tryText();
 
-        Optional<InterviewSelfReview> optional = interviewSelfReviewRepository.findByInterview(interview);
-
-        // interviewSelfReview가 존재
-        if (optional.isPresent()) {
-            InterviewSelfReview selfReview = optional.get();
-            if (reqKeepText != null) selfReview.updateKeepText(reqKeepText);
-            if (reqProblemText != null) selfReview.updateProblemText(reqProblemText);
-            if (reqTryText != null) selfReview.updateTryText(reqTryText);
-            return;
-        }
-
-        // interviewSelfReview가 없음 -> 신규 생성
-        InterviewSelfReview created = InterviewSelfReview.create(
-                reqKeepText == null ? "" : reqKeepText,
-                reqProblemText == null ? "" : reqProblemText,
-                reqTryText == null ? "" : reqTryText,
-                interview);
-        interviewSelfReviewRepository.save(created);
+        interviewSelfReviewRepository
+                .findByInterview(interview)
+                .ifPresentOrElse(
+                        selfReview -> {
+                            if (reqKeepText != null) selfReview.updateKeepText(reqKeepText);
+                            if (reqProblemText != null) selfReview.updateProblemText(reqProblemText);
+                            if (reqTryText != null) selfReview.updateTryText(reqTryText);
+                        },
+                        () -> {
+                            InterviewSelfReview created = InterviewSelfReview.create(
+                                    reqKeepText == null ? "" : reqKeepText,
+                                    reqProblemText == null ? "" : reqProblemText,
+                                    reqTryText == null ? "" : reqTryText,
+                                    interview);
+                            interviewSelfReviewRepository.save(created);
+                        });
     }
 
     private Company findOrSaveCompany(InterviewCreateRequest request) {
