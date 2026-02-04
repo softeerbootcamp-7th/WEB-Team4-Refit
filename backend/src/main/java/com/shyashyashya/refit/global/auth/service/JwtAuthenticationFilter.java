@@ -3,6 +3,7 @@ package com.shyashyashya.refit.global.auth.service;
 import static com.shyashyashya.refit.global.exception.ErrorCode.USER_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.USER_SIGNUP_REQUIRED;
 
+import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
 import com.shyashyashya.refit.global.constant.AuthConstant;
 import com.shyashyashya.refit.global.exception.CustomException;
@@ -39,8 +40,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) {
-
         try {
+
             if (isWhitelisted(request)) {
                 filterChain.doFilter(request, response);
                 return;
@@ -48,19 +49,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = resolveToken(request);
             jwtUtil.validateToken(token);
 
-            Long userId = jwtUtil.getUserId(token); // Guest면 null, 정회원이면 값 존재
-            String email = jwtUtil.getEmail(token);
+            Long userId = jwtUtil.getUserId(token);
 
-            if (isIllegalGuestAccess(userId, request)) {
-                throw new CustomException(USER_SIGNUP_REQUIRED);
+            if (isGuestUser(userId)) {
+                validateIllegalGuestRequest(request);
+            } else {
+                User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+                requestUserContext.setUser(user);
             }
 
-            if (isUserNotFound(userId)) {
-                throw new CustomException(USER_NOT_FOUND);
-            }
-
-            requestUserContext.setEmail(email);
-            requestUserContext.setUserId(userId);
             filterChain.doFilter(request, response);
 
         } catch (Exception e) {
@@ -68,21 +65,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
     }
 
+    private boolean isGuestUser(Long userId) {
+        return userId == null;
+    }
+
     private boolean isWhitelisted(HttpServletRequest request) {
         return authUrlProperty.whitelists().stream()
                 .anyMatch(pattern -> pathMatcher.match(pattern, request.getRequestURI()));
     }
 
-    private boolean isIllegalGuestAccess(Long userId, HttpServletRequest request) {
-        return userId == null && !pathMatcher.match(authUrlProperty.signUp(), request.getRequestURI());
-    }
-
-    private boolean isUserNotFound(Long userId) {
-        // Guest인 경우 검사하지 않음
-        if (userId == null) {
-            return false;
+    private void validateIllegalGuestRequest(HttpServletRequest request) {
+        if (!pathMatcher.match(authUrlProperty.signUp(), request.getRequestURI())) {
+            throw new CustomException(USER_SIGNUP_REQUIRED);
         }
-        return !userRepository.existsById(userId);
     }
 
     // 쿠키에서 토큰 추출

@@ -9,10 +9,10 @@ public record MyPageResponse(String nickname, Long industryId, Long jobCategoryI
 
     public static MyPageResponse from(User user) {
         return MyPageResponse.builder()
-            .nickname(user.getNickname())
-            .industryId(user.getIndustry().getId())
-            .jobCategoryId(user.getJobCategory().getId())
-            .profileImageUrl(user.getProfileImageUrl())
-            .build();
+                .nickname(user.getNickname())
+                .industryId(user.getIndustry().getId())
+                .jobCategoryId(user.getJobCategory().getId())
+                .profileImageUrl(user.getProfileImageUrl())
+                .build();
     }
 }
