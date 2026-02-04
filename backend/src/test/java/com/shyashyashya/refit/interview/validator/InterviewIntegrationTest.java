@@ -17,6 +17,11 @@ public class InterviewIntegrationTest extends IntegrationTest {
                 LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "HyunDai", 1L, 1L, "BE Developer");
 
         // when & then
-        given(spec).body(request).when().post("/interview").then().assertThat().statusCode(200);
+        given(spec)
+                .body(request)
+        .when()
+                .post("/interview")
+        .then()
+                .assertThat().statusCode(200);
     }
 }

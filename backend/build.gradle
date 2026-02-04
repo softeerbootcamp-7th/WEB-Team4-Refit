@@ -64,9 +64,9 @@ spotless {
     }
 
     java {
-        // Use the default importOrder configuration
-        importOrder()
+        target 'src/main/java/**/*.java'
 
+        importOrder()
         removeUnusedImports()
         expandWildcardImports()
 
