@@ -80,15 +80,17 @@ public class QnaSetService {
             PdfHighlighting pdfHighlighting = PdfHighlighting.create(reqDto.highlightingText(), qnaSet);
             pdfHighlightingRepository.save(pdfHighlighting);
 
-            reqDto.rects().stream()
-                    .map(rectDto -> PdfHighlightingRect.create(
-                            rectDto.x(),
-                            rectDto.y(),
-                            rectDto.width(),
-                            rectDto.height(),
-                            rectDto.pageNum(),
-                            pdfHighlighting))
-                    .forEach(pdfHighlightingRectRepository::save);
+            if (reqDto.rects() != null) {
+                reqDto.rects().stream()
+                        .map(rectDto -> PdfHighlightingRect.create(
+                                rectDto.x(),
+                                rectDto.y(),
+                                rectDto.width(),
+                                rectDto.height(),
+                                rectDto.pageNum(),
+                                pdfHighlighting))
+                        .forEach(pdfHighlightingRectRepository::save);
+            }
         });
     }
 }
