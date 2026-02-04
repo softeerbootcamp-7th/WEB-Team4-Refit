@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -88,7 +89,7 @@ public class DashboardService {
         Map<LocalDate, List<Interview>> interviews =
                 interviewRepository.findAllByUserAndYearMonth(requestUser, monthStart, monthEnd).stream()
                         .collect(Collectors.groupingBy(
-                                interview -> interview.getStartAt().toLocalDate(), Collectors.toList()));
+                                interview -> interview.getStartAt().toLocalDate(), TreeMap::new, Collectors.toList()));
 
         LocalDateTime now = LocalDateTime.now();
         return interviews.entrySet().stream()
