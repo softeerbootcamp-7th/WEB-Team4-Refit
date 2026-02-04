@@ -48,25 +48,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
             String token = resolveToken(request);
             jwtUtil.validateToken(token);
-
-            Long userId = jwtUtil.getUserId(token);
-
-            if (isGuestUser(userId)) {
-                validateIllegalGuestRequest(request);
-            } else {
-                User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-                requestUserContext.setUser(user);
-            }
+            jwtUtil.getUserId(token)
+                    .map(this::getUserOrElseThrow)
+                    .ifPresentOrElse(this::setRequestUserContext, () -> validateIllegalGuestRequest(request));
 
             filterChain.doFilter(request, response);
 
         } catch (Exception e) {
             handlerExceptionResolver.resolveException(request, response, null, e);
         }
-    }
-
-    private boolean isGuestUser(Long userId) {
-        return userId == null;
     }
 
     private boolean isWhitelisted(HttpServletRequest request) {
@@ -78,6 +68,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (!pathMatcher.match(authUrlProperty.signUp(), request.getRequestURI())) {
             throw new CustomException(USER_SIGNUP_REQUIRED);
         }
+    }
+
+    private User getUserOrElseThrow(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+    }
+
+    private void setRequestUserContext(User user) {
+        requestUserContext.setUser(user);
     }
 
     // 쿠키에서 토큰 추출

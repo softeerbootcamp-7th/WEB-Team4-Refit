@@ -19,6 +19,7 @@ import java.security.Key;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -50,8 +51,8 @@ public class JwtUtil {
         return parseClaims(token).getSubject();
     }
 
-    public Long getUserId(String token) {
-        return parseClaims(token).get("userId", Long.class);
+    public Optional<Long> getUserId(String token) {
+        return Optional.ofNullable(parseClaims(token).get("userId", Long.class));
     }
 
     public Instant getExpiration(String token) {
