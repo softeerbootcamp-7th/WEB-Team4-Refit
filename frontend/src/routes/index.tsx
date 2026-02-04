@@ -1,5 +1,5 @@
 import { createBrowserRouter, RouterProvider } from 'react-router'
-import { MobileLayout, RootLayout } from '@/layouts'
+import { DashboardLayout, MobileLayout, RootLayout } from '@/layouts'
 import {
   DashboardPage,
   RecordConfirmPage,
@@ -47,6 +47,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: ROUTES.DASHBOARD,
+        Component: DashboardLayout,
         children: [
           { index: true, Component: DashboardPage },
           {
