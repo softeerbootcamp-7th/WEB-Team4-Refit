@@ -27,7 +27,11 @@ export default defineConfig([
     settings: {
       'import/resolver': {
         typescript: {
-          project: path.resolve('./tsconfig.app.json'),
+          project: './tsconfig.app.json',
+          alwaysTryTypes: true,
+        },
+        node: {
+          extensions: ['.js', '.jsx', '.ts', '.tsx'],
         },
       },
     },
