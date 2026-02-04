@@ -1,9 +1,15 @@
 package com.shyashyashya.refit.domain.scrapfolder.service;
 
+import static com.shyashyashya.refit.global.exception.ErrorCode.SCRAP_FOLDER_NOT_FOUND;
+
+import com.shyashyashya.refit.domain.scrapfolder.dto.response.ScrapFolderQnaSetResponse;
 import com.shyashyashya.refit.domain.scrapfolder.dto.response.ScrapFolderResponse;
+import com.shyashyashya.refit.domain.scrapfolder.model.ScrapFolder;
 import com.shyashyashya.refit.domain.scrapfolder.repository.QnaSetScrapFolderRepository;
 import com.shyashyashya.refit.domain.scrapfolder.repository.ScrapFolderRepository;
+import com.shyashyashya.refit.domain.scrapfolder.service.validator.ScrapFolderValidator;
 import com.shyashyashya.refit.domain.user.model.User;
+import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.util.RequestUserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,8 +24,9 @@ public class ScrapFolderService {
     private final ScrapFolderRepository scrapFolderRepository;
     private final QnaSetScrapFolderRepository qnaSetScrapFolderRepository;
     private final RequestUserContext requestUserContext;
+    private final ScrapFolderValidator scrapFolderValidator;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<ScrapFolderResponse> getMyScrapFolders(Pageable pageable) {
         User user = requestUserContext.getRequestUser();
 
@@ -27,5 +34,19 @@ public class ScrapFolderService {
             Long qnaSetCount = qnaSetScrapFolderRepository.getQnaSetCountByScrapFolder(scrapFolder);
             return ScrapFolderResponse.from(scrapFolder, qnaSetCount);
         });
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ScrapFolderQnaSetResponse> getQnaSetsInScrapFolder(Long scrapFolderId, Pageable pageable) {
+        User user = requestUserContext.getRequestUser();
+        ScrapFolder scrapFolder = scrapFolderRepository
+                .findById(scrapFolderId)
+                .orElseThrow(() -> new CustomException(SCRAP_FOLDER_NOT_FOUND));
+
+        scrapFolderValidator.validateScrapFolderOwner(scrapFolder, user);
+
+        return qnaSetScrapFolderRepository
+                .getQnaSetsByScrapFolder(scrapFolder, pageable)
+                .map(ScrapFolderQnaSetResponse::from);
     }
 }
