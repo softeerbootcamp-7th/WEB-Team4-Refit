@@ -1,7 +1,7 @@
-import CustomQuestionsSection from '@/pages/dashboard/_index/components/custom-questions/CustomQuestionsSection'
 import DashboardBanner from '@/pages/dashboard/_index/components/dashboard-banner/DashboardBanner'
 import InterviewCalendar from '@/pages/dashboard/_index/components/interview-calendar/InterviewCalendar'
 import InterviewScheduleModal from '@/pages/dashboard/_index/components/interview-calendar/InterviewScheduleModal'
+import PersonalizedQuestionsSection from '@/pages/dashboard/_index/components/personalized-questions/PersonalizedQuestionsSection'
 import ReviewWaitingSection from '@/pages/dashboard/_index/components/review-waiting-interview/ReviewWaitingSection'
 import UpcomingInterviewSection from '@/pages/dashboard/_index/components/upcoming-interview/UpcomingInterviewSection'
 import { ScheduleModalProvider } from '@/pages/dashboard/_index/contexts/ScheduleModalContext'
@@ -18,7 +18,7 @@ export default function DashboardPage() {
           <div className="flex flex-1 flex-col gap-20">
             <UpcomingInterviewSection />
             <ReviewWaitingSection />
-            <CustomQuestionsSection />
+            <PersonalizedQuestionsSection />
           </div>
         </div>
         {/* 면접 캘린더 영역 */}
