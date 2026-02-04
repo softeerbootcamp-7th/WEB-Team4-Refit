@@ -11,6 +11,7 @@ import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.util.RequestUserContext;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -63,13 +64,21 @@ public class DashboardService {
                 interviewRepository.findAllByUserAndYearMonth(requestUser, monthStart, monthEnd).stream()
                         .collect(Collectors.groupingBy(Interview::getStartAt, Collectors.toList()));
 
+        LocalDateTime now = LocalDateTime.now();
         return interviews.entrySet().stream()
-                .map(entry -> DashboardCalendarResponse.of(entry.getKey().toLocalDate(), entry.getValue()))
+                .map(entry -> DashboardCalendarResponse.of(
+                        entry.getKey().toLocalDate(),
+                        calculateDday(now, entry.getKey().toLocalDate()),
+                        entry.getValue()))
                 .toList();
     }
 
     private long getInterviewDday(LocalDateTime now, Interview interview) {
-        return ChronoUnit.DAYS.between(now.toLocalDate(), interview.getStartAt().toLocalDate());
+        return calculateDday(now, interview.getStartAt().toLocalDate());
+    }
+
+    private long calculateDday(LocalDateTime now, LocalDate targetDate) {
+        return ChronoUnit.DAYS.between(now.toLocalDate(), targetDate);
     }
 
     private boolean existInterviewsToLog(User user) {

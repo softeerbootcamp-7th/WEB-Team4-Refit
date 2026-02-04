@@ -5,10 +5,10 @@ import com.shyashyashya.refit.domain.interview.model.Interview;
 import java.time.LocalDate;
 import java.util.List;
 
-public record DashboardCalendarResponse(LocalDate date, List<InterviewDto> interviews) {
+public record DashboardCalendarResponse(LocalDate date, Long dDay, List<InterviewDto> interviews) {
 
-    public static DashboardCalendarResponse of(LocalDate date, List<Interview> interviews) {
+    public static DashboardCalendarResponse of(LocalDate date, Long dDay, List<Interview> interviews) {
         return new DashboardCalendarResponse(
-                date, interviews.stream().map(InterviewDto::from).toList());
+                date, dDay, interviews.stream().map(InterviewDto::from).toList());
     }
 }
