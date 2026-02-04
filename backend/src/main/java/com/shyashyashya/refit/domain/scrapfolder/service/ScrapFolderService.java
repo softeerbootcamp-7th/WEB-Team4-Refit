@@ -1,6 +1,6 @@
 package com.shyashyashya.refit.domain.scrapfolder.service;
 
-import com.shyashyashya.refit.domain.scrapfolder.dto.ScrapFolderDto;
+import com.shyashyashya.refit.domain.scrapfolder.dto.response.ScrapFolderResponse;
 import com.shyashyashya.refit.domain.scrapfolder.repository.QnaSetScrapFolderRepository;
 import com.shyashyashya.refit.domain.scrapfolder.repository.ScrapFolderRepository;
 import com.shyashyashya.refit.domain.user.model.User;
@@ -20,12 +20,12 @@ public class ScrapFolderService {
     private final RequestUserContext requestUserContext;
 
     @Transactional
-    public Page<ScrapFolderDto> getMyScrapFolders(Pageable pageable) {
+    public Page<ScrapFolderResponse> getMyScrapFolders(Pageable pageable) {
         User user = requestUserContext.getRequestUser();
 
         return scrapFolderRepository.getScrapFoldersByUser(user, pageable).map(scrapFolder -> {
             Long qnaSetCount = qnaSetScrapFolderRepository.getQnaSetCountByScrapFolder(scrapFolder);
-            return ScrapFolderDto.from(scrapFolder, qnaSetCount);
+            return ScrapFolderResponse.from(scrapFolder, qnaSetCount);
         });
     }
 }
