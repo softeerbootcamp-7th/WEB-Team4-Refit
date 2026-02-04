@@ -182,16 +182,13 @@ public class InterviewService {
                 .findByInterview(interview)
                 .ifPresentOrElse(
                         selfReview -> {
-                            if (reqKeepText != null) selfReview.updateKeepText(reqKeepText);
-                            if (reqProblemText != null) selfReview.updateProblemText(reqProblemText);
-                            if (reqTryText != null) selfReview.updateTryText(reqTryText);
+                            selfReview.updateKeepText(reqKeepText);
+                            selfReview.updateProblemText(reqProblemText);
+                            selfReview.updateTryText(reqTryText);
                         },
                         () -> {
-                            InterviewSelfReview created = InterviewSelfReview.create(
-                                    reqKeepText == null ? "" : reqKeepText,
-                                    reqProblemText == null ? "" : reqProblemText,
-                                    reqTryText == null ? "" : reqTryText,
-                                    interview);
+                            InterviewSelfReview created =
+                                    InterviewSelfReview.create(reqKeepText, reqProblemText, reqTryText, interview);
                             interviewSelfReviewRepository.save(created);
                         });
     }

@@ -44,23 +44,29 @@ public class InterviewSelfReview extends BaseEntity {
      */
     public static InterviewSelfReview create(String keepText, String problemText, String tryText, Interview interview) {
         return InterviewSelfReview.builder()
-                .keepText(keepText)
-                .problemText(problemText)
-                .tryText(tryText)
+                .keepText(keepText == null ? "" : keepText)
+                .problemText(problemText == null ? "" : problemText)
+                .tryText(tryText == null ? "" : tryText)
                 .interview(interview)
                 .build();
     }
 
     public void updateKeepText(String keepText) {
-        this.keepText = keepText;
+        if (keepText != null) {
+            this.keepText = keepText;
+        }
     }
 
     public void updateProblemText(String problemText) {
-        this.problemText = problemText;
+        if (problemText != null) {
+            this.problemText = problemText;
+        }
     }
 
     public void updateTryText(String tryText) {
-        this.tryText = tryText;
+        if (tryText != null) {
+            this.tryText = tryText;
+        }
     }
 
     @Builder(access = AccessLevel.PRIVATE)
