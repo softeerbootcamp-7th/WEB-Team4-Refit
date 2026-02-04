@@ -53,7 +53,7 @@ public class AuthService {
 
         // 리프레시 토큰을 신뢰, Refresh Token Rotate 및 Access Token 재발급
         String newAccessToken = jwtUtil.createAccessToken(email, userId);
-        String newRefreshToken = jwtUtil.createRefreshToken(email);
+        String newRefreshToken = jwtUtil.createRefreshToken(email, userId);
         Instant newExpiryDate = jwtUtil.getExpiration(newRefreshToken);
 
         storedToken.rotate(newRefreshToken, newExpiryDate);

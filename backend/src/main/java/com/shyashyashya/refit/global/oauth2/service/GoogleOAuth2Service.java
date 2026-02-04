@@ -60,7 +60,7 @@ public class GoogleOAuth2Service implements OAuth2Service {
         var userId = userOptional.map(User::getId).orElse(null);
 
         var accessToken = jwtUtil.createAccessToken(userInfo.email(), userId);
-        var refreshToken = jwtUtil.createRefreshToken(userInfo.email());
+        var refreshToken = jwtUtil.createRefreshToken(userInfo.email(), userId);
 
         refreshTokenRepository.save(
                 RefreshToken.create(refreshToken, userInfo.email(), jwtUtil.getExpiration(refreshToken)));
