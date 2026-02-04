@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { Logo } from '@/shared/assets'
-import { Button, Combobox, Input } from '@/shared/components'
+import { Button, Input, NativeCombobox } from '@/shared/components'
 import { ROUTES } from '@/shared/constants/routes'
 import { INDUSTRY_OPTIONS, JOB_OPTIONS } from '@/shared/constants/signup'
 
@@ -43,7 +43,7 @@ export default function SignupPage() {
               maxLength={5}
               required
             />
-            <Combobox
+            <NativeCombobox
               label="관심 산업군"
               value={industry}
               onChange={(e) => setIndustry(e.target.value)}
@@ -51,7 +51,7 @@ export default function SignupPage() {
               placeholder="주로 지원하시는 산업군을 알려주세요"
               required
             />
-            <Combobox
+            <NativeCombobox
               label="관심 직군"
               value={job}
               onChange={(e) => setJob(e.target.value)}
