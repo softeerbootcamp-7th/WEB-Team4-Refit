@@ -1,4 +1,4 @@
-package com.shyashyashya.refit.interview.validator;
+package com.shyashyashya.refit.interview.integration;
 
 import static io.restassured.RestAssured.given;
 
