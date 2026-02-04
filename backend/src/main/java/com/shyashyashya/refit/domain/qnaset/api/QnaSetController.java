@@ -7,6 +7,8 @@ import com.shyashyashya.refit.domain.qnaset.dto.request.PdfHighlightingUpdateReq
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetResponse;
 import com.shyashyashya.refit.domain.qnaset.service.QnaSetService;
 import java.util.List;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +36,7 @@ public class QnaSetController {
 
     @PutMapping("/{qnaSetId}/pdf-highlightings")
     public ResponseEntity<CommonResponse<Void>> updatePdfHighlighting(
-            @PathVariable Long qnaSetId, @RequestBody List<PdfHighlightingUpdateRequest> request) {
+            @PathVariable Long qnaSetId, @Valid @RequestBody List<PdfHighlightingUpdateRequest> request) {
         qnaSetService.updatePdfHighlighting(qnaSetId, request);
         var response = CommonResponse.success(COMMON200);
         return ResponseEntity.ok(response);
