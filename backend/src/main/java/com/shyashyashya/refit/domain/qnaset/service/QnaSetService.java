@@ -63,12 +63,8 @@ public class QnaSetService {
         String reqAnswerText = request.answerText();
         String reqSelfReviewText = request.selfReviewText();
 
-        if (reqQuestionText != null) {
-            qnaSet.updateQuestionText(reqQuestionText);
-        }
-        if (reqAnswerText != null) {
-            qnaSet.updateAnswerText(reqAnswerText);
-        }
+        qnaSet.updateQuestionText(reqQuestionText);
+        qnaSet.updateAnswerText(reqAnswerText);
 
         if (reqSelfReviewText != null) {
             qnaSetSelfReviewRepository
