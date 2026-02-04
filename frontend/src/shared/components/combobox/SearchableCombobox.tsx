@@ -23,7 +23,7 @@ const SearchableCombobox = forwardRef<HTMLDivElement, SearchableComboboxProps>(
       label,
       options,
       placeholder = '선택해 주세요',
-      error,
+      // error,
       required,
       searchPlaceholder = 'Search',
       creatable = false,
