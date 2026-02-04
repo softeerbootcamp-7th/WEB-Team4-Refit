@@ -33,7 +33,7 @@ public class DashboardController {
     }
 
     @Operation(summary = "대시보드 캘린더에 등록된 면접 일정을 조회합니다.")
-    @GetMapping("/headline")
+    @GetMapping("/calendar/interview")
     public ResponseEntity<CommonResponse<List<DashboardCalendarResponse>>> getDashboardCalendarInterviews(
             @RequestParam Integer year, @RequestParam Integer month) {
         var body = dashboardService.getDashboardCalendarInterviews(year, month);
