@@ -7,8 +7,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 
 @Builder(access = AccessLevel.PRIVATE)
-public record QnaSetSearchResponse(
-    InterviewDto interviewInfo, QnaSetSimpleDto qnaSetInfo) {
+public record QnaSetSearchResponse(InterviewDto interviewInfo, QnaSetSimpleDto qnaSetInfo) {
     public static QnaSetSearchResponse from(QnaSet qnaSet) {
         return new QnaSetSearchResponse(InterviewDto.from(qnaSet.getInterview()), QnaSetSimpleDto.from(qnaSet));
     }
