@@ -64,7 +64,14 @@ export default function MyInterviewsPage() {
           {!isSearching && <FrequentQuestionsSection />}
           <section className="flex flex-col gap-3">
             <div className="flex items-center">
-              {!isSearching && <h2 className="title-s-bold">내가 복기 완료한 질문과 답변</h2>}
+              {isSearching ? (
+                <SearchResultBar
+                  query={filter.keyword}
+                  onClose={() => setFilter((prev) => ({ ...prev, keyword: '' }))}
+                />
+              ) : (
+                <h2 className="title-s-bold">내가 복기 완료한 질문과 답변</h2>
+              )}
               <div className="ml-auto">
                 <FilterSortControls filter={filter} onFilterChange={setFilter} />
               </div>
