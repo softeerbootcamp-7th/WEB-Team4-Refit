@@ -6,7 +6,6 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.QNA_SET_NOT_FOUN
 
 import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
-import com.shyashyashya.refit.domain.interview.dto.StarAnalysisDto;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
@@ -19,13 +18,10 @@ import com.shyashyashya.refit.domain.qnaset.model.PdfHighlighting;
 import com.shyashyashya.refit.domain.qnaset.model.PdfHighlightingRect;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetSelfReview;
-import com.shyashyashya.refit.domain.qnaset.model.StarAnalysis;
-import com.shyashyashya.refit.domain.qnaset.model.StarInclusionLevel;
 import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRectRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetSelfReviewRepository;
-import com.shyashyashya.refit.domain.qnaset.repository.StarAnalysisRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.util.RequestUserContext;
@@ -47,7 +43,6 @@ public class QnaSetService {
     private final QnaSetSelfReviewRepository qnaSetSelfReviewRepository;
     private final PdfHighlightingRepository pdfHighlightingRepository;
     private final PdfHighlightingRectRepository pdfHighlightingRectRepository;
-    private final StarAnalysisRepository starAnalysisRepository;
 
     private final RequestUserContext requestUserContext;
     private final InterviewValidator interviewValidator;
@@ -103,50 +98,6 @@ public class QnaSetService {
     }
 
     @Transactional
-    public StarAnalysisDto createStarAnalysis(Long qnaSetId) {
-        QnaSet qnaSet = getValidatedQnaSetForUser(qnaSetId);
-
-        StarAnalysis starAnalysis = starAnalysisRepository.findByQnaSet(qnaSet).orElseGet(() -> {
-            StarAnalysis created = requestGeminiStarAnalysis(qnaSet);
-            return starAnalysisRepository.save(created);
-        });
-
-        return StarAnalysisDto.from(starAnalysis);
-    }
-
-    private StarAnalysis requestGeminiStarAnalysis(QnaSet qnaSet) {
-        // TODO Gemini 요청 보내기
-
-        return StarAnalysis.create(
-                StarInclusionLevel.ABSENT,
-                StarInclusionLevel.INSUFFICIENT,
-                StarInclusionLevel.PRESENT,
-                StarInclusionLevel.INSUFFICIENT,
-                "전체 요약 텍스트 임시 가짜 데이터",
-                qnaSet);
-    }
-
-    private QnaSet getValidatedQnaSetForUser(Long qnaSetId) {
-        QnaSet qnaSet = qnaSetRepository.findById(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
-
-        User requestUser = requestUserContext.getRequestUser();
-        Interview interview = qnaSet.getInterview();
-        interviewValidator.validateInterviewOwner(interview, requestUser);
-
-        return qnaSet;
-    }
-
-    private void updateOrCreateSelfReview(QnaSet qnaSet, String reqSelfReviewText) {
-        if (reqSelfReviewText != null) {
-            qnaSetSelfReviewRepository
-                    .findByQnaSet(qnaSet)
-                    .ifPresentOrElse(
-                            selfReview -> selfReview.updateSelfReviewText(reqSelfReviewText),
-                            () -> qnaSetSelfReviewRepository.save(QnaSetSelfReview.create(reqSelfReviewText, qnaSet)));
-        }
-    }
-
-    @Transactional
     public void updatePdfHighlighting(Long qnaSetId, List<PdfHighlightingUpdateRequest> request) {
         QnaSet qnaSet = qnaSetRepository.findById(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
 
@@ -156,25 +107,6 @@ public class QnaSetService {
 
         deleteAllHighlightingsAndRects(qnaSet);
         saveAllHighlightings(qnaSet, request);
-    }
-
-    private void saveAllHighlightings(QnaSet qnaSet, List<PdfHighlightingUpdateRequest> request) {
-        request.forEach(reqDto -> {
-            PdfHighlighting pdfHighlighting = PdfHighlighting.create(reqDto.highlightingText(), qnaSet);
-            pdfHighlightingRepository.save(pdfHighlighting);
-
-            if (reqDto.rects() != null) {
-                reqDto.rects().stream()
-                        .map(rectDto -> PdfHighlightingRect.create(
-                                rectDto.x(),
-                                rectDto.y(),
-                                rectDto.width(),
-                                rectDto.height(),
-                                rectDto.pageNumber(),
-                                pdfHighlighting))
-                        .forEach(pdfHighlightingRectRepository::save);
-            }
-        });
     }
 
     @Transactional(readOnly = true)
@@ -199,6 +131,35 @@ public class QnaSetService {
                         highlighting,
                         rectsByHighlighting.getOrDefault(highlighting, java.util.Collections.emptyList())))
                 .toList();
+    }
+
+    private void updateOrCreateSelfReview(QnaSet qnaSet, String reqSelfReviewText) {
+        if (reqSelfReviewText != null) {
+            qnaSetSelfReviewRepository
+                    .findByQnaSet(qnaSet)
+                    .ifPresentOrElse(
+                            selfReview -> selfReview.updateSelfReviewText(reqSelfReviewText),
+                            () -> qnaSetSelfReviewRepository.save(QnaSetSelfReview.create(reqSelfReviewText, qnaSet)));
+        }
+    }
+
+    private void saveAllHighlightings(QnaSet qnaSet, List<PdfHighlightingUpdateRequest> request) {
+        request.forEach(reqDto -> {
+            PdfHighlighting pdfHighlighting = PdfHighlighting.create(reqDto.highlightingText(), qnaSet);
+            pdfHighlightingRepository.save(pdfHighlighting);
+
+            if (reqDto.rects() != null) {
+                reqDto.rects().stream()
+                        .map(rectDto -> PdfHighlightingRect.create(
+                                rectDto.x(),
+                                rectDto.y(),
+                                rectDto.width(),
+                                rectDto.height(),
+                                rectDto.pageNumber(),
+                                pdfHighlighting))
+                        .forEach(pdfHighlightingRectRepository::save);
+            }
+        });
     }
 
     private void deleteAllHighlightingsAndRects(QnaSet qnaSet) {

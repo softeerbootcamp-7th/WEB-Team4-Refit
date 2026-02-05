@@ -9,6 +9,7 @@ import com.shyashyashya.refit.domain.qnaset.dto.request.PdfHighlightingUpdateReq
 import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetResponse;
 import com.shyashyashya.refit.domain.qnaset.service.QnaSetService;
+import com.shyashyashya.refit.domain.qnaset.service.StarAnalysisService;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class QnaSetController {
 
     private final QnaSetService qnaSetService;
+    private final StarAnalysisService starAnalysisService;
 
     @GetMapping("/frequent")
     public ResponseEntity<CommonResponse<List<FrequentQnaSetResponse>>> getFrequentQuestions(
@@ -77,7 +79,7 @@ public class QnaSetController {
 
     @PostMapping("/{qnaSetId}/star-analysis")
     public ResponseEntity<CommonResponse<StarAnalysisDto>> createStarAnalysis(@PathVariable Long qnaSetId) {
-        var body = qnaSetService.createStarAnalysis(qnaSetId);
+        var body = starAnalysisService.createStarAnalysis(qnaSetId);
         var response = CommonResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
