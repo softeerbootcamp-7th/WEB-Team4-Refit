@@ -59,7 +59,7 @@ public class QnaSetService {
         Interview interview = qnaSet.getInterview();
         interviewValidator.validateInterviewOwner(interview, requesetUser);
 
-        qnaSet.setMarkedDifficult(true);
+        qnaSet.markDifficult();
     }
 
     @Transactional
@@ -70,7 +70,7 @@ public class QnaSetService {
         Interview interview = qnaSet.getInterview();
         interviewValidator.validateInterviewOwner(interview, requesetUser);
 
-        qnaSet.setMarkedDifficult(false);
+        qnaSet.unmarkDifficult();
     }
 
     @Transactional

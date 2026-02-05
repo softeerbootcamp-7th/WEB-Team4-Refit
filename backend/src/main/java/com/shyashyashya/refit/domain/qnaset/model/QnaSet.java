@@ -34,7 +34,6 @@ public class QnaSet extends BaseEntity {
     @Column(name = "answer_text", nullable = false, columnDefinition = "text")
     private String answerText;
 
-    @Setter
     @Column(name = "is_marked_difficult", nullable = false)
     private boolean isMarkedDifficult;
 
@@ -74,6 +73,14 @@ public class QnaSet extends BaseEntity {
         if (answerText != null) {
             this.answerText = answerText;
         }
+    }
+
+    public void markDifficult() {
+        this.isMarkedDifficult = true;
+    }
+
+    public void unmarkDifficult() {
+        this.isMarkedDifficult = true;
     }
 
     @Builder(access = AccessLevel.PRIVATE)
