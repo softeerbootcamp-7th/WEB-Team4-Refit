@@ -25,9 +25,11 @@ export default function MyInterviewsPage() {
         <FileSaveIcon />
         <h1 className="title-l-bold">나의 면접을 모아볼까요?</h1>
       </div>
-      <div className="flex items-end justify-between">
+      <div className="relative flex flex-1">
         <TabBar items={TAB_ITEMS} activeValue={activeTab} onChange={handleTabChange} />
-        <SearchBar keyword={filter.keyword} onSearch={(keyword) => setFilter((prev) => ({ ...prev, keyword }))} />
+        <div className="absolute top-0 right-0">
+          <SearchBar keyword={filter.keyword} onSearch={(keyword) => setFilter((prev) => ({ ...prev, keyword }))} />
+        </div>
       </div>
       {activeTab === 'interviews' && (
         <>

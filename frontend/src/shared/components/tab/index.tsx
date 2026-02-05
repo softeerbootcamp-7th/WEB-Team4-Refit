@@ -12,7 +12,7 @@ type TabBarProps = {
 
 export default function TabBar({ items, activeValue, onChange, className }: TabBarProps) {
   return (
-    <div className={`border-gray-150 flex border-b ${className}`}>
+    <div className={`border-gray-150 flex flex-1 border-b ${className}`}>
       {items.map(({ label, value }) => (
         <button
           key={value}
