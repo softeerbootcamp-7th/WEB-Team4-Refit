@@ -1,3 +1,5 @@
+import type { INTERVIEW_TYPE_LABEL } from '@/shared/constants/interviews'
+
 export type QnaSetType = {
   qnaSetId: number
   interviewId: number
@@ -20,7 +22,7 @@ export type StarAnalysisResult = {
 
 type InterviewFullType = {
   interviewId: number
-  interviewType: string
+  interviewType: InterviewType
   interviewStartAt: string
   interviewReviewStatus: string
   interviewResultStatus: string
@@ -36,23 +38,14 @@ type InterviewFullType = {
 
 export type InterviewFilter = {
   keyword: string
-  interviewType: string[]
+  interviewType: InterviewType[]
   resultStatus: string[]
   startDate: string
   endDate: string
   sort: string
 }
 
-export type InterviewType =
-  | 'first'
-  | 'second'
-  | 'third'
-  | 'personality'
-  | 'technical'
-  | 'executive'
-  | 'culture'
-  | 'coffee'
-  | 'mock'
+export type InterviewType = keyof typeof INTERVIEW_TYPE_LABEL
 
 type KptTextsType = {
   keep_text: string

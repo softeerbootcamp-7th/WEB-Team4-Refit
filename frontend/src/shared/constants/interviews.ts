@@ -1,7 +1,6 @@
 import type { LabelValueType } from '@/types/global'
-import type { InterviewType } from '@/types/interview'
 
-export const INTERVIEW_TYPE_LABEL: Record<InterviewType, string> = {
+export const INTERVIEW_TYPE_LABEL = {
   first: '1차 면접',
   second: '2차 면접',
   third: '3차 면접',
