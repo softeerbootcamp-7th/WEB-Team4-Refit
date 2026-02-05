@@ -1,5 +1,6 @@
 package com.shyashyashya.refit.domain.scrapfolder.service;
 
+import static com.shyashyashya.refit.global.exception.ErrorCode.SCRAP_FOLDER_NAME_DUPLICATED;
 import static com.shyashyashya.refit.global.exception.ErrorCode.SCRAP_FOLDER_NOT_FOUND;
 
 import com.shyashyashya.refit.domain.scrapfolder.dto.response.ScrapFolderQnaSetResponse;
@@ -12,6 +13,7 @@ import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.util.RequestUserContext;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -49,5 +51,18 @@ public class ScrapFolderService {
         return qnaSetScrapFolderRepository
                 .getQnaSetsByScrapFolder(scrapFolder, pageable)
                 .map(ScrapFolderQnaSetResponse::from);
+    }
+
+    @Transactional
+    public void createScrapFolder(String scrapFolderName) {
+        User user = requestUserContext.getRequestUser();
+
+        scrapFolderValidator.validateScrapFolderNameNotDuplicated(scrapFolderName, user);
+
+        try {
+            scrapFolderRepository.save(ScrapFolder.create(scrapFolderName, user));
+        } catch (DataIntegrityViolationException e) {
+            throw new CustomException(SCRAP_FOLDER_NAME_DUPLICATED);
+        }
     }
 }
