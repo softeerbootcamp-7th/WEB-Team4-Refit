@@ -66,4 +66,16 @@ public class ScrapFolderService {
             throw new CustomException(SCRAP_FOLDER_NAME_DUPLICATED);
         }
     }
+
+    @Transactional
+    public void deleteScrapFolder(Long scrapFolderId) {
+        User user = requestUserContext.getRequestUser();
+        ScrapFolder scrapFolder = scrapFolderRepository
+                .findById(scrapFolderId)
+                .orElseThrow(() -> new CustomException(SCRAP_FOLDER_NOT_FOUND));
+
+        scrapFolderValidator.validateScrapFolderOwner(scrapFolder, user);
+
+        scrapFolderRepository.delete(scrapFolder);
+    }
 }
