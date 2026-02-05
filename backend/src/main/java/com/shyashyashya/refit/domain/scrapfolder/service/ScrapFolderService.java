@@ -1,11 +1,12 @@
 package com.shyashyashya.refit.domain.scrapfolder.service;
 
-import static com.shyashyashya.refit.global.exception.ErrorCode.SCRAP_FOLDER_NAME_DUPLICATED;
 import static com.shyashyashya.refit.global.exception.ErrorCode.SCRAP_FOLDER_NOT_FOUND;
 
 import com.shyashyashya.refit.domain.scrapfolder.dto.response.ScrapFolderQnaSetResponse;
 import com.shyashyashya.refit.domain.scrapfolder.dto.response.ScrapFolderResponse;
 import com.shyashyashya.refit.domain.scrapfolder.model.ScrapFolder;
+import static com.shyashyashya.refit.global.exception.ErrorCode.SCRAP_FOLDER_NAME_DUPLICATED;
+
 import com.shyashyashya.refit.domain.scrapfolder.repository.QnaSetScrapFolderRepository;
 import com.shyashyashya.refit.domain.scrapfolder.repository.ScrapFolderRepository;
 import com.shyashyashya.refit.domain.scrapfolder.service.validator.ScrapFolderValidator;
