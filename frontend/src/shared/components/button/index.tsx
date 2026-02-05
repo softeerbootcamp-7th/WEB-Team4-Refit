@@ -87,6 +87,8 @@ const VARIANT_STYLES = {
     'bg-white border border-gray-200 text-gray-600 hover:bg-gray-100 active:bg-gray-200 focus-visible:ring-2 focus-visible:ring-gray-200',
   'outline-gray-100':
     'bg-gray-100 border border-gray-200 text-gray-300 hover:bg-gray-150 active:bg-gray-200 focus-visible:ring-2 focus-visible:ring-gray-200',
+  'outline-gray-150':
+    'bg-gray-150 border border-gray-200 text-gray-400 hover:bg-gray-200 active:bg-gray-300 focus-visible:ring-2 focus-visible:ring-gray-300',
   ghost:
     'bg-transparent disabled:bg-transparent text-gray-600 hover:bg-gray-100 active:bg-gray-200 focus-visible:ring-2 focus-visible:ring-gray-200',
 } as const
