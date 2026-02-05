@@ -73,4 +73,12 @@ public interface QnaSetRepository extends JpaRepository<QnaSet, Long> {
             Pageable pageable);
 
     List<QnaSet> findAllByInterview(Interview interview);
+
+    @Query("""
+        SELECT q
+          FROM QnaSet q
+         WHERE q.interview.user = :user
+           AND q.isMarkedDifficult = TRUE
+    """)
+    Page<QnaSet> findAllDifficultByUser(User user, Pageable pageable);
 }

@@ -19,6 +19,7 @@ import java.security.Key;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -39,40 +40,19 @@ public class JwtUtil {
     }
 
     public String createAccessToken(@NotNull String email, @Nullable Long userId) {
-        Date now = new Date();
-        Date expiration = new Date(now.getTime() + accessTokenExpiration.toMillis());
-
-        var builder = Jwts.builder()
-                .setSubject(email)
-                .setIssuedAt(now)
-                .setExpiration(expiration)
-                .signWith(key, SignatureAlgorithm.HS256);
-
-        if (userId != null) {
-            builder.claim("userId", userId);
-        }
-
-        return builder.compact();
+        return createJwtToken(email, userId, accessTokenExpiration);
     }
 
-    public String createRefreshToken(@NotNull String email) {
-        Date now = new Date();
-        Date expiration = new Date(now.getTime() + refreshTokenExpiration.toMillis());
-
-        return Jwts.builder()
-                .setSubject(email)
-                .setIssuedAt(now)
-                .setExpiration(expiration)
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
+    public String createRefreshToken(@NotNull String email, @Nullable Long userId) {
+        return createJwtToken(email, userId, refreshTokenExpiration);
     }
 
     public String getEmail(String token) {
         return parseClaims(token).getSubject();
     }
 
-    public Long getUserId(String token) {
-        return parseClaims(token).get("userId", Long.class);
+    public Optional<Long> getUserId(String token) {
+        return Optional.ofNullable(parseClaims(token).get("userId", Long.class));
     }
 
     public Instant getExpiration(String token) {
@@ -121,5 +101,22 @@ public class JwtUtil {
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }
+    }
+
+    private String createJwtToken(@NotNull String email, @Nullable Long userId, @NotNull Duration expirationDuration) {
+        var now = Instant.now();
+        var expiration = now.plus(expirationDuration);
+
+        var builder = Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(Date.from(now))
+                .setExpiration(Date.from(expiration))
+                .signWith(key, SignatureAlgorithm.HS256);
+
+        if (userId != null) {
+            builder.claim("userId", userId);
+        }
+
+        return builder.compact();
     }
 }

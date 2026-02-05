@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import Button from '@/shared/components/button'
+import { INTERVIEW_TYPE_OPTIONS } from '@/shared/constants/interviews'
 
 const getTodayDateString = () => {
   const now = new Date()
@@ -10,18 +11,6 @@ const getTodayDateString = () => {
 }
 
 const DEFAULT_INTERVIEW_TIME = '00:00'
-
-const INTERVIEW_TYPE_OPTIONS: { value: string; label: string }[] = [
-  { value: 'first', label: '1차 면접' },
-  { value: 'second', label: '2차 면접' },
-  { value: 'third', label: '3차 면접' },
-  { value: 'personality', label: '인성 면접' },
-  { value: 'technical', label: '기술 면접' },
-  { value: 'executive', label: '임원 면접' },
-  { value: 'culture', label: '컬쳐핏 면접' },
-  { value: 'coffee', label: '커피챗' },
-  { value: 'mock', label: '모의 면접' },
-]
 
 export interface InterviewScheduleFormValues {
   interviewType: string
