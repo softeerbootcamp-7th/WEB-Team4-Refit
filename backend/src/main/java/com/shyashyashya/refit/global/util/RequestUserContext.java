@@ -19,6 +19,7 @@ public class RequestUserContext {
 
     public User getRequestUser() {
         if (user == null) {
+            log.error("RequestUserContext에 설정된 User가 없습니다.");
             throw new IllegalStateException("RequestUserContext에 설정된 User가 없습니다.");
         }
         return user;

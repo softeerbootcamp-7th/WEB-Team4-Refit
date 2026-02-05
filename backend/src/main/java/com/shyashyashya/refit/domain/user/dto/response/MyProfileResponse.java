@@ -5,10 +5,10 @@ import lombok.AccessLevel;
 import lombok.Builder;
 
 @Builder(access = AccessLevel.PRIVATE)
-public record MyPageResponse(String nickname, Long industryId, Long jobCategoryId, String profileImageUrl) {
+public record MyProfileResponse(String nickname, Long industryId, Long jobCategoryId, String profileImageUrl) {
 
-    public static MyPageResponse from(User user) {
-        return MyPageResponse.builder()
+    public static MyProfileResponse from(User user) {
+        return MyProfileResponse.builder()
                 .nickname(user.getNickname())
                 .industryId(user.getIndustry().getId())
                 .jobCategoryId(user.getJobCategory().getId())

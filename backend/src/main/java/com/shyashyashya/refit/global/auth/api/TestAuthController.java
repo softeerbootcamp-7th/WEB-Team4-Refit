@@ -68,7 +68,7 @@ public class TestAuthController {
 
     private ResponseEntity<CommonResponse<TokenPairDto>> getTokenResponse(String email, Long userId) {
         String accessToken = jwtUtil.createAccessToken(email, userId);
-        String refreshToken = jwtUtil.createRefreshToken(email);
+        String refreshToken = jwtUtil.createRefreshToken(email, userId);
 
         String accessTokenCookie = cookieUtil.createAccessTokenCookie(accessToken);
         String refreshTokenCookie = cookieUtil.createResponseTokenCookie(refreshToken);

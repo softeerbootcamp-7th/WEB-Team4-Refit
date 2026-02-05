@@ -40,11 +40,11 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private boolean isAgreedToTerms = false;
 
-    @JoinColumn(name = "industry_id")
+    @JoinColumn(name = "industry_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Industry industry;
 
-    @JoinColumn(name = "job_category_id")
+    @JoinColumn(name = "job_category_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private JobCategory jobCategory;
 
