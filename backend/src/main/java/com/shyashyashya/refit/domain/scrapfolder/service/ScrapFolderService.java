@@ -79,4 +79,22 @@ public class ScrapFolderService {
         qnaSetScrapFolderRepository.deleteAllByScrapFolder(scrapFolder);
         scrapFolderRepository.delete(scrapFolder);
     }
+
+    @Transactional
+    public void updateScrapFolderName(Long scrapFolderId, String scrapFolderName) {
+        User user = requestUserContext.getRequestUser();
+        ScrapFolder scrapFolder = scrapFolderRepository
+                .findById(scrapFolderId)
+                .orElseThrow(() -> new CustomException(SCRAP_FOLDER_NOT_FOUND));
+
+        scrapFolderValidator.validateScrapFolderOwner(scrapFolder, user);
+
+        try {
+            // TODO: 동시성 해결을 위해 DataIntegrityViolationException을 ControllerAdvice에서 처리하는 방법 고려
+            scrapFolder.updateName(scrapFolderName);
+            scrapFolderRepository.flush();
+        } catch (DataIntegrityViolationException e) {
+            throw new CustomException(SCRAP_FOLDER_NAME_DUPLICATED);
+        }
+    }
 }
