@@ -3,15 +3,15 @@ import { NoteIcon } from '@/shared/assets'
 interface QuestionCategory {
   label: string
   count: number
-  color: string
+  colorClass: string
 }
 
 const FREQUENT_QUESTION_CATEGORIES: QuestionCategory[] = [
-  { label: '리더십', count: 12, color: '#fe6f0f' },
-  { label: '자기소개', count: 9, color: '#ff8d4d' },
-  { label: '마지막으로 하고싶은 말', count: 7, color: '#ffab7d' },
-  { label: '프리랜서 경험 설명', count: 3, color: '#ffc9ab' },
-  { label: '어쩌고저쩌고', count: 2, color: '#ffe0d2' },
+  { label: '리더십', count: 12, colorClass: 'bg-orange-500' },
+  { label: '자기소개', count: 9, colorClass: 'bg-orange-400' },
+  { label: '마지막으로 하고싶은 말', count: 7, colorClass: 'bg-orange-300' },
+  { label: '프리랜서 경험 설명', count: 3, colorClass: 'bg-orange-200' },
+  { label: '어쩌고저쩌고', count: 2, colorClass: 'bg-orange-100' },
 ]
 
 export default function FrequentQuestionsSection() {
@@ -30,7 +30,7 @@ export default function FrequentQuestionsSection() {
               <span className="body-s-medium text-gray-700">{item.label}</span>
               <span className="body-s-medium text-gray-900">{item.count}개</span>
             </div>
-            <CategoryBar count={item.count} maxCount={maxCount} color={item.color} />
+            <CategoryBar count={item.count} maxCount={maxCount} colorClass={item.colorClass} />
           </div>
         ))}
       </div>
@@ -38,14 +38,13 @@ export default function FrequentQuestionsSection() {
   )
 }
 
-function CategoryBar({ count, maxCount, color }: { count: number; maxCount: number; color: string }) {
+function CategoryBar({ count, maxCount, colorClass }: { count: number; maxCount: number; colorClass: string }) {
   return (
     <div className="h-2 w-full rounded-full bg-gray-100">
       <div
-        className="h-2 rounded-full"
+        className={`h-2 rounded-full ${colorClass}`}
         style={{
           width: `${(count / maxCount) * 100}%`,
-          backgroundColor: color,
         }}
       />
     </div>
