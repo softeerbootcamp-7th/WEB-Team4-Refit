@@ -74,6 +74,14 @@ public class QnaSet extends BaseEntity {
         }
     }
 
+    public void markDifficult() {
+        this.isMarkedDifficult = true;
+    }
+
+    public void unmarkDifficult() {
+        this.isMarkedDifficult = true;
+    }
+
     @Builder(access = AccessLevel.PRIVATE)
     private QnaSet(
             String questionText,

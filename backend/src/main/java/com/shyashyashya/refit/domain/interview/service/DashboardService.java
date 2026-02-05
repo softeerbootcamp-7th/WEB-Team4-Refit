@@ -6,6 +6,7 @@ import static com.shyashyashya.refit.domain.interview.model.InterviewReviewStatu
 
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardCalendarResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardHeadlineResponse;
+import com.shyashyashya.refit.domain.interview.dto.response.DashboardMyDifficultQuestionResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardUpcomingInterviewResponse;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
@@ -14,6 +15,7 @@ import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.util.RequestUserContext;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -21,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -78,6 +81,15 @@ public class DashboardService {
                             requestUser, interview.getIndustry(), interview.getJobCategory());
                     return DashboardUpcomingInterviewResponse.of(interview, similarTrendQuestions, similarInterviews);
                 });
+    }
+
+    @Transactional(readOnly = true)
+    public Page<DashboardMyDifficultQuestionResponse> getMyDifficultQnaSets(Pageable pageable) {
+        User requestUser = requestUserContext.getRequestUser();
+
+        return qnaSetRepository
+                .findAllDifficultByUser(requestUser, pageable)
+                .map(DashboardMyDifficultQuestionResponse::from);
     }
 
     @Transactional(readOnly = true)

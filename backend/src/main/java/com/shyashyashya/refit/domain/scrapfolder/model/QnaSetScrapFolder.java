@@ -1,4 +1,4 @@
-package com.shyashyashya.refit.domain.scrap.model;
+package com.shyashyashya.refit.domain.scrapfolder.model;
 
 import com.shyashyashya.refit.domain.common.model.BaseEntity;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;

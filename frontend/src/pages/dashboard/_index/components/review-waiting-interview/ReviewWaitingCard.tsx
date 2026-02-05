@@ -1,0 +1,47 @@
+import { SmallLogoIcon } from '@/shared/assets'
+import { Badge } from '@/shared/components'
+import Button from '@/shared/components/button'
+
+export interface ReviewWaitingData {
+  id: number
+  status: '기록 전' | '기록 중'
+  elapsedText: string
+  companyName: string
+  industry: string
+  jobCategory: string
+  interviewType: string
+}
+
+interface ReviewWaitingCardProps {
+  data: ReviewWaitingData
+}
+
+export default function ReviewWaitingCard({ data }: ReviewWaitingCardProps) {
+  return (
+    <div className="flex w-full flex-col rounded-2xl bg-white p-6">
+      <div className="mb-4 flex items-center gap-2">
+        <Badge content={data.status} type="question-label" />
+        <span className="body-m-medium text-gray-500">{data.elapsedText}</span>
+      </div>
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-2">
+          <div className="border-gray-150 flex h-8 w-8 items-center justify-center rounded-full border bg-white text-gray-400">
+            <SmallLogoIcon className="h-4 w-4 text-gray-400" />
+          </div>
+          <h3 className="title-s-semibold text-gray-800">{data.companyName}</h3>
+          <span className="body-m-medium text-gray-400">{data.industry}</span>
+        </div>
+
+        <div className="mb-4 flex flex-wrap items-center gap-1.5">
+          <span className="body-m-medium text-gray-700">{data.jobCategory}</span>
+          <span className="h-3 w-px shrink-0 bg-gray-300" aria-hidden />
+          <span className="body-m-medium text-gray-700">{data.interviewType}</span>
+        </div>
+      </div>
+
+      <Button variant="fill-orange-100" size="sm" className="w-full font-semibold">
+        면접 복기 시작하기
+      </Button>
+    </div>
+  )
+}

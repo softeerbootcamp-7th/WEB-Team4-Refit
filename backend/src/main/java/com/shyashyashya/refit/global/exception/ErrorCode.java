@@ -30,7 +30,11 @@ public enum ErrorCode {
     INVALID_OAUTH_CODE(BAD_REQUEST, "유효하지 않은 OAuth 코드입니다."),
     EXTERNAL_OAUTH_SERVER_ERROR(BAD_GATEWAY, "외부 OAuth 서버와의 통신에 실패했습니다."),
     INVALID_OAUTH_ACCESS_TOKEN(UNAUTHORIZED, "유효하지 않은 OAuth 액세스 토큰입니다."),
-    LOGIN_REQUIRED(UNAUTHORIZED, "로그인이 필요합니다.");
+    LOGIN_REQUIRED(UNAUTHORIZED, "로그인이 필요합니다."),
+
+    SCRAP_FOLDER_NOT_ACCESSIBLE(FORBIDDEN, "스크랩 폴더에 접근할 수 없습니다."),
+    SCRAP_FOLDER_NOT_FOUND(NOT_FOUND, "스크랩 폴더가 존재하지 않습니다."),
+    SCRAP_FOLDER_NAME_DUPLICATED(CONFLICT, "이미 존재하는 스크랩 폴더 이름입니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
