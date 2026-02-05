@@ -1,21 +1,17 @@
 import { useCallback, useRef, useState, type ReactNode } from 'react'
 import Border from '@/shared/components/border'
 import { useOnClickOutside } from '@/shared/hooks/useOnClickOutside'
+import type { LabelValueType } from '@/types/global'
 
-type DropdownOption = {
-  label: string
-  value: string
-}
-
-type DropdownProps = {
+type PlainComboboxProps = {
   title: string
-  options: DropdownOption[]
+  options: LabelValueType[]
   value: string
   onChange: (value: string) => void
   trigger: ReactNode
 }
 
-export default function Dropdown({ title, options, value, onChange, trigger }: DropdownProps) {
+export default function PlainCombobox({ title, options, value, onChange, trigger }: PlainComboboxProps) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
 

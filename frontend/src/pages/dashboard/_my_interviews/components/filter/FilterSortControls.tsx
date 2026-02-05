@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { CaretDownIcon, FilterIcon } from '@/shared/assets'
-import { Button, Dropdown } from '@/shared/components'
+import { Button, PlainCombobox } from '@/shared/components'
 import type { LabelValueType } from '@/types/global'
 import type { InterviewFilter } from '@/types/interview'
 import InterviewFilterModal from './InterviewFilterModal'
@@ -22,7 +22,7 @@ export default function FilterSortControls({ filter, onFilterChange }: FilterSor
         <FilterIcon className="h-4 w-4" />
         {hasFilter ? `필터 ${filterCount}개 선택됨` : '필터'}
       </Button>
-      <Dropdown
+      <PlainCombobox
         title="면접 정렬"
         options={SORT_OPTIONS}
         value={filter.sort}

@@ -1,7 +1,7 @@
 export { default as Badge } from './badge'
 export { default as Border } from './border'
 export { default as Button } from './button'
-export { NativeCombobox, SearchableCombobox } from './combobox'
+export { NativeCombobox, SearchableCombobox, PlainCombobox } from './combobox'
 export { default as Input } from './input'
 export { default as Modal } from './modal/index.tsx'
 export { default as Navbar } from './navbar/Navbar'
@@ -11,4 +11,3 @@ export { SidebarLayout, ContainerWithHeader, ContainerWithoutHeader, ListItemSma
 export { default as TabBar } from './tab'
 export { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from './table'
 export { default as Checkbox } from './checkbox'
-export { default as Dropdown } from './dropdown'
