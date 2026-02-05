@@ -15,7 +15,7 @@ import {
   MobileRecordPage,
   MyCollectionsPage,
   CollectionDetailPage,
-  HardQuestionPage,
+  DifficultQuestionPage,
   MyInterviewsPage,
 } from '@/pages'
 import { ROUTES } from '@/shared/constants/routes'
@@ -66,14 +66,17 @@ const router = createBrowserRouter([
           {
             path: getChildPath(ROUTES.DASHBOARD_MY_COLLECTIONS, ROUTES.DASHBOARD),
             Component: MyCollectionsPage,
-          },
-          {
-            path: getChildPath(ROUTES.DASHBOARD_HARD_QUESTIONS, ROUTES.DASHBOARD),
-            Component: HardQuestionPage,
-          },
-          {
-            path: getChildPath(ROUTES.DASHBOARD_COLLECTION_DETAIL, ROUTES.DASHBOARD),
-            Component: CollectionDetailPage,
+            children: [
+              { index: true, Component: () => <Navigate to="difficult-questions" replace /> },
+              {
+                path: 'difficult-questions',
+                Component: DifficultQuestionPage,
+              },
+              {
+                path: ':folderId',
+                Component: CollectionDetailPage,
+              },
+            ],
           },
         ],
       },
