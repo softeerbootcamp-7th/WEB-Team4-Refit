@@ -1,4 +1,8 @@
-import type { InterviewResultStatus } from '@/pages/dashboard/_my_interviews/constants/constants'
+import {
+  RESULT_LABEL,
+  RESULT_THEME,
+  type InterviewResultStatus,
+} from '@/pages/dashboard/_my_interviews/constants/constants'
 import { Badge, Border } from '@/shared/components'
 
 type InterviewCardProps = {
@@ -40,15 +44,3 @@ export default function InterviewCard({
     </div>
   )
 }
-
-const RESULT_THEME = {
-  pass: 'green-100',
-  wait: 'orange-50',
-  fail: 'red-50',
-} as const
-
-const RESULT_LABEL = {
-  pass: '합격',
-  wait: '발표 대기',
-  fail: '불합격',
-} as const
