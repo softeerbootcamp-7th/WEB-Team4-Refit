@@ -4,6 +4,7 @@ import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
 
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardHeadlineResponse;
+import com.shyashyashya.refit.domain.interview.dto.response.DashboardMyDifficultQuestionResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardUpcomingInterviewResponse;
 import com.shyashyashya.refit.domain.interview.service.DashboardService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,6 +38,15 @@ public class DashboardController {
     public ResponseEntity<CommonResponse<Page<DashboardUpcomingInterviewResponse>>> getUpcomingInterviews(
             Pageable pageable) {
         var body = dashboardService.getUpcomingInterviews(pageable);
+        var response = CommonResponse.success(COMMON200, body);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "대시보드에서 '내가 어렵게 느낀 질문'을 조회합니다.")
+    @GetMapping("/qna-set/my/difficult")
+    public ResponseEntity<CommonResponse<Page<DashboardMyDifficultQuestionResponse>>> getMyDifficultQnaSets(
+            Pageable pageable) {
+        var body = dashboardService.getMyDifficultQnaSets(pageable);
         var response = CommonResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }

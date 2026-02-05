@@ -39,6 +39,7 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.rest-assured:rest-assured'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testRuntimeOnly 'com.h2database:h2'
 }
@@ -63,9 +64,9 @@ spotless {
     }
 
     java {
-        // Use the default importOrder configuration
-        importOrder()
+        target 'src/main/java/**/*.java'
 
+        importOrder()
         removeUnusedImports()
         expandWildcardImports()
 

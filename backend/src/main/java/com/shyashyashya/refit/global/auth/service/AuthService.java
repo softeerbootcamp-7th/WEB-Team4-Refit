@@ -41,7 +41,7 @@ public class AuthService {
         }
 
         String email = jwtUtil.getEmail(refreshToken);
-        Long userId = jwtUtil.getUserId(accessToken);
+        Long userId = jwtUtil.getUserId(accessToken).orElse(null);
 
         // 리프레시 토큰이 저장소에 없으면 탈취 의심, 재로그인 필요
         RefreshToken storedToken = refreshTokenRepository
@@ -53,7 +53,7 @@ public class AuthService {
 
         // 리프레시 토큰을 신뢰, Refresh Token Rotate 및 Access Token 재발급
         String newAccessToken = jwtUtil.createAccessToken(email, userId);
-        String newRefreshToken = jwtUtil.createRefreshToken(email);
+        String newRefreshToken = jwtUtil.createRefreshToken(email, userId);
         Instant newExpiryDate = jwtUtil.getExpiration(newRefreshToken);
 
         storedToken.rotate(newRefreshToken, newExpiryDate);
