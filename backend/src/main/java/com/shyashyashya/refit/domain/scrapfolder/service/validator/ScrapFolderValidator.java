@@ -11,9 +11,8 @@ import org.springframework.stereotype.Component;
 public class ScrapFolderValidator {
 
     public void validateScrapFolderOwner(ScrapFolder scrapFolder, User user) {
-        if (scrapFolder.getUser().equals(user)) {
-            return;
+        if (!scrapFolder.getUser().equals(user)) {
+            throw new CustomException(SCRAP_FOLDER_NOT_ACCESSIBLE);
         }
-        throw new CustomException(SCRAP_FOLDER_NOT_ACCESSIBLE);
     }
 }

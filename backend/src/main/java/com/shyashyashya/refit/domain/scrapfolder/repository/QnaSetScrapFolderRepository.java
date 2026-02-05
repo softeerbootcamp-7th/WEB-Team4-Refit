@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface QnaSetScrapFolderRepository extends JpaRepository<QnaSetScrapFolder, Long> {
 
-    Long getQnaSetCountByScrapFolder(ScrapFolder scrapFolder);
+    Long countByScrapFolder(ScrapFolder scrapFolder);
 
     @Query("""
     SELECT qssf.qnaSet

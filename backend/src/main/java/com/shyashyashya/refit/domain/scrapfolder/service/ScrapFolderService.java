@@ -30,8 +30,9 @@ public class ScrapFolderService {
     public Page<ScrapFolderResponse> getMyScrapFolders(Pageable pageable) {
         User user = requestUserContext.getRequestUser();
 
-        return scrapFolderRepository.getScrapFoldersByUser(user, pageable).map(scrapFolder -> {
-            Long qnaSetCount = qnaSetScrapFolderRepository.getQnaSetCountByScrapFolder(scrapFolder);
+        // TODO: 추후 QueryDSL 도입 후 N+1 문제 해결 예정
+        return scrapFolderRepository.findAllByUser(user, pageable).map(scrapFolder -> {
+            Long qnaSetCount = qnaSetScrapFolderRepository.countByScrapFolder(scrapFolder);
             return ScrapFolderResponse.from(scrapFolder, qnaSetCount);
         });
     }
