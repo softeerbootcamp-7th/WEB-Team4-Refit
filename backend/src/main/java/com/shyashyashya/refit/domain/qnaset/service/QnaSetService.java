@@ -67,7 +67,7 @@ public class QnaSetService {
     }
 
     private void deleteAllHighlightingsAndRects(QnaSet qnaSet) {
-        List<Long> pdfHighlightingIds = pdfHighlightingRepository.findIdsByQnaSet(qnaSet);
+        List<Long> pdfHighlightingIds = pdfHighlightingRepository.findIdByQnaSet(qnaSet);
         if (!pdfHighlightingIds.isEmpty()) {
             pdfHighlightingRectRepository.deleteAllByPdfHighlightingIds(pdfHighlightingIds);
         }
