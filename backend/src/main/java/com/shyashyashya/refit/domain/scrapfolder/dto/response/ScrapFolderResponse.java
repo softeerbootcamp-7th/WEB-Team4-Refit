@@ -1,14 +1,14 @@
-package com.shyashyashya.refit.domain.scrapfolder.dto;
+package com.shyashyashya.refit.domain.scrapfolder.dto.response;
 
 import com.shyashyashya.refit.domain.scrapfolder.model.ScrapFolder;
 import lombok.AccessLevel;
 import lombok.Builder;
 
 @Builder(access = AccessLevel.PRIVATE)
-public record ScrapFolderDto(Long scrapFolderId, String scrapFolderName, Long qnaSetCount) {
+public record ScrapFolderResponse(Long scrapFolderId, String scrapFolderName, Long qnaSetCount) {
 
-    public static ScrapFolderDto from(ScrapFolder scrapFolder, Long qnaSetCount) {
-        return ScrapFolderDto.builder()
+    public static ScrapFolderResponse from(ScrapFolder scrapFolder, Long qnaSetCount) {
+        return ScrapFolderResponse.builder()
                 .scrapFolderId(scrapFolder.getId())
                 .scrapFolderName(scrapFolder.getName())
                 .qnaSetCount(qnaSetCount)
