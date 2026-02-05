@@ -28,11 +28,21 @@ export function useAutoPagination<T>({ data, itemsPerPage, intervalMs = 3000 }: 
     onMouseLeave: () => setIsHovered(false),
   }
 
+  const goToPrevious = () => {
+    setCurrentPage((prev) => (prev - 1 + totalPages) % totalPages)
+  }
+
+  const goToNext = () => {
+    setCurrentPage((prev) => (prev + 1) % totalPages)
+  }
+
   return {
     currentPage,
     setCurrentPage,
     totalPages,
     currentItems,
     bindHover,
+    goToPrevious,
+    goToNext,
   }
 }

@@ -14,7 +14,7 @@ export default function UpcomingInterviewCard({ data }: UpcomingInterviewCardPro
   return (
     <div className="flex w-full flex-col gap-5 rounded-2xl bg-white p-6">
       <div className="flex items-start gap-4">
-        <div className="border-gray-150 flex size-[52px] shrink-0 items-center justify-center overflow-hidden rounded-full border bg-white">
+        <div className="border-gray-150 flex size-13 shrink-0 items-center justify-center overflow-hidden rounded-full border bg-white">
           {data.companyLogo ?? <DefaultCompanyLogo />}
         </div>
         <div className="flex flex-col gap-1">

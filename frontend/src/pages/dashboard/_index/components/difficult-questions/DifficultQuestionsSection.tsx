@@ -1,6 +1,6 @@
 import DifficultQuestionCard from '@/pages/dashboard/_index/components/difficult-questions/DifficultQuestionCard'
 import { useDifficultQuestions } from '@/pages/dashboard/_index/hooks/useDifficultQuestions'
-import { MeltIcon } from '@/shared/assets'
+import { CircleLeftIcon, CircleRightIcon, MeltIcon } from '@/shared/assets'
 import { useAutoPagination } from '@/shared/hooks/useAutoPagination'
 
 const ITEMS_PER_PAGE = 1
@@ -9,11 +9,12 @@ const AUTO_ADVANCE_MS = 3000
 export default function DifficultQuestionsSection() {
   const { data } = useDifficultQuestions()
 
-  const { currentItems, currentPage, totalPages, setCurrentPage, bindHover } = useAutoPagination({
-    data,
-    itemsPerPage: ITEMS_PER_PAGE,
-    intervalMs: AUTO_ADVANCE_MS,
-  })
+  const { currentItems, currentPage, totalPages, setCurrentPage, goToPrevious, goToNext, bindHover } =
+    useAutoPagination({
+      data,
+      itemsPerPage: ITEMS_PER_PAGE,
+      intervalMs: AUTO_ADVANCE_MS,
+    })
 
   return (
     <section className="flex min-h-0 flex-col rounded-2xl bg-white p-6">
@@ -22,10 +23,30 @@ export default function DifficultQuestionsSection() {
         <h2 className="body-l-semibold text-gray-900">어렵게 느꼈던 면접 질문</h2>
       </div>
       <div className="flex flex-1 flex-col items-stretch justify-center gap-4" {...bindHover}>
-        <div className="grid grid-cols-1 gap-4">
-          {currentItems.map((item) => (
-            <DifficultQuestionCard key={item.id} data={item} />
-          ))}
+        <div className="flex items-center justify-between gap-4">
+          <button
+            type="button"
+            onClick={goToPrevious}
+            disabled={totalPages <= 1}
+            className="shrink-0 cursor-pointer disabled:opacity-50"
+            aria-label="이전 질문"
+          >
+            <CircleLeftIcon className="h-6 w-6 text-gray-400 hover:text-gray-600" />
+          </button>
+          <div className="grid flex-1 grid-cols-1 gap-4">
+            {currentItems.map((item) => (
+              <DifficultQuestionCard key={item.id} data={item} />
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={goToNext}
+            disabled={totalPages <= 1}
+            className="shrink-0 cursor-pointer disabled:opacity-50"
+            aria-label="다음 질문"
+          >
+            <CircleRightIcon className="h-6 w-6 text-gray-400 hover:text-gray-600" />
+          </button>
         </div>
         {totalPages > 1 && (
           <div className="flex justify-center gap-1.5">
