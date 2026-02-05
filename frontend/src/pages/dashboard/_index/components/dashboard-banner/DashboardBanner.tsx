@@ -1,7 +1,7 @@
 import { DASHBOARD_BANNER_VARIANTS } from '@/pages/dashboard/_index/constants/dashboardBanner'
 import type { DashboardBannerVariant } from '@/pages/dashboard/_index/constants/dashboardBanner'
 import { useDashboardBanner } from '@/pages/dashboard/_index/hooks/useDashboardBanner'
-import { PencilChickIcon } from '@/shared/assets'
+import { BubbleTailIcon, PencilChickIcon } from '@/shared/assets'
 
 interface DashboardBannerProps {
   variant: DashboardBannerVariant
@@ -44,19 +44,7 @@ function Bubble({ bubbleHex, bubbleText, className }: { bubbleHex: string; bubbl
       style={{ backgroundColor: bubbleHex }}
     >
       <span className="body-l-bold text-white">{bubbleText}</span>
-      <svg
-        width="20"
-        height="23"
-        viewBox="0 0 20 23"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="absolute top-1/2 -right-[10px] -translate-y-1/2"
-      >
-        <path
-          d="M18.4831 17.5575L5.34261 1.13187C3.57108 -1.08254 -2.49876e-07 0.170115 -3.73834e-07 3.00595L-9.50578e-07 16.2003C-1.01094e-06 17.5812 0.94266 18.7838 2.28363 19.1135L15.4241 22.3448C18.2069 23.0291 20.2733 19.7952 18.4831 17.5575Z"
-          fill={bubbleHex}
-        />
-      </svg>
+      <BubbleTailIcon className="absolute top-1/2 -right-[10px] -translate-y-1/2" style={{ color: bubbleHex }} />
     </div>
   )
 }
