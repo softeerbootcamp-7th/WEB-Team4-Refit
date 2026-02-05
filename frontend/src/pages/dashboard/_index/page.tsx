@@ -10,7 +10,7 @@ export default function DashboardPage() {
   return (
     <ScheduleModalProvider>
       <div className="flex w-full min-w-0 flex-col justify-center gap-10">
-        <div className="flex w-full gap-10">
+        <div className="flex w-full gap-6">
           <div className="flex w-225 flex-1 flex-col gap-10">
             <DashboardBanner variant="no_schedule" />
             <UpcomingInterviewSection />
