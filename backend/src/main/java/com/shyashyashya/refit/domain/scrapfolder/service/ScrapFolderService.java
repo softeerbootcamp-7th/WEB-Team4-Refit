@@ -57,6 +57,8 @@ public class ScrapFolderService {
     public void createScrapFolder(String scrapFolderName) {
         User user = requestUserContext.getRequestUser();
 
+        scrapFolderValidator.validateScrapFolderNameNotDuplicated(scrapFolderName, user);
+
         try {
             scrapFolderRepository.save(ScrapFolder.create(scrapFolderName, user));
         } catch (DataIntegrityViolationException e) {

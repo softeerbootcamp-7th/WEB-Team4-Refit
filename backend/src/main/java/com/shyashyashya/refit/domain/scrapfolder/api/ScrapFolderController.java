@@ -1,6 +1,7 @@
 package com.shyashyashya.refit.domain.scrapfolder.api;
 
 import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
+import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON201;
 
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
 import com.shyashyashya.refit.domain.scrapfolder.dto.request.ScrapFolderCreateRequest;
@@ -45,7 +46,7 @@ public class ScrapFolderController {
     public ResponseEntity<CommonResponse<Void>> createScrapFolder(
             @RequestBody @Valid ScrapFolderCreateRequest scrapFolderCreateRequest) {
         scrapFolderService.createScrapFolder(scrapFolderCreateRequest.scrapFolderName());
-        var response = CommonResponse.success(COMMON200);
+        var response = CommonResponse.success(COMMON201);
         return ResponseEntity.ok(response);
     }
 }
