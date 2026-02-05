@@ -22,7 +22,7 @@ export type StarAnalysisResult = {
 
 type InterviewFullType = {
   interviewId: number
-  interviewType: InterviewType
+  interviewType: string
   interviewStartAt: string
   interviewReviewStatus: string
   interviewResultStatus: string
@@ -38,7 +38,7 @@ type InterviewFullType = {
 
 export type InterviewFilter = {
   keyword: string
-  interviewType: InterviewType[]
+  interviewType: string[]
   resultStatus: string[]
   startDate: string
   endDate: string
