@@ -2,6 +2,7 @@ package com.shyashyashya.refit.domain.scrapfolder.api;
 
 import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
 import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON201;
+import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON204;
 
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
 import com.shyashyashya.refit.domain.scrapfolder.dto.request.ScrapFolderCreateRequest;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,6 +49,13 @@ public class ScrapFolderController {
             @RequestBody @Valid ScrapFolderCreateRequest scrapFolderCreateRequest) {
         scrapFolderService.createScrapFolder(scrapFolderCreateRequest.scrapFolderName());
         var response = CommonResponse.success(COMMON201);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{scrapFolderId}")
+    public ResponseEntity<CommonResponse<Void>> deleteScrapFolder(@PathVariable Long scrapFolderId) {
+        scrapFolderService.deleteScrapFolder(scrapFolderId);
+        var response = CommonResponse.success(COMMON204);
         return ResponseEntity.ok(response);
     }
 }

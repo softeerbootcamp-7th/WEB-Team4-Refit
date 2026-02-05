@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+// TODO: 가장 어려웠던 질문 폴더 관련 유효성 검증 추가하기
 public class ScrapFolderService {
 
     private final ScrapFolderRepository scrapFolderRepository;
@@ -49,7 +50,7 @@ public class ScrapFolderService {
         scrapFolderValidator.validateScrapFolderOwner(scrapFolder, user);
 
         return qnaSetScrapFolderRepository
-                .getQnaSetsByScrapFolder(scrapFolder, pageable)
+                .findQnaSetsByScrapFolder(scrapFolder, pageable)
                 .map(ScrapFolderQnaSetResponse::from);
     }
 
@@ -64,5 +65,18 @@ public class ScrapFolderService {
         } catch (DataIntegrityViolationException e) {
             throw new CustomException(SCRAP_FOLDER_NAME_DUPLICATED);
         }
+    }
+
+    @Transactional
+    public void deleteScrapFolder(Long scrapFolderId) {
+        User user = requestUserContext.getRequestUser();
+        ScrapFolder scrapFolder = scrapFolderRepository
+                .findById(scrapFolderId)
+                .orElseThrow(() -> new CustomException(SCRAP_FOLDER_NOT_FOUND));
+
+        scrapFolderValidator.validateScrapFolderOwner(scrapFolder, user);
+
+        qnaSetScrapFolderRepository.deleteAllByScrapFolder(scrapFolder);
+        scrapFolderRepository.delete(scrapFolder);
     }
 }

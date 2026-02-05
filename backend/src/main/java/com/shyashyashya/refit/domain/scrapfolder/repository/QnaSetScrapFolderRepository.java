@@ -14,8 +14,10 @@ public interface QnaSetScrapFolderRepository extends JpaRepository<QnaSetScrapFo
 
     @Query("""
     SELECT qssf.qnaSet
-       FROM QnaSetScrapFolder qssf
-        WHERE qssf.scrapFolder = :scrapFolder
+    FROM QnaSetScrapFolder qssf
+    WHERE qssf.scrapFolder = :scrapFolder
     """)
-    Page<QnaSet> getQnaSetsByScrapFolder(ScrapFolder scrapFolder, Pageable pageable);
+    Page<QnaSet> findQnaSetsByScrapFolder(ScrapFolder scrapFolder, Pageable pageable);
+
+    void deleteAllByScrapFolder(ScrapFolder scrapFolder);
 }
