@@ -40,8 +40,8 @@ public class QnaSetService {
     private final PdfHighlightingRepository pdfHighlightingRepository;
     private final PdfHighlightingRectRepository pdfHighlightingRectRepository;
 
-    private final InterviewValidator interviewValidator;
     private final RequestUserContext requestUserContext;
+    private final InterviewValidator interviewValidator;
 
     @Transactional(readOnly = true)
     public List<FrequentQnaSetResponse> getFrequentQuestions(Long industryId, Long jobCategoryId) {
@@ -56,6 +56,28 @@ public class QnaSetService {
         return qnaSetRepository.findAllByIndustryAndJobCategory(industry, jobCategory).stream()
                 .map(FrequentQnaSetResponse::from)
                 .toList();
+    }
+
+    @Transactional
+    public void markDifficultQuestion(Long qnaSetId) {
+        QnaSet qnaSet = qnaSetRepository.findById(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
+
+        User requesetUser = requestUserContext.getRequestUser();
+        Interview interview = qnaSet.getInterview();
+        interviewValidator.validateInterviewOwner(interview, requesetUser);
+
+        qnaSet.markDifficult();
+    }
+
+    @Transactional
+    public void unmarkDifficultQuestion(Long qnaSetId) {
+        QnaSet qnaSet = qnaSetRepository.findById(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
+
+        User requesetUser = requestUserContext.getRequestUser();
+        Interview interview = qnaSet.getInterview();
+        interviewValidator.validateInterviewOwner(interview, requesetUser);
+
+        qnaSet.unmarkDifficult();
     }
 
     @Transactional
