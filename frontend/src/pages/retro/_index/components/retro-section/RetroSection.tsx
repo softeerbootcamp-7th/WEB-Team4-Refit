@@ -45,7 +45,7 @@ export function RetroSection({ isPdfOpen, togglePdf }: RetroSectionProps) {
         ) : (
           <>
             <QnaSetCard
-              key={currentIndex}
+              key={qnaSetId}
               idx={currentIndex + 1}
               questionText={questionText}
               answerText={answerText}
