@@ -17,7 +17,7 @@ export default function UpcomingInterviewSection() {
         onPrev={hasPrev ? handlePrev : undefined}
         onNext={hasNext ? handleNext : undefined}
       />
-      <div className="flex gap-4 pb-4">
+      <div className="flex gap-4">
         {pageData.map((item) => (
           <UpcomingInterviewCard key={item.id} data={item} />
         ))}
