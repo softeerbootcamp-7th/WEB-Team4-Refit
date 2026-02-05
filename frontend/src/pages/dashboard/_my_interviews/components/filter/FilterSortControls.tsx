@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import InterviewFilterModal from '@/pages/dashboard/_my_interviews/components/interviews/InterviewFilterModal'
 import { CaretDownIcon, FilterIcon } from '@/shared/assets'
 import { Button, Dropdown } from '@/shared/components'
 import type { InterviewFilter } from '@/types/interview'
+import InterviewFilterModal from './InterviewFilterModal'
 
 type FilterSortControlsProps = {
   filter: InterviewFilter
