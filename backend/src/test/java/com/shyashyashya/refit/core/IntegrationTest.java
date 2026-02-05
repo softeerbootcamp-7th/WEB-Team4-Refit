@@ -14,11 +14,19 @@ import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import org.hibernate.Session;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
+
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -28,6 +36,9 @@ public abstract class IntegrationTest {
     private Integer port;
 
     protected RequestSpecification spec;
+
+    @PersistenceContext
+    private EntityManager em;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -43,7 +54,9 @@ public abstract class IntegrationTest {
 
     @BeforeEach
     void restAssuredSetUp() {
+        clearDatabase();
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+
         Industry industry = industryRepository.save(Industry.create("HyunDai"));
         JobCategory jobCategory = jobCategoryRepository.save(JobCategory.create("BE Developer"));
 
@@ -54,6 +67,33 @@ public abstract class IntegrationTest {
                 .addCookie(AuthConstant.ACCESS_TOKEN, accessToken)
                 .setContentType(ContentType.JSON)
                 .build();
+    }
+
+    private void clearDatabase() {
+        em.clear();
+        em.unwrap(Session.class).doWork((session) -> {
+            Statement st = session.createStatement();
+            st.executeUpdate("SET REFERENTIAL_INTEGRITY FALSE");
+
+            // 모든 테이블 조회
+            ResultSet rs = st.executeQuery("""
+                SELECT TABLE_NAME, TABLE_SCHEMA, TABLE_TYPE
+                  FROM INFORMATION_SCHEMA.TABLES
+                 WHERE TABLE_SCHEMA = 'PUBLIC'
+                   AND TABLE_TYPE = 'BASE TABLE'
+            """);
+
+            List<String> tableNames = new ArrayList<>();
+            while (rs.next()) {
+                tableNames.add(rs.getString(1));
+            }
+
+            for (String tableName : tableNames) {
+                st.executeUpdate("TRUNCATE TABLE " + tableName);
+            }
+
+            st.executeUpdate("SET REFERENTIAL_INTEGRITY TRUE");
+        });
     }
 
     private User createUser(String email, Industry industry, JobCategory jobCategory) {
