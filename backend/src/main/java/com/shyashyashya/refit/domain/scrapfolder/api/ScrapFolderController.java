@@ -58,4 +58,11 @@ public class ScrapFolderController {
         var response = CommonResponse.success(COMMON204);
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/{scrapFolderId}")
+    public ResponseEntity<CommonResponse<Void>> deleteScrapFolder(@PathVariable Long scrapFolderId) {
+        scrapFolderService.deleteScrapFolder(scrapFolderId);
+        var response = CommonResponse.success(COMMON200);
+        return ResponseEntity.ok(response);
+    }
 }
