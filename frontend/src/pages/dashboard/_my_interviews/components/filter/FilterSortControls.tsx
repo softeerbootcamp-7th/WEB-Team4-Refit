@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { CaretDownIcon, FilterIcon } from '@/shared/assets'
 import { Button, Dropdown } from '@/shared/components'
+import type { LabelValueType } from '@/types/global'
 import type { InterviewFilter } from '@/types/interview'
 import InterviewFilterModal from './InterviewFilterModal'
 
@@ -44,7 +45,7 @@ export default function FilterSortControls({ filter, onFilterChange }: FilterSor
   )
 }
 
-const SORT_OPTIONS = [
+const SORT_OPTIONS: LabelValueType[] = [
   { label: '면접 일시 최신순', value: 'date-latest' },
   { label: '면접 일시 오래된순', value: 'date-oldest' },
   { label: '최신 업데이트순', value: 'updated' },

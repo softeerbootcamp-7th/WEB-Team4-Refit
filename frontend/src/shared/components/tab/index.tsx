@@ -1,10 +1,7 @@
-export type TabItem = {
-  label: string
-  value: string
-}
+import type { LabelValueType } from '@/types/global'
 
 type TabBarProps = {
-  items: TabItem[]
+  items: LabelValueType[]
   activeValue: string
   onChange: (value: string) => void
   className?: string
