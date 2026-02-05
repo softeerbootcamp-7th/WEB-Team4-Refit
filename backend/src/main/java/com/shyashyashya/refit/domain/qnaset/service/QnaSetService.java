@@ -22,7 +22,10 @@ import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.util.RequestUserContext;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,15 +67,19 @@ public class QnaSetService {
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
         List<PdfHighlighting> pdfHighlightings = pdfHighlightingRepository.findAllByQnaSet(qnaSet);
-        List<PdfHighlightingDto> pdfHighlightingDtos = pdfHighlightings.stream()
-                .map(pdfHighlighting -> {
-                    List<PdfHighlightingRect> rects =
-                            pdfHighlightingRectRepository.findAllByPdfHighlighting(pdfHighlighting);
-                    return PdfHighlightingDto.of(pdfHighlighting, rects);
-                })
-                .toList();
+        if (pdfHighlightings.isEmpty()) {
+            return Collections.emptyList();
+        }
 
-        return pdfHighlightingDtos;
+        List<PdfHighlightingRect> allRects = pdfHighlightingRectRepository.findAllByPdfHighlightingIn(pdfHighlightings);
+        Map<PdfHighlighting, List<PdfHighlightingRect>> rectsByHighlighting =
+                allRects.stream().collect(Collectors.groupingBy(PdfHighlightingRect::getPdfHighlighting));
+
+        return pdfHighlightings.stream()
+                .map(highlighting -> PdfHighlightingDto.of(
+                        highlighting,
+                        rectsByHighlighting.getOrDefault(highlighting, java.util.Collections.emptyList())))
+                .toList();
     }
 
     @Transactional

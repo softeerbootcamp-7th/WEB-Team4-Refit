@@ -19,4 +19,6 @@ public interface PdfHighlightingRectRepository extends JpaRepository<PdfHighligh
        IN :highlightingIds
     """)
     void deleteAllByPdfHighlightingIds(@Param("highlightingIds") List<Long> highlightingIds);
+
+    List<PdfHighlightingRect> findAllByPdfHighlightingIn(List<PdfHighlighting> pdfHighlightings);
 }
