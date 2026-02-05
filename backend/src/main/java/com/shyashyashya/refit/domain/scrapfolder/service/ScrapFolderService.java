@@ -6,7 +6,6 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.SCRAP_FOLDER_NOT
 import com.shyashyashya.refit.domain.scrapfolder.dto.response.ScrapFolderQnaSetResponse;
 import com.shyashyashya.refit.domain.scrapfolder.dto.response.ScrapFolderResponse;
 import com.shyashyashya.refit.domain.scrapfolder.model.ScrapFolder;
-
 import com.shyashyashya.refit.domain.scrapfolder.repository.QnaSetScrapFolderRepository;
 import com.shyashyashya.refit.domain.scrapfolder.repository.ScrapFolderRepository;
 import com.shyashyashya.refit.domain.scrapfolder.service.validator.ScrapFolderValidator;
