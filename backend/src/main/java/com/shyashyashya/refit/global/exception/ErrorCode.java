@@ -33,7 +33,9 @@ public enum ErrorCode {
     LOGIN_REQUIRED(UNAUTHORIZED, "로그인이 필요합니다."),
 
     SCRAP_FOLDER_NOT_ACCESSIBLE(FORBIDDEN, "스크랩 폴더에 접근할 수 없습니다."),
-    SCRAP_FOLDER_NOT_FOUND(NOT_FOUND, "스크랩 폴더가 존재하지 않습니다.");
+    SCRAP_FOLDER_NOT_FOUND(NOT_FOUND, "스크랩 폴더가 존재하지 않습니다."),
+
+    STAR_ANALYSIS_CREATION_ALREADY_IN_PROGRESS(CONFLICT, "이미 스타 분석 생성 요청이 진행 중입니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
