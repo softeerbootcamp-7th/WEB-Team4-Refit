@@ -1,6 +1,5 @@
 import {
   DATE_CELL_STYLE,
-  EVENT_COLOR_CLASS,
   WEEKDAYS,
   type EventColor,
 } from '@/pages/dashboard/_index/constants/interviewCalendar'
@@ -23,7 +22,7 @@ export function CalendarGrid({
   getEventColor,
 }: CalendarGridProps) {
   return (
-    <div className="overflow-hidden rounded-[16px]">
+    <div className="overflow-hidden rounded-2xl">
       <div className="border-gray-150 grid grid-cols-7 border-b bg-gray-100">
         {WEEKDAYS.map((w) => (
           <div key={w.label} className="caption-l-semibold py-3 text-center text-gray-700">
@@ -39,8 +38,8 @@ export function CalendarGrid({
             today={today}
             viewDate={viewDate}
             selectedDate={selectedDate}
-            eventColor={date.isCurrentMonth ? getEventColor(date.day) : undefined}
             onClick={() => onDateClick(date.day, date.isCurrentMonth)}
+            eventColor={date.isCurrentMonth ? getEventColor(date.day) : undefined}
           />
         ))}
       </div>
@@ -53,8 +52,8 @@ interface CalendarDayProps {
   today: Date
   viewDate: { year: number; month: number }
   selectedDate: { year: number; month: number; day: number }
-  eventColor?: EventColor
   onClick: () => void
+  eventColor?: EventColor
 }
 
 function getDateCellStyle(
@@ -62,6 +61,7 @@ function getDateCellStyle(
   today: Date,
   viewDate: { year: number; month: number },
   selectedDate: { year: number; month: number; day: number },
+  eventColor?: EventColor,
 ): string {
   const isSelected =
     date.isCurrentMonth &&
@@ -76,29 +76,28 @@ function getDateCellStyle(
     viewDate.year === today.getFullYear()
 
   if (isSelected) return DATE_CELL_STYLE.selected
+  if (eventColor === 'orange') return 'bg-orange-100 text-orange-500'
+  if (eventColor === 'gray') return 'bg-gray-100 text-gray-500'
   if (isToday) return DATE_CELL_STYLE.today
   if (!date.isCurrentMonth) return DATE_CELL_STYLE.otherMonth
   return DATE_CELL_STYLE.default
 }
 
 function CalendarDay({ date, today, viewDate, selectedDate, eventColor, onClick }: CalendarDayProps) {
-  const dateStyleClass = getDateCellStyle(date, today, viewDate, selectedDate)
+  const dateStyleClass = getDateCellStyle(date, today, viewDate, selectedDate, eventColor)
   const isCurrentMonth = date.isCurrentMonth
 
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`group box-border flex h-16 w-full flex-col items-center justify-start gap-1 bg-white py-2 ${!isCurrentMonth ? 'cursor-default' : 'cursor-pointer'}`}
+      className={`group box-border flex h-10 w-full flex-col items-center justify-start gap-1 bg-white py-2 ${!isCurrentMonth ? 'cursor-default' : 'cursor-pointer'}`}
     >
       <span
         className={`caption-l-medium flex h-6 w-6 items-center justify-center rounded-full transition-colors ${dateStyleClass}`}
       >
         {date.day}
       </span>
-      <div className="h-2.5 w-2.5">
-        {eventColor && <div className={`h-full w-full rounded-full ${EVENT_COLOR_CLASS[eventColor]}`} />}
-      </div>
     </button>
   )
 }

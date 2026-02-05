@@ -9,22 +9,18 @@ import { ScheduleModalProvider } from '@/pages/dashboard/_index/contexts/Schedul
 export default function DashboardPage() {
   return (
     <ScheduleModalProvider>
-      <div className="flex w-full min-w-0 justify-center gap-6">
-        {/* 메인 영역 */}
-        <div className="flex flex-col">
-          <div className="mb-10">
+      <div className="flex w-full min-w-0 flex-col justify-center gap-10">
+        <div className="flex w-full gap-10">
+          <div className="flex w-225 flex-1 flex-col gap-10">
             <DashboardBanner variant="no_schedule" />
-          </div>
-          <div className="flex flex-1 flex-col gap-20">
             <UpcomingInterviewSection />
             <ReviewWaitingSection />
-            <PersonalizedQuestionsSection />
+          </div>
+          <div className="bg-gray-150 w-80 shrink-0 rounded-[20px] px-5 py-7">
+            <InterviewCalendar />
           </div>
         </div>
-        {/* 면접 캘린더 영역 */}
-        <div className="bg-gray-150 sticky w-80 shrink-0 self-start rounded-[20px] px-5 py-7">
-          <InterviewCalendar />
-        </div>
+        <PersonalizedQuestionsSection />
       </div>
       <InterviewScheduleModal />
     </ScheduleModalProvider>
