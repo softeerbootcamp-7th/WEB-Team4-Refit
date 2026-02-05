@@ -11,13 +11,16 @@ import com.shyashyashya.refit.domain.interview.service.validator.InterviewValida
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
 import com.shyashyashya.refit.domain.qnaset.dto.request.PdfHighlightingUpdateRequest;
+import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetResponse;
 import com.shyashyashya.refit.domain.qnaset.model.PdfHighlighting;
 import com.shyashyashya.refit.domain.qnaset.model.PdfHighlightingRect;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
+import com.shyashyashya.refit.domain.qnaset.model.QnaSetSelfReview;
 import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRectRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
+import com.shyashyashya.refit.domain.qnaset.repository.QnaSetSelfReviewRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.util.RequestUserContext;
@@ -33,6 +36,7 @@ public class QnaSetService {
     private final QnaSetRepository qnaSetRepository;
     private final IndustryRepository industryRepository;
     private final JobCategoryRepository jobCategoryRepository;
+    private final QnaSetSelfReviewRepository qnaSetSelfReviewRepository;
     private final PdfHighlightingRepository pdfHighlightingRepository;
     private final PdfHighlightingRectRepository pdfHighlightingRectRepository;
 
@@ -52,6 +56,29 @@ public class QnaSetService {
         return qnaSetRepository.findAllByIndustryAndJobCategory(industry, jobCategory).stream()
                 .map(FrequentQnaSetResponse::from)
                 .toList();
+    }
+
+    @Transactional
+    public void updateQnaSet(Long qnaSetId, QnaSetUpdateRequest request) {
+        QnaSet qnaSet = qnaSetRepository.findById(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
+
+        User requestUser = requestUserContext.getRequestUser();
+        Interview interview = qnaSet.getInterview();
+        interviewValidator.validateInterviewOwner(interview, requestUser);
+
+        qnaSet.updateQuestionText(request.questionText());
+        qnaSet.updateAnswerText(request.answerText());
+        updateOrCreateSelfReview(qnaSet, request.selfReviewText());
+    }
+
+    private void updateOrCreateSelfReview(QnaSet qnaSet, String reqSelfReviewText) {
+        if (reqSelfReviewText != null) {
+            qnaSetSelfReviewRepository
+                    .findByQnaSet(qnaSet)
+                    .ifPresentOrElse(
+                            selfReview -> selfReview.updateSelfReviewText(reqSelfReviewText),
+                            () -> qnaSetSelfReviewRepository.save(QnaSetSelfReview.create(reqSelfReviewText, qnaSet)));
+        }
     }
 
     @Transactional
