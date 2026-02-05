@@ -343,4 +343,64 @@ public class InterviewIntegrationTest extends IntegrationTest {
                     body("result", nullValue());
         }
     }
+
+    @Nested
+    class 면접_가이드_질문_조회_시 {
+
+        private static final String path = "/interview";
+        private Long interviewId;
+
+        @BeforeEach
+        void setUp() {
+            InterviewCreateRequest request = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            interviewId = createInterview(request).getId();
+        }
+
+        @Test
+        void 성공한다() {
+            // when & then
+            given(spec)
+            .when()
+                    .get(path + "/" + interviewId + "/guide-question")
+            .then()
+                    .assertThat().statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result", notNullValue())
+                    .body("result.guideQuestion", notNullValue());
+        }
+
+        @Test
+        void 존재하지_않는_면접의_가이드_질문을_조회하면_실패한다() {
+            // when & then
+            given(spec)
+            .when()
+                    .get(path + "/" + (interviewId + 1) + "/guide-question")
+            .then()
+                    .assertThat().statusCode(404)
+                    .body("code", equalTo(INTERVIEW_NOT_FOUND.name()))
+                    .body("message", equalTo(INTERVIEW_NOT_FOUND.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @Test
+        void 로그인한_사용자가_아닌_다른_사람의_면접_가이드_질문을_조회하면_실패한다() {
+            // given
+            InterviewCreateRequest createRequest = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            User user = createUser("other@example.com", "other", industry, jobCategory);
+            Long otherInterviewId = createInterview(createRequest, user).getId();
+
+            // when & then
+            given(spec)
+            .when()
+                    .get(path + "/" + otherInterviewId + "/guide-question")
+            .then()
+                    .assertThat().statusCode(403)
+                    .body("code", equalTo(INTERVIEW_NOT_ACCESSIBLE.name()))
+                    .body("message", equalTo(INTERVIEW_NOT_ACCESSIBLE.getMessage()))
+                    .body("result", nullValue());
+        }
+    }
 }
