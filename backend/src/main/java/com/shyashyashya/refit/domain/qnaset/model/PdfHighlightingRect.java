@@ -39,7 +39,7 @@ public class PdfHighlightingRect extends BaseEntity {
     private double height;
 
     @Column(nullable = false)
-    private int pageNum;
+    private int pageNumber;
 
     @JoinColumn(name = "pdf_highlighting_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -49,25 +49,25 @@ public class PdfHighlightingRect extends BaseEntity {
      * Static Factory Method
      */
     public static PdfHighlightingRect create(
-            double x, double y, double width, double height, int pageNum, PdfHighlighting pdfHighlighting) {
+            double x, double y, double width, double height, int pageNumber, PdfHighlighting pdfHighlighting) {
         return PdfHighlightingRect.builder()
                 .x(x)
                 .y(y)
                 .width(width)
                 .height(height)
-                .pageNum(pageNum)
+                .pageNumber(pageNumber)
                 .pdfHighlighting(pdfHighlighting)
                 .build();
     }
 
     @Builder(access = AccessLevel.PRIVATE)
     private PdfHighlightingRect(
-            double x, double y, double width, double height, int pageNum, PdfHighlighting pdfHighlighting) {
+            double x, double y, double width, double height, int pageNumber, PdfHighlighting pdfHighlighting) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.pageNum = pageNum;
+        this.pageNumber = pageNumber;
         this.pdfHighlighting = pdfHighlighting;
     }
 }

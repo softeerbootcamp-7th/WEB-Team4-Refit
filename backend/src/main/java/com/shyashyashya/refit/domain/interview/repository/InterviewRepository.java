@@ -1,9 +1,11 @@
 package com.shyashyashya.refit.domain.interview.repository;
 
+import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewResultStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
+import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.user.model.User;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,6 +18,18 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
 
     Page<Interview> findAllByUserAndReviewStatus(User user, InterviewReviewStatus reviewStatus, Pageable pageable);
 
+    @Query("""
+    SELECT i
+      FROM Interview i
+     WHERE i.user = :user
+       AND i.startAt BETWEEN :startDate AND :endDate
+     ORDER BY i.startAt
+    """)
+    Page<Interview> getUpcomingInterview(User user, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
+
+    boolean existsByUser(User user);
+
+    boolean existsByUserAndReviewStatusIn(User user, List<InterviewReviewStatus> reviewStatuses);
     // QueryDSL 적용
     @Query("""
         SELECT i
@@ -34,4 +48,13 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
             LocalDateTime startDate,
             LocalDateTime endDate,
             Pageable pageable);
+
+    @Query("""
+        SELECT i
+          FROM Interview i
+         WHERE i.user = :user
+           AND i.industry = :industry
+           AND i.jobCategory = :jobCategory
+    """)
+    List<Interview> findAllSimilarInterviewsByUser(User user, Industry interview, JobCategory jobCategory);
 }

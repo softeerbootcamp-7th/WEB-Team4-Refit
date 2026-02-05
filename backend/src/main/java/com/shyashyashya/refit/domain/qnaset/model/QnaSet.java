@@ -62,6 +62,26 @@ public class QnaSet extends BaseEntity {
                 .build();
     }
 
+    public void updateQuestionText(String questionText) {
+        if (questionText != null) {
+            this.questionText = questionText;
+        }
+    }
+
+    public void updateAnswerText(String answerText) {
+        if (answerText != null) {
+            this.answerText = answerText;
+        }
+    }
+
+    public void markDifficult() {
+        this.isMarkedDifficult = true;
+    }
+
+    public void unmarkDifficult() {
+        this.isMarkedDifficult = true;
+    }
+
     @Builder(access = AccessLevel.PRIVATE)
     private QnaSet(
             String questionText,
