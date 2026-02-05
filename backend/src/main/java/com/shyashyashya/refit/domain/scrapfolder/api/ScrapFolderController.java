@@ -47,7 +47,7 @@ public class ScrapFolderController {
 
     @PostMapping
     public ResponseEntity<CommonResponse<Void>> createScrapFolder(
-            @RequestBody @Valid ScrapFolderCreateRequest scrapFolderCreateRequest) {
+            @RequestBody @Valid ScrapFolderNameRequest scrapFolderCreateRequest) {
         scrapFolderService.createScrapFolder(scrapFolderCreateRequest.scrapFolderName());
         var response = CommonResponse.success(COMMON201);
         return ResponseEntity.ok(response);
