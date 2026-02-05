@@ -82,7 +82,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (userId == null) {
             return false;
         }
-        return userRepository.findById(userId).isEmpty();
+        return !userRepository.existsById(userId);
     }
 
     // 쿠키에서 토큰 추출

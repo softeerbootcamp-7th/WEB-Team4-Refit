@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "** Test API **", description = "Test API for Development")
+@Tag(name = "Test Auth/User API", description = "개발용 테스트 인증/인가 API입니다.")
 @RestController
 @RequestMapping("/test/auth/token")
 @RequiredArgsConstructor
@@ -55,7 +55,9 @@ public class TestAuthController {
         String deleteAccessTokenCookie = cookieUtil.deleteCookie(AuthConstant.ACCESS_TOKEN);
         String deleteRefreshTokenCookie = cookieUtil.deleteCookie(AuthConstant.REFRESH_TOKEN);
 
-        refreshTokenRepository.deleteByToken(refreshToken);
+        if (refreshToken != null) {
+            refreshTokenRepository.deleteByToken(refreshToken);
+        }
 
         var response = CommonResponse.success(COMMON200);
         return ResponseEntity.ok()
