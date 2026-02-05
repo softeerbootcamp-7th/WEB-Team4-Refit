@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { CaretDownIcon } from '@/shared/assets'
-import { Badge, Button } from '@/shared/components'
+import { Button } from '@/shared/components'
 import { MOCK_QUESTION_PREVIEWS, MOCK_QUESTION_RANKS } from '../../example'
 import type { QuestionRankType, QuestionPreviewType } from '../../example'
 
@@ -98,30 +98,14 @@ const QuestionCard = ({ card }: { card: QuestionPreviewType }) => {
   return (
     <div className="flex cursor-pointer flex-col gap-2 rounded-xl border border-gray-100 p-4 transition-colors hover:bg-gray-100">
       <div className="flex items-center gap-2">
-        <Badge
-          content={RESULT_LABEL[card.resultStatus]}
-          type="question-label"
-          theme={RESULT_THEME[card.resultStatus]}
-        />
-        <span className="body-xs-regular text-gray-400">{card.date}</span>
+        <img src="" className="h-7.5 w-7.5 rounded-full bg-gray-300" />
+        <span className="body-l-semibold">{card.company}</span>
+        <span className="caption-l-medium text-gray-200">{card.date} 응시</span>
       </div>
-      <div className="body-s-semibold text-gray-800">{card.company}</div>
-      <div className="body-xs-regular text-gray-500">
-        {card.jobRole} | {card.interviewType}
+      <div className="body-m-medium text-gray-400">
+        {card.jobRole} <span className="text-gray-150 mx-1">|</span> {card.interviewType}
       </div>
-      <p className="body-xs-regular line-clamp-2 text-gray-600">{card.question}</p>
+      <p className="body-l-medium mt-4 line-clamp-2">{card.question}</p>
     </div>
   )
 }
-
-const RESULT_THEME = {
-  pass: 'green-100',
-  wait: 'orange-50',
-  fail: 'red-50',
-} as const
-
-const RESULT_LABEL = {
-  pass: '합격',
-  wait: '발표 대기',
-  fail: '불합격',
-} as const
