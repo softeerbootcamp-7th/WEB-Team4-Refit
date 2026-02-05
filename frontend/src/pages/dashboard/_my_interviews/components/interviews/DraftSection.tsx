@@ -1,4 +1,5 @@
 import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/components'
+import { INTERVIEW_TYPE_LABEL } from '@/shared/constants/interviews'
 import { MOCK_DRAFTS } from '../../example'
 
 type DraftSectionProps = {
@@ -27,12 +28,12 @@ export default function DraftSection({ interviewReviewStatus }: DraftSectionProp
           </TableRow>
         </TableHeader>
         <TableBody>
-          {items.map((item, i) => (
-            <TableRow key={i}>
-              <TableCell className="body-s-regular text-gray-300">{item.date}</TableCell>
-              <TableCell className="body-s-semibold">{item.company}</TableCell>
-              <TableCell>{item.position}</TableCell>
-              <TableCell>{item.type}</TableCell>
+          {items.map(({ interviewId, interviewStartAt, company, jobCategoryName, interviewType }) => (
+            <TableRow key={interviewId}>
+              <TableCell className="body-s-regular text-gray-300">{interviewStartAt}</TableCell>
+              <TableCell className="body-s-semibold">{company}</TableCell>
+              <TableCell>{jobCategoryName}</TableCell>
+              <TableCell>{INTERVIEW_TYPE_LABEL[interviewType]}</TableCell>
             </TableRow>
           ))}
         </TableBody>

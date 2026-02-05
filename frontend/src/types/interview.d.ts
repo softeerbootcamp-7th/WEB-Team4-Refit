@@ -42,3 +42,14 @@ export type InterviewFilter = {
   endDate: string
   sort: string
 }
+
+export type InterviewType =
+  | 'first'
+  | 'second'
+  | 'third'
+  | 'personality'
+  | 'technical'
+  | 'executive'
+  | 'culture'
+  | 'coffee'
+  | 'mock'

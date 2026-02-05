@@ -1,3 +1,5 @@
+import type { InterviewType } from '@/types/interview'
+
 export type InterviewItemType = {
   resultStatus: 'wait' | 'pass' | 'fail'
   date: string
@@ -22,18 +24,49 @@ export type QuestionRankType = {
 }
 
 export type DraftItemType = {
-  date: string
+  interviewId: number
+  interviewStartAt: string
   company: string
-  position: string
-  type: string
+  jobCategoryName: string
+  interviewType: InterviewType
 }
 
 export const MOCK_DRAFTS: DraftItemType[] = [
-  { date: '2025. 11. 19 응시', company: '현대자동차', position: '서비스 기획', type: '1차 면접' },
-  { date: '2025. 11. 19 응시', company: '현대자동차', position: '서비스 기획', type: '1차 면접' },
-  { date: '2025. 11. 19 응시', company: '현대자동차', position: '서비스 기획', type: '1차 면접' },
-  { date: '2025. 11. 19 응시', company: '현대자동차', position: '서비스 기획', type: '1차 면접' },
-  { date: '2025. 11. 19 응시', company: '현대자동차', position: '서비스 기획', type: '1차 면접' },
+  {
+    interviewId: 1,
+    interviewStartAt: '2025. 11. 19 응시',
+    company: '현대자동차',
+    jobCategoryName: '서비스 기획',
+    interviewType: 'first',
+  },
+  {
+    interviewId: 2,
+    interviewStartAt: '2025. 11. 19 응시',
+    company: '현대자동차',
+    jobCategoryName: '서비스 기획',
+    interviewType: 'first',
+  },
+  {
+    interviewId: 3,
+    interviewStartAt: '2025. 11. 19 응시',
+    company: '현대자동차',
+    jobCategoryName: '서비스 기획',
+    interviewType: 'first',
+  },
+  {
+    interviewId: 4,
+    interviewStartAt: '2025. 11. 19 응시',
+    company: '현대자동차',
+    jobCategoryName: '서비스 기획',
+    interviewType: 'first',
+  },
+  {
+    interviewId: 5,
+    interviewStartAt: '2025. 11. 19 응시',
+    company: '현대자동차',
+    jobCategoryName: '서비스 기획',
+    interviewType: 'first',
+  },
 ]
 
 export const MOCK_COMPLETED: InterviewItemType[] = [
