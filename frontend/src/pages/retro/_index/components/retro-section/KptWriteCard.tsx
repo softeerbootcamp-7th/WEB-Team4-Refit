@@ -1,14 +1,9 @@
 import { useState } from 'react'
 import { Badge, Border } from '@/shared/components'
+import { KPT_SECTIONS } from '@/shared/constants/retro'
 import type { KptTextsType } from '@/types/interview'
 
 const KPT_MAX_LENGTH = 400
-
-const KPT_SECTIONS = [
-  { key: 'keep_text' as const, label: 'Keep', question: '계속 유지하고 싶은 것은 무엇인가요?' },
-  { key: 'problem_text' as const, label: 'Problem', question: '어려움을 느꼈던 부분은 무엇인가요?' },
-  { key: 'try_text' as const, label: 'Try', question: '새롭게 시도해 볼 내용은 무엇인가요?' },
-]
 
 type KptWriteCardProps = {
   readOnly?: boolean
