@@ -27,7 +27,7 @@ export function RetroWriteCard({ idx, value, onChange }: RetroWriteCardProps) {
       <Border />
       <div className="relative">
         <textarea
-          className="body-m-regular min-h-40 w-full resize-none rounded-[10px] border border-none p-4 focus-visible:outline-none"
+          className="body-m-regular min-h-40 w-full resize-none rounded-[10px] border-none p-4 focus-visible:outline-none"
           value={value}
           onChange={handleChange}
           readOnly={readOnly}
