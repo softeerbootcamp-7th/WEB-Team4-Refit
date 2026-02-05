@@ -6,12 +6,7 @@ import type { EventColor } from '@/pages/dashboard/_index/constants/interviewCal
 const MOCK_EVENTS: Partial<Record<string, EventColor>> = {
   '2026-2-3': 'orange',
   '2026-2-10': 'orange',
-  '2026-2-15': 'orange',
-  '2026-3-1': 'orange',
-  '2026-3-2': 'orange',
-  '2026-3-4': 'orange',
-  '2026-3-9': 'orange',
-  '2026-3-11': 'orange',
+  '2026-2-15': 'gray',
 }
 
 type CalendarDay = { day: number; isCurrentMonth: boolean }
