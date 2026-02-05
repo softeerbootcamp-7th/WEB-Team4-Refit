@@ -1,3 +1,5 @@
+import type { INTERVIEW_TYPE_LABEL } from '@/shared/constants/interviews'
+
 export type QnaSetType = {
   qnaSetId: number
   interviewId: number
@@ -33,6 +35,17 @@ type InterviewFullType = {
   qnaSets: QnaSetType[]
   questions: string[]
 }
+
+export type InterviewFilter = {
+  keyword: string
+  interviewType: string[]
+  resultStatus: string[]
+  startDate: string
+  endDate: string
+  sort: string
+}
+
+export type InterviewType = keyof typeof INTERVIEW_TYPE_LABEL
 
 type KptTextsType = {
   keep_text: string
