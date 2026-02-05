@@ -12,7 +12,9 @@ import static org.hamcrest.Matchers.nullValue;
 
 import com.shyashyashya.refit.core.IntegrationTest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
+import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatusUpdateRequest;
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
+import com.shyashyashya.refit.domain.interview.model.InterviewResultStatus;
 import java.time.LocalDateTime;
 
 import com.shyashyashya.refit.domain.user.model.User;
@@ -175,6 +177,75 @@ public class InterviewIntegrationTest extends IntegrationTest {
             given(spec)
             .when()
                     .delete(path + "/" + otherInterviewId)
+            .then()
+                    .assertThat().statusCode(403)
+                    .body("code", equalTo(INTERVIEW_NOT_ACCESSIBLE.name()))
+                    .body("message", equalTo(INTERVIEW_NOT_ACCESSIBLE.getMessage()))
+                    .body("result", nullValue());
+        }
+    }
+
+    @Nested
+    class 면접_결과_상태_업데이트_시 {
+
+        private static final String path = "/interview";
+        private Long interviewId;
+
+        @BeforeEach
+        void setUp() {
+            InterviewCreateRequest request = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            interviewId = createInterview(request).getId();
+        }
+
+        @Test
+        void 성공한다() {
+            // given
+            InterviewResultStatusUpdateRequest request = new InterviewResultStatusUpdateRequest(InterviewResultStatus.PASS);
+
+            // when & then
+            given(spec)
+                    .body(request)
+            .when()
+                    .patch(path + "/" + interviewId + "/result-status")
+            .then()
+                    .assertThat().statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @Test
+        void 존재하지_않는_면접의_결과_상태를_업데이트하면_실패한다() {
+            // given
+            InterviewResultStatusUpdateRequest request = new InterviewResultStatusUpdateRequest(InterviewResultStatus.FAIL);
+
+            // when & then
+            given(spec)
+                    .body(request)
+            .when()
+                    .patch(path + "/" + (interviewId + 1) + "/result-status")
+            .then()
+                    .assertThat().statusCode(404)
+                    .body("code", equalTo(INTERVIEW_NOT_FOUND.name()))
+                    .body("message", equalTo(INTERVIEW_NOT_FOUND.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @Test
+        void 로그인한_사용자가_아닌_다른_사람의_면접_결과_상태를_업데이트하면_실패한다() {
+            // given
+            InterviewCreateRequest createRequest = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            User user = createUser("other@example.com", "other", industry, jobCategory);
+            Long otherInterviewId = createInterview(createRequest, user).getId();
+            InterviewResultStatusUpdateRequest updateRequest = new InterviewResultStatusUpdateRequest(InterviewResultStatus.PASS);
+
+            // when & then
+            given(spec)
+                    .body(updateRequest)
+            .when()
+                    .patch(path + "/" + otherInterviewId + "/result-status")
             .then()
                     .assertThat().statusCode(403)
                     .body("code", equalTo(INTERVIEW_NOT_ACCESSIBLE.name()))
