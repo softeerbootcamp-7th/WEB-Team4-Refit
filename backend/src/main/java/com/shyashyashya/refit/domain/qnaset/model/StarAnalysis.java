@@ -47,6 +47,10 @@ public class StarAnalysis extends BaseEntity {
     @Column(name = "overall_summary_text", nullable = false, columnDefinition = "varchar(500)")
     private String overallSummaryText;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "analysis_status", nullable = false)
+    private StarAnalysisStatus status;
+
     @JoinColumn(name = "qna_set_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private QnaSet qnaSet;
@@ -60,6 +64,7 @@ public class StarAnalysis extends BaseEntity {
             StarInclusionLevel aInclusionLevel,
             StarInclusionLevel rInclusionLevel,
             String overallSummaryText,
+            StarAnalysisStatus status,
             QnaSet qnaSet) {
         return StarAnalysis.builder()
                 .sInclusionLevel(sInclusionLevel)
@@ -67,6 +72,7 @@ public class StarAnalysis extends BaseEntity {
                 .aInclusionLevel(aInclusionLevel)
                 .rInclusionLevel(rInclusionLevel)
                 .overallSummaryText(overallSummaryText)
+                .status(status)
                 .qnaSet(qnaSet)
                 .build();
     }
@@ -78,12 +84,14 @@ public class StarAnalysis extends BaseEntity {
             StarInclusionLevel aInclusionLevel,
             StarInclusionLevel rInclusionLevel,
             String overallSummaryText,
+            StarAnalysisStatus status,
             QnaSet qnaSet) {
         this.sInclusionLevel = sInclusionLevel;
         this.tInclusionLevel = tInclusionLevel;
         this.aInclusionLevel = aInclusionLevel;
         this.rInclusionLevel = rInclusionLevel;
         this.overallSummaryText = overallSummaryText;
+        this.status = status;
         this.qnaSet = qnaSet;
     }
 }
