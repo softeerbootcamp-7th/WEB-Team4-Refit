@@ -98,7 +98,7 @@ const QuestionCard = ({ card }: { card: QuestionPreviewType }) => {
   return (
     <div className="flex cursor-pointer flex-col gap-2 rounded-xl border border-gray-100 p-4 transition-colors hover:bg-gray-100">
       <div className="flex items-center gap-2">
-        <img src="" className="h-7.5 w-7.5 rounded-full bg-gray-300" />
+        <img src="" alt={card.company} className="h-7.5 w-7.5 rounded-full bg-gray-300" />
         <span className="body-l-semibold">{card.company}</span>
         <span className="caption-l-medium text-gray-200">{card.date} 응시</span>
       </div>

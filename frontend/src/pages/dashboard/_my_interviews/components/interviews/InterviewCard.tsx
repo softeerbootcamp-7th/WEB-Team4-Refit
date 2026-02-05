@@ -33,7 +33,7 @@ export default function InterviewCard({
       <Border />
       <div className={infoDirection === 'row' ? 'flex items-center gap-5' : 'flex flex-col gap-2.5'}>
         <div className="title-m-semibold flex items-center gap-3">
-          <img src="" className="h-8.5 w-8.5 rounded-full bg-gray-300" />
+          <img src="" alt={company} className="h-8.5 w-8.5 rounded-full bg-gray-300" />
           <span>{company}</span>
         </div>
         <div className="body-m-medium text-gray-700">
