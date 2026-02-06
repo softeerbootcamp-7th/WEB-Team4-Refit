@@ -67,9 +67,17 @@ const router = createBrowserRouter([
             path: getChildPath(ROUTES.DASHBOARD_MY_COLLECTIONS, ROUTES.DASHBOARD),
             Component: MyCollectionsPage,
             children: [
-              { index: true, Component: () => <Navigate to="difficult-questions" replace /> },
               {
-                path: 'difficult-questions',
+                index: true,
+                Component: () => (
+                  <Navigate
+                    to={getChildPath(ROUTES.DASHBOARD_DIFFICULT_QUESTIONS, ROUTES.DASHBOARD_MY_COLLECTIONS)}
+                    replace
+                  />
+                ),
+              },
+              {
+                path: getChildPath(ROUTES.DASHBOARD_DIFFICULT_QUESTIONS, ROUTES.DASHBOARD_MY_COLLECTIONS),
                 Component: DifficultQuestionPage,
               },
               {
