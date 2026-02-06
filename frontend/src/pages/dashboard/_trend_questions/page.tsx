@@ -28,7 +28,6 @@ export default function TrendQuestionsPage() {
           onSearch={handleSearch}
         />
       </div>
-      <Border />
       <FilterResultList />
     </div>
   )
