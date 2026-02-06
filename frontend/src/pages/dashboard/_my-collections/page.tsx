@@ -50,7 +50,6 @@ export default function MyCollectionsPage() {
     if (!folderToEditId) return
     setFolders(folders.filter((f) => f.id !== folderToEditId))
 
-    // If deleted folder was selected, switch to fixed folder
     if (folderId === folderToEditId) {
       navigate('difficult-questions')
     }
@@ -70,8 +69,8 @@ export default function MyCollectionsPage() {
   }
 
   return (
-    <div className="flex h-[calc(100vh-124px)] w-full overflow-hidden rounded-2xl bg-white">
-      <aside className="border-gray-150 flex w-[280px] shrink-0 flex-col border-r bg-white">
+    <div className="flex h-[calc(100vh-124px)] w-full overflow-hidden">
+      <aside className="border-gray-150 flex w-[280px] shrink-0 flex-col rounded-2xl border-r bg-white">
         <div className="px-5 py-6">
           <button
             type="button"
@@ -99,12 +98,10 @@ export default function MyCollectionsPage() {
         </div>
       </aside>
 
-      {/* Right Content: Question List (Router Outlet) */}
-      <main className="bg-gray-150 h-full flex-1 overflow-hidden">
+      <main className="h-full flex-1 overflow-hidden">
         <Outlet context={{ folderName: selectedFolder?.name }} />
       </main>
 
-      {/* Modals */}
       <FolderModal
         isOpen={activeModal === 'create'}
         onClose={() => setActiveModal(null)}

@@ -45,19 +45,11 @@ const FolderListItem = ({
   return (
     <div
       onClick={onClick}
-      className={`group relative flex w-full cursor-pointer items-center justify-between rounded-lg px-3 py-2 transition-colors ${
-        isSelected ? 'bg-orange-050/50' : 'hover:bg-gray-50'
-      }`}
+      className={`group relative flex w-full cursor-pointer items-center justify-between rounded-lg ${isSelected ? 'bg-orange-50' : 'hover:bg-gray-100'} px-3 py-2 transition-colors`}
     >
       <div className="flex items-center gap-3 overflow-hidden">
-        <FolderIcon className={`h-5 w-5 shrink-0 ${isFixed ? 'text-orange-400' : 'text-yellow-400'}`} />
-        <span
-          className={`body-s-medium truncate ${
-            isSelected ? 'text-gray-900' : 'text-gray-600 group-hover:text-gray-900'
-          }`}
-        >
-          {name}
-        </span>
+        <FolderIcon className={`h-5 w-5 shrink-0 ${isSelected ? 'text-orange-500' : 'text-gray-400'}`} />
+        <span className={`body-s-medium truncate ${isSelected ? 'text-orange-500' : 'text-gray-600'}`}>{name}</span>
       </div>
 
       {!isFixed && (
