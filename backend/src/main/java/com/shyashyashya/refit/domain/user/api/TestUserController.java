@@ -8,6 +8,7 @@ import com.shyashyashya.refit.domain.user.repository.UserRepository;
 import com.shyashyashya.refit.global.auth.repository.RefreshTokenRepository;
 import com.shyashyashya.refit.global.auth.service.CookieUtil;
 import com.shyashyashya.refit.global.exception.CustomException;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +28,8 @@ public class TestUserController {
 
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final CookieUtil cookieUtil;
 
+    @Operation(summary = "(테스트용) 유저를 이메일로 찾아 삭제합니다.")
     @DeleteMapping
     @Transactional
     public ResponseEntity<CommonResponse<Void>> deleteUserByEmail(@RequestParam @Email String email) {
@@ -45,6 +46,7 @@ public class TestUserController {
         return ResponseEntity.ok(body);
     }
 
+    @Operation(summary = "(테스트용) 유저를 id로 찾아 삭제합니다.")
     @DeleteMapping("/{userId}")
     @Transactional
     public ResponseEntity<CommonResponse<Void>> deleteUserById(@PathVariable Long userId) {
