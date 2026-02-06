@@ -31,7 +31,9 @@ public class QnaSetController {
 
     private final QnaSetService qnaSetService;
 
-    @Operation(summary = "지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다.", description = "지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다. 지정하지 않은 필드에 대해서는 전체를 대상으로 조회합니다.")
+    @Operation(
+            summary = "지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다.",
+            description = "지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다. 지정하지 않은 필드에 대해서는 전체를 대상으로 조회합니다.")
     @GetMapping("/frequent")
     public ResponseEntity<CommonResponse<List<FrequentQnaSetResponse>>> getFrequentQuestions(
             @RequestParam Long industryId, @RequestParam Long jobCategoryId) {

@@ -37,7 +37,9 @@ public class GoogleOAuth2Controller implements OAuth2Controller {
         return ResponseEntity.ok(body);
     }
 
-    @Operation(summary = "구글 로그인에 성공했을 때 호출되는 콜백 API 입니다.", description = "인가 코드를 활용하여 refit 서비스의 토큰을 발급하여 클라이언트에게 쿠키로 설정합니다.")
+    @Operation(
+            summary = "구글 로그인에 성공했을 때 호출되는 콜백 API 입니다.",
+            description = "인가 코드를 활용하여 refit 서비스의 토큰을 발급하여 클라이언트에게 쿠키로 설정합니다.")
     @GetMapping("/callback")
     @Override
     public ResponseEntity<Void> handleOAuth2Callback(@RequestParam String code) {

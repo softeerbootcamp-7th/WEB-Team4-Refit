@@ -6,7 +6,6 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.USER_NOT_FOUND;
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
 import com.shyashyashya.refit.global.auth.repository.RefreshTokenRepository;
-import com.shyashyashya.refit.global.auth.service.CookieUtil;
 import com.shyashyashya.refit.global.exception.CustomException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

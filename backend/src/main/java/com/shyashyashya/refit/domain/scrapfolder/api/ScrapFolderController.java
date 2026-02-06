@@ -34,7 +34,9 @@ public class ScrapFolderController {
 
     private final ScrapFolderService scrapFolderService;
 
-    @Operation(summary = "나의 스크랩 폴더 리스트를 조회합니다.", description = "스크랩 폴더 리스트에 '나의 어려웠던 질문' 폴더는 포함하지 않습니다. 해당 폴더의 내용은 어려웠던 질문을 조회하는 API로 조회합니다.")
+    @Operation(
+            summary = "나의 스크랩 폴더 리스트를 조회합니다.",
+            description = "스크랩 폴더 리스트에 '나의 어려웠던 질문' 폴더는 포함하지 않습니다. 해당 폴더의 내용은 어려웠던 질문을 조회하는 API로 조회합니다.")
     @GetMapping
     public ResponseEntity<CommonResponse<Page<ScrapFolderResponse>>> getMyScrapFolders(Pageable pageable) {
         var body = scrapFolderService.getMyScrapFolders(pageable);
@@ -42,7 +44,9 @@ public class ScrapFolderController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "나의 스크랩 폴더 내 질문 답변 세트 리스트를 조회합니다.", description = "'나의 어려웠던 질문' 폴더는 포함하지 않습니다. 해당 폴더의 내용은 어려웠던 질문을 조회하는 API로 조회합니다.")
+    @Operation(
+            summary = "나의 스크랩 폴더 내 질문 답변 세트 리스트를 조회합니다.",
+            description = "'나의 어려웠던 질문' 폴더는 포함하지 않습니다. 해당 폴더의 내용은 어려웠던 질문을 조회하는 API로 조회합니다.")
     @GetMapping("/{scrapFolderId}")
     public ResponseEntity<CommonResponse<Page<ScrapFolderQnaSetResponse>>> getQnaSetsInScrapFolder(
             @PathVariable Long scrapFolderId, Pageable pageable) {
