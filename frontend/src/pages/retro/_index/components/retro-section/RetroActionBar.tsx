@@ -1,7 +1,10 @@
+import { useNavigate } from 'react-router'
 import { useRetroContext } from '@/pages/retro/_index/contexts'
 import { Button } from '@/shared/components'
+import { ROUTES } from '@/shared/constants/routes'
 
 export function RetroActionBar() {
+  const navigate = useNavigate()
   const { currentIndex, totalCount, updateCurrentIndex } = useRetroContext()
   const isLast = currentIndex === totalCount - 1
   const buttonText = isLast ? '회고 완료' : '다음으로'
@@ -12,7 +15,8 @@ export function RetroActionBar() {
   }
 
   const handleComplete = () => {
-    // TODO: KPT 저장 API 호출 + 다음 페이지로 이동
+    // TODO: KPT 저장 API 호출
+    navigate(ROUTES.DASHBOARD)
   }
 
   const handleButtonClick = isLast ? handleComplete : handleNext
