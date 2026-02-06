@@ -66,6 +66,7 @@ public class ScrapFolderController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "스크랩 폴더의 이름을 수정합니다.")
     @PatchMapping("/{scrapFolderId}/name")
     public ResponseEntity<CommonResponse<Void>> updateScrapFolderName(
             @PathVariable Long scrapFolderId,
