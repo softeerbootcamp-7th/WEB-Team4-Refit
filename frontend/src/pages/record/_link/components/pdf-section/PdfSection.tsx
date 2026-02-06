@@ -2,12 +2,17 @@ import { useEffect, useRef, useState } from 'react'
 import { useHighlightContext } from '@/pages/record/_link/contexts'
 import { FilePlusIcon } from '@/shared/assets'
 import { Button } from '@/shared/components'
+import { ROUTES } from '@/shared/constants/routes'
+import { useInterviewNavigate } from '@/shared/hooks/useInterviewNavigation'
 import { PdfViewer } from './PdfViewer'
 
 export function PdfSection() {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { linkingQnaSetId, setHasPdf } = useHighlightContext()
+
+  const navigateWithId = useInterviewNavigate()
+  const goToRetroPage = () => navigateWithId(ROUTES.RETRO_QUESTION)
 
   useEffect(() => {
     return () => {
@@ -69,7 +74,7 @@ export function PdfSection() {
         <Button variant="outline-gray-100" size="md">
           임시저장
         </Button>
-        <Button variant="fill-orange-500" size="md" className="w-60">
+        <Button variant="fill-orange-500" size="md" className="w-60" onClick={goToRetroPage}>
           회고 하러 가기
         </Button>
       </div>

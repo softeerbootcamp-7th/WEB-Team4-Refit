@@ -6,6 +6,7 @@ import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON204;
 
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
 import com.shyashyashya.refit.domain.scrapfolder.dto.request.ScrapFolderCreateRequest;
+import com.shyashyashya.refit.domain.scrapfolder.dto.request.ScrapFolderNameUpdateRequest;
 import com.shyashyashya.refit.domain.scrapfolder.dto.response.ScrapFolderQnaSetResponse;
 import com.shyashyashya.refit.domain.scrapfolder.dto.response.ScrapFolderResponse;
 import com.shyashyashya.refit.domain.scrapfolder.service.ScrapFolderService;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,7 +52,7 @@ public class ScrapFolderController {
     @Operation(summary = "스크랩 폴더를 생성합니다.")
     @PostMapping
     public ResponseEntity<CommonResponse<Void>> createScrapFolder(
-            @RequestBody @Valid ScrapFolderCreateRequest scrapFolderCreateRequest) {
+            @Valid @RequestBody ScrapFolderCreateRequest scrapFolderCreateRequest) {
         scrapFolderService.createScrapFolder(scrapFolderCreateRequest.scrapFolderName());
         var response = CommonResponse.success(COMMON201);
         return ResponseEntity.ok(response);
@@ -61,6 +63,15 @@ public class ScrapFolderController {
     public ResponseEntity<CommonResponse<Void>> deleteScrapFolder(@PathVariable Long scrapFolderId) {
         scrapFolderService.deleteScrapFolder(scrapFolderId);
         var response = CommonResponse.success(COMMON204);
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/{scrapFolderId}/name")
+    public ResponseEntity<CommonResponse<Void>> updateScrapFolderName(
+            @PathVariable Long scrapFolderId,
+            @Valid @RequestBody ScrapFolderNameUpdateRequest scrapFolderNameUpdateRequest) {
+        scrapFolderService.updateScrapFolderName(scrapFolderId, scrapFolderNameUpdateRequest.scrapFolderName());
+        var response = CommonResponse.success(COMMON200);
         return ResponseEntity.ok(response);
     }
 }

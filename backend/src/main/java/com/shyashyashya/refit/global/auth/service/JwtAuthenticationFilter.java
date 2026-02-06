@@ -1,10 +1,7 @@
 package com.shyashyashya.refit.global.auth.service;
 
-import static com.shyashyashya.refit.global.exception.ErrorCode.USER_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.USER_SIGNUP_REQUIRED;
 
-import com.shyashyashya.refit.domain.user.model.User;
-import com.shyashyashya.refit.domain.user.repository.UserRepository;
 import com.shyashyashya.refit.global.constant.AuthConstant;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.property.AuthUrlProperty;
@@ -31,7 +28,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final RequestUserContext requestUserContext;
     private final HandlerExceptionResolver handlerExceptionResolver;
     private final JwtUtil jwtUtil;
-    private final UserRepository userRepository;
 
     private static final AntPathMatcher pathMatcher = new AntPathMatcher();
 
@@ -49,7 +45,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = resolveToken(request);
             jwtUtil.validateToken(token);
             jwtUtil.getUserId(token)
-                    .map(this::getUserOrElseThrow)
                     .ifPresentOrElse(this::setRequestUserContext, () -> validateIllegalGuestRequest(request));
 
             filterChain.doFilter(request, response);
@@ -70,12 +65,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
     }
 
-    private User getUserOrElseThrow(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-    }
-
-    private void setRequestUserContext(User user) {
-        requestUserContext.setUser(user);
+    private void setRequestUserContext(Long userId) {
+        requestUserContext.setUserId(userId);
     }
 
     // 쿠키에서 토큰 추출

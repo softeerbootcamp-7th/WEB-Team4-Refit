@@ -8,6 +8,7 @@ export { default as CollectionDetailPage } from './dashboard/_my-collections/det
 export { default as DifficultQuestionPage } from './dashboard/_my-collections/difficult/page'
 export { default as NotFound } from './NotFound'
 export { default as MyInterviewsPage } from './dashboard/_my_interviews/page'
+export { default as TrendQuestionsPage } from './dashboard/_trend_questions/page'
 export { default as RecordConfirmPage } from './record/_confirm/page'
 export { default as RecordLinkPage } from './record/_link/page'
 export { default as SharedComponentExample } from './SharedComponentExample'
