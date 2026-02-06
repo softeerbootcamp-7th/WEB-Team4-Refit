@@ -23,16 +23,11 @@ public class RequestUserContext {
     @Setter
     private Long userId;
 
-    private User user;
-
     public User getRequestUser() {
         if (userId == null) {
             log.error("RequestUserContext에 설정된 User가 없습니다.");
             throw new IllegalStateException("RequestUserContext에 설정된 User가 없습니다.");
         }
-        if (user == null) {
-            user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        }
-        return user;
+        return userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
     }
 }
