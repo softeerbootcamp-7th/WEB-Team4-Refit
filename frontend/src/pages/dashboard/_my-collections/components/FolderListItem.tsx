@@ -30,17 +30,14 @@ const FolderListItem = ({
     setIsMenuOpen((prev) => !prev)
   }
 
-  const handleEdit = (e: React.MouseEvent) => {
+  const createMenuHandler = (callback?: () => void) => (e: React.MouseEvent) => {
     e.stopPropagation()
     setIsMenuOpen(false)
-    onEdit?.()
+    callback?.()
   }
 
-  const handleDelete = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    setIsMenuOpen(false)
-    onDelete?.()
-  }
+  const handleEdit = createMenuHandler(onEdit)
+  const handleDelete = createMenuHandler(onDelete)
 
   return (
     <div
