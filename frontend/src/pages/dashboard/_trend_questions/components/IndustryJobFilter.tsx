@@ -79,8 +79,7 @@ export default function IndustryJobFilter({
 
 const toggleId = (ids: number[], id: number) => (ids.includes(id) ? ids.filter((v) => v !== id) : [...ids, id])
 
-const findLabel = (list: { id: number; label: string }[], id: number) =>
-  list.find((item) => item.id === id)?.label ?? ''
-
-const createBadges = (ids: number[], type: FilterType, list: { id: number; label: string }[]): FilterBadge[] =>
-  ids.map((id) => ({ id, type, label: findLabel(list, id) }))
+const createBadges = (ids: number[], type: FilterType, list: { id: number; label: string }[]): FilterBadge[] => {
+  const labelMap = new Map(list.map((item) => [item.id, item.label]))
+  return ids.map((id) => ({ id, type, label: labelMap.get(id) ?? '' }))
+}
