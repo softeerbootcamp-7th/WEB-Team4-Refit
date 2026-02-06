@@ -4,7 +4,7 @@ import { useOnClickOutside } from '@/shared/hooks/useOnClickOutside'
 import type { LabelValueType } from '@/types/global'
 
 type PlainComboboxProps = {
-  title: string
+  title?: string
   options: LabelValueType[]
   value: string
   onChange: (value: string) => void
@@ -23,8 +23,12 @@ export default function PlainCombobox({ title, options, value, onChange, trigger
       <div onClick={() => setOpen((prev) => !prev)}>{trigger}</div>
       {open && (
         <div className="bg-gray-white absolute top-full right-0 z-10 mt-2 min-w-56 rounded-2xl py-2 shadow-lg">
-          <div className="title-s-semibold px-5 py-2">{title}</div>
-          <Border />
+          {title && (
+            <>
+              <div className="title-s-semibold px-5 py-2">{title}</div>
+              <Border />
+            </>
+          )}
           <div className="m-3 flex flex-col gap-1.5">
             {options.map((option) => (
               <button

@@ -32,10 +32,9 @@ export default function QnaCardListSection({ title, items }: QnaCardListSectionP
   return (
     <div className="mx-auto flex h-full w-full justify-center">
       <div className="flex h-full w-full flex-col">
-        <div className="bg-gray-150 flex shrink-0 items-center justify-between px-10 py-6">
+        <div className="flex shrink-0 items-center justify-between px-10 py-6">
           <h1 className="title-m-bold text-gray-900">{title}</h1>
           <PlainCombobox
-            title="정렬"
             options={[...SORT_OPTIONS]}
             value={sortOrder}
             onChange={setSortOrder}
