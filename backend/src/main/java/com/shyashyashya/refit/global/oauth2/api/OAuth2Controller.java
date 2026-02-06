@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 public interface OAuth2Controller {
 
-    ResponseEntity<CommonResponse<OAuthLoginUrlResponse>> getOAuth2LoginUrl();
+    ResponseEntity<CommonResponse<OAuthLoginUrlResponse>> buildOAuth2LoginUrl(@RequestParam String env);
 
-    ResponseEntity<Void> handleOAuth2Callback(@RequestParam String code);
+    ResponseEntity<Void> handleOAuth2Callback(@RequestParam String code, @RequestParam String state);
 }
