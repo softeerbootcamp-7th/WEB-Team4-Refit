@@ -3,6 +3,7 @@ package com.shyashyashya.refit.domain.qnaset.api;
 import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
 
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
+import com.shyashyashya.refit.domain.qnaset.dto.PdfHighlightingDto;
 import com.shyashyashya.refit.domain.qnaset.dto.request.PdfHighlightingUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetResponse;
@@ -62,6 +63,13 @@ public class QnaSetController {
             @PathVariable Long qnaSetId, @Valid @RequestBody List<PdfHighlightingUpdateRequest> request) {
         qnaSetService.updatePdfHighlighting(qnaSetId, request);
         var response = CommonResponse.success(COMMON200);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{qnaSetId}/pdf-highlightings")
+    public ResponseEntity<CommonResponse<List<PdfHighlightingDto>>> getPdfHighlightings(@PathVariable Long qnaSetId) {
+        var body = qnaSetService.getPdfHighlightings(qnaSetId);
+        var response = CommonResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PdfHighlightingRepository extends JpaRepository<PdfHighlighting, Long> {
+    List<PdfHighlighting> findAllByQnaSet(QnaSet qnaSet);
 
     List<Long> findIdByQnaSet(QnaSet qnaSet);
 

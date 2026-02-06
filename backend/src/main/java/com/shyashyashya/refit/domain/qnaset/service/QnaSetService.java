@@ -10,6 +10,7 @@ import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
+import com.shyashyashya.refit.domain.qnaset.dto.PdfHighlightingDto;
 import com.shyashyashya.refit.domain.qnaset.dto.request.PdfHighlightingUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetResponse;
@@ -24,7 +25,10 @@ import com.shyashyashya.refit.domain.qnaset.repository.QnaSetSelfReviewRepositor
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.util.RequestUserContext;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -115,14 +119,6 @@ public class QnaSetService {
         saveAllHighlightings(qnaSet, request);
     }
 
-    private void deleteAllHighlightingsAndRects(QnaSet qnaSet) {
-        List<Long> pdfHighlightingIds = pdfHighlightingRepository.findIdByQnaSet(qnaSet);
-        if (!pdfHighlightingIds.isEmpty()) {
-            pdfHighlightingRectRepository.deleteAllByPdfHighlightingIds(pdfHighlightingIds);
-        }
-        pdfHighlightingRepository.deleteAllByQnaSet(qnaSet);
-    }
-
     private void saveAllHighlightings(QnaSet qnaSet, List<PdfHighlightingUpdateRequest> request) {
         request.forEach(reqDto -> {
             PdfHighlighting pdfHighlighting = PdfHighlighting.create(reqDto.highlightingText(), qnaSet);
@@ -140,5 +136,34 @@ public class QnaSetService {
                         .forEach(pdfHighlightingRectRepository::save);
             }
         });
+    }
+
+    @Transactional(readOnly = true)
+    public List<PdfHighlightingDto> getPdfHighlightings(Long qnaSetId) {
+        QnaSet qnaSet = qnaSetRepository.findById(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
+
+        User requestUser = requestUserContext.getRequestUser();
+        Interview interview = qnaSet.getInterview();
+        interviewValidator.validateInterviewOwner(interview, requestUser);
+
+        List<PdfHighlighting> pdfHighlightings = pdfHighlightingRepository.findAllByQnaSet(qnaSet);
+        if (pdfHighlightings.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<PdfHighlightingRect> allRects = pdfHighlightingRectRepository.findAllByPdfHighlightingIn(pdfHighlightings);
+        Map<PdfHighlighting, List<PdfHighlightingRect>> rectsByHighlighting =
+                allRects.stream().collect(Collectors.groupingBy(PdfHighlightingRect::getPdfHighlighting));
+
+        return pdfHighlightings.stream()
+                .map(highlighting -> PdfHighlightingDto.of(
+                        highlighting,
+                        rectsByHighlighting.getOrDefault(highlighting, java.util.Collections.emptyList())))
+                .toList();
+    }
+
+    private void deleteAllHighlightingsAndRects(QnaSet qnaSet) {
+        pdfHighlightingRectRepository.deleteAllByQnaSet(qnaSet);
+        pdfHighlightingRepository.deleteAllByQnaSet(qnaSet);
     }
 }

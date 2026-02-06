@@ -1,4 +1,4 @@
-package com.shyashyashya.refit.domain.scrap.model;
+package com.shyashyashya.refit.domain.scrapfolder.model;
 
 import com.shyashyashya.refit.domain.common.model.BaseEntity;
 import com.shyashyashya.refit.domain.user.model.User;
@@ -11,13 +11,19 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "scrap_folders")
+@Table(
+        name = "scrap_folders",
+        uniqueConstraints =
+                @UniqueConstraint(
+                        name = "uk_user_scrap_folder_name",
+                        columnNames = {"user_id", "scrap_folder_name"}))
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ScrapFolder extends BaseEntity {

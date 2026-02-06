@@ -4,6 +4,7 @@ import {
   DashboardPage,
   RecordConfirmPage,
   RecordLinkPage,
+  RetroQuestionPage,
   NotFound,
   SharedComponentExample,
   SigninPage,
@@ -12,6 +13,7 @@ import {
   MobileSignupPage,
   MobileUnrecordedPage,
   MobileRecordPage,
+  MyInterviewsPage,
 } from '@/pages'
 import { ROUTES } from '@/shared/constants/routes'
 
@@ -52,7 +54,7 @@ const router = createBrowserRouter([
           { index: true, Component: DashboardPage },
           {
             path: getChildPath(ROUTES.DASHBOARD_MY_INTERVIEWS, ROUTES.DASHBOARD),
-            Component: DashboardPage,
+            Component: MyInterviewsPage,
           },
           {
             path: getChildPath(ROUTES.DASHBOARD_TREND_QUESTIONS, ROUTES.DASHBOARD),
@@ -87,7 +89,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: getChildPath(ROUTES.RETRO_QUESTION, ROUTES.RETRO),
-            Component: DashboardPage,
+            Component: RetroQuestionPage,
           },
           {
             path: getChildPath(ROUTES.RETRO_DETAILS, ROUTES.RETRO),
