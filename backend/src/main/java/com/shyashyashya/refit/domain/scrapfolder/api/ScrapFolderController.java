@@ -5,7 +5,8 @@ import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON201;
 import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON204;
 
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
-import com.shyashyashya.refit.domain.scrapfolder.dto.request.ScrapFolderNameRequest;
+import com.shyashyashya.refit.domain.scrapfolder.dto.request.ScrapFolderCreateRequest;
+import com.shyashyashya.refit.domain.scrapfolder.dto.request.ScrapFolderNameUpdateRequest;
 import com.shyashyashya.refit.domain.scrapfolder.dto.response.ScrapFolderQnaSetResponse;
 import com.shyashyashya.refit.domain.scrapfolder.dto.response.ScrapFolderResponse;
 import com.shyashyashya.refit.domain.scrapfolder.service.ScrapFolderService;
@@ -47,7 +48,7 @@ public class ScrapFolderController {
 
     @PostMapping
     public ResponseEntity<CommonResponse<Void>> createScrapFolder(
-            @RequestBody @Valid ScrapFolderNameRequest scrapFolderCreateRequest) {
+            @Valid @RequestBody ScrapFolderCreateRequest scrapFolderCreateRequest) {
         scrapFolderService.createScrapFolder(scrapFolderCreateRequest.scrapFolderName());
         var response = CommonResponse.success(COMMON201);
         return ResponseEntity.ok(response);
@@ -62,8 +63,9 @@ public class ScrapFolderController {
 
     @PatchMapping("/{scrapFolderId}/name")
     public ResponseEntity<CommonResponse<Void>> updateScrapFolderName(
-            @PathVariable Long scrapFolderId, @RequestBody @Valid ScrapFolderNameRequest scrapFolderNameRequest) {
-        scrapFolderService.updateScrapFolderName(scrapFolderId, scrapFolderNameRequest.scrapFolderName());
+            @PathVariable Long scrapFolderId,
+            @Valid @RequestBody ScrapFolderNameUpdateRequest scrapFolderNameUpdateRequest) {
+        scrapFolderService.updateScrapFolderName(scrapFolderId, scrapFolderNameUpdateRequest.scrapFolderName());
         var response = CommonResponse.success(COMMON200);
         return ResponseEntity.ok(response);
     }

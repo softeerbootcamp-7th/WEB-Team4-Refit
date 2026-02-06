@@ -17,7 +17,7 @@ public class ScrapFolderValidator {
     public final ScrapFolderRepository scrapFolderRepository;
 
     public void validateScrapFolderOwner(ScrapFolder scrapFolder, User user) {
-        if (!scrapFolder.getUser().getId().equals(user.getId())) {
+        if (!scrapFolder.getUser().equals(user)) {
             throw new CustomException(SCRAP_FOLDER_NOT_ACCESSIBLE);
         }
     }
