@@ -2,7 +2,6 @@ import { useState } from 'react'
 import FilterResultList from '@/pages/dashboard/_trend_questions/components/FilterResultList'
 import IndustryJobFilter from '@/pages/dashboard/_trend_questions/components/IndustryJobFilter'
 import { SmallLogoIcon } from '@/shared/assets'
-import { Border } from '@/shared/components'
 
 export default function TrendQuestionsPage() {
   // TODO: 유저 회원가입 정보에서 기본값 가져오기
