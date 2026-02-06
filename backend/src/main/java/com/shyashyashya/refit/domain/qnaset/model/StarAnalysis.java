@@ -77,6 +77,18 @@ public class StarAnalysis extends BaseEntity {
                 .build();
     }
 
+    public static StarAnalysis createInProgressStarAnalysis(QnaSet qnaSet) {
+        return StarAnalysis.builder()
+                .sInclusionLevel(StarInclusionLevel.ABSENT)
+                .tInclusionLevel(StarInclusionLevel.ABSENT)
+                .aInclusionLevel(StarInclusionLevel.ABSENT)
+                .rInclusionLevel(StarInclusionLevel.ABSENT)
+                .overallSummaryText("")
+                .status(StarAnalysisStatus.IN_PROGRESS)
+                .qnaSet(qnaSet)
+                .build();
+    }
+
     @Builder(access = AccessLevel.PRIVATE)
     private StarAnalysis(
             StarInclusionLevel sInclusionLevel,
