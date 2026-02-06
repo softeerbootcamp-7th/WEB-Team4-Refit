@@ -4,6 +4,7 @@ import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
 
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardCalendarResponse;
+import com.shyashyashya.refit.domain.interview.dto.response.DashboardDebriefIncompletedInterviewResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardHeadlineResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardMyDifficultQuestionResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardUpcomingInterviewResponse;
@@ -64,6 +65,15 @@ public class DashboardController {
     public ResponseEntity<CommonResponse<Page<DashboardMyDifficultQuestionResponse>>> getMyDifficultQnaSets(
             Pageable pageable) {
         var body = dashboardService.getMyDifficultQnaSets(pageable);
+        var response = CommonResponse.success(COMMON200, body);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "대시보드에서 복기 대기중인 면접 리스트를 조회합니다.")
+    @GetMapping("/interview/debrief-uncompleted")
+    public ResponseEntity<CommonResponse<Page<DashboardDebriefIncompletedInterviewResponse>>>
+            getDebriefIncompletedInterviews(Pageable pageable) {
+        var body = dashboardService.getDebriefIncompletedInterviews(pageable);
         var response = CommonResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }

@@ -5,6 +5,7 @@ import static com.shyashyashya.refit.domain.interview.model.InterviewReviewStatu
 import static com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus.SELF_REVIEW_DRAFT;
 
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardCalendarResponse;
+import com.shyashyashya.refit.domain.interview.dto.response.DashboardDebriefIncompletedInterviewResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardHeadlineResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardMyDifficultQuestionResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardUpcomingInterviewResponse;
@@ -106,6 +107,17 @@ public class DashboardService {
                 .map(entry -> DashboardCalendarResponse.of(
                         entry.getKey(), calculateDday(now, entry.getKey()), entry.getValue()))
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public Page<DashboardDebriefIncompletedInterviewResponse> getDebriefIncompletedInterviews(Pageable pageable) {
+        User requestUser = requestUserContext.getRequestUser();
+
+        LocalDateTime now = LocalDateTime.now();
+        return interviewRepository
+                .findAllByUserAndReviewStatusIn(requestUser, REVIEW_NEEDED_STATUSES, pageable)
+                .map(interview ->
+                        DashboardDebriefIncompletedInterviewResponse.of(interview, -getInterviewDday(now, interview)));
     }
 
     private long getInterviewDday(LocalDateTime now, Interview interview) {

@@ -30,6 +30,10 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
     boolean existsByUser(User user);
 
     boolean existsByUserAndReviewStatusIn(User user, List<InterviewReviewStatus> reviewStatuses);
+
+    Page<Interview> findAllByUserAndReviewStatusIn(
+            User user, List<InterviewReviewStatus> reviewStatuses, Pageable pageable);
+
     // QueryDSL 적용
     @Query("""
         SELECT i
