@@ -47,7 +47,7 @@ public class InterviewMyController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "내가 작성 중인 복기 데이터를 조회합니다.", description = """
+    @Operation(summary = "내가 작성중인 (임시저장) 복기 데이터를 조회합니다.", description = """
             interviewReviewStatus 에는 LOG_DRAFT (기록 중), SELF_REVIEW_DRAFT (회고 중) 값만 들어갈 수 있습니다.
             이외의 값에 대해서는 400 에러를 응답합니다.
             """)
