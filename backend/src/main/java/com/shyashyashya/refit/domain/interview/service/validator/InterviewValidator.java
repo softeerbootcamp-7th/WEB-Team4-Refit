@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class InterviewValidator {
 
     public void validateInterviewOwner(Interview interview, User user) {
-        if (interview.getUser().equals(user)) {
+        if (interview.getUser().getId().equals(user.getId())) {
             return;
         }
         throw new CustomException(INTERVIEW_NOT_ACCESSIBLE);
