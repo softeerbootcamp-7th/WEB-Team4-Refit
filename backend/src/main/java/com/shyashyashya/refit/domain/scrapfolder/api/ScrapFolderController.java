@@ -11,6 +11,7 @@ import com.shyashyashya.refit.domain.scrapfolder.dto.response.ScrapFolderQnaSetR
 import com.shyashyashya.refit.domain.scrapfolder.dto.response.ScrapFolderResponse;
 import com.shyashyashya.refit.domain.scrapfolder.service.ScrapFolderService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Scrap Folder API", description = "스크랩 폴더 관련 API 입니다.")
 @RestController
 @RequestMapping("/scrap-folder")
 @RequiredArgsConstructor
