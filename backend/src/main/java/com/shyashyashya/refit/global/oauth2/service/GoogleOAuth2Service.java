@@ -13,7 +13,7 @@ import com.shyashyashya.refit.global.constant.EnvironmentType;
 import com.shyashyashya.refit.global.constant.UrlConstant;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.oauth2.dto.OAuthLoginUrlResponse;
-import com.shyashyashya.refit.global.oauth2.dto.OAuthResultDto;
+import com.shyashyashya.refit.global.oauth2.dto.OAuth2ResultDto;
 import com.shyashyashya.refit.global.property.OAuth2Property;
 import com.shyashyashya.refit.global.util.CurrentProfile;
 import java.util.Map;
@@ -68,7 +68,7 @@ public class GoogleOAuth2Service implements OAuth2Service {
 
     @Transactional
     @Override
-    public OAuthResultDto handleOAuthCallback(String code, String state) {
+    public OAuth2ResultDto handleOAuth2Callback(String code, String state) {
         var tokenResponse = fetchAccessToken(code);
         var userInfo = fetchUserInfo(tokenResponse.access_token());
 
@@ -85,8 +85,8 @@ public class GoogleOAuth2Service implements OAuth2Service {
         String frontendRedirectUrl = buildFrontendRedirectUrl(environmentType);
 
         return userOptional
-                .map(user -> OAuthResultDto.createUser(accessToken, refreshToken, user, frontendRedirectUrl))
-                .orElseGet(() -> OAuthResultDto.createGuest(accessToken, refreshToken, userInfo, frontendRedirectUrl));
+                .map(user -> OAuth2ResultDto.createUser(accessToken, refreshToken, user, frontendRedirectUrl))
+                .orElseGet(() -> OAuth2ResultDto.createGuest(accessToken, refreshToken, userInfo, frontendRedirectUrl));
     }
 
     private String createState(EnvironmentType environmentType) {

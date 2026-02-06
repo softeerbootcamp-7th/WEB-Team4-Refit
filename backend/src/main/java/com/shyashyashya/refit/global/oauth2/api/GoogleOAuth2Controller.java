@@ -6,7 +6,7 @@ import com.shyashyashya.refit.global.auth.service.CookieUtil;
 import com.shyashyashya.refit.global.constant.EnvironmentType;
 import com.shyashyashya.refit.global.dto.CommonResponse;
 import com.shyashyashya.refit.global.oauth2.dto.OAuthLoginUrlResponse;
-import com.shyashyashya.refit.global.oauth2.dto.OAuthResultDto;
+import com.shyashyashya.refit.global.oauth2.dto.OAuth2ResultDto;
 import com.shyashyashya.refit.global.oauth2.service.GoogleOAuth2Service;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -44,7 +44,7 @@ public class GoogleOAuth2Controller implements OAuth2Controller {
     @GetMapping("/callback")
     @Override
     public ResponseEntity<Void> handleOAuth2Callback(@RequestParam String code, @RequestParam String state) {
-        OAuthResultDto result = googleOAuthService.handleOAuthCallback(code, state);
+        OAuth2ResultDto result = googleOAuthService.handleOAuth2Callback(code, state);
         var accessTokenCookie =
                 cookieUtil.createAccessTokenCookie(result.tokenPair().accessToken());
         var refreshTokenCookie =
@@ -59,14 +59,14 @@ public class GoogleOAuth2Controller implements OAuth2Controller {
                 .build();
     }
 
-    private String buildRedirectUrl(OAuthResultDto oAuthResultDto) {
-        boolean isNeedSignup = oAuthResultDto.isNeedSignup();
-        var builder = UriComponentsBuilder.fromUriString(oAuthResultDto.frontRedirectUri())
+    private String buildRedirectUrl(OAuth2ResultDto oAuth2ResultDto) {
+        boolean isNeedSignup = oAuth2ResultDto.isNeedSignup();
+        var builder = UriComponentsBuilder.fromUriString(oAuth2ResultDto.frontRedirectUri())
                 .queryParam("status", isNeedSignup ? "signUpRequired" : "loginSuccess");
 
         if (isNeedSignup) {
-            builder.queryParam("nickname", oAuthResultDto.nickname())
-                    .queryParam("profileImageUrl", oAuthResultDto.profileImageUrl());
+            builder.queryParam("nickname", oAuth2ResultDto.nickname())
+                    .queryParam("profileImageUrl", oAuth2ResultDto.profileImageUrl());
         }
 
         return builder.encode().build().toUriString();
