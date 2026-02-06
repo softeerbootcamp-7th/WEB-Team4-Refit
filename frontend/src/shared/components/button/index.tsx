@@ -83,8 +83,12 @@ const VARIANT_STYLES = {
   'fill-gray-800': 'bg-gray-800 text-white hover:bg-gray-900 focus-visible:ring-2 focus-visible:ring-gray-800',
   'outline-orange-100':
     'bg-orange-100 border border-orange-300 text-orange-500 hover:bg-orange-200 active:bg-orange-300 focus-visible:ring-2 focus-visible:ring-orange-300',
+  'outline-gray-white':
+    'bg-white border border-gray-200 text-gray-600 hover:bg-gray-100 active:bg-gray-200 focus-visible:ring-2 focus-visible:ring-gray-200',
   'outline-gray-100':
     'bg-gray-100 border border-gray-200 text-gray-300 hover:bg-gray-150 active:bg-gray-200 focus-visible:ring-2 focus-visible:ring-gray-200',
+  'outline-gray-150':
+    'bg-gray-150 border border-gray-200 text-gray-400 hover:bg-gray-200 active:bg-gray-300 focus-visible:ring-2 focus-visible:ring-gray-300',
   ghost:
     'bg-transparent disabled:bg-transparent text-gray-600 hover:bg-gray-100 active:bg-gray-200 focus-visible:ring-2 focus-visible:ring-gray-200',
 } as const
