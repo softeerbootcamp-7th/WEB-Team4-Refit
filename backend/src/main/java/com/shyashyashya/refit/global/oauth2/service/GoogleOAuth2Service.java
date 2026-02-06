@@ -12,7 +12,7 @@ import com.shyashyashya.refit.global.auth.service.JwtUtil;
 import com.shyashyashya.refit.global.constant.EnvironmentType;
 import com.shyashyashya.refit.global.constant.UrlConstant;
 import com.shyashyashya.refit.global.exception.CustomException;
-import com.shyashyashya.refit.global.oauth2.dto.OAuthLoginUrlResponse;
+import com.shyashyashya.refit.global.oauth2.dto.OAuth2LoginUrlResponse;
 import com.shyashyashya.refit.global.oauth2.dto.OAuth2ResultDto;
 import com.shyashyashya.refit.global.property.OAuth2Property;
 import com.shyashyashya.refit.global.util.CurrentProfile;
@@ -50,7 +50,7 @@ public class GoogleOAuth2Service implements OAuth2Service {
     private final Map<String, EnvironmentType> stateMap = new ConcurrentHashMap<>();
 
     @Override
-    public OAuthLoginUrlResponse buildOAuth2LoginUrl(EnvironmentType environmentType) {
+    public OAuth2LoginUrlResponse buildOAuth2LoginUrl(EnvironmentType environmentType) {
         String googleClientId = oauth2Property.google().clientId();
         String redirectUri = getRedirectUri();
         String scope = String.join(" ", oauth2Property.google().scope());
@@ -63,7 +63,7 @@ public class GoogleOAuth2Service implements OAuth2Service {
                 .queryParam("scope", scope)
                 .queryParam("state", createState(environmentType))
                 .toUriString();
-        return OAuthLoginUrlResponse.from(loginUrlResponseUrl);
+        return OAuth2LoginUrlResponse.from(loginUrlResponseUrl);
     }
 
     @Transactional
