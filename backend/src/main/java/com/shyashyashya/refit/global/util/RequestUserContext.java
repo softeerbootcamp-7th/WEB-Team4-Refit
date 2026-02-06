@@ -1,6 +1,10 @@
 package com.shyashyashya.refit.global.util;
 
+import static com.shyashyashya.refit.global.exception.ErrorCode.USER_NOT_FOUND;
+
 import com.shyashyashya.refit.domain.user.model.User;
+import com.shyashyashya.refit.domain.user.repository.UserRepository;
+import com.shyashyashya.refit.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -14,13 +18,20 @@ import org.springframework.web.context.annotation.RequestScope;
 @Slf4j
 public class RequestUserContext {
 
+    private final UserRepository userRepository;
+
     @Setter
+    private Long userId;
+
     private User user;
 
     public User getRequestUser() {
-        if (user == null) {
+        if (userId == null) {
             log.error("RequestUserContext에 설정된 User가 없습니다.");
             throw new IllegalStateException("RequestUserContext에 설정된 User가 없습니다.");
+        }
+        if (user == null) {
+            user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         }
         return user;
     }
