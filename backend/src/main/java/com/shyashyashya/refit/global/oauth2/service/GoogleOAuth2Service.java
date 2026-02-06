@@ -12,6 +12,7 @@ import com.shyashyashya.refit.global.auth.service.JwtUtil;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.oauth2.dto.OAuthResultDto;
 import com.shyashyashya.refit.global.property.OAuth2Property;
+import com.shyashyashya.refit.global.util.CurrentProfile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;
@@ -29,17 +30,18 @@ import org.springframework.web.util.UriComponentsBuilder;
 // TODO: RefreshToken을 redis 등에 저장하는 것 고려
 public class GoogleOAuth2Service implements OAuth2Service {
 
-    private final OAuth2Property oauth2Property;
-    private final JwtUtil jwtUtil;
-    private final RestClient restClient;
-
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
+
+    private final OAuth2Property oauth2Property;
+    private final CurrentProfile currentProfile;
+    private final JwtUtil jwtUtil;
+    private final RestClient restClient;
 
     @Override
     public String getOAuthLoginUrl() {
         String googleClientId = oauth2Property.google().clientId();
-        String redirectUri = oauth2Property.google().redirectUri();
+        String redirectUri = getRedirectUri();
         String scope = String.join(" ", oauth2Property.google().scope());
         String responseType = "code";
         return UriComponentsBuilder.fromUriString("https://accounts.google.com/o/oauth2/v2/auth")
@@ -70,12 +72,16 @@ public class GoogleOAuth2Service implements OAuth2Service {
                 .orElseGet(() -> OAuthResultDto.createGuest(accessToken, refreshToken, userInfo));
     }
 
+    private String getRedirectUri() {
+        return currentProfile.getServerUrl() + oauth2Property.google().redirectPath();
+    }
+
     private GoogleTokenResponse fetchAccessToken(String code) {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("code", code);
         body.add("client_id", oauth2Property.google().clientId());
         body.add("client_secret", oauth2Property.google().clientSecret());
-        body.add("redirect_uri", oauth2Property.google().redirectUri());
+        body.add("redirect_uri", getRedirectUri());
         body.add("grant_type", "authorization_code");
 
         return restClient
