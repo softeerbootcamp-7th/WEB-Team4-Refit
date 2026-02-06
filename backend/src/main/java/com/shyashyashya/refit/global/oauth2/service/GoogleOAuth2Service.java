@@ -9,10 +9,17 @@ import com.shyashyashya.refit.domain.user.repository.UserRepository;
 import com.shyashyashya.refit.global.auth.model.RefreshToken;
 import com.shyashyashya.refit.global.auth.repository.RefreshTokenRepository;
 import com.shyashyashya.refit.global.auth.service.JwtUtil;
+import com.shyashyashya.refit.global.constant.EnvironmentType;
+import com.shyashyashya.refit.global.constant.UrlConstant;
 import com.shyashyashya.refit.global.exception.CustomException;
+import com.shyashyashya.refit.global.oauth2.dto.OAuthLoginUrlResponse;
 import com.shyashyashya.refit.global.oauth2.dto.OAuthResultDto;
 import com.shyashyashya.refit.global.property.OAuth2Property;
 import com.shyashyashya.refit.global.util.CurrentProfile;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;
@@ -38,23 +45,30 @@ public class GoogleOAuth2Service implements OAuth2Service {
     private final JwtUtil jwtUtil;
     private final RestClient restClient;
 
+    // TODO: 추후 별도의 DB, 또는 Redis에 저장할 수 있도록 구현
+    // TODO: 또는 state 자체를 JWT로 발급해 stateless로 구현하기
+    private final Map<String, EnvironmentType> stateMap = new ConcurrentHashMap<>();
+
     @Override
-    public String getOAuthLoginUrl() {
+    public OAuthLoginUrlResponse buildOAuth2LoginUrl(EnvironmentType environmentType) {
         String googleClientId = oauth2Property.google().clientId();
         String redirectUri = getRedirectUri();
         String scope = String.join(" ", oauth2Property.google().scope());
         String responseType = "code";
-        return UriComponentsBuilder.fromUriString("https://accounts.google.com/o/oauth2/v2/auth")
+
+        String loginUrlResponseUrl = UriComponentsBuilder.fromUriString("https://accounts.google.com/o/oauth2/v2/auth")
                 .queryParam("client_id", googleClientId)
                 .queryParam("redirect_uri", redirectUri)
                 .queryParam("response_type", responseType)
                 .queryParam("scope", scope)
+                .queryParam("state", createState(environmentType))
                 .toUriString();
+        return OAuthLoginUrlResponse.from(loginUrlResponseUrl);
     }
 
     @Transactional
     @Override
-    public OAuthResultDto handleOAuthCallback(String code) {
+    public OAuthResultDto handleOAuthCallback(String code, String state) {
         var tokenResponse = fetchAccessToken(code);
         var userInfo = fetchUserInfo(tokenResponse.access_token());
 
@@ -67,9 +81,32 @@ public class GoogleOAuth2Service implements OAuth2Service {
         refreshTokenRepository.save(
                 RefreshToken.create(refreshToken, userInfo.email(), jwtUtil.getExpiration(refreshToken)));
 
+        EnvironmentType environmentType = getEnvironmentTypeFromStateOrThrow(state);
+        String frontendRedirectUrl = buildFrontendRedirectUrl(environmentType);
+
         return userOptional
-                .map(user -> OAuthResultDto.createUser(accessToken, refreshToken, user))
-                .orElseGet(() -> OAuthResultDto.createGuest(accessToken, refreshToken, userInfo));
+                .map(user -> OAuthResultDto.createUser(accessToken, refreshToken, user, frontendRedirectUrl))
+                .orElseGet(() -> OAuthResultDto.createGuest(accessToken, refreshToken, userInfo, frontendRedirectUrl));
+    }
+
+    private String createState(EnvironmentType environmentType) {
+        String state = UUID.randomUUID().toString();
+        stateMap.put(state, environmentType);
+        return state;
+    }
+
+    private EnvironmentType getEnvironmentTypeFromStateOrThrow(String state) {
+        return Optional.ofNullable(stateMap.get(state))
+                .orElseThrow(() -> new IllegalStateException("Unregistered state value: " + state));
+    }
+
+    private String buildFrontendRedirectUrl(EnvironmentType environmentType) {
+        return switch (environmentType) {
+                    case LOCAL -> UrlConstant.LOCAL_CLIENT_URL;
+                    case DEV -> UrlConstant.DEV_CLIENT_URL;
+                    case MAIN -> UrlConstant.MAIN_CLIENT_URL;
+                }
+                + UrlConstant.LOGIN_REDIRECT_PATH;
     }
 
     private String getRedirectUri() {
