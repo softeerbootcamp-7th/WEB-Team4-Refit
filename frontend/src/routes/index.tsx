@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from 'react-router'
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router'
 import { DashboardLayout, MobileLayout, RootLayout } from '@/layouts'
 import {
   DashboardPage,
@@ -13,6 +13,9 @@ import {
   MobileSignupPage,
   MobileUnrecordedPage,
   MobileRecordPage,
+  MyCollectionsPage,
+  CollectionDetailPage,
+  DifficultQuestionPage,
   MyInterviewsPage,
 } from '@/pages'
 import { ROUTES } from '@/shared/constants/routes'
@@ -22,7 +25,7 @@ const getChildPath = (fullPath: string, rootPath: string): string => {
 }
 
 const router = createBrowserRouter([
-  { path: ROUTES.HOME, Component: DashboardPage },
+  { path: ROUTES.HOME, Component: () => <Navigate to={ROUTES.DASHBOARD} replace /> },
   { path: ROUTES.SIGNUP, Component: SignupPage },
   { path: ROUTES.SIGNIN, Component: SigninPage },
   {
@@ -62,11 +65,26 @@ const router = createBrowserRouter([
           },
           {
             path: getChildPath(ROUTES.DASHBOARD_MY_COLLECTIONS, ROUTES.DASHBOARD),
-            Component: DashboardPage,
-          },
-          {
-            path: getChildPath(ROUTES.DASHBOARD_COLLECTION_DETAIL, ROUTES.DASHBOARD),
-            Component: DashboardPage,
+            Component: MyCollectionsPage,
+            children: [
+              {
+                index: true,
+                Component: () => (
+                  <Navigate
+                    to={getChildPath(ROUTES.DASHBOARD_DIFFICULT_QUESTIONS, ROUTES.DASHBOARD_MY_COLLECTIONS)}
+                    replace
+                  />
+                ),
+              },
+              {
+                path: getChildPath(ROUTES.DASHBOARD_DIFFICULT_QUESTIONS, ROUTES.DASHBOARD_MY_COLLECTIONS),
+                Component: DifficultQuestionPage,
+              },
+              {
+                path: ':folderId',
+                Component: CollectionDetailPage,
+              },
+            ],
           },
         ],
       },
