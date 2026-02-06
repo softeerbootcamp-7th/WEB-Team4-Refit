@@ -4,6 +4,7 @@ import static com.shyashyashya.refit.domain.interview.model.InterviewReviewStatu
 import static com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus.NOT_LOGGED;
 import static com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus.SELF_REVIEW_DRAFT;
 
+import com.shyashyashya.refit.domain.interview.dto.response.DashboardCalendarResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardDebriefIncompletedInterviewResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardHeadlineResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardMyDifficultQuestionResponse;
@@ -15,9 +16,13 @@ import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.util.RequestUserContext;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -87,6 +92,24 @@ public class DashboardService {
     }
 
     @Transactional(readOnly = true)
+    public List<DashboardCalendarResponse> getDashboardCalendarInterviews(Integer year, Integer month) {
+        User requestUser = requestUserContext.getRequestUser();
+
+        LocalDateTime monthStart = LocalDateTime.of(year, month, 1, 0, 0, 0);
+        LocalDateTime monthEnd = monthStart.plusMonths(1).minusNanos(1);
+        Map<LocalDate, List<Interview>> interviews =
+                interviewRepository.findAllByUserAndYearMonth(requestUser, monthStart, monthEnd).stream()
+                        .collect(Collectors.groupingBy(
+                                interview -> interview.getStartAt().toLocalDate(), TreeMap::new, Collectors.toList()));
+
+        LocalDateTime now = LocalDateTime.now();
+        return interviews.entrySet().stream()
+                .map(entry -> DashboardCalendarResponse.of(
+                        entry.getKey(), calculateDday(now, entry.getKey()), entry.getValue()))
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
     public Page<DashboardDebriefIncompletedInterviewResponse> getDebriefIncompletedInterviews(Pageable pageable) {
         User requestUser = requestUserContext.getRequestUser();
 
@@ -98,7 +121,11 @@ public class DashboardService {
     }
 
     private long getInterviewDday(LocalDateTime now, Interview interview) {
-        return ChronoUnit.DAYS.between(now.toLocalDate(), interview.getStartAt().toLocalDate());
+        return calculateDday(now, interview.getStartAt().toLocalDate());
+    }
+
+    private long calculateDday(LocalDateTime now, LocalDate targetDate) {
+        return ChronoUnit.DAYS.between(now.toLocalDate(), targetDate);
     }
 
     private boolean existInterviewsToLog(User user) {
