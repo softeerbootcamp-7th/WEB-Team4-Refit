@@ -2,10 +2,10 @@ package com.shyashyashya.refit.domain.jobcategory.api;
 
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 
-import com.shyashyashya.refit.global.dto.CommonResponse;
 import com.shyashyashya.refit.domain.jobcategory.dto.response.JobCategoryResponse;
 import com.shyashyashya.refit.domain.jobcategory.service.JobCategoryService;
 import io.swagger.v3.oas.annotations.Operation;
+import com.shyashyashya.refit.global.dto.CommonResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
