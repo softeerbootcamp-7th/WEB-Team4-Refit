@@ -12,11 +12,13 @@ import static org.mockito.Mockito.verifyNoInteractions;
 
 import com.shyashyashya.refit.domain.scrapfolder.repository.ScrapFolderRepository;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class ScrapFolderValidatorTest {
@@ -26,6 +28,13 @@ class ScrapFolderValidatorTest {
 
     @InjectMocks
     private ScrapFolderValidator scrapFolderValidator;
+
+
+    @BeforeEach
+    // TODO: 추후 픽스처를 정적 팩토리 메서드로 생성하게 하여, 픽스처가 변경되어도 고립될 수 있게 수정 필요
+    void setUp() {
+        ReflectionTestUtils.setField(TEST_USER_1, "id", 1L);
+    }
 
     @Test
     void 스크랩_폴더_소유자와_검증_대상_사용자가_같으면_검증에_성공한다() {
