@@ -10,6 +10,8 @@ import com.shyashyashya.refit.domain.scrapfolder.dto.request.ScrapFolderNameUpda
 import com.shyashyashya.refit.domain.scrapfolder.dto.response.ScrapFolderQnaSetResponse;
 import com.shyashyashya.refit.domain.scrapfolder.dto.response.ScrapFolderResponse;
 import com.shyashyashya.refit.domain.scrapfolder.service.ScrapFolderService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Scrap Folder API", description = "스크랩 폴더 관련 API 입니다.")
 @RestController
 @RequestMapping("/scrap-folder")
 @RequiredArgsConstructor
@@ -31,6 +34,9 @@ public class ScrapFolderController {
 
     private final ScrapFolderService scrapFolderService;
 
+    @Operation(
+            summary = "나의 스크랩 폴더 리스트를 조회합니다.",
+            description = "스크랩 폴더 리스트에 '나의 어려웠던 질문' 폴더는 포함하지 않습니다. 해당 폴더의 내용은 어려웠던 질문을 조회하는 API로 조회합니다.")
     @GetMapping
     public ResponseEntity<CommonResponse<Page<ScrapFolderResponse>>> getMyScrapFolders(Pageable pageable) {
         var body = scrapFolderService.getMyScrapFolders(pageable);
@@ -38,6 +44,9 @@ public class ScrapFolderController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(
+            summary = "나의 스크랩 폴더 내 질문 답변 세트 리스트를 조회합니다.",
+            description = "'나의 어려웠던 질문' 폴더는 포함하지 않습니다. 해당 폴더의 내용은 어려웠던 질문을 조회하는 API로 조회합니다.")
     @GetMapping("/{scrapFolderId}")
     public ResponseEntity<CommonResponse<Page<ScrapFolderQnaSetResponse>>> getQnaSetsInScrapFolder(
             @PathVariable Long scrapFolderId, Pageable pageable) {
@@ -46,6 +55,7 @@ public class ScrapFolderController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "스크랩 폴더를 생성합니다.")
     @PostMapping
     public ResponseEntity<CommonResponse<Void>> createScrapFolder(
             @Valid @RequestBody ScrapFolderCreateRequest scrapFolderCreateRequest) {
@@ -54,6 +64,7 @@ public class ScrapFolderController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "스크랩 폴더를 삭제합니다.")
     @DeleteMapping("/{scrapFolderId}")
     public ResponseEntity<CommonResponse<Void>> deleteScrapFolder(@PathVariable Long scrapFolderId) {
         scrapFolderService.deleteScrapFolder(scrapFolderId);
@@ -61,6 +72,7 @@ public class ScrapFolderController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "스크랩 폴더의 이름을 수정합니다.")
     @PatchMapping("/{scrapFolderId}/name")
     public ResponseEntity<CommonResponse<Void>> updateScrapFolderName(
             @PathVariable Long scrapFolderId,

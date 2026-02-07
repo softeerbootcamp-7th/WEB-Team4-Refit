@@ -1,0 +1,4 @@
+springdoc:
+  swagger-ui:
+    defaultModelsExpandDepth: 0
+    operationsSorter: alpha

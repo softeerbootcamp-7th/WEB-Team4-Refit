@@ -13,6 +13,7 @@ import com.shyashyashya.refit.global.auth.service.CookieUtil;
 import com.shyashyashya.refit.global.auth.service.JwtUtil;
 import com.shyashyashya.refit.global.constant.AuthConstant;
 import com.shyashyashya.refit.global.exception.CustomException;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -37,18 +38,21 @@ public class TestAuthController {
     private final CookieUtil cookieUtil;
     private final JwtUtil jwtUtil;
 
+    @Operation(summary = "(테스트용) 게스트 회원 토큰을 발급합니다.", description = "발급된 토큰은 요청 주소에 쿠키로 세팅됩니다.")
     @GetMapping("/guest")
     public ResponseEntity<CommonResponse<TokenPairDto>> getGuestToken(
             @RequestParam("email") @NotNull @Email String email) {
         return getTokenResponse(email, null);
     }
 
+    @Operation(summary = "(테스트용) 회원 토큰을 발급합니다.", description = "발급된 토큰은 요청 주소에 쿠키로 세팅됩니다.")
     @GetMapping
     public ResponseEntity<CommonResponse<TokenPairDto>> getToken(@RequestParam("email") @NotNull @Email String email) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         return getTokenResponse(user.getEmail(), user.getId());
     }
 
+    @Operation(summary = "(테스트용) 쿠키에 설정된 토큰들을 삭제합니다.")
     @DeleteMapping("/cookies")
     public ResponseEntity<CommonResponse<Void>> deleteTokenCookies(
             @CookieValue(value = AuthConstant.REFRESH_TOKEN, required = false) String refreshToken) {
