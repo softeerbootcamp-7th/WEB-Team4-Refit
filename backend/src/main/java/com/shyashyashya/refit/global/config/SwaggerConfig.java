@@ -6,9 +6,8 @@ import static com.shyashyashya.refit.global.constant.UrlConstant.LOCAL_SERVER_UR
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.servers.Server;
-import java.util.List;
-
 import io.swagger.v3.oas.models.tags.Tag;
+import java.util.List;
 import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -43,7 +42,8 @@ public class SwaggerConfig {
                             return 1;
                         }
                         return name1.compareTo(name2);
-                    }).toList();
+                    })
+                    .toList();
 
             openApi.setTags(sortedTags);
         };
