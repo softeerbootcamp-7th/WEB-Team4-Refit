@@ -121,19 +121,7 @@ public abstract class IntegrationTest {
     }
 
     protected Interview createInterview(InterviewCreateRequest request) {
-        Company company = companyRepository.findByName(request.companyName()).get();
-        Industry industry = industryRepository.findById(request.industryId()).get();
-        JobCategory jobCategory = jobCategoryRepository.findById(request.jobCategoryId()).get();
-
-        Interview interview = Interview.create(
-                request.jobRole(),
-                request.interviewType(),
-                request.startAt(),
-                requestUser,
-                company,
-                industry,
-                jobCategory);
-        return interviewRepository.save(interview);
+        return createInterview(request, requestUser);
     }
 
     protected Interview createInterview(InterviewCreateRequest request, User user) {
