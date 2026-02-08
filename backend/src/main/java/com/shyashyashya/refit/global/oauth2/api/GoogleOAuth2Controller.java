@@ -3,13 +3,15 @@ package com.shyashyashya.refit.global.oauth2.api;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 
 import com.shyashyashya.refit.global.auth.service.CookieUtil;
-import com.shyashyashya.refit.global.constant.EnvironmentType;
 import com.shyashyashya.refit.global.dto.CommonResponse;
 import com.shyashyashya.refit.global.oauth2.dto.OAuth2LoginUrlResponse;
 import com.shyashyashya.refit.global.oauth2.dto.OAuth2ResultDto;
 import com.shyashyashya.refit.global.oauth2.service.GoogleOAuth2Service;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import java.net.URI;
+import java.net.URISyntaxException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -32,8 +34,8 @@ public class GoogleOAuth2Controller implements OAuth2Controller {
     @Operation(summary = "구글 로그인 화면으로 이동하는 url을 생성합니다.")
     @GetMapping
     @Override
-    public ResponseEntity<CommonResponse<OAuth2LoginUrlResponse>> buildOAuth2LoginUrl(@RequestParam String env) {
-        var response = googleOAuthService.buildOAuth2LoginUrl(EnvironmentType.from(env));
+    public ResponseEntity<CommonResponse<OAuth2LoginUrlResponse>> buildOAuth2LoginUrl(HttpServletRequest request) {
+        var response = googleOAuthService.buildOAuth2LoginUrl(getRequestHostUrlFrom(request));
         var body = CommonResponse.success(COMMON200, response);
         return ResponseEntity.ok(body);
     }
@@ -57,6 +59,16 @@ public class GoogleOAuth2Controller implements OAuth2Controller {
                 .header(HttpHeaders.SET_COOKIE, refreshTokenCookie)
                 .header(HttpHeaders.LOCATION, redirectUrl)
                 .build();
+    }
+
+    private String getRequestHostUrlFrom(HttpServletRequest request) {
+        try {
+            URI uri = URI.create(request.getRequestURL().toString());
+            var hostUri = new URI(uri.getScheme(), uri.getAuthority(), null, null, null);
+            return hostUri.toString();
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException("Failed to parse request URL", e);
+        }
     }
 
     private String buildRedirectUrl(OAuth2ResultDto oAuth2ResultDto) {
