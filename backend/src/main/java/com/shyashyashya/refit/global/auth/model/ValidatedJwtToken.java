@@ -11,11 +11,19 @@ public record ValidatedJwtToken(Claims claims, boolean isExpired, JwtTokenType t
         return claims.getExpiration().toInstant();
     }
 
-    public static ValidatedJwtToken createUnexpiredToken(Claims claims, JwtTokenType jwtTokenType) {
-        return ValidatedJwtToken.builder().claims(claims).isExpired(false).build();
+    public static ValidatedJwtToken createUnexpiredToken(Claims claims, JwtTokenType type) {
+        return ValidatedJwtToken.builder()
+                .claims(claims)
+                .isExpired(false)
+                .type(type)
+                .build();
     }
 
-    public static ValidatedJwtToken createExpiredToken(Claims claims, JwtTokenType jwtTokenType) {
-        return ValidatedJwtToken.builder().claims(claims).isExpired(true).build();
+    public static ValidatedJwtToken createExpiredToken(Claims claims, JwtTokenType type) {
+        return ValidatedJwtToken.builder()
+                .claims(claims)
+                .isExpired(true)
+                .type(type)
+                .build();
     }
 }
