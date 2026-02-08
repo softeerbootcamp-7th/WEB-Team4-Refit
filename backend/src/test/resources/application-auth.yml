@@ -16,7 +16,7 @@ spring:
         access-token: 1h
         refresh-token: 7d
     oauth2:
-      state-expiration: ${OAUTH2_STATE_EXPIRATION}
+      state-expiration: 5m
       google:
         client-id: "${GOOGLE_CLIENT_ID}"
         client-secret: "${GOOGLE_CLIENT_SECRET}"
