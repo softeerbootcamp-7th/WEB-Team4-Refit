@@ -12,6 +12,7 @@ export { default as TrendQuestionsPage } from './dashboard/_trend_questions/page
 export { default as RecordConfirmPage } from './record/_confirm/page'
 export { default as RecordLinkPage } from './record/_link/page'
 export { default as SharedComponentExample } from './SharedComponentExample'
+export { default as RetroDetailPage } from './retro/_details/page'
 export { default as RetroQuestionPage } from './retro/_index/page'
 export { default as SigninPage } from './signin/page'
 export { default as SignupPage } from './signup/page'
