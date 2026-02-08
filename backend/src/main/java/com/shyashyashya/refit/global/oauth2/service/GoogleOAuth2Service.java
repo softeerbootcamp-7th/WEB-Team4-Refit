@@ -3,7 +3,6 @@ package com.shyashyashya.refit.global.oauth2.service;
 import static com.shyashyashya.refit.global.exception.ErrorCode.EXTERNAL_OAUTH_SERVER_ERROR;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INVALID_OAUTH_ACCESS_TOKEN;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INVALID_OAUTH_CODE;
-import static com.shyashyashya.refit.global.exception.ErrorCode.REQUEST_HOST_OAUTH_REDIRECTION_NOT_ALLOWED;
 
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
@@ -14,6 +13,7 @@ import com.shyashyashya.refit.global.constant.UrlConstant;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.oauth2.dto.OAuth2LoginUrlResponse;
 import com.shyashyashya.refit.global.oauth2.dto.OAuth2ResultDto;
+import com.shyashyashya.refit.global.oauth2.service.validator.OAuth2RedirectionHostValidator;
 import com.shyashyashya.refit.global.property.OAuth2Property;
 import com.shyashyashya.refit.global.util.CurrentProfile;
 import java.util.Optional;
@@ -37,6 +37,7 @@ public class GoogleOAuth2Service implements OAuth2Service {
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
 
+    private final OAuth2RedirectionHostValidator hostValidator;
     private final OAuth2Property oauth2Property;
     private final CurrentProfile currentProfile;
     private final JwtUtil jwtUtil;
@@ -44,7 +45,7 @@ public class GoogleOAuth2Service implements OAuth2Service {
 
     @Override
     public OAuth2LoginUrlResponse buildOAuth2LoginUrl(String requestHostUrl) {
-        validateRequestHostUrl(requestHostUrl);
+        hostValidator.validateRequestHostUrl(requestHostUrl);
         String googleClientId = oauth2Property.google().clientId();
         String scope = String.join(" ", oauth2Property.google().scope());
         String responseType = "code";
@@ -81,16 +82,6 @@ public class GoogleOAuth2Service implements OAuth2Service {
         return userOptional
                 .map(user -> OAuth2ResultDto.createUser(accessToken, refreshToken, user, frontendRedirectUrl))
                 .orElseGet(() -> OAuth2ResultDto.createGuest(accessToken, refreshToken, userInfo, frontendRedirectUrl));
-    }
-
-    private void validateRequestHostUrl(String requestHostUrl) {
-        switch (requestHostUrl) {
-            case UrlConstant.LOCAL_CLIENT_URL,
-                    UrlConstant.DEV_CLIENT_URL,
-                    UrlConstant.MAIN_CLIENT_URL,
-                    UrlConstant.LOCAL_SERVER_URL -> {}
-            default -> throw new CustomException(REQUEST_HOST_OAUTH_REDIRECTION_NOT_ALLOWED);
-        }
     }
 
     private String getRedirectUri() {

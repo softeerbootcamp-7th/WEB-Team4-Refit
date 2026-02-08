@@ -83,13 +83,11 @@ public class JwtUtil {
             }
 
             Claims claims = jwtParser.parseClaimsJws(token).getBody();
-            String jwtTokenType = claims.get(CLAIM_KEY_JWT_TOKEN_TYPE, String.class);
-            return ValidatedJwtToken.createUnexpiredToken(claims, JwtTokenType.valueOf(jwtTokenType));
+            return ValidatedJwtToken.createUnexpiredToken(claims, extractJwtTokenTypeOrThrow(claims));
 
         } catch (ExpiredJwtException e) {
             Claims claims = e.getClaims();
-            String jwtTokenType = claims.get(CLAIM_KEY_JWT_TOKEN_TYPE, String.class);
-            return ValidatedJwtToken.createExpiredToken(claims, JwtTokenType.valueOf(jwtTokenType));
+            return ValidatedJwtToken.createExpiredToken(claims, extractJwtTokenTypeOrThrow(claims));
 
         } catch (JwtException e) {
             log.warn("Invalid JWT token: {}", e.getMessage());
@@ -151,5 +149,15 @@ public class JwtUtil {
         }
 
         return builder.compact();
+    }
+
+    private JwtTokenType extractJwtTokenTypeOrThrow(Claims claims) {
+        try {
+            String jwtTokenType = claims.get(CLAIM_KEY_JWT_TOKEN_TYPE, String.class);
+            return JwtTokenType.valueOf(jwtTokenType);
+        } catch (NullPointerException | IllegalArgumentException e) {
+            log.warn("Failed to extract JWT token type: {}", e.getMessage());
+            throw new CustomException(TOKEN_VALIDATION_FAILED);
+        }
     }
 }
