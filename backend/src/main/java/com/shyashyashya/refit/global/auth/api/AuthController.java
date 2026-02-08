@@ -1,13 +1,13 @@
 package com.shyashyashya.refit.global.auth.api;
 
-import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
+import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
 
+import com.shyashyashya.refit.domain.common.dto.CommonResponse;
 import com.shyashyashya.refit.global.auth.service.AuthService;
 import com.shyashyashya.refit.global.auth.service.CookieUtil;
 import com.shyashyashya.refit.global.constant.AuthConstant;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import com.shyashyashya.refit.global.dto.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;

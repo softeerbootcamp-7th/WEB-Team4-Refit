@@ -1,4 +1,4 @@
-package com.shyashyashya.refit.global.model;
+package com.shyashyashya.refit.domain.common.model;
 
 import lombok.Getter;
 

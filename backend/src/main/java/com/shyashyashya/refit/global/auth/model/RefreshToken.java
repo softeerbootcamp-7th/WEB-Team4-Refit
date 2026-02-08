@@ -1,6 +1,6 @@
 package com.shyashyashya.refit.global.auth.model;
 
-import com.shyashyashya.refit.global.model.BaseEntity;
+import com.shyashyashya.refit.domain.common.model.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

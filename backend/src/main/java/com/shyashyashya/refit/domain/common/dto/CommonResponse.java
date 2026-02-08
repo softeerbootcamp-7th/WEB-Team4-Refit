@@ -1,7 +1,7 @@
-package com.shyashyashya.refit.global.dto;
+package com.shyashyashya.refit.domain.common.dto;
 
+import com.shyashyashya.refit.domain.common.model.ResponseCode;
 import com.shyashyashya.refit.global.exception.ErrorCode;
-import com.shyashyashya.refit.global.model.ResponseCode;
 
 public record CommonResponse<T>(boolean isSuccess, String code, String message, T result) {
 

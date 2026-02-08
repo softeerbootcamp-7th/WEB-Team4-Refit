@@ -1,9 +1,10 @@
 package com.shyashyashya.refit.domain.scrapfolder.api;
 
-import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
-import static com.shyashyashya.refit.global.model.ResponseCode.COMMON201;
-import static com.shyashyashya.refit.global.model.ResponseCode.COMMON204;
+import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
+import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON201;
+import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON204;
 
+import com.shyashyashya.refit.domain.common.dto.CommonResponse;
 import com.shyashyashya.refit.domain.scrapfolder.dto.request.ScrapFolderCreateRequest;
 import com.shyashyashya.refit.domain.scrapfolder.dto.request.ScrapFolderNameUpdateRequest;
 import com.shyashyashya.refit.domain.scrapfolder.dto.response.ScrapFolderQnaSetResponse;
@@ -11,7 +12,6 @@ import com.shyashyashya.refit.domain.scrapfolder.dto.response.ScrapFolderRespons
 import com.shyashyashya.refit.domain.scrapfolder.service.ScrapFolderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import com.shyashyashya.refit.global.dto.CommonResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
