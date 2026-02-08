@@ -62,13 +62,11 @@ public class GoogleOAuth2Controller implements OAuth2Controller {
     }
 
     private String getRequestHostUrlFrom(HttpServletRequest request) {
-        try {
-            URI uri = URI.create(request.getRequestURL().toString());
-            var hostUri = new URI(uri.getScheme(), uri.getAuthority(), null, null, null);
-            return hostUri.toString();
-        } catch (URISyntaxException e) {
-            throw new IllegalStateException("Failed to parse request URL", e);
-        }
+        return UriComponentsBuilder.fromUriString(request.getRequestURL().toString())
+            .replacePath(null)
+            .replaceQuery(null)
+            .build()
+            .toUriString();
     }
 
     private String buildRedirectUrl(OAuth2ResultDto oAuth2ResultDto) {
