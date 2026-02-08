@@ -1,4 +1,6 @@
+export { default as ArrowLeftIcon } from './arrow_left_icon.svg?react'
 export { default as ArrowRightIcon } from './arrow_right_icon.svg?react'
+export { default as BookmarkIcon } from './bookmark_icon.svg?react'
 export { default as BubbleTailIcon } from './bubble_tail_icon.svg?react'
 export { default as CalendarStarIcon } from './calendar_star_icon.svg?react'
 export { default as CaretDownIcon } from './caret_down_icon.svg?react'
