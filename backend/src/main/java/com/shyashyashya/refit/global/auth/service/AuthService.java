@@ -24,24 +24,25 @@ public class AuthService {
     private final EntityManager entityManager;
 
     @Transactional
+    // TODO: 추후 AccessToken이 없어도 발급 가능하도록 수정
     public Optional<TokenPairDto> reissue(String accessToken, String refreshToken) {
 
         // 토큰이 없거나 서명이 불일치하는 경우 새로 발급 필요(로그인 유도)
-        jwtUtil.validateTokenIgnoringExpiration(accessToken);
-        jwtUtil.validateTokenIgnoringExpiration(refreshToken);
+        var validatedAccessToken = jwtUtil.getValidatedJwtTokenAllowExpired(accessToken);
+        var validatedRefreshToken = jwtUtil.getValidatedJwtTokenAllowExpired(refreshToken);
 
         // 리프레시 토큰이 만료되었으면 로그인 필요
-        if (jwtUtil.isTokenExpired(refreshToken)) {
+        if (validatedRefreshToken.isExpired()) {
             refreshTokenRepository.deleteByToken(refreshToken);
             throw new CustomException(LOGIN_REQUIRED);
         }
         // 액세스 토큰이 만료되지 않았으면 재발급 불필요
-        if (!jwtUtil.isTokenExpired(accessToken)) {
+        if (!validatedAccessToken.isExpired()) {
             return Optional.empty();
         }
 
-        String email = jwtUtil.getEmail(refreshToken);
-        Long userId = jwtUtil.getUserId(accessToken).orElse(null);
+        String email = jwtUtil.getEmail(validatedRefreshToken);
+        Long userId = jwtUtil.getUserId(validatedAccessToken).orElse(null);
 
         // 리프레시 토큰이 저장소에 없으면 탈취 의심, 재로그인 필요
         RefreshToken storedToken = refreshTokenRepository
@@ -54,7 +55,7 @@ public class AuthService {
         // 리프레시 토큰을 신뢰, Refresh Token Rotate 및 Access Token 재발급
         String newAccessToken = jwtUtil.createAccessToken(email, userId);
         String newRefreshToken = jwtUtil.createRefreshToken(email, userId);
-        Instant newExpiryDate = jwtUtil.getExpiration(newRefreshToken);
+        Instant newExpiryDate = jwtUtil.getValidatedJwtToken(newRefreshToken).getExpiration();
 
         storedToken.rotate(newRefreshToken, newExpiryDate);
 
