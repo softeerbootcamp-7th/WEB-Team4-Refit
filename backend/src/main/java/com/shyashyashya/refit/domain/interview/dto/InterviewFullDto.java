@@ -25,7 +25,7 @@ public record InterviewFullDto(
         LocalDateTime updatedAt,
         String pdfUrl,
         List<QnaSetDto> qnaSets,
-        KptReviewDto kptReviewDto) {
+        KptReviewDto kptReview) {
     public static InterviewFullDto fromInterviewWithEmptyQnaSets(Interview interview) {
         return InterviewFullDto.builder()
                 .interviewId(interview.getId())
@@ -71,7 +71,7 @@ public record InterviewFullDto(
                 .updatedAt(interview.getUpdatedAt())
                 .pdfUrl(interview.getPdfUrl())
                 .qnaSets(qnaSetDtos)
-                .kptReviewDto(kptReviewDto)
+                .kptReview(kptReviewDto)
                 .build();
     }
 }
