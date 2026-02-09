@@ -6,6 +6,9 @@
  */
 import { useMutation, useQuery } from '@tanstack/react-query'
 import type {
+  CommonResponsePageScrapFolderQnaSetResponse,
+  CommonResponsePageScrapFolderResponse,
+  CommonResponseVoid,
   GetMyScrapFoldersParams,
   GetQnaSetsInScrapFolderParams,
   ScrapFolderCreateRequest,
@@ -27,8 +30,12 @@ import type {
 } from '@tanstack/react-query'
 
 
+/**
+ * 스크랩 폴더 리스트에 '나의 어려웠던 질문' 폴더는 포함하지 않습니다. 해당 폴더의 내용은 어려웠던 질문을 조회하는 API로 조회합니다.
+ * @summary 나의 스크랩 폴더 리스트를 조회합니다.
+ */
 export type getMyScrapFoldersResponse200 = {
-  data: Blob
+  data: CommonResponsePageScrapFolderResponse
   status: 200
 }
 
@@ -137,6 +144,9 @@ export function useGetMyScrapFolders<TData = Awaited<ReturnType<typeof getMyScra
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 나의 스크랩 폴더 리스트를 조회합니다.
+ */
 
 export function useGetMyScrapFolders<TData = Awaited<ReturnType<typeof getMyScrapFolders>>, TError = unknown>(
   params: GetMyScrapFoldersParams,
@@ -155,8 +165,11 @@ export function useGetMyScrapFolders<TData = Awaited<ReturnType<typeof getMyScra
   return { ...query, queryKey: queryOptions.queryKey }
 }
 
+/**
+ * @summary 스크랩 폴더를 생성합니다.
+ */
 export type createScrapFolderResponse200 = {
-  data: Blob
+  data: CommonResponseVoid
   status: 200
 }
 
@@ -223,6 +236,9 @@ export type CreateScrapFolderMutationResult = NonNullable<Awaited<ReturnType<typ
 export type CreateScrapFolderMutationBody = ScrapFolderCreateRequest
 export type CreateScrapFolderMutationError = unknown
 
+/**
+ * @summary 스크랩 폴더를 생성합니다.
+ */
 export const useCreateScrapFolder = <TError = unknown, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -242,8 +258,11 @@ export const useCreateScrapFolder = <TError = unknown, TContext = unknown>(
 > => {
   return useMutation(getCreateScrapFolderMutationOptions(options), queryClient)
 }
+/**
+ * @summary 스크랩 폴더의 이름을 수정합니다.
+ */
 export type updateScrapFolderNameResponse200 = {
-  data: Blob
+  data: CommonResponseVoid
   status: 200
 }
 
@@ -311,6 +330,9 @@ export type UpdateScrapFolderNameMutationResult = NonNullable<Awaited<ReturnType
 export type UpdateScrapFolderNameMutationBody = ScrapFolderNameUpdateRequest
 export type UpdateScrapFolderNameMutationError = unknown
 
+/**
+ * @summary 스크랩 폴더의 이름을 수정합니다.
+ */
 export const useUpdateScrapFolderName = <TError = unknown, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -330,8 +352,12 @@ export const useUpdateScrapFolderName = <TError = unknown, TContext = unknown>(
 > => {
   return useMutation(getUpdateScrapFolderNameMutationOptions(options), queryClient)
 }
+/**
+ * '나의 어려웠던 질문' 폴더는 포함하지 않습니다. 해당 폴더의 내용은 어려웠던 질문을 조회하는 API로 조회합니다.
+ * @summary 나의 스크랩 폴더 내 질문 답변 세트 리스트를 조회합니다.
+ */
 export type getQnaSetsInScrapFolderResponse200 = {
-  data: Blob
+  data: CommonResponsePageScrapFolderQnaSetResponse
   status: 200
 }
 
@@ -456,6 +482,9 @@ export function useGetQnaSetsInScrapFolder<
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 나의 스크랩 폴더 내 질문 답변 세트 리스트를 조회합니다.
+ */
 
 export function useGetQnaSetsInScrapFolder<
   TData = Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>,
@@ -478,8 +507,11 @@ export function useGetQnaSetsInScrapFolder<
   return { ...query, queryKey: queryOptions.queryKey }
 }
 
+/**
+ * @summary 스크랩 폴더를 삭제합니다.
+ */
 export type deleteScrapFolderResponse200 = {
-  data: Blob
+  data: CommonResponseVoid
   status: 200
 }
 
@@ -538,6 +570,9 @@ export type DeleteScrapFolderMutationResult = NonNullable<Awaited<ReturnType<typ
 
 export type DeleteScrapFolderMutationError = unknown
 
+/**
+ * @summary 스크랩 폴더를 삭제합니다.
+ */
 export const useDeleteScrapFolder = <TError = unknown, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<

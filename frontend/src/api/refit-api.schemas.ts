@@ -802,15 +802,15 @@ export interface CommonResponseListDashboardCalendarResponse {
   result?: DashboardCalendarResponse[]
 }
 
-export interface OAuthLoginUrlResponse {
-  oAuthLoginUrl?: string
+export interface OAuth2LoginUrlResponse {
+  oAuth2LoginUrl?: string
 }
 
-export interface CommonResponseOAuthLoginUrlResponse {
+export interface CommonResponseOAuth2LoginUrlResponse {
   isSuccess?: boolean
   code?: string
   message?: string
-  result?: OAuthLoginUrlResponse
+  result?: OAuth2LoginUrlResponse
 }
 
 export type GetMyScrapFoldersParams = {
@@ -906,6 +906,7 @@ export type GetDashboardCalendarInterviewsParams = {
 
 export type HandleOAuth2CallbackParams = {
   code: string
+  state: string
 }
 
 export type DeleteUserByEmailParams = {

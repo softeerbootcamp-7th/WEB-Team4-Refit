@@ -5,7 +5,7 @@
  * OpenAPI spec version: v0
  */
 import { useQuery } from '@tanstack/react-query'
-import type { HandleOAuth2CallbackParams } from '../refit-api.schemas'
+import type { CommonResponseOAuth2LoginUrlResponse, HandleOAuth2CallbackParams } from '../refit-api.schemas'
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -19,68 +19,71 @@ import type {
 } from '@tanstack/react-query'
 
 
-export type getOAuth2LoginUrlResponse200 = {
-  data: Blob
+/**
+ * @summary 구글 로그인 화면으로 이동하는 url을 생성합니다.
+ */
+export type buildOAuth2LoginUrlResponse200 = {
+  data: CommonResponseOAuth2LoginUrlResponse
   status: 200
 }
 
-export type getOAuth2LoginUrlResponseSuccess = getOAuth2LoginUrlResponse200 & {
+export type buildOAuth2LoginUrlResponseSuccess = buildOAuth2LoginUrlResponse200 & {
   headers: Headers
 }
-export type getOAuth2LoginUrlResponse = getOAuth2LoginUrlResponseSuccess
+export type buildOAuth2LoginUrlResponse = buildOAuth2LoginUrlResponseSuccess
 
-export const getGetOAuth2LoginUrlUrl = () => {
+export const getBuildOAuth2LoginUrlUrl = () => {
   return `/auth/login/google`
 }
 
-export const getOAuth2LoginUrl = async (options?: RequestInit): Promise<getOAuth2LoginUrlResponse> => {
-  const res = await fetch(getGetOAuth2LoginUrlUrl(), {
+export const buildOAuth2LoginUrl = async (options?: RequestInit): Promise<buildOAuth2LoginUrlResponse> => {
+  const res = await fetch(getBuildOAuth2LoginUrlUrl(), {
     ...options,
     method: 'GET',
   })
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text()
 
-  const data: getOAuth2LoginUrlResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getOAuth2LoginUrlResponse
+  const data: buildOAuth2LoginUrlResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as buildOAuth2LoginUrlResponse
 }
 
-export const getGetOAuth2LoginUrlQueryKey = () => {
+export const getBuildOAuth2LoginUrlQueryKey = () => {
   return [`/auth/login/google`] as const
 }
 
-export const getGetOAuth2LoginUrlQueryOptions = <
-  TData = Awaited<ReturnType<typeof getOAuth2LoginUrl>>,
+export const getBuildOAuth2LoginUrlQueryOptions = <
+  TData = Awaited<ReturnType<typeof buildOAuth2LoginUrl>>,
   TError = unknown,
 >(options?: {
-  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOAuth2LoginUrl>>, TError, TData>>
+  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof buildOAuth2LoginUrl>>, TError, TData>>
   fetch?: RequestInit
 }) => {
   const { query: queryOptions, fetch: fetchOptions } = options ?? {}
 
-  const queryKey = queryOptions?.queryKey ?? getGetOAuth2LoginUrlQueryKey()
+  const queryKey = queryOptions?.queryKey ?? getBuildOAuth2LoginUrlQueryKey()
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getOAuth2LoginUrl>>> = ({ signal }) =>
-    getOAuth2LoginUrl({ signal, ...fetchOptions })
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof buildOAuth2LoginUrl>>> = ({ signal }) =>
+    buildOAuth2LoginUrl({ signal, ...fetchOptions })
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getOAuth2LoginUrl>>,
+    Awaited<ReturnType<typeof buildOAuth2LoginUrl>>,
     TError,
     TData
   > & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type GetOAuth2LoginUrlQueryResult = NonNullable<Awaited<ReturnType<typeof getOAuth2LoginUrl>>>
-export type GetOAuth2LoginUrlQueryError = unknown
+export type BuildOAuth2LoginUrlQueryResult = NonNullable<Awaited<ReturnType<typeof buildOAuth2LoginUrl>>>
+export type BuildOAuth2LoginUrlQueryError = unknown
 
-export function useGetOAuth2LoginUrl<TData = Awaited<ReturnType<typeof getOAuth2LoginUrl>>, TError = unknown>(
+export function useBuildOAuth2LoginUrl<TData = Awaited<ReturnType<typeof buildOAuth2LoginUrl>>, TError = unknown>(
   options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOAuth2LoginUrl>>, TError, TData>> &
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof buildOAuth2LoginUrl>>, TError, TData>> &
       Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getOAuth2LoginUrl>>,
+          Awaited<ReturnType<typeof buildOAuth2LoginUrl>>,
           TError,
-          Awaited<ReturnType<typeof getOAuth2LoginUrl>>
+          Awaited<ReturnType<typeof buildOAuth2LoginUrl>>
         >,
         'initialData'
       >
@@ -88,14 +91,14 @@ export function useGetOAuth2LoginUrl<TData = Awaited<ReturnType<typeof getOAuth2
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetOAuth2LoginUrl<TData = Awaited<ReturnType<typeof getOAuth2LoginUrl>>, TError = unknown>(
+export function useBuildOAuth2LoginUrl<TData = Awaited<ReturnType<typeof buildOAuth2LoginUrl>>, TError = unknown>(
   options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOAuth2LoginUrl>>, TError, TData>> &
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof buildOAuth2LoginUrl>>, TError, TData>> &
       Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getOAuth2LoginUrl>>,
+          Awaited<ReturnType<typeof buildOAuth2LoginUrl>>,
           TError,
-          Awaited<ReturnType<typeof getOAuth2LoginUrl>>
+          Awaited<ReturnType<typeof buildOAuth2LoginUrl>>
         >,
         'initialData'
       >
@@ -103,22 +106,25 @@ export function useGetOAuth2LoginUrl<TData = Awaited<ReturnType<typeof getOAuth2
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetOAuth2LoginUrl<TData = Awaited<ReturnType<typeof getOAuth2LoginUrl>>, TError = unknown>(
+export function useBuildOAuth2LoginUrl<TData = Awaited<ReturnType<typeof buildOAuth2LoginUrl>>, TError = unknown>(
   options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOAuth2LoginUrl>>, TError, TData>>
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof buildOAuth2LoginUrl>>, TError, TData>>
     fetch?: RequestInit
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 구글 로그인 화면으로 이동하는 url을 생성합니다.
+ */
 
-export function useGetOAuth2LoginUrl<TData = Awaited<ReturnType<typeof getOAuth2LoginUrl>>, TError = unknown>(
+export function useBuildOAuth2LoginUrl<TData = Awaited<ReturnType<typeof buildOAuth2LoginUrl>>, TError = unknown>(
   options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOAuth2LoginUrl>>, TError, TData>>
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof buildOAuth2LoginUrl>>, TError, TData>>
     fetch?: RequestInit
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetOAuth2LoginUrlQueryOptions(options)
+  const queryOptions = getBuildOAuth2LoginUrlQueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>
@@ -127,6 +133,10 @@ export function useGetOAuth2LoginUrl<TData = Awaited<ReturnType<typeof getOAuth2
   return { ...query, queryKey: queryOptions.queryKey }
 }
 
+/**
+ * 인가 코드를 활용하여 refit 서비스의 토큰을 발급하여 클라이언트에게 쿠키로 설정합니다.
+ * @summary 구글 로그인에 성공했을 때 호출되는 콜백 API 입니다.
+ */
 export type handleOAuth2CallbackResponse200 = {
   data: void
   status: 200
@@ -239,6 +249,9 @@ export function useHandleOAuth2Callback<TData = Awaited<ReturnType<typeof handle
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 구글 로그인에 성공했을 때 호출되는 콜백 API 입니다.
+ */
 
 export function useHandleOAuth2Callback<TData = Awaited<ReturnType<typeof handleOAuth2Callback>>, TError = unknown>(
   params: HandleOAuth2CallbackParams,

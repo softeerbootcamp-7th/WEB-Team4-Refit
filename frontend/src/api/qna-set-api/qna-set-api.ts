@@ -6,6 +6,9 @@
  */
 import { useMutation, useQuery } from '@tanstack/react-query'
 import type {
+  CommonResponseListFrequentQnaSetResponse,
+  CommonResponseListPdfHighlightingDto,
+  CommonResponseVoid,
   GetFrequentQuestionsParams,
   PdfHighlightingUpdateRequest,
   QnaSetUpdateRequest,
@@ -26,8 +29,12 @@ import type {
 } from '@tanstack/react-query'
 
 
+/**
+ * 질문 답변 내용 수정은 '기록중' 상태에서만 가능합니다.
+ * @summary 지정한 질문 답변 세트의 질문 답변 내용을 수정합니다.
+ */
 export type updateQnaSetResponse200 = {
-  data: Blob
+  data: CommonResponseVoid
   status: 200
 }
 
@@ -95,6 +102,9 @@ export type UpdateQnaSetMutationResult = NonNullable<Awaited<ReturnType<typeof u
 export type UpdateQnaSetMutationBody = QnaSetUpdateRequest
 export type UpdateQnaSetMutationError = unknown
 
+/**
+ * @summary 지정한 질문 답변 세트의 질문 답변 내용을 수정합니다.
+ */
 export const useUpdateQnaSet = <TError = unknown, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -114,8 +124,11 @@ export const useUpdateQnaSet = <TError = unknown, TContext = unknown>(
 > => {
   return useMutation(getUpdateQnaSetMutationOptions(options), queryClient)
 }
+/**
+ * @summary 지정한 질문 답변 세트에 대해 등록된 PDF 하이라이팅 정보를 조회합니다.
+ */
 export type getPdfHighlightingsResponse200 = {
-  data: Blob
+  data: CommonResponseListPdfHighlightingDto
   status: 200
 }
 
@@ -214,6 +227,9 @@ export function useGetPdfHighlightings<TData = Awaited<ReturnType<typeof getPdfH
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 지정한 질문 답변 세트에 대해 등록된 PDF 하이라이팅 정보를 조회합니다.
+ */
 
 export function useGetPdfHighlightings<TData = Awaited<ReturnType<typeof getPdfHighlightings>>, TError = unknown>(
   qnaSetId: number,
@@ -232,8 +248,11 @@ export function useGetPdfHighlightings<TData = Awaited<ReturnType<typeof getPdfH
   return { ...query, queryKey: queryOptions.queryKey }
 }
 
+/**
+ * @summary 지정한 질문 답변 세트에 대해 PDF 하이라이팅 정보를 등록/수정합니다.
+ */
 export type updatePdfHighlightingResponse200 = {
-  data: Blob
+  data: CommonResponseVoid
   status: 200
 }
 
@@ -301,6 +320,9 @@ export type UpdatePdfHighlightingMutationResult = NonNullable<Awaited<ReturnType
 export type UpdatePdfHighlightingMutationBody = PdfHighlightingUpdateRequest[]
 export type UpdatePdfHighlightingMutationError = unknown
 
+/**
+ * @summary 지정한 질문 답변 세트에 대해 PDF 하이라이팅 정보를 등록/수정합니다.
+ */
 export const useUpdatePdfHighlighting = <TError = unknown, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -320,8 +342,11 @@ export const useUpdatePdfHighlighting = <TError = unknown, TContext = unknown>(
 > => {
   return useMutation(getUpdatePdfHighlightingMutationOptions(options), queryClient)
 }
+/**
+ * @summary 지정한 질문에 대해 어려웠던 질문 마킹을 등록 해제 합니다.
+ */
 export type unmarkDifficultQuestionResponse200 = {
-  data: Blob
+  data: CommonResponseVoid
   status: 200
 }
 
@@ -380,6 +405,9 @@ export type UnmarkDifficultQuestionMutationResult = NonNullable<Awaited<ReturnTy
 
 export type UnmarkDifficultQuestionMutationError = unknown
 
+/**
+ * @summary 지정한 질문에 대해 어려웠던 질문 마킹을 등록 해제 합니다.
+ */
 export const useUnmarkDifficultQuestion = <TError = unknown, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -394,8 +422,11 @@ export const useUnmarkDifficultQuestion = <TError = unknown, TContext = unknown>
 ): UseMutationResult<Awaited<ReturnType<typeof unmarkDifficultQuestion>>, TError, { qnaSetId: number }, TContext> => {
   return useMutation(getUnmarkDifficultQuestionMutationOptions(options), queryClient)
 }
+/**
+ * @summary 지정한 질문에 대해 어려웠던 질문 마킹을 등록합니다.
+ */
 export type markDifficultQuestionResponse200 = {
-  data: Blob
+  data: CommonResponseVoid
   status: 200
 }
 
@@ -454,6 +485,9 @@ export type MarkDifficultQuestionMutationResult = NonNullable<Awaited<ReturnType
 
 export type MarkDifficultQuestionMutationError = unknown
 
+/**
+ * @summary 지정한 질문에 대해 어려웠던 질문 마킹을 등록합니다.
+ */
 export const useMarkDifficultQuestion = <TError = unknown, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -468,8 +502,12 @@ export const useMarkDifficultQuestion = <TError = unknown, TContext = unknown>(
 ): UseMutationResult<Awaited<ReturnType<typeof markDifficultQuestion>>, TError, { qnaSetId: number }, TContext> => {
   return useMutation(getMarkDifficultQuestionMutationOptions(options), queryClient)
 }
+/**
+ * 지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다. 지정하지 않은 필드에 대해서는 전체를 대상으로 조회합니다.
+ * @summary 지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다.
+ */
 export type getFrequentQuestionsResponse200 = {
-  data: Blob
+  data: CommonResponseListFrequentQnaSetResponse
   status: 200
 }
 
@@ -578,6 +616,9 @@ export function useGetFrequentQuestions<TData = Awaited<ReturnType<typeof getFre
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다.
+ */
 
 export function useGetFrequentQuestions<TData = Awaited<ReturnType<typeof getFrequentQuestions>>, TError = unknown>(
   params: GetFrequentQuestionsParams,

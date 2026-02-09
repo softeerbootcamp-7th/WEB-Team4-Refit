@@ -6,6 +6,10 @@
  */
 import { useMutation, useQuery } from '@tanstack/react-query'
 import type {
+  CommonResponseGuideQuestionResponse,
+  CommonResponseInterviewDto,
+  CommonResponseInterviewFullDto,
+  CommonResponseVoid,
   InterviewCreateRequest,
   InterviewResultStatusUpdateRequest,
   KptSelfReviewUpdateRequest,
@@ -27,8 +31,12 @@ import type {
 } from '@tanstack/react-query'
 
 
+/**
+ * 질문, 답변으로 변환되기 전 raw 면접 기록 데이터를 수정합니다.
+ * @summary 면접 기록 데이터를 생성/수정합니다.
+ */
 export type updateRawTextResponse200 = {
-  data: Blob
+  data: CommonResponseVoid
   status: 200
 }
 
@@ -96,6 +104,9 @@ export type UpdateRawTextMutationResult = NonNullable<Awaited<ReturnType<typeof 
 export type UpdateRawTextMutationBody = RawTextUpdateRequest
 export type UpdateRawTextMutationError = unknown
 
+/**
+ * @summary 면접 기록 데이터를 생성/수정합니다.
+ */
 export const useUpdateRawText = <TError = unknown, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -115,8 +126,11 @@ export const useUpdateRawText = <TError = unknown, TContext = unknown>(
 > => {
   return useMutation(getUpdateRawTextMutationOptions(options), queryClient)
 }
+/**
+ * @summary 면접에 대한 KPT 회고를 생성/수정합니다.
+ */
 export type updateKptSelfReviewResponse200 = {
-  data: Blob
+  data: CommonResponseVoid
   status: 200
 }
 
@@ -184,6 +198,9 @@ export type UpdateKptSelfReviewMutationResult = NonNullable<Awaited<ReturnType<t
 export type UpdateKptSelfReviewMutationBody = KptSelfReviewUpdateRequest
 export type UpdateKptSelfReviewMutationError = unknown
 
+/**
+ * @summary 면접에 대한 KPT 회고를 생성/수정합니다.
+ */
 export const useUpdateKptSelfReview = <TError = unknown, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -203,8 +220,11 @@ export const useUpdateKptSelfReview = <TError = unknown, TContext = unknown>(
 > => {
   return useMutation(getUpdateKptSelfReviewMutationOptions(options), queryClient)
 }
+/**
+ * @summary 면접 데이터를 생성합니다.
+ */
 export type createInterviewResponse200 = {
-  data: Blob
+  data: CommonResponseVoid
   status: 200
 }
 
@@ -270,6 +290,9 @@ export type CreateInterviewMutationResult = NonNullable<Awaited<ReturnType<typeo
 export type CreateInterviewMutationBody = InterviewCreateRequest
 export type CreateInterviewMutationError = unknown
 
+/**
+ * @summary 면접 데이터를 생성합니다.
+ */
 export const useCreateInterview = <TError = unknown, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -289,8 +312,11 @@ export const useCreateInterview = <TError = unknown, TContext = unknown>(
 > => {
   return useMutation(getCreateInterviewMutationOptions(options), queryClient)
 }
+/**
+ * @summary 면접 결과를 수정합니다.
+ */
 export type updateInterviewResultStatusResponse200 = {
-  data: Blob
+  data: CommonResponseVoid
   status: 200
 }
 
@@ -360,6 +386,9 @@ export type UpdateInterviewResultStatusMutationResult = NonNullable<
 export type UpdateInterviewResultStatusMutationBody = InterviewResultStatusUpdateRequest
 export type UpdateInterviewResultStatusMutationError = unknown
 
+/**
+ * @summary 면접 결과를 수정합니다.
+ */
 export const useUpdateInterviewResultStatus = <TError = unknown, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -379,8 +408,12 @@ export const useUpdateInterviewResultStatus = <TError = unknown, TContext = unkn
 > => {
   return useMutation(getUpdateInterviewResultStatusMutationOptions(options), queryClient)
 }
+/**
+ * 면접에 대한 정보만 조회하며, 면접에 속한 질문, 회고 등의 정보는 조회하지 않습니다.
+ * @summary 특정 면접 정보를 조회합니다.
+ */
 export type getInterviewResponse200 = {
-  data: Blob
+  data: CommonResponseInterviewDto
   status: 200
 }
 
@@ -473,6 +506,9 @@ export function useGetInterview<TData = Awaited<ReturnType<typeof getInterview>>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 특정 면접 정보를 조회합니다.
+ */
 
 export function useGetInterview<TData = Awaited<ReturnType<typeof getInterview>>, TError = unknown>(
   interviewId: number,
@@ -491,8 +527,12 @@ export function useGetInterview<TData = Awaited<ReturnType<typeof getInterview>>
   return { ...query, queryKey: queryOptions.queryKey }
 }
 
+/**
+ * 면접 삭제시 해당 면접에 기록된 질문, 회고 데이터도 함께 삭제됩니다.
+ * @summary 면접을 삭제합니다.
+ */
 export type deleteInterviewResponse200 = {
-  data: Blob
+  data: CommonResponseVoid
   status: 200
 }
 
@@ -543,6 +583,9 @@ export type DeleteInterviewMutationResult = NonNullable<Awaited<ReturnType<typeo
 
 export type DeleteInterviewMutationError = unknown
 
+/**
+ * @summary 면접을 삭제합니다.
+ */
 export const useDeleteInterview = <TError = unknown, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -557,8 +600,11 @@ export const useDeleteInterview = <TError = unknown, TContext = unknown>(
 ): UseMutationResult<Awaited<ReturnType<typeof deleteInterview>>, TError, { interviewId: number }, TContext> => {
   return useMutation(getDeleteInterviewMutationOptions(options), queryClient)
 }
+/**
+ * @summary 면접 및 면접에 관련된 질문, 회고 데이터를 모두 조회합니다.
+ */
 export type getInterviewFullResponse200 = {
-  data: Blob
+  data: CommonResponseInterviewFullDto
   status: 200
 }
 
@@ -654,6 +700,9 @@ export function useGetInterviewFull<TData = Awaited<ReturnType<typeof getIntervi
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 면접 및 면접에 관련된 질문, 회고 데이터를 모두 조회합니다.
+ */
 
 export function useGetInterviewFull<TData = Awaited<ReturnType<typeof getInterviewFull>>, TError = unknown>(
   interviewId: number,
@@ -672,8 +721,11 @@ export function useGetInterviewFull<TData = Awaited<ReturnType<typeof getIntervi
   return { ...query, queryKey: queryOptions.queryKey }
 }
 
+/**
+ * @summary 면접 기록 중, 가이드 질문을 조회합니다.
+ */
 export type getGuideQuestionResponse200 = {
-  data: Blob
+  data: CommonResponseGuideQuestionResponse
   status: 200
 }
 
@@ -769,6 +821,9 @@ export function useGetGuideQuestion<TData = Awaited<ReturnType<typeof getGuideQu
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 면접 기록 중, 가이드 질문을 조회합니다.
+ */
 
 export function useGetGuideQuestion<TData = Awaited<ReturnType<typeof getGuideQuestion>>, TError = unknown>(
   interviewId: number,

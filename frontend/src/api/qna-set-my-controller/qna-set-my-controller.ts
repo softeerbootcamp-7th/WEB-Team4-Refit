@@ -6,6 +6,9 @@
  */
 import { useMutation, useQuery } from '@tanstack/react-query'
 import type {
+  CommonResponsePageFrequentQnaSetCategoryQuestionResponse,
+  CommonResponsePageFrequentQnaSetCategoryResponse,
+  CommonResponsePageQnaSetSearchResponse,
   GetMyFrequentQnaSetCategoriesParams,
   GetMyFrequentQnaSetCategoryQuestionsParams,
   QnaSetSearchRequest,
@@ -32,7 +35,7 @@ import type {
  * @summary 나의 면접 질문들을 검색합니다.
  */
 export type searchMyQnaSetResponse200 = {
-  data: Blob
+  data: CommonResponsePageQnaSetSearchResponse
   status: 200
 }
 
@@ -137,7 +140,7 @@ export const useSearchMyQnaSet = <TError = unknown, TContext = unknown>(
  * @summary 나의 빈출 질문 카테고리 리스트와 각 카테고리 별 질문 개수를 조회합니다.
  */
 export type getMyFrequentQnaSetCategoriesResponse200 = {
-  data: Blob
+  data: CommonResponsePageFrequentQnaSetCategoryResponse
   status: 200
 }
 
@@ -288,7 +291,7 @@ export function useGetMyFrequentQnaSetCategories<
  * @summary 나의 빈출 질문 중 특정 카테고리에 속한 질문들을 조회합니다.
  */
 export type getMyFrequentQnaSetCategoryQuestionsResponse200 = {
-  data: Blob
+  data: CommonResponsePageFrequentQnaSetCategoryQuestionResponse
   status: 200
 }
 

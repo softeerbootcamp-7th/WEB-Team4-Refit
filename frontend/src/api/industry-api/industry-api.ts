@@ -5,6 +5,7 @@
  * OpenAPI spec version: v0
  */
 import { useQuery } from '@tanstack/react-query'
+import type { CommonResponseListIndustryResponse } from '../refit-api.schemas'
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -17,11 +18,12 @@ import type {
   UseQueryResult,
 } from '@tanstack/react-query'
 
+
 /**
  * @summary 산업군 리스트를 조회합니다.
  */
 export type getIndustriesResponse200 = {
-  data: Blob
+  data: CommonResponseListIndustryResponse
   status: 200
 }
 

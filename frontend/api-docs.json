@@ -3,16 +3,25 @@
   "info": { "title": "OpenAPI definition", "version": "v0" },
   "servers": [{ "url": "https://api.refit.my" }],
   "tags": [
-    { "name": "Job Category API", "description": "직무 관련 API 입니다." },
     { "name": "Test Auth/User API", "description": "개발용 테스트 인증/인가 API입니다." },
-    { "name": "Qna-Set My Controller", "description": "나의 질문과 관련된 API 컨트롤러 입니다." },
+    { "name": "Auth Controller", "description": "인증 관련 API 입니다." },
     { "name": "Dashboard API", "description": "대시보드 화면에서 사용하는 API 입니다." },
-    { "name": "Industry API", "description": "산업군 관련 API 입니다." }
+    { "name": "Google OAuth API", "description": "구글 OAUth 인증 관련 API 입니다." },
+    { "name": "Industry API", "description": "산업군 관련 API 입니다." },
+    { "name": "Interview API", "description": "면접 기록 및 면접 회고 작성 관련 API 입니다." },
+    { "name": "Interview My API", "description": "면접 아카이브 데이터와 관련된 API 입니다." },
+    { "name": "Job Category API", "description": "직무 관련 API 입니다." },
+    { "name": "QnA Set API", "description": "질문 답변 세트 관련 API 입니다." },
+    { "name": "Qna Set My Controller", "description": "나의 질문 아카이브 데이터와 관련된 API 컨트롤러 입니다." },
+    { "name": "Scrap Folder API", "description": "스크랩 폴더 관련 API 입니다." },
+    { "name": "User API", "description": "유저와 관련된 API 입니다." }
   ],
   "paths": {
     "/qna-set/{qnaSetId}": {
       "put": {
-        "tags": ["qna-set-controller"],
+        "tags": ["QnA Set API"],
+        "summary": "지정한 질문 답변 세트의 질문 답변 내용을 수정합니다.",
+        "description": "질문 답변 내용 수정은 '기록중' 상태에서만 가능합니다.",
         "operationId": "updateQnaSet",
         "parameters": [
           { "name": "qnaSetId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int64" } }
@@ -24,14 +33,15 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
           }
         }
       }
     },
     "/qna-set/{qnaSetId}/pdf-highlightings": {
       "get": {
-        "tags": ["qna-set-controller"],
+        "tags": ["QnA Set API"],
+        "summary": "지정한 질문 답변 세트에 대해 등록된 PDF 하이라이팅 정보를 조회합니다.",
         "operationId": "getPdfHighlightings",
         "parameters": [
           { "name": "qnaSetId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int64" } }
@@ -39,12 +49,15 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseListPdfHighlightingDto" } } }
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponseListPdfHighlightingDto" } }
+            }
           }
         }
       },
       "put": {
-        "tags": ["qna-set-controller"],
+        "tags": ["QnA Set API"],
+        "summary": "지정한 질문 답변 세트에 대해 PDF 하이라이팅 정보를 등록/수정합니다.",
         "operationId": "updatePdfHighlighting",
         "parameters": [
           { "name": "qnaSetId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int64" } }
@@ -60,14 +73,16 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
           }
         }
       }
     },
     "/interview/{interviewId}/raw-text": {
       "put": {
-        "tags": ["interview-controller"],
+        "tags": ["Interview API"],
+        "summary": "면접 기록 데이터를 생성/수정합니다.",
+        "description": "질문, 답변으로 변환되기 전 raw 면접 기록 데이터를 수정합니다.",
         "operationId": "updateRawText",
         "parameters": [
           { "name": "interviewId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int64" } }
@@ -79,14 +94,15 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
           }
         }
       }
     },
     "/interview/{interviewId}/kpt-self-review": {
       "put": {
-        "tags": ["interview-controller"],
+        "tags": ["Interview API"],
+        "summary": "면접에 대한 KPT 회고를 생성/수정합니다.",
         "operationId": "updateKptSelfReview",
         "parameters": [
           { "name": "interviewId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int64" } }
@@ -100,14 +116,16 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
           }
         }
       }
     },
     "/user/signup": {
       "post": {
-        "tags": ["user-controller"],
+        "tags": ["User API"],
+        "summary": "새롭게 회원가입 합니다.",
+        "description": "현재 로그인한 계정이 아직 등록되지 않은 상태일 때만 회원가입 할 수 있습니다.",
         "operationId": "signUp",
         "requestBody": {
           "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UserSignUpRequest" } } },
@@ -116,26 +134,29 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
           }
         }
       }
     },
     "/user/my/terms/agree": {
       "post": {
-        "tags": ["user-controller"],
+        "tags": ["User API"],
+        "summary": "이용 약관에 동의합니다.",
         "operationId": "agreeToTerms",
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
           }
         }
       }
     },
     "/scrap-folder": {
       "get": {
-        "tags": ["scrap-folder-controller"],
+        "tags": ["Scrap Folder API"],
+        "summary": "나의 스크랩 폴더 리스트를 조회합니다.",
+        "description": "스크랩 폴더 리스트에 '나의 어려웠던 질문' 폴더는 포함하지 않습니다. 해당 폴더의 내용은 어려웠던 질문을 조회하는 API로 조회합니다.",
         "operationId": "getMyScrapFolders",
         "parameters": [
           { "name": "pageable", "in": "query", "required": true, "schema": { "$ref": "#/components/schemas/Pageable" } }
@@ -143,12 +164,15 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponsePageScrapFolderResponse" } } }
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponsePageScrapFolderResponse" } }
+            }
           }
         }
       },
       "post": {
-        "tags": ["scrap-folder-controller"],
+        "tags": ["Scrap Folder API"],
+        "summary": "스크랩 폴더를 생성합니다.",
         "operationId": "createScrapFolder",
         "requestBody": {
           "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ScrapFolderCreateRequest" } } },
@@ -157,14 +181,14 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
           }
         }
       }
     },
     "/qna-set/my/search": {
       "post": {
-        "tags": ["Qna-Set My Controller"],
+        "tags": ["Qna Set My Controller"],
         "summary": "나의 면접 질문들을 검색합니다.",
         "description": "나의 면접 질문들을 검색합니다. 조건을 넣지 않으면 전체 데이터를 조회합니다.",
         "operationId": "searchMyQnaSet",
@@ -179,7 +203,9 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponsePageQnaSetSearchResponse" } }
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CommonResponsePageQnaSetSearchResponse" }
+              }
             }
           }
         }
@@ -187,7 +213,8 @@
     },
     "/interview": {
       "post": {
-        "tags": ["interview-controller"],
+        "tags": ["Interview API"],
+        "summary": "면접 데이터를 생성합니다.",
         "operationId": "createInterview",
         "requestBody": {
           "content": { "application/json": { "schema": { "$ref": "#/components/schemas/InterviewCreateRequest" } } },
@@ -196,14 +223,15 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
           }
         }
       }
     },
     "/interview/my/search": {
       "post": {
-        "tags": ["interview-my-controller"],
+        "tags": ["Interview My API"],
+        "summary": "내가 복기 완료한 면접을 검색합니다.",
         "operationId": "searchInterviews",
         "parameters": [
           { "name": "pageable", "in": "query", "required": true, "schema": { "$ref": "#/components/schemas/Pageable" } }
@@ -215,14 +243,17 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponsePageInterviewDto" } } }
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponsePageInterviewDto" } }
+            }
           }
         }
       }
     },
     "/scrap-folder/{scrapFolderId}/name": {
       "patch": {
-        "tags": ["scrap-folder-controller"],
+        "tags": ["Scrap Folder API"],
+        "summary": "스크랩 폴더의 이름을 수정합니다.",
         "operationId": "updateScrapFolderName",
         "parameters": [
           {
@@ -241,14 +272,15 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
           }
         }
       }
     },
     "/qna-set/{qnaSetId}/difficult/unmark": {
       "patch": {
-        "tags": ["qna-set-controller"],
+        "tags": ["QnA Set API"],
+        "summary": "지정한 질문에 대해 어려웠던 질문 마킹을 등록 해제 합니다.",
         "operationId": "unmarkDifficultQuestion",
         "parameters": [
           { "name": "qnaSetId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int64" } }
@@ -256,14 +288,15 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
           }
         }
       }
     },
     "/qna-set/{qnaSetId}/difficult/mark": {
       "patch": {
-        "tags": ["qna-set-controller"],
+        "tags": ["QnA Set API"],
+        "summary": "지정한 질문에 대해 어려웠던 질문 마킹을 등록합니다.",
         "operationId": "markDifficultQuestion",
         "parameters": [
           { "name": "qnaSetId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int64" } }
@@ -271,14 +304,15 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
           }
         }
       }
     },
     "/interview/{interviewId}/result-status": {
       "patch": {
-        "tags": ["interview-controller"],
+        "tags": ["Interview API"],
+        "summary": "면접 결과를 수정합니다.",
         "operationId": "updateInterviewResultStatus",
         "parameters": [
           { "name": "interviewId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int64" } }
@@ -292,19 +326,22 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
           }
         }
       }
     },
     "/user/my": {
       "get": {
-        "tags": ["user-controller"],
+        "tags": ["User API"],
+        "summary": "현재 로그인한 유저의 기본 정보를 조회합니다.",
         "operationId": "getMyProfileInfo",
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseMyProfileResponse" } } }
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponseMyProfileResponse" } }
+            }
           }
         }
       }
@@ -312,6 +349,8 @@
     "/test/auth/token": {
       "get": {
         "tags": ["Test Auth/User API"],
+        "summary": "(테스트용) 회원 토큰을 발급합니다.",
+        "description": "발급된 토큰은 요청 주소에 쿠키로 세팅됩니다.",
         "operationId": "getToken",
         "parameters": [
           { "name": "email", "in": "query", "required": true, "schema": { "type": "string", "format": "email" } }
@@ -319,7 +358,9 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseTokenPairDto" } } }
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponseTokenPairDto" } }
+            }
           }
         }
       }
@@ -327,6 +368,8 @@
     "/test/auth/token/guest": {
       "get": {
         "tags": ["Test Auth/User API"],
+        "summary": "(테스트용) 게스트 회원 토큰을 발급합니다.",
+        "description": "발급된 토큰은 요청 주소에 쿠키로 세팅됩니다.",
         "operationId": "getGuestToken",
         "parameters": [
           { "name": "email", "in": "query", "required": true, "schema": { "type": "string", "format": "email" } }
@@ -334,14 +377,18 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseTokenPairDto" } } }
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponseTokenPairDto" } }
+            }
           }
         }
       }
     },
     "/scrap-folder/{scrapFolderId}": {
       "get": {
-        "tags": ["scrap-folder-controller"],
+        "tags": ["Scrap Folder API"],
+        "summary": "나의 스크랩 폴더 내 질문 답변 세트 리스트를 조회합니다.",
+        "description": "'나의 어려웠던 질문' 폴더는 포함하지 않습니다. 해당 폴더의 내용은 어려웠던 질문을 조회하는 API로 조회합니다.",
         "operationId": "getQnaSetsInScrapFolder",
         "parameters": [
           {
@@ -356,13 +403,16 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponsePageScrapFolderQnaSetResponse" } }
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CommonResponsePageScrapFolderQnaSetResponse" }
+              }
             }
           }
         }
       },
       "delete": {
-        "tags": ["scrap-folder-controller"],
+        "tags": ["Scrap Folder API"],
+        "summary": "스크랩 폴더를 삭제합니다.",
         "operationId": "deleteScrapFolder",
         "parameters": [
           {
@@ -375,14 +425,14 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
           }
         }
       }
     },
     "/qna-set/my/frequent/category": {
       "get": {
-        "tags": ["Qna-Set My Controller"],
+        "tags": ["Qna Set My Controller"],
         "summary": "나의 빈출 질문 카테고리 리스트와 각 카테고리 별 질문 개수를 조회합니다.",
         "description": "나의 빈출 질문 카테고리 리스트와 각 카테고리 별 질문 개수를 질문 개수가 많은 카테고리 순으로 정렬하여 조회합니다.",
         "operationId": "getMyFrequentQnaSetCategories",
@@ -393,7 +443,9 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponsePageFrequentQnaSetCategoryResponse" } }
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CommonResponsePageFrequentQnaSetCategoryResponse" }
+              }
             }
           }
         }
@@ -401,7 +453,7 @@
     },
     "/qna-set/my/frequent/category/{categoryId}": {
       "get": {
-        "tags": ["Qna-Set My Controller"],
+        "tags": ["Qna Set My Controller"],
         "summary": "나의 빈출 질문 중 특정 카테고리에 속한 질문들을 조회합니다.",
         "description": "나의 빈출 질문 중 특정 카테고리에 속한 질문들을 조회합니다.",
         "operationId": "getMyFrequentQnaSetCategoryQuestions",
@@ -413,7 +465,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": { "$ref": "#/components/schemas/CommonResponsePageFrequentQnaSetCategoryQuestionResponse" }
               }
             }
@@ -423,7 +475,9 @@
     },
     "/qna-set/frequent": {
       "get": {
-        "tags": ["qna-set-controller"],
+        "tags": ["QnA Set API"],
+        "summary": "지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다.",
+        "description": "지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다. 지정하지 않은 필드에 대해서는 전체를 대상으로 조회합니다.",
         "operationId": "getFrequentQuestions",
         "parameters": [
           { "name": "industryId", "in": "query", "required": true, "schema": { "type": "integer", "format": "int64" } },
@@ -438,7 +492,9 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseListFrequentQnaSetResponse" } }
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CommonResponseListFrequentQnaSetResponse" }
+              }
             }
           }
         }
@@ -447,18 +503,23 @@
     "/job-category": {
       "get": {
         "tags": ["Job Category API"],
+        "summary": "직무 리스트를 조회합니다.",
         "operationId": "getAllJobCategories",
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseListJobCategoryResponse" } } }
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponseListJobCategoryResponse" } }
+            }
           }
         }
       }
     },
     "/interview/{interviewId}": {
       "get": {
-        "tags": ["interview-controller"],
+        "tags": ["Interview API"],
+        "summary": "특정 면접 정보를 조회합니다.",
+        "description": "면접에 대한 정보만 조회하며, 면접에 속한 질문, 회고 등의 정보는 조회하지 않습니다.",
         "operationId": "getInterview",
         "parameters": [
           { "name": "interviewId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int64" } }
@@ -466,12 +527,16 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseInterviewDto" } } }
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponseInterviewDto" } }
+            }
           }
         }
       },
       "delete": {
-        "tags": ["interview-controller"],
+        "tags": ["Interview API"],
+        "summary": "면접을 삭제합니다.",
+        "description": "면접 삭제시 해당 면접에 기록된 질문, 회고 데이터도 함께 삭제됩니다.",
         "operationId": "deleteInterview",
         "parameters": [
           { "name": "interviewId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int64" } }
@@ -479,14 +544,15 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
           }
         }
       }
     },
     "/interview/{interviewId}/qna-sets": {
       "get": {
-        "tags": ["interview-controller"],
+        "tags": ["Interview API"],
+        "summary": "면접 및 면접에 관련된 질문, 회고 데이터를 모두 조회합니다.",
         "operationId": "getInterviewFull",
         "parameters": [
           { "name": "interviewId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int64" } }
@@ -494,14 +560,17 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseInterviewFullDto" } } }
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponseInterviewFullDto" } }
+            }
           }
         }
       }
     },
     "/interview/{interviewId}/guide-question": {
       "get": {
-        "tags": ["interview-controller"],
+        "tags": ["Interview API"],
+        "summary": "면접 기록 중, 가이드 질문을 조회합니다.",
         "operationId": "getGuideQuestion",
         "parameters": [
           { "name": "interviewId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int64" } }
@@ -509,14 +578,17 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseGuideQuestionResponse" } } }
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponseGuideQuestionResponse" } }
+            }
           }
         }
       }
     },
     "/interview/my": {
       "get": {
-        "tags": ["interview-my-controller"],
+        "tags": ["Interview My API"],
+        "summary": "내가 복기 완료한 면접 정보를 조회합니다. (검색 API 와 통합 예정입니다)",
         "operationId": "getMyInterviews",
         "parameters": [
           {
@@ -533,14 +605,19 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponsePageInterviewSimpleDto" } } }
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponsePageInterviewSimpleDto" } }
+            }
           }
-        }
+        },
+        "deprecated": true
       }
     },
     "/interview/my/draft": {
       "get": {
-        "tags": ["interview-my-controller"],
+        "tags": ["Interview My API"],
+        "summary": "내가 작성중인 (임시저장) 복기 데이터를 조회합니다.",
+        "description": "interviewReviewStatus 에는 LOG_DRAFT (기록 중), SELF_REVIEW_DRAFT (회고 중) 값만 들어갈 수 있습니다.\n이외의 값에 대해서는 400 에러를 응답합니다.\n",
         "operationId": "getMyInterviewDrafts",
         "parameters": [
           {
@@ -557,7 +634,9 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponsePageInterviewSimpleDto" } } }
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponsePageInterviewSimpleDto" } }
+            }
           }
         }
       }
@@ -570,7 +649,9 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseListIndustryResponse" } } }
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponseListIndustryResponse" } }
+            }
           }
         }
       }
@@ -587,7 +668,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": { "$ref": "#/components/schemas/CommonResponsePageDashboardMyDifficultQuestionResponse" }
               }
             }
@@ -599,6 +680,7 @@
       "get": {
         "tags": ["Dashboard API"],
         "summary": "대시보드에서 '곧 있을 면접' 영역의 데이터를 조회합니다.",
+        "description": "곧 보게되는 면접 정보, 유사 산업군/직군 면접 질문, 유사 면접 리스트를 조회합니다.\n각 면접 일정의 Dday 필드는 과거라면 음수, 미래라면 양수 값을 갖습니다.\n",
         "operationId": "getUpcomingInterviews",
         "parameters": [
           { "name": "pageable", "in": "query", "required": true, "schema": { "$ref": "#/components/schemas/Pageable" } }
@@ -607,7 +689,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": { "$ref": "#/components/schemas/CommonResponsePageDashboardUpcomingInterviewResponse" }
               }
             }
@@ -627,7 +709,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CommonResponsePageDashboardDebriefIncompletedInterviewResponse"
                 }
@@ -641,12 +723,15 @@
       "get": {
         "tags": ["Dashboard API"],
         "summary": "대시보드 헤드라인에 들어갈 정보를 조회합니다.",
+        "description": "대시보드 헤드라인 타입과, 해당 타입에서 필요한 데이터를 응답합니다.\n헤드라인 타입에는 다음의 4가지 타입이 응답으로 나옵니다.\n#0 \"REGISTER_INTERVIEW\" - 면접 일정 등록하기 (아직 면접 일정이 없는 경우, 초기 사용자)\n#1 \"PREPARE_INTERVIEW\"  - 면접 대비하기 (일주일 내 예정된 면접 일정이 있는 경우)\n#2 \"REVIEW_INTERVIEW\"   - 면접 복기 시작하기 (복기를 완료하지 않은 면접이 존재하는 경우)\n#3 \"CHECK_INTERVIEW_HISTORY\" - 면접 히스토 확인하기 (위 케이스에 해당하지 않는 경우)\n",
         "operationId": "getDashboardHeadline",
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseDashboardHeadlineResponse" } }
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CommonResponseDashboardHeadlineResponse" }
+              }
             }
           }
         }
@@ -656,6 +741,7 @@
       "get": {
         "tags": ["Dashboard API"],
         "summary": "대시보드 캘린더에 등록된 면접 일정을 조회합니다.",
+        "description": "면접 일정이 존재하는 date 리스트, 각 date 별로는 해당 date 에 존재하는 면접 일정 리스트가 조회됩니다.\ndate 리스트는 날짜순으로 정렬, 각 date 별 해당 date 에 존재하는 면접 일정들은 시간순으로 정렬되어 조회됩니다.\n각 면접 일정의 Dday 필드는 과거라면 음수, 미래라면 양수 값을 갖습니다.\n",
         "operationId": "getDashboardCalendarInterviews",
         "parameters": [
           {
@@ -675,7 +761,9 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseListDashboardCalendarResponse" } }
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CommonResponseListDashboardCalendarResponse" }
+              }
             }
           }
         }
@@ -683,7 +771,9 @@
     },
     "/auth/reissue": {
       "get": {
-        "tags": ["auth-controller"],
+        "tags": ["Auth Controller"],
+        "summary": "리프레시 토큰과 엑세스 토큰을 재발급합니다.",
+        "description": "리프레시 토큰이 재발급되면, 기존 리프레시 토큰은 폐기됩니다.",
         "operationId": "reissue",
         "parameters": [
           { "name": "access_token", "in": "cookie", "required": true, "schema": { "type": "string" } },
@@ -692,34 +782,43 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
           }
         }
       }
     },
     "/auth/login/google": {
       "get": {
-        "tags": ["google-o-auth-2-controller"],
-        "operationId": "getOAuth2LoginUrl",
+        "tags": ["Google OAuth API"],
+        "summary": "구글 로그인 화면으로 이동하는 url을 생성합니다.",
+        "operationId": "buildOAuth2LoginUrl",
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseOAuthLoginUrlResponse" } } }
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponseOAuth2LoginUrlResponse" } }
+            }
           }
         }
       }
     },
     "/auth/login/google/callback": {
       "get": {
-        "tags": ["google-o-auth-2-controller"],
+        "tags": ["Google OAuth API"],
+        "summary": "구글 로그인에 성공했을 때 호출되는 콜백 API 입니다.",
+        "description": "인가 코드를 활용하여 refit 서비스의 토큰을 발급하여 클라이언트에게 쿠키로 설정합니다.",
         "operationId": "handleOAuth2Callback",
-        "parameters": [{ "name": "code", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "parameters": [
+          { "name": "code", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "state", "in": "query", "required": true, "schema": { "type": "string" } }
+        ],
         "responses": { "200": { "description": "OK" } }
       }
     },
     "/test/user": {
       "delete": {
         "tags": ["Test Auth/User API"],
+        "summary": "(테스트용) 유저를 이메일로 찾아 삭제합니다.",
         "operationId": "deleteUserByEmail",
         "parameters": [
           { "name": "email", "in": "query", "required": true, "schema": { "type": "string", "format": "email" } }
@@ -727,7 +826,7 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
           }
         }
       }
@@ -735,6 +834,7 @@
     "/test/user/{userId}": {
       "delete": {
         "tags": ["Test Auth/User API"],
+        "summary": "(테스트용) 유저를 id로 찾아 삭제합니다.",
         "operationId": "deleteUserById",
         "parameters": [
           { "name": "userId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int64" } }
@@ -742,7 +842,7 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
           }
         }
       }
@@ -750,12 +850,13 @@
     "/test/auth/token/cookies": {
       "delete": {
         "tags": ["Test Auth/User API"],
+        "summary": "(테스트용) 쿠키에 설정된 토큰들을 삭제합니다.",
         "operationId": "deleteTokenCookies",
         "parameters": [{ "name": "refresh_token", "in": "cookie", "required": false, "schema": { "type": "string" } }],
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
           }
         }
       }
@@ -1540,16 +1641,16 @@
           "interviews": { "type": "array", "items": { "$ref": "#/components/schemas/InterviewDto" } }
         }
       },
-      "CommonResponseOAuthLoginUrlResponse": {
+      "CommonResponseOAuth2LoginUrlResponse": {
         "type": "object",
         "properties": {
           "isSuccess": { "type": "boolean" },
           "code": { "type": "string" },
           "message": { "type": "string" },
-          "result": { "$ref": "#/components/schemas/OAuthLoginUrlResponse" }
+          "result": { "$ref": "#/components/schemas/OAuth2LoginUrlResponse" }
         }
       },
-      "OAuthLoginUrlResponse": { "type": "object", "properties": { "oAuthLoginUrl": { "type": "string" } } }
+      "OAuth2LoginUrlResponse": { "type": "object", "properties": { "oAuth2LoginUrl": { "type": "string" } } }
     }
   }
 }

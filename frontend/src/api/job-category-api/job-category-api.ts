@@ -5,6 +5,7 @@
  * OpenAPI spec version: v0
  */
 import { useQuery } from '@tanstack/react-query'
+import type { CommonResponseListJobCategoryResponse } from '../refit-api.schemas'
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -17,8 +18,12 @@ import type {
   UseQueryResult,
 } from '@tanstack/react-query'
 
+
+/**
+ * @summary 직무 리스트를 조회합니다.
+ */
 export type getAllJobCategoriesResponse200 = {
-  data: Blob
+  data: CommonResponseListJobCategoryResponse
   status: 200
 }
 
@@ -108,6 +113,9 @@ export function useGetAllJobCategories<TData = Awaited<ReturnType<typeof getAllJ
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 직무 리스트를 조회합니다.
+ */
 
 export function useGetAllJobCategories<TData = Awaited<ReturnType<typeof getAllJobCategories>>, TError = unknown>(
   options?: {

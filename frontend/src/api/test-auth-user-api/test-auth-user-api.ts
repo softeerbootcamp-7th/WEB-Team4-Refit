@@ -5,7 +5,13 @@
  * OpenAPI spec version: v0
  */
 import { useMutation, useQuery } from '@tanstack/react-query'
-import type { DeleteUserByEmailParams, GetGuestTokenParams, GetTokenParams } from '../refit-api.schemas'
+import type {
+  CommonResponseTokenPairDto,
+  CommonResponseVoid,
+  DeleteUserByEmailParams,
+  GetGuestTokenParams,
+  GetTokenParams,
+} from '../refit-api.schemas'
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -22,8 +28,12 @@ import type {
 } from '@tanstack/react-query'
 
 
+/**
+ * 발급된 토큰은 요청 주소에 쿠키로 세팅됩니다.
+ * @summary (테스트용) 회원 토큰을 발급합니다.
+ */
 export type getTokenResponse200 = {
-  data: Blob
+  data: CommonResponseTokenPairDto
   status: 200
 }
 
@@ -118,6 +128,9 @@ export function useGetToken<TData = Awaited<ReturnType<typeof getToken>>, TError
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary (테스트용) 회원 토큰을 발급합니다.
+ */
 
 export function useGetToken<TData = Awaited<ReturnType<typeof getToken>>, TError = unknown>(
   params: GetTokenParams,
@@ -136,8 +149,12 @@ export function useGetToken<TData = Awaited<ReturnType<typeof getToken>>, TError
   return { ...query, queryKey: queryOptions.queryKey }
 }
 
+/**
+ * 발급된 토큰은 요청 주소에 쿠키로 세팅됩니다.
+ * @summary (테스트용) 게스트 회원 토큰을 발급합니다.
+ */
 export type getGuestTokenResponse200 = {
-  data: Blob
+  data: CommonResponseTokenPairDto
   status: 200
 }
 
@@ -243,6 +260,9 @@ export function useGetGuestToken<TData = Awaited<ReturnType<typeof getGuestToken
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary (테스트용) 게스트 회원 토큰을 발급합니다.
+ */
 
 export function useGetGuestToken<TData = Awaited<ReturnType<typeof getGuestToken>>, TError = unknown>(
   params: GetGuestTokenParams,
@@ -261,8 +281,11 @@ export function useGetGuestToken<TData = Awaited<ReturnType<typeof getGuestToken
   return { ...query, queryKey: queryOptions.queryKey }
 }
 
+/**
+ * @summary (테스트용) 유저를 이메일로 찾아 삭제합니다.
+ */
 export type deleteUserByEmailResponse200 = {
-  data: Blob
+  data: CommonResponseVoid
   status: 200
 }
 
@@ -337,6 +360,9 @@ export type DeleteUserByEmailMutationResult = NonNullable<Awaited<ReturnType<typ
 
 export type DeleteUserByEmailMutationError = unknown
 
+/**
+ * @summary (테스트용) 유저를 이메일로 찾아 삭제합니다.
+ */
 export const useDeleteUserByEmail = <TError = unknown, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -356,8 +382,11 @@ export const useDeleteUserByEmail = <TError = unknown, TContext = unknown>(
 > => {
   return useMutation(getDeleteUserByEmailMutationOptions(options), queryClient)
 }
+/**
+ * @summary (테스트용) 유저를 id로 찾아 삭제합니다.
+ */
 export type deleteUserByIdResponse200 = {
-  data: Blob
+  data: CommonResponseVoid
   status: 200
 }
 
@@ -406,6 +435,9 @@ export type DeleteUserByIdMutationResult = NonNullable<Awaited<ReturnType<typeof
 
 export type DeleteUserByIdMutationError = unknown
 
+/**
+ * @summary (테스트용) 유저를 id로 찾아 삭제합니다.
+ */
 export const useDeleteUserById = <TError = unknown, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<Awaited<ReturnType<typeof deleteUserById>>, TError, { userId: number }, TContext>
@@ -415,8 +447,11 @@ export const useDeleteUserById = <TError = unknown, TContext = unknown>(
 ): UseMutationResult<Awaited<ReturnType<typeof deleteUserById>>, TError, { userId: number }, TContext> => {
   return useMutation(getDeleteUserByIdMutationOptions(options), queryClient)
 }
+/**
+ * @summary (테스트용) 쿠키에 설정된 토큰들을 삭제합니다.
+ */
 export type deleteTokenCookiesResponse200 = {
-  data: Blob
+  data: CommonResponseVoid
   status: 200
 }
 
@@ -463,6 +498,9 @@ export type DeleteTokenCookiesMutationResult = NonNullable<Awaited<ReturnType<ty
 
 export type DeleteTokenCookiesMutationError = unknown
 
+/**
+ * @summary (테스트용) 쿠키에 설정된 토큰들을 삭제합니다.
+ */
 export const useDeleteTokenCookies = <TError = unknown, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<Awaited<ReturnType<typeof deleteTokenCookies>>, TError, void, TContext>

@@ -6,6 +6,8 @@
  */
 import { useMutation, useQuery } from '@tanstack/react-query'
 import type {
+  CommonResponsePageInterviewDto,
+  CommonResponsePageInterviewSimpleDto,
   GetMyInterviewDraftsParams,
   GetMyInterviewsParams,
   InterviewSearchRequest,
@@ -27,8 +29,11 @@ import type {
 } from '@tanstack/react-query'
 
 
+/**
+ * @summary 내가 복기 완료한 면접을 검색합니다.
+ */
 export type searchInterviewsResponse200 = {
-  data: Blob
+  data: CommonResponsePageInterviewDto
   status: 200
 }
 
@@ -106,6 +111,9 @@ export type SearchInterviewsMutationResult = NonNullable<Awaited<ReturnType<type
 export type SearchInterviewsMutationBody = InterviewSearchRequest
 export type SearchInterviewsMutationError = unknown
 
+/**
+ * @summary 내가 복기 완료한 면접을 검색합니다.
+ */
 export const useSearchInterviews = <TError = unknown, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
@@ -125,8 +133,12 @@ export const useSearchInterviews = <TError = unknown, TContext = unknown>(
 > => {
   return useMutation(getSearchInterviewsMutationOptions(options), queryClient)
 }
+/**
+ * @deprecated
+ * @summary 내가 복기 완료한 면접 정보를 조회합니다. (검색 API 와 통합 예정입니다)
+ */
 export type getMyInterviewsResponse200 = {
-  data: Blob
+  data: CommonResponsePageInterviewSimpleDto
   status: 200
 }
 
@@ -232,6 +244,10 @@ export function useGetMyInterviews<TData = Awaited<ReturnType<typeof getMyInterv
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @deprecated
+ * @summary 내가 복기 완료한 면접 정보를 조회합니다. (검색 API 와 통합 예정입니다)
+ */
 
 export function useGetMyInterviews<TData = Awaited<ReturnType<typeof getMyInterviews>>, TError = unknown>(
   params: GetMyInterviewsParams,
@@ -250,8 +266,14 @@ export function useGetMyInterviews<TData = Awaited<ReturnType<typeof getMyInterv
   return { ...query, queryKey: queryOptions.queryKey }
 }
 
+/**
+ * interviewReviewStatus 에는 LOG_DRAFT (기록 중), SELF_REVIEW_DRAFT (회고 중) 값만 들어갈 수 있습니다.
+이외의 값에 대해서는 400 에러를 응답합니다.
+
+ * @summary 내가 작성중인 (임시저장) 복기 데이터를 조회합니다.
+ */
 export type getMyInterviewDraftsResponse200 = {
-  data: Blob
+  data: CommonResponsePageInterviewSimpleDto
   status: 200
 }
 
@@ -360,6 +382,9 @@ export function useGetMyInterviewDrafts<TData = Awaited<ReturnType<typeof getMyI
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 내가 작성중인 (임시저장) 복기 데이터를 조회합니다.
+ */
 
 export function useGetMyInterviewDrafts<TData = Awaited<ReturnType<typeof getMyInterviewDrafts>>, TError = unknown>(
   params: GetMyInterviewDraftsParams,

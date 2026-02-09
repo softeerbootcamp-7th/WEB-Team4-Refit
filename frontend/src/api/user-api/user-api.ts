@@ -5,7 +5,7 @@
  * OpenAPI spec version: v0
  */
 import { useMutation, useQuery } from '@tanstack/react-query'
-import type { UserSignUpRequest } from '../refit-api.schemas'
+import type { CommonResponseMyProfileResponse, CommonResponseVoid, UserSignUpRequest } from '../refit-api.schemas'
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -22,8 +22,12 @@ import type {
 } from '@tanstack/react-query'
 
 
+/**
+ * 현재 로그인한 계정이 아직 등록되지 않은 상태일 때만 회원가입 할 수 있습니다.
+ * @summary 새롭게 회원가입 합니다.
+ */
 export type signUpResponse200 = {
-  data: Blob
+  data: CommonResponseVoid
   status: 200
 }
 
@@ -74,6 +78,9 @@ export type SignUpMutationResult = NonNullable<Awaited<ReturnType<typeof signUp>
 export type SignUpMutationBody = UserSignUpRequest
 export type SignUpMutationError = unknown
 
+/**
+ * @summary 새롭게 회원가입 합니다.
+ */
 export const useSignUp = <TError = unknown, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<Awaited<ReturnType<typeof signUp>>, TError, { data: UserSignUpRequest }, TContext>
@@ -83,8 +90,11 @@ export const useSignUp = <TError = unknown, TContext = unknown>(
 ): UseMutationResult<Awaited<ReturnType<typeof signUp>>, TError, { data: UserSignUpRequest }, TContext> => {
   return useMutation(getSignUpMutationOptions(options), queryClient)
 }
+/**
+ * @summary 이용 약관에 동의합니다.
+ */
 export type agreeToTermsResponse200 = {
-  data: Blob
+  data: CommonResponseVoid
   status: 200
 }
 
@@ -131,6 +141,9 @@ export type AgreeToTermsMutationResult = NonNullable<Awaited<ReturnType<typeof a
 
 export type AgreeToTermsMutationError = unknown
 
+/**
+ * @summary 이용 약관에 동의합니다.
+ */
 export const useAgreeToTerms = <TError = unknown, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<Awaited<ReturnType<typeof agreeToTerms>>, TError, void, TContext>
@@ -140,8 +153,11 @@ export const useAgreeToTerms = <TError = unknown, TContext = unknown>(
 ): UseMutationResult<Awaited<ReturnType<typeof agreeToTerms>>, TError, void, TContext> => {
   return useMutation(getAgreeToTermsMutationOptions(options), queryClient)
 }
+/**
+ * @summary 현재 로그인한 유저의 기본 정보를 조회합니다.
+ */
 export type getMyProfileInfoResponse200 = {
-  data: Blob
+  data: CommonResponseMyProfileResponse
   status: 200
 }
 
@@ -231,6 +247,9 @@ export function useGetMyProfileInfo<TData = Awaited<ReturnType<typeof getMyProfi
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 현재 로그인한 유저의 기본 정보를 조회합니다.
+ */
 
 export function useGetMyProfileInfo<TData = Awaited<ReturnType<typeof getMyProfileInfo>>, TError = unknown>(
   options?: {

@@ -5,6 +5,7 @@
  * OpenAPI spec version: v0
  */
 import { useQuery } from '@tanstack/react-query'
+import type { CommonResponseVoid } from '../refit-api.schemas'
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -17,8 +18,13 @@ import type {
   UseQueryResult,
 } from '@tanstack/react-query'
 
+
+/**
+ * 리프레시 토큰이 재발급되면, 기존 리프레시 토큰은 폐기됩니다.
+ * @summary 리프레시 토큰과 엑세스 토큰을 재발급합니다.
+ */
 export type reissueResponse200 = {
-  data: Blob
+  data: CommonResponseVoid
   status: 200
 }
 
@@ -97,6 +103,9 @@ export function useReissue<TData = Awaited<ReturnType<typeof reissue>>, TError =
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 리프레시 토큰과 엑세스 토큰을 재발급합니다.
+ */
 
 export function useReissue<TData = Awaited<ReturnType<typeof reissue>>, TError = unknown>(
   options?: {
