@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CurrentProfile {
+public class CurrentProfileUtil {
 
     @Value("${spring.profiles.active}")
     private String currentProfile;
