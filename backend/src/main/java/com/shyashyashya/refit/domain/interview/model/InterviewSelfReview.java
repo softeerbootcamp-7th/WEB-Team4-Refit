@@ -51,6 +51,15 @@ public class InterviewSelfReview extends BaseEntity {
                 .build();
     }
 
+    public static InterviewSelfReview createEmpty(Interview interview) {
+        return InterviewSelfReview.builder()
+                .keepText("")
+                .problemText("")
+                .tryText("")
+                .interview(interview)
+                .build();
+    }
+
     public void updateKeepText(String keepText) {
         if (keepText != null) {
             this.keepText = keepText;

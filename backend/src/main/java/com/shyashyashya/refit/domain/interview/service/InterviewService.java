@@ -94,7 +94,12 @@ public class InterviewService {
         Map<Long, StarAnalysisDto> starAnalysisDtoMap = starAnalysisRepository.findAllByQnaSetIdIn(qnaSetIds).stream()
                 .collect(Collectors.toMap(r -> r.getQnaSet().getId(), StarAnalysisDto::from));
 
-        return InterviewFullDto.fromInterviewWithQnaSets(interview, qnaSets, selfReviewMap, starAnalysisDtoMap);
+        InterviewSelfReview kptReview = interviewSelfReviewRepository
+                .findByInterview(interview)
+                .orElseGet(() -> interviewSelfReviewRepository.save(InterviewSelfReview.createEmpty(interview)));
+
+        return InterviewFullDto.fromInterviewWithQnaSets(
+                interview, qnaSets, selfReviewMap, starAnalysisDtoMap, kptReview);
     }
 
     @Transactional

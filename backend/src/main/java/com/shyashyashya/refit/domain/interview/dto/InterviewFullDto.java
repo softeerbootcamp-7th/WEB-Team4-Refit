@@ -2,6 +2,7 @@ package com.shyashyashya.refit.domain.interview.dto;
 
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewResultStatus;
+import com.shyashyashya.refit.domain.interview.model.InterviewSelfReview;
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetSelfReview;
@@ -46,7 +47,7 @@ public record InterviewFullDto(
             List<QnaSet> qnaSets,
             Map<Long, QnaSetSelfReview> selfReviewMap,
             Map<Long, StarAnalysisDto> starAnalysisDtoMap,
-            KptReviewDto kptReviewDto) {
+            InterviewSelfReview kptReview) {
         List<QnaSetDto> qnaSetDtos = qnaSets.stream()
                 .map(qnaSet -> {
                     Long qnaSetId = qnaSet.getId();
@@ -55,6 +56,8 @@ public record InterviewFullDto(
                     return QnaSetDto.from(qnaSet, selfReview, starAnalysisDto);
                 })
                 .toList();
+
+        KptReviewDto kptReviewDto = KptReviewDto.from(kptReview);
 
         return InterviewFullDto.builder()
                 .interviewId(interview.getId())
