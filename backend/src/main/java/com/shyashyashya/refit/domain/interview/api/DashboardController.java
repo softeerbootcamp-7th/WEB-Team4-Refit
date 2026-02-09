@@ -1,8 +1,8 @@
 package com.shyashyashya.refit.domain.interview.api;
 
-import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
+import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 
-import com.shyashyashya.refit.domain.common.dto.CommonResponse;
+import com.shyashyashya.refit.global.dto.CommonResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardCalendarResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardDebriefIncompletedInterviewResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardHeadlineResponse;

@@ -1,8 +1,8 @@
 package com.shyashyashya.refit.domain.qnaset.api;
 
-import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
+import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 
-import com.shyashyashya.refit.domain.common.dto.CommonResponse;
+import com.shyashyashya.refit.global.dto.CommonResponse;
 import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetSearchRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetCategoryQuestionResponse;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetCategoryResponse;

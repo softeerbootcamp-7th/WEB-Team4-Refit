@@ -2,7 +2,7 @@ package com.shyashyashya.refit.global.exception;
 
 import static com.shyashyashya.refit.global.exception.ErrorCode.LOGIN_REQUIRED;
 
-import com.shyashyashya.refit.domain.common.dto.CommonResponse;
+import com.shyashyashya.refit.global.dto.CommonResponse;
 import com.shyashyashya.refit.global.auth.service.CookieUtil;
 import com.shyashyashya.refit.global.constant.AuthConstant;
 import lombok.RequiredArgsConstructor;

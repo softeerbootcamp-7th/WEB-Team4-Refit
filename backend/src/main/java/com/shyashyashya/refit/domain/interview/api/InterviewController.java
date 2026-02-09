@@ -1,10 +1,10 @@
 package com.shyashyashya.refit.domain.interview.api;
 
-import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
-import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON201;
-import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON204;
+import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
+import static com.shyashyashya.refit.global.model.ResponseCode.COMMON201;
+import static com.shyashyashya.refit.global.model.ResponseCode.COMMON204;
 
-import com.shyashyashya.refit.domain.common.dto.CommonResponse;
+import com.shyashyashya.refit.global.dto.CommonResponse;
 import com.shyashyashya.refit.domain.interview.dto.InterviewDto;
 import com.shyashyashya.refit.domain.interview.dto.InterviewFullDto;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;

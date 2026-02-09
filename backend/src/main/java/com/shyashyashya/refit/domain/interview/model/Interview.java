@@ -1,6 +1,6 @@
 package com.shyashyashya.refit.domain.interview.model;
 
-import com.shyashyashya.refit.domain.common.model.BaseEntity;
+import com.shyashyashya.refit.global.model.BaseEntity;
 import com.shyashyashya.refit.domain.company.model.Company;
 import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;

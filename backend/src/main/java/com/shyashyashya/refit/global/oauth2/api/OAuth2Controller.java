@@ -1,6 +1,6 @@
 package com.shyashyashya.refit.global.oauth2.api;
 
-import com.shyashyashya.refit.domain.common.dto.CommonResponse;
+import com.shyashyashya.refit.global.dto.CommonResponse;
 import com.shyashyashya.refit.global.oauth2.dto.OAuth2LoginUrlResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
