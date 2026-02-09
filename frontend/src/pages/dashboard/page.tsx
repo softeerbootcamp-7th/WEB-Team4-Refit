@@ -4,7 +4,7 @@ import InterviewScheduleModal from '@/features/dashboard/_index/components/inter
 import PersonalizedQuestionsSection from '@/features/dashboard/_index/components/personalized-questions/PersonalizedQuestionsSection'
 import ReviewWaitingSection from '@/features/dashboard/_index/components/review-waiting-interview/ReviewWaitingSection'
 import UpcomingInterviewSection from '@/features/dashboard/_index/components/upcoming-interview/UpcomingInterviewSection'
-import { ScheduleModalProvider } from '@/features/dashboard/_index/contexts/ScheduleModalContext'
+import { ScheduleModalProvider } from '@/features/dashboard/_index/contexts/ScheduleModalProvider'
 
 export default function DashboardPage() {
   return (
