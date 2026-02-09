@@ -13,7 +13,6 @@ import com.shyashyashya.refit.global.constant.UrlConstant;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.oauth2.dto.OAuth2LoginUrlResponse;
 import com.shyashyashya.refit.global.oauth2.dto.OAuth2ResultDto;
-import com.shyashyashya.refit.global.oauth2.service.validator.OAuth2RedirectionHostValidator;
 import com.shyashyashya.refit.global.property.OAuth2Property;
 import com.shyashyashya.refit.global.util.CurrentProfileUtil;
 import java.util.Optional;
@@ -37,15 +36,13 @@ public class GoogleOAuth2Service implements OAuth2Service {
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    private final OAuth2RedirectionHostValidator hostValidator;
     private final OAuth2Property oauth2Property;
     private final CurrentProfileUtil currentProfileUtil;
     private final JwtUtil jwtUtil;
     private final RestClient restClient;
 
     @Override
-    public OAuth2LoginUrlResponse buildOAuth2LoginUrl(String requestHostUrl) {
-        hostValidator.validateRequestHostUrl(requestHostUrl);
+    public OAuth2LoginUrlResponse buildOAuth2LoginUrl(String env) {
         String googleClientId = oauth2Property.google().clientId();
         String scope = String.join(" ", oauth2Property.google().scope());
         String responseType = "code";
@@ -55,7 +52,7 @@ public class GoogleOAuth2Service implements OAuth2Service {
                 .queryParam("redirect_uri", getRedirectUri())
                 .queryParam("response_type", responseType)
                 .queryParam("scope", scope)
-                .queryParam("state", jwtUtil.createOAuth2StateToken(requestHostUrl))
+                .queryParam("state", jwtUtil.createOAuth2StateToken(getRequestHostUrl(env)))
                 .toUriString();
         return OAuth2LoginUrlResponse.from(loginUrlResponseUrl);
     }
@@ -82,6 +79,20 @@ public class GoogleOAuth2Service implements OAuth2Service {
         return userOptional
                 .map(user -> OAuth2ResultDto.createUser(accessToken, refreshToken, user, frontendRedirectUrl))
                 .orElseGet(() -> OAuth2ResultDto.createGuest(accessToken, refreshToken, userInfo, frontendRedirectUrl));
+    }
+
+    private String getRequestHostUrl(String env) {
+        if (env == null || env.isBlank()) {
+            return UrlConstant.LOCAL_SERVER_URL;
+        }
+        return switch (env.toUpperCase()) {
+            case "LOCAL_SERVER" -> UrlConstant.LOCAL_SERVER_URL;
+            case "LOCAL" -> UrlConstant.LOCAL_CLIENT_URL;
+            case "DEV_SERVER" -> UrlConstant.DEV_SERVER_URL;
+            case "DEV" -> UrlConstant.DEV_CLIENT_URL;
+            case "MAIN" -> UrlConstant.MAIN_CLIENT_URL;
+            default -> throw new IllegalArgumentException("Unknown environment type: " + env);
+        };
     }
 
     private String getRedirectUri() {
