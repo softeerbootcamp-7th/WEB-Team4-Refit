@@ -1,9 +1,10 @@
-import { format } from 'date-fns'
-
-export function formatDate(dateString: string, formatStr = 'yyyy.MM.dd.') {
-  return format(new Date(dateString), formatStr)
-}
-
-export function formatDateTime(dateString: string) {
-  return format(new Date(dateString), 'yyyy.MM.dd. HH:mm')
+export function formatDateTime(dateString: string): string {
+  return new Date(dateString).toLocaleString('ko-KR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  })
 }
