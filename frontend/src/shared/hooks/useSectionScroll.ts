@@ -53,6 +53,8 @@ export function useSectionScroll({
     return () => observerRef.current?.disconnect()
   }, [threshold])
 
+  const initialScrollDoneRef = useRef(false)
+
   const setRef = useCallback(
     (index: number, el: HTMLDivElement | null) => {
       const prevEl = sectionRefs.current[index]
@@ -64,6 +66,14 @@ export function useSectionScroll({
       if (el) {
         el.id = `${idPrefix}-${index + 1}`
         observerRef.current?.observe(el)
+
+        if (!initialScrollDoneRef.current) {
+          const hash = window.location.hash
+          if (hash === `#${idPrefix}-${index + 1}`) {
+            el.scrollIntoView({ block: 'center' })
+            initialScrollDoneRef.current = true
+          }
+        }
       }
     },
     [idPrefix],
