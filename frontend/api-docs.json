@@ -1,0 +1,1555 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "OpenAPI definition", "version": "v0" },
+  "servers": [{ "url": "https://api.refit.my" }],
+  "tags": [
+    { "name": "Job Category API", "description": "직무 관련 API 입니다." },
+    { "name": "Test Auth/User API", "description": "개발용 테스트 인증/인가 API입니다." },
+    { "name": "Qna-Set My Controller", "description": "나의 질문과 관련된 API 컨트롤러 입니다." },
+    { "name": "Dashboard API", "description": "대시보드 화면에서 사용하는 API 입니다." },
+    { "name": "Industry API", "description": "산업군 관련 API 입니다." }
+  ],
+  "paths": {
+    "/qna-set/{qnaSetId}": {
+      "put": {
+        "tags": ["qna-set-controller"],
+        "operationId": "updateQnaSet",
+        "parameters": [
+          { "name": "qnaSetId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int64" } }
+        ],
+        "requestBody": {
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/QnaSetUpdateRequest" } } },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+          }
+        }
+      }
+    },
+    "/qna-set/{qnaSetId}/pdf-highlightings": {
+      "get": {
+        "tags": ["qna-set-controller"],
+        "operationId": "getPdfHighlightings",
+        "parameters": [
+          { "name": "qnaSetId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int64" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseListPdfHighlightingDto" } } }
+          }
+        }
+      },
+      "put": {
+        "tags": ["qna-set-controller"],
+        "operationId": "updatePdfHighlighting",
+        "parameters": [
+          { "name": "qnaSetId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int64" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "type": "array", "items": { "$ref": "#/components/schemas/PdfHighlightingUpdateRequest" } }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+          }
+        }
+      }
+    },
+    "/interview/{interviewId}/raw-text": {
+      "put": {
+        "tags": ["interview-controller"],
+        "operationId": "updateRawText",
+        "parameters": [
+          { "name": "interviewId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int64" } }
+        ],
+        "requestBody": {
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/RawTextUpdateRequest" } } },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+          }
+        }
+      }
+    },
+    "/interview/{interviewId}/kpt-self-review": {
+      "put": {
+        "tags": ["interview-controller"],
+        "operationId": "updateKptSelfReview",
+        "parameters": [
+          { "name": "interviewId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int64" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/KptSelfReviewUpdateRequest" } }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+          }
+        }
+      }
+    },
+    "/user/signup": {
+      "post": {
+        "tags": ["user-controller"],
+        "operationId": "signUp",
+        "requestBody": {
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UserSignUpRequest" } } },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+          }
+        }
+      }
+    },
+    "/user/my/terms/agree": {
+      "post": {
+        "tags": ["user-controller"],
+        "operationId": "agreeToTerms",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+          }
+        }
+      }
+    },
+    "/scrap-folder": {
+      "get": {
+        "tags": ["scrap-folder-controller"],
+        "operationId": "getMyScrapFolders",
+        "parameters": [
+          { "name": "pageable", "in": "query", "required": true, "schema": { "$ref": "#/components/schemas/Pageable" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponsePageScrapFolderResponse" } } }
+          }
+        }
+      },
+      "post": {
+        "tags": ["scrap-folder-controller"],
+        "operationId": "createScrapFolder",
+        "requestBody": {
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ScrapFolderCreateRequest" } } },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+          }
+        }
+      }
+    },
+    "/qna-set/my/search": {
+      "post": {
+        "tags": ["Qna-Set My Controller"],
+        "summary": "나의 면접 질문들을 검색합니다.",
+        "description": "나의 면접 질문들을 검색합니다. 조건을 넣지 않으면 전체 데이터를 조회합니다.",
+        "operationId": "searchMyQnaSet",
+        "parameters": [
+          { "name": "pageable", "in": "query", "required": true, "schema": { "$ref": "#/components/schemas/Pageable" } }
+        ],
+        "requestBody": {
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/QnaSetSearchRequest" } } },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponsePageQnaSetSearchResponse" } }
+            }
+          }
+        }
+      }
+    },
+    "/interview": {
+      "post": {
+        "tags": ["interview-controller"],
+        "operationId": "createInterview",
+        "requestBody": {
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/InterviewCreateRequest" } } },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+          }
+        }
+      }
+    },
+    "/interview/my/search": {
+      "post": {
+        "tags": ["interview-my-controller"],
+        "operationId": "searchInterviews",
+        "parameters": [
+          { "name": "pageable", "in": "query", "required": true, "schema": { "$ref": "#/components/schemas/Pageable" } }
+        ],
+        "requestBody": {
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/InterviewSearchRequest" } } },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponsePageInterviewDto" } } }
+          }
+        }
+      }
+    },
+    "/scrap-folder/{scrapFolderId}/name": {
+      "patch": {
+        "tags": ["scrap-folder-controller"],
+        "operationId": "updateScrapFolderName",
+        "parameters": [
+          {
+            "name": "scrapFolderId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/ScrapFolderNameUpdateRequest" } }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+          }
+        }
+      }
+    },
+    "/qna-set/{qnaSetId}/difficult/unmark": {
+      "patch": {
+        "tags": ["qna-set-controller"],
+        "operationId": "unmarkDifficultQuestion",
+        "parameters": [
+          { "name": "qnaSetId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int64" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+          }
+        }
+      }
+    },
+    "/qna-set/{qnaSetId}/difficult/mark": {
+      "patch": {
+        "tags": ["qna-set-controller"],
+        "operationId": "markDifficultQuestion",
+        "parameters": [
+          { "name": "qnaSetId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int64" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+          }
+        }
+      }
+    },
+    "/interview/{interviewId}/result-status": {
+      "patch": {
+        "tags": ["interview-controller"],
+        "operationId": "updateInterviewResultStatus",
+        "parameters": [
+          { "name": "interviewId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int64" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/InterviewResultStatusUpdateRequest" } }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+          }
+        }
+      }
+    },
+    "/user/my": {
+      "get": {
+        "tags": ["user-controller"],
+        "operationId": "getMyProfileInfo",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseMyProfileResponse" } } }
+          }
+        }
+      }
+    },
+    "/test/auth/token": {
+      "get": {
+        "tags": ["Test Auth/User API"],
+        "operationId": "getToken",
+        "parameters": [
+          { "name": "email", "in": "query", "required": true, "schema": { "type": "string", "format": "email" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseTokenPairDto" } } }
+          }
+        }
+      }
+    },
+    "/test/auth/token/guest": {
+      "get": {
+        "tags": ["Test Auth/User API"],
+        "operationId": "getGuestToken",
+        "parameters": [
+          { "name": "email", "in": "query", "required": true, "schema": { "type": "string", "format": "email" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseTokenPairDto" } } }
+          }
+        }
+      }
+    },
+    "/scrap-folder/{scrapFolderId}": {
+      "get": {
+        "tags": ["scrap-folder-controller"],
+        "operationId": "getQnaSetsInScrapFolder",
+        "parameters": [
+          {
+            "name": "scrapFolderId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          { "name": "pageable", "in": "query", "required": true, "schema": { "$ref": "#/components/schemas/Pageable" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponsePageScrapFolderQnaSetResponse" } }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["scrap-folder-controller"],
+        "operationId": "deleteScrapFolder",
+        "parameters": [
+          {
+            "name": "scrapFolderId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+          }
+        }
+      }
+    },
+    "/qna-set/my/frequent/category": {
+      "get": {
+        "tags": ["Qna-Set My Controller"],
+        "summary": "나의 빈출 질문 카테고리 리스트와 각 카테고리 별 질문 개수를 조회합니다.",
+        "description": "나의 빈출 질문 카테고리 리스트와 각 카테고리 별 질문 개수를 질문 개수가 많은 카테고리 순으로 정렬하여 조회합니다.",
+        "operationId": "getMyFrequentQnaSetCategories",
+        "parameters": [
+          { "name": "pageable", "in": "query", "required": true, "schema": { "$ref": "#/components/schemas/Pageable" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponsePageFrequentQnaSetCategoryResponse" } }
+            }
+          }
+        }
+      }
+    },
+    "/qna-set/my/frequent/category/{categoryId}": {
+      "get": {
+        "tags": ["Qna-Set My Controller"],
+        "summary": "나의 빈출 질문 중 특정 카테고리에 속한 질문들을 조회합니다.",
+        "description": "나의 빈출 질문 중 특정 카테고리에 속한 질문들을 조회합니다.",
+        "operationId": "getMyFrequentQnaSetCategoryQuestions",
+        "parameters": [
+          { "name": "categoryId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int64" } },
+          { "name": "pageable", "in": "query", "required": true, "schema": { "$ref": "#/components/schemas/Pageable" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/CommonResponsePageFrequentQnaSetCategoryQuestionResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/qna-set/frequent": {
+      "get": {
+        "tags": ["qna-set-controller"],
+        "operationId": "getFrequentQuestions",
+        "parameters": [
+          { "name": "industryId", "in": "query", "required": true, "schema": { "type": "integer", "format": "int64" } },
+          {
+            "name": "jobCategoryId",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseListFrequentQnaSetResponse" } }
+            }
+          }
+        }
+      }
+    },
+    "/job-category": {
+      "get": {
+        "tags": ["Job Category API"],
+        "operationId": "getAllJobCategories",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseListJobCategoryResponse" } } }
+          }
+        }
+      }
+    },
+    "/interview/{interviewId}": {
+      "get": {
+        "tags": ["interview-controller"],
+        "operationId": "getInterview",
+        "parameters": [
+          { "name": "interviewId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int64" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseInterviewDto" } } }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["interview-controller"],
+        "operationId": "deleteInterview",
+        "parameters": [
+          { "name": "interviewId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int64" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+          }
+        }
+      }
+    },
+    "/interview/{interviewId}/qna-sets": {
+      "get": {
+        "tags": ["interview-controller"],
+        "operationId": "getInterviewFull",
+        "parameters": [
+          { "name": "interviewId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int64" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseInterviewFullDto" } } }
+          }
+        }
+      }
+    },
+    "/interview/{interviewId}/guide-question": {
+      "get": {
+        "tags": ["interview-controller"],
+        "operationId": "getGuideQuestion",
+        "parameters": [
+          { "name": "interviewId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int64" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseGuideQuestionResponse" } } }
+          }
+        }
+      }
+    },
+    "/interview/my": {
+      "get": {
+        "tags": ["interview-my-controller"],
+        "operationId": "getMyInterviews",
+        "parameters": [
+          {
+            "name": "interviewReviewStatus",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["NOT_LOGGED", "LOG_DRAFT", "SELF_REVIEW_DRAFT", "DEBRIEF_COMPLETED"]
+            }
+          },
+          { "name": "pageable", "in": "query", "required": true, "schema": { "$ref": "#/components/schemas/Pageable" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponsePageInterviewSimpleDto" } } }
+          }
+        }
+      }
+    },
+    "/interview/my/draft": {
+      "get": {
+        "tags": ["interview-my-controller"],
+        "operationId": "getMyInterviewDrafts",
+        "parameters": [
+          {
+            "name": "interviewReviewStatus",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["NOT_LOGGED", "LOG_DRAFT", "SELF_REVIEW_DRAFT", "DEBRIEF_COMPLETED"]
+            }
+          },
+          { "name": "pageable", "in": "query", "required": true, "schema": { "$ref": "#/components/schemas/Pageable" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponsePageInterviewSimpleDto" } } }
+          }
+        }
+      }
+    },
+    "/industry": {
+      "get": {
+        "tags": ["Industry API"],
+        "summary": "산업군 리스트를 조회합니다.",
+        "operationId": "getIndustries",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseListIndustryResponse" } } }
+          }
+        }
+      }
+    },
+    "/dashboard/qna-set/my/difficult": {
+      "get": {
+        "tags": ["Dashboard API"],
+        "summary": "대시보드에서 '내가 어렵게 느낀 질문'을 조회합니다.",
+        "operationId": "getMyDifficultQnaSets",
+        "parameters": [
+          { "name": "pageable", "in": "query", "required": true, "schema": { "$ref": "#/components/schemas/Pageable" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/CommonResponsePageDashboardMyDifficultQuestionResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dashboard/interview/upcoming": {
+      "get": {
+        "tags": ["Dashboard API"],
+        "summary": "대시보드에서 '곧 있을 면접' 영역의 데이터를 조회합니다.",
+        "operationId": "getUpcomingInterviews",
+        "parameters": [
+          { "name": "pageable", "in": "query", "required": true, "schema": { "$ref": "#/components/schemas/Pageable" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/CommonResponsePageDashboardUpcomingInterviewResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dashboard/interview/debrief-uncompleted": {
+      "get": {
+        "tags": ["Dashboard API"],
+        "summary": "대시보드에서 복기 대기중인 면접 리스트를 조회합니다.",
+        "operationId": "getDebriefIncompletedInterviews",
+        "parameters": [
+          { "name": "pageable", "in": "query", "required": true, "schema": { "$ref": "#/components/schemas/Pageable" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponsePageDashboardDebriefIncompletedInterviewResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dashboard/headline": {
+      "get": {
+        "tags": ["Dashboard API"],
+        "summary": "대시보드 헤드라인에 들어갈 정보를 조회합니다.",
+        "operationId": "getDashboardHeadline",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseDashboardHeadlineResponse" } }
+            }
+          }
+        }
+      }
+    },
+    "/dashboard/calendar/interview": {
+      "get": {
+        "tags": ["Dashboard API"],
+        "summary": "대시보드 캘린더에 등록된 면접 일정을 조회합니다.",
+        "operationId": "getDashboardCalendarInterviews",
+        "parameters": [
+          {
+            "name": "year",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer", "format": "int32", "exclusiveMinimum": 0 }
+          },
+          {
+            "name": "month",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer", "format": "int32", "maximum": 12, "minimum": 1 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseListDashboardCalendarResponse" } }
+            }
+          }
+        }
+      }
+    },
+    "/auth/reissue": {
+      "get": {
+        "tags": ["auth-controller"],
+        "operationId": "reissue",
+        "parameters": [
+          { "name": "access_token", "in": "cookie", "required": true, "schema": { "type": "string" } },
+          { "name": "refresh_token", "in": "cookie", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+          }
+        }
+      }
+    },
+    "/auth/login/google": {
+      "get": {
+        "tags": ["google-o-auth-2-controller"],
+        "operationId": "getOAuth2LoginUrl",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseOAuthLoginUrlResponse" } } }
+          }
+        }
+      }
+    },
+    "/auth/login/google/callback": {
+      "get": {
+        "tags": ["google-o-auth-2-controller"],
+        "operationId": "handleOAuth2Callback",
+        "parameters": [{ "name": "code", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/test/user": {
+      "delete": {
+        "tags": ["Test Auth/User API"],
+        "operationId": "deleteUserByEmail",
+        "parameters": [
+          { "name": "email", "in": "query", "required": true, "schema": { "type": "string", "format": "email" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+          }
+        }
+      }
+    },
+    "/test/user/{userId}": {
+      "delete": {
+        "tags": ["Test Auth/User API"],
+        "operationId": "deleteUserById",
+        "parameters": [
+          { "name": "userId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int64" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+          }
+        }
+      }
+    },
+    "/test/auth/token/cookies": {
+      "delete": {
+        "tags": ["Test Auth/User API"],
+        "operationId": "deleteTokenCookies",
+        "parameters": [{ "name": "refresh_token", "in": "cookie", "required": false, "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/CommonResponseVoid" } } }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "QnaSetUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "questionText": { "type": "string", "maxLength": 200, "minLength": 0 },
+          "answerText": { "type": "string" },
+          "selfReviewText": { "type": "string", "maxLength": 500, "minLength": 0 }
+        }
+      },
+      "CommonResponseVoid": {
+        "type": "object",
+        "properties": {
+          "isSuccess": { "type": "boolean" },
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "result": {}
+        }
+      },
+      "PdfHighlightingRectDto": {
+        "type": "object",
+        "properties": {
+          "x": { "type": "number", "format": "double" },
+          "y": { "type": "number", "format": "double" },
+          "width": { "type": "number", "format": "double" },
+          "height": { "type": "number", "format": "double" },
+          "pageNumber": { "type": "integer", "format": "int32" }
+        }
+      },
+      "PdfHighlightingUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "highlightingText": { "type": "string", "maxLength": 2000, "minLength": 0 },
+          "rects": { "type": "array", "items": { "$ref": "#/components/schemas/PdfHighlightingRectDto" } }
+        },
+        "required": ["highlightingText", "rects"]
+      },
+      "RawTextUpdateRequest": {
+        "type": "object",
+        "properties": { "rawText": { "type": "string", "maxLength": 10000, "minLength": 0 } },
+        "required": ["rawText"]
+      },
+      "KptSelfReviewUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "keepText": { "type": "string", "maxLength": 8000, "minLength": 0 },
+          "problemText": { "type": "string", "maxLength": 8000, "minLength": 0 },
+          "tryText": { "type": "string", "maxLength": 8000, "minLength": 0 }
+        }
+      },
+      "UserSignUpRequest": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string", "format": "email", "maxLength": 255, "minLength": 0 },
+          "nickname": { "type": "string", "maxLength": 30, "minLength": 0 },
+          "profileImageUrl": { "type": "string", "maxLength": 2048, "minLength": 0 },
+          "industryId": { "type": "integer", "format": "int64" },
+          "jobCategoryId": { "type": "integer", "format": "int64" }
+        },
+        "required": ["email", "industryId", "jobCategoryId", "nickname", "profileImageUrl"]
+      },
+      "ScrapFolderCreateRequest": {
+        "type": "object",
+        "properties": { "scrapFolderName": { "type": "string", "maxLength": 10, "minLength": 0 } },
+        "required": ["scrapFolderName"]
+      },
+      "QnaSearchFilter": {
+        "type": "object",
+        "properties": {
+          "hasStarAnalysis": { "type": "boolean" },
+          "sInclusionLevels": {
+            "type": "array",
+            "items": { "type": "string", "enum": ["PRESENT", "INSUFFICIENT", "ABSENT"] }
+          },
+          "tInclusionLevels": {
+            "type": "array",
+            "items": { "type": "string", "enum": ["PRESENT", "INSUFFICIENT", "ABSENT"] }
+          },
+          "aInclusionLevels": {
+            "type": "array",
+            "items": { "type": "string", "enum": ["PRESENT", "INSUFFICIENT", "ABSENT"] }
+          },
+          "rInclusionLevels": {
+            "type": "array",
+            "items": { "type": "string", "enum": ["PRESENT", "INSUFFICIENT", "ABSENT"] }
+          }
+        }
+      },
+      "QnaSetSearchRequest": {
+        "type": "object",
+        "properties": {
+          "keyword": { "type": "string" },
+          "searchFilter": { "$ref": "#/components/schemas/QnaSearchFilter" }
+        }
+      },
+      "Pageable": {
+        "type": "object",
+        "properties": {
+          "page": { "type": "integer", "format": "int32", "minimum": 0 },
+          "size": { "type": "integer", "format": "int32", "minimum": 1 },
+          "sort": { "type": "array", "items": { "type": "string" } }
+        }
+      },
+      "CommonResponsePageQnaSetSearchResponse": {
+        "type": "object",
+        "properties": {
+          "isSuccess": { "type": "boolean" },
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "result": { "$ref": "#/components/schemas/PageQnaSetSearchResponse" }
+        }
+      },
+      "InterviewDto": {
+        "type": "object",
+        "properties": {
+          "interviewId": { "type": "integer", "format": "int64" },
+          "interviewType": {
+            "type": "string",
+            "enum": [
+              "FIRST",
+              "SECOND",
+              "THIRD",
+              "BEHAVIORAL",
+              "TECHNICAL",
+              "EXECUTIVE",
+              "CULTURE_FIT",
+              "COFFEE_CHAT",
+              "PSEUDO"
+            ]
+          },
+          "interviewStartAt": { "type": "string", "format": "date-time" },
+          "interviewResultStatus": { "type": "string", "enum": ["WAIT", "FAIL", "PASS"] },
+          "interviewRawText": { "type": "string" },
+          "companyName": { "type": "string" },
+          "jobCategoryId": { "type": "integer", "format": "int64" },
+          "jobCategoryName": { "type": "string" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "createdAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "PageQnaSetSearchResponse": {
+        "type": "object",
+        "properties": {
+          "totalElements": { "type": "integer", "format": "int64" },
+          "totalPages": { "type": "integer", "format": "int32" },
+          "size": { "type": "integer", "format": "int32" },
+          "content": { "type": "array", "items": { "$ref": "#/components/schemas/QnaSetSearchResponse" } },
+          "number": { "type": "integer", "format": "int32" },
+          "sort": { "$ref": "#/components/schemas/SortObject" },
+          "pageable": { "$ref": "#/components/schemas/PageableObject" },
+          "first": { "type": "boolean" },
+          "numberOfElements": { "type": "integer", "format": "int32" },
+          "last": { "type": "boolean" },
+          "empty": { "type": "boolean" }
+        }
+      },
+      "PageableObject": {
+        "type": "object",
+        "properties": {
+          "offset": { "type": "integer", "format": "int64" },
+          "sort": { "$ref": "#/components/schemas/SortObject" },
+          "paged": { "type": "boolean" },
+          "pageNumber": { "type": "integer", "format": "int32" },
+          "pageSize": { "type": "integer", "format": "int32" },
+          "unpaged": { "type": "boolean" }
+        }
+      },
+      "QnaSetSearchResponse": {
+        "type": "object",
+        "properties": {
+          "interviewInfo": { "$ref": "#/components/schemas/InterviewDto" },
+          "qnaSetInfo": { "$ref": "#/components/schemas/QnaSetSimpleDto" }
+        }
+      },
+      "QnaSetSimpleDto": {
+        "type": "object",
+        "properties": {
+          "qnaSetId": { "type": "integer", "format": "int64" },
+          "questionText": { "type": "string" },
+          "answerText": { "type": "string" }
+        }
+      },
+      "SortObject": {
+        "type": "object",
+        "properties": {
+          "empty": { "type": "boolean" },
+          "sorted": { "type": "boolean" },
+          "unsorted": { "type": "boolean" }
+        }
+      },
+      "InterviewCreateRequest": {
+        "type": "object",
+        "properties": {
+          "startAt": { "type": "string", "format": "date-time" },
+          "interviewType": {
+            "type": "string",
+            "enum": [
+              "FIRST",
+              "SECOND",
+              "THIRD",
+              "BEHAVIORAL",
+              "TECHNICAL",
+              "EXECUTIVE",
+              "CULTURE_FIT",
+              "COFFEE_CHAT",
+              "PSEUDO"
+            ]
+          },
+          "companyName": { "type": "string" },
+          "industryId": { "type": "integer", "format": "int64" },
+          "jobCategoryId": { "type": "integer", "format": "int64" },
+          "jobRole": { "type": "string" }
+        },
+        "required": ["companyName", "industryId", "interviewType", "jobCategoryId", "jobRole", "startAt"]
+      },
+      "InterviewSearchFilter": {
+        "type": "object",
+        "properties": {
+          "interviewType": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "FIRST",
+                "SECOND",
+                "THIRD",
+                "BEHAVIORAL",
+                "TECHNICAL",
+                "EXECUTIVE",
+                "CULTURE_FIT",
+                "COFFEE_CHAT",
+                "PSEUDO"
+              ]
+            }
+          },
+          "interviewResultStatus": { "type": "array", "items": { "type": "string", "enum": ["WAIT", "FAIL", "PASS"] } },
+          "startDate": { "type": "string", "format": "date" },
+          "endDate": { "type": "string", "format": "date" }
+        }
+      },
+      "InterviewSearchRequest": {
+        "type": "object",
+        "properties": {
+          "keyword": { "type": "string" },
+          "searchFilter": { "$ref": "#/components/schemas/InterviewSearchFilter" }
+        }
+      },
+      "CommonResponsePageInterviewDto": {
+        "type": "object",
+        "properties": {
+          "isSuccess": { "type": "boolean" },
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "result": { "$ref": "#/components/schemas/PageInterviewDto" }
+        }
+      },
+      "PageInterviewDto": {
+        "type": "object",
+        "properties": {
+          "totalElements": { "type": "integer", "format": "int64" },
+          "totalPages": { "type": "integer", "format": "int32" },
+          "size": { "type": "integer", "format": "int32" },
+          "content": { "type": "array", "items": { "$ref": "#/components/schemas/InterviewDto" } },
+          "number": { "type": "integer", "format": "int32" },
+          "sort": { "$ref": "#/components/schemas/SortObject" },
+          "pageable": { "$ref": "#/components/schemas/PageableObject" },
+          "first": { "type": "boolean" },
+          "numberOfElements": { "type": "integer", "format": "int32" },
+          "last": { "type": "boolean" },
+          "empty": { "type": "boolean" }
+        }
+      },
+      "ScrapFolderNameUpdateRequest": {
+        "type": "object",
+        "properties": { "scrapFolderName": { "type": "string", "maxLength": 10, "minLength": 0 } },
+        "required": ["scrapFolderName"]
+      },
+      "InterviewResultStatusUpdateRequest": {
+        "type": "object",
+        "properties": { "interviewResultStatus": { "type": "string", "enum": ["WAIT", "FAIL", "PASS"] } },
+        "required": ["interviewResultStatus"]
+      },
+      "CommonResponseMyProfileResponse": {
+        "type": "object",
+        "properties": {
+          "isSuccess": { "type": "boolean" },
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "result": { "$ref": "#/components/schemas/MyProfileResponse" }
+        }
+      },
+      "MyProfileResponse": {
+        "type": "object",
+        "properties": {
+          "nickname": { "type": "string" },
+          "industryId": { "type": "integer", "format": "int64" },
+          "jobCategoryId": { "type": "integer", "format": "int64" },
+          "profileImageUrl": { "type": "string" }
+        }
+      },
+      "CommonResponseTokenPairDto": {
+        "type": "object",
+        "properties": {
+          "isSuccess": { "type": "boolean" },
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "result": { "$ref": "#/components/schemas/TokenPairDto" }
+        }
+      },
+      "TokenPairDto": {
+        "type": "object",
+        "properties": { "accessToken": { "type": "string" }, "refreshToken": { "type": "string" } }
+      },
+      "CommonResponsePageScrapFolderResponse": {
+        "type": "object",
+        "properties": {
+          "isSuccess": { "type": "boolean" },
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "result": { "$ref": "#/components/schemas/PageScrapFolderResponse" }
+        }
+      },
+      "PageScrapFolderResponse": {
+        "type": "object",
+        "properties": {
+          "totalElements": { "type": "integer", "format": "int64" },
+          "totalPages": { "type": "integer", "format": "int32" },
+          "size": { "type": "integer", "format": "int32" },
+          "content": { "type": "array", "items": { "$ref": "#/components/schemas/ScrapFolderResponse" } },
+          "number": { "type": "integer", "format": "int32" },
+          "sort": { "$ref": "#/components/schemas/SortObject" },
+          "pageable": { "$ref": "#/components/schemas/PageableObject" },
+          "first": { "type": "boolean" },
+          "numberOfElements": { "type": "integer", "format": "int32" },
+          "last": { "type": "boolean" },
+          "empty": { "type": "boolean" }
+        }
+      },
+      "ScrapFolderResponse": {
+        "type": "object",
+        "properties": {
+          "scrapFolderId": { "type": "integer", "format": "int64" },
+          "scrapFolderName": { "type": "string" },
+          "qnaSetCount": { "type": "integer", "format": "int64" }
+        }
+      },
+      "CommonResponsePageScrapFolderQnaSetResponse": {
+        "type": "object",
+        "properties": {
+          "isSuccess": { "type": "boolean" },
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "result": { "$ref": "#/components/schemas/PageScrapFolderQnaSetResponse" }
+        }
+      },
+      "PageScrapFolderQnaSetResponse": {
+        "type": "object",
+        "properties": {
+          "totalElements": { "type": "integer", "format": "int64" },
+          "totalPages": { "type": "integer", "format": "int32" },
+          "size": { "type": "integer", "format": "int32" },
+          "content": { "type": "array", "items": { "$ref": "#/components/schemas/ScrapFolderQnaSetResponse" } },
+          "number": { "type": "integer", "format": "int32" },
+          "sort": { "$ref": "#/components/schemas/SortObject" },
+          "pageable": { "$ref": "#/components/schemas/PageableObject" },
+          "first": { "type": "boolean" },
+          "numberOfElements": { "type": "integer", "format": "int32" },
+          "last": { "type": "boolean" },
+          "empty": { "type": "boolean" }
+        }
+      },
+      "ScrapFolderQnaSetResponse": {
+        "type": "object",
+        "properties": {
+          "interview": { "$ref": "#/components/schemas/InterviewDto" },
+          "qnaSet": { "$ref": "#/components/schemas/QnaSetSimpleDto" }
+        }
+      },
+      "CommonResponseListPdfHighlightingDto": {
+        "type": "object",
+        "properties": {
+          "isSuccess": { "type": "boolean" },
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "result": { "type": "array", "items": { "$ref": "#/components/schemas/PdfHighlightingDto" } }
+        }
+      },
+      "PdfHighlightingDto": {
+        "type": "object",
+        "properties": {
+          "pdfHighlightingId": { "type": "integer", "format": "int64" },
+          "highlightingText": { "type": "string" },
+          "rects": { "type": "array", "items": { "$ref": "#/components/schemas/PdfHighlightingRectDto" } }
+        }
+      },
+      "CommonResponsePageFrequentQnaSetCategoryResponse": {
+        "type": "object",
+        "properties": {
+          "isSuccess": { "type": "boolean" },
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "result": { "$ref": "#/components/schemas/PageFrequentQnaSetCategoryResponse" }
+        }
+      },
+      "FrequentQnaSetCategoryResponse": {
+        "type": "object",
+        "properties": {
+          "categoryId": { "type": "integer", "format": "int64" },
+          "categoryName": { "type": "string" },
+          "frequentCount": { "type": "integer", "format": "int64" },
+          "cohesion": { "type": "number", "format": "double" }
+        }
+      },
+      "PageFrequentQnaSetCategoryResponse": {
+        "type": "object",
+        "properties": {
+          "totalElements": { "type": "integer", "format": "int64" },
+          "totalPages": { "type": "integer", "format": "int32" },
+          "size": { "type": "integer", "format": "int32" },
+          "content": { "type": "array", "items": { "$ref": "#/components/schemas/FrequentQnaSetCategoryResponse" } },
+          "number": { "type": "integer", "format": "int32" },
+          "sort": { "$ref": "#/components/schemas/SortObject" },
+          "pageable": { "$ref": "#/components/schemas/PageableObject" },
+          "first": { "type": "boolean" },
+          "numberOfElements": { "type": "integer", "format": "int32" },
+          "last": { "type": "boolean" },
+          "empty": { "type": "boolean" }
+        }
+      },
+      "CommonResponsePageFrequentQnaSetCategoryQuestionResponse": {
+        "type": "object",
+        "properties": {
+          "isSuccess": { "type": "boolean" },
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "result": { "$ref": "#/components/schemas/PageFrequentQnaSetCategoryQuestionResponse" }
+        }
+      },
+      "CompanyDto": {
+        "type": "object",
+        "properties": {
+          "companyId": { "type": "integer", "format": "int64" },
+          "companyName": { "type": "string" },
+          "companyLogoUrl": { "type": "string" }
+        }
+      },
+      "FrequentQnaSetCategoryQuestionResponse": {
+        "type": "object",
+        "properties": {
+          "question": { "type": "string" },
+          "interviewInfo": { "$ref": "#/components/schemas/InterviewSimpleDto" }
+        }
+      },
+      "InterviewSimpleDto": {
+        "type": "object",
+        "properties": {
+          "interviewId": { "type": "integer", "format": "int64" },
+          "interviewType": {
+            "type": "string",
+            "enum": [
+              "FIRST",
+              "SECOND",
+              "THIRD",
+              "BEHAVIORAL",
+              "TECHNICAL",
+              "EXECUTIVE",
+              "CULTURE_FIT",
+              "COFFEE_CHAT",
+              "PSEUDO"
+            ]
+          },
+          "interviewStartAt": { "type": "string", "format": "date-time" },
+          "companyInfo": { "$ref": "#/components/schemas/CompanyDto" },
+          "jobCategoryName": { "type": "string" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "PageFrequentQnaSetCategoryQuestionResponse": {
+        "type": "object",
+        "properties": {
+          "totalElements": { "type": "integer", "format": "int64" },
+          "totalPages": { "type": "integer", "format": "int32" },
+          "size": { "type": "integer", "format": "int32" },
+          "content": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/FrequentQnaSetCategoryQuestionResponse" }
+          },
+          "number": { "type": "integer", "format": "int32" },
+          "sort": { "$ref": "#/components/schemas/SortObject" },
+          "pageable": { "$ref": "#/components/schemas/PageableObject" },
+          "first": { "type": "boolean" },
+          "numberOfElements": { "type": "integer", "format": "int32" },
+          "last": { "type": "boolean" },
+          "empty": { "type": "boolean" }
+        }
+      },
+      "CommonResponseListFrequentQnaSetResponse": {
+        "type": "object",
+        "properties": {
+          "isSuccess": { "type": "boolean" },
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "result": { "type": "array", "items": { "$ref": "#/components/schemas/FrequentQnaSetResponse" } }
+        }
+      },
+      "FrequentQnaSetResponse": { "type": "object", "properties": { "question": { "type": "string" } } },
+      "CommonResponseListJobCategoryResponse": {
+        "type": "object",
+        "properties": {
+          "isSuccess": { "type": "boolean" },
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "result": { "type": "array", "items": { "$ref": "#/components/schemas/JobCategoryResponse" } }
+        }
+      },
+      "JobCategoryResponse": {
+        "type": "object",
+        "properties": {
+          "jobCategoryId": { "type": "integer", "format": "int64" },
+          "jobCategoryName": { "type": "string" }
+        }
+      },
+      "CommonResponseInterviewDto": {
+        "type": "object",
+        "properties": {
+          "isSuccess": { "type": "boolean" },
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "result": { "$ref": "#/components/schemas/InterviewDto" }
+        }
+      },
+      "CommonResponseInterviewFullDto": {
+        "type": "object",
+        "properties": {
+          "isSuccess": { "type": "boolean" },
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "result": { "$ref": "#/components/schemas/InterviewFullDto" }
+        }
+      },
+      "InterviewFullDto": {
+        "type": "object",
+        "properties": {
+          "interviewId": { "type": "integer", "format": "int64" },
+          "interviewType": {
+            "type": "string",
+            "enum": [
+              "FIRST",
+              "SECOND",
+              "THIRD",
+              "BEHAVIORAL",
+              "TECHNICAL",
+              "EXECUTIVE",
+              "CULTURE_FIT",
+              "COFFEE_CHAT",
+              "PSEUDO"
+            ]
+          },
+          "interviewStartAt": { "type": "string", "format": "date-time" },
+          "interviewResultStatus": { "type": "string", "enum": ["WAIT", "FAIL", "PASS"] },
+          "company": { "type": "string" },
+          "industryId": { "type": "integer", "format": "int64" },
+          "jobCategoryId": { "type": "integer", "format": "int64" },
+          "jobRole": { "type": "string" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "pdfUrl": { "type": "string" },
+          "qnaSets": { "type": "array", "items": { "$ref": "#/components/schemas/QnaSetDto" } }
+        }
+      },
+      "QnaSetDto": {
+        "type": "object",
+        "properties": {
+          "qnaSetId": { "type": "integer", "format": "int64" },
+          "interviewId": { "type": "integer", "format": "int64" },
+          "questionText": { "type": "string" },
+          "answerText": { "type": "string" },
+          "qnaSetSelfReviewText": { "type": "string" },
+          "starAnalysis": { "$ref": "#/components/schemas/StarAnalysisDto" },
+          "isMarkedDifficult": { "type": "boolean" }
+        }
+      },
+      "StarAnalysisDto": {
+        "type": "object",
+        "properties": {
+          "sInclusionLevel": { "type": "string", "enum": ["PRESENT", "INSUFFICIENT", "ABSENT"] },
+          "tInclusionLevel": { "type": "string", "enum": ["PRESENT", "INSUFFICIENT", "ABSENT"] },
+          "aInclusionLevel": { "type": "string", "enum": ["PRESENT", "INSUFFICIENT", "ABSENT"] },
+          "rInclusionLevel": { "type": "string", "enum": ["PRESENT", "INSUFFICIENT", "ABSENT"] },
+          "overallSummary": { "type": "string" }
+        }
+      },
+      "CommonResponseGuideQuestionResponse": {
+        "type": "object",
+        "properties": {
+          "isSuccess": { "type": "boolean" },
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "result": { "$ref": "#/components/schemas/GuideQuestionResponse" }
+        }
+      },
+      "GuideQuestionResponse": { "type": "object", "properties": { "guideQuestion": { "type": "string" } } },
+      "CommonResponsePageInterviewSimpleDto": {
+        "type": "object",
+        "properties": {
+          "isSuccess": { "type": "boolean" },
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "result": { "$ref": "#/components/schemas/PageInterviewSimpleDto" }
+        }
+      },
+      "PageInterviewSimpleDto": {
+        "type": "object",
+        "properties": {
+          "totalElements": { "type": "integer", "format": "int64" },
+          "totalPages": { "type": "integer", "format": "int32" },
+          "size": { "type": "integer", "format": "int32" },
+          "content": { "type": "array", "items": { "$ref": "#/components/schemas/InterviewSimpleDto" } },
+          "number": { "type": "integer", "format": "int32" },
+          "sort": { "$ref": "#/components/schemas/SortObject" },
+          "pageable": { "$ref": "#/components/schemas/PageableObject" },
+          "first": { "type": "boolean" },
+          "numberOfElements": { "type": "integer", "format": "int32" },
+          "last": { "type": "boolean" },
+          "empty": { "type": "boolean" }
+        }
+      },
+      "CommonResponseListIndustryResponse": {
+        "type": "object",
+        "properties": {
+          "isSuccess": { "type": "boolean" },
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "result": { "type": "array", "items": { "$ref": "#/components/schemas/IndustryResponse" } }
+        }
+      },
+      "IndustryResponse": {
+        "type": "object",
+        "properties": { "industryId": { "type": "integer", "format": "int64" }, "industryName": { "type": "string" } }
+      },
+      "CommonResponsePageDashboardMyDifficultQuestionResponse": {
+        "type": "object",
+        "properties": {
+          "isSuccess": { "type": "boolean" },
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "result": { "$ref": "#/components/schemas/PageDashboardMyDifficultQuestionResponse" }
+        }
+      },
+      "DashboardMyDifficultQuestionResponse": {
+        "type": "object",
+        "properties": { "question": { "type": "string" }, "interview": { "$ref": "#/components/schemas/InterviewDto" } }
+      },
+      "PageDashboardMyDifficultQuestionResponse": {
+        "type": "object",
+        "properties": {
+          "totalElements": { "type": "integer", "format": "int64" },
+          "totalPages": { "type": "integer", "format": "int32" },
+          "size": { "type": "integer", "format": "int32" },
+          "content": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/DashboardMyDifficultQuestionResponse" }
+          },
+          "number": { "type": "integer", "format": "int32" },
+          "sort": { "$ref": "#/components/schemas/SortObject" },
+          "pageable": { "$ref": "#/components/schemas/PageableObject" },
+          "first": { "type": "boolean" },
+          "numberOfElements": { "type": "integer", "format": "int32" },
+          "last": { "type": "boolean" },
+          "empty": { "type": "boolean" }
+        }
+      },
+      "CommonResponsePageDashboardUpcomingInterviewResponse": {
+        "type": "object",
+        "properties": {
+          "isSuccess": { "type": "boolean" },
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "result": { "$ref": "#/components/schemas/PageDashboardUpcomingInterviewResponse" }
+        }
+      },
+      "DashboardUpcomingInterviewResponse": {
+        "type": "object",
+        "properties": {
+          "upcomingInterview": { "$ref": "#/components/schemas/InterviewDto" },
+          "frequentlyAskedQuestions": { "type": "array", "items": { "type": "string" } },
+          "relatedInterviews": { "type": "array", "items": { "$ref": "#/components/schemas/InterviewDto" } }
+        }
+      },
+      "PageDashboardUpcomingInterviewResponse": {
+        "type": "object",
+        "properties": {
+          "totalElements": { "type": "integer", "format": "int64" },
+          "totalPages": { "type": "integer", "format": "int32" },
+          "size": { "type": "integer", "format": "int32" },
+          "content": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/DashboardUpcomingInterviewResponse" }
+          },
+          "number": { "type": "integer", "format": "int32" },
+          "sort": { "$ref": "#/components/schemas/SortObject" },
+          "pageable": { "$ref": "#/components/schemas/PageableObject" },
+          "first": { "type": "boolean" },
+          "numberOfElements": { "type": "integer", "format": "int32" },
+          "last": { "type": "boolean" },
+          "empty": { "type": "boolean" }
+        }
+      },
+      "CommonResponsePageDashboardDebriefIncompletedInterviewResponse": {
+        "type": "object",
+        "properties": {
+          "isSuccess": { "type": "boolean" },
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "result": { "$ref": "#/components/schemas/PageDashboardDebriefIncompletedInterviewResponse" }
+        }
+      },
+      "DashboardDebriefIncompletedInterviewResponse": {
+        "type": "object",
+        "properties": {
+          "interview": { "$ref": "#/components/schemas/InterviewDto" },
+          "passedDays": { "type": "integer", "format": "int64" }
+        }
+      },
+      "PageDashboardDebriefIncompletedInterviewResponse": {
+        "type": "object",
+        "properties": {
+          "totalElements": { "type": "integer", "format": "int64" },
+          "totalPages": { "type": "integer", "format": "int32" },
+          "size": { "type": "integer", "format": "int32" },
+          "content": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/DashboardDebriefIncompletedInterviewResponse" }
+          },
+          "number": { "type": "integer", "format": "int32" },
+          "sort": { "$ref": "#/components/schemas/SortObject" },
+          "pageable": { "$ref": "#/components/schemas/PageableObject" },
+          "first": { "type": "boolean" },
+          "numberOfElements": { "type": "integer", "format": "int32" },
+          "last": { "type": "boolean" },
+          "empty": { "type": "boolean" }
+        }
+      },
+      "CommonResponseDashboardHeadlineResponse": {
+        "type": "object",
+        "properties": {
+          "isSuccess": { "type": "boolean" },
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "result": { "$ref": "#/components/schemas/DashboardHeadlineResponse" }
+        }
+      },
+      "DashboardHeadlineResponse": {
+        "type": "object",
+        "properties": {
+          "headlineType": {
+            "type": "string",
+            "enum": ["REGISTER_INTERVIEW", "PREPARE_INTERVIEW", "REVIEW_INTERVIEW", "CHECK_INTERVIEW_HISTORY"]
+          },
+          "nickname": { "type": "string" },
+          "upcomingInterviewDday": { "type": "integer", "format": "int64" }
+        }
+      },
+      "CommonResponseListDashboardCalendarResponse": {
+        "type": "object",
+        "properties": {
+          "isSuccess": { "type": "boolean" },
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "result": { "type": "array", "items": { "$ref": "#/components/schemas/DashboardCalendarResponse" } }
+        }
+      },
+      "DashboardCalendarResponse": {
+        "type": "object",
+        "properties": {
+          "date": { "type": "string", "format": "date" },
+          "dDay": { "type": "integer", "format": "int64" },
+          "interviews": { "type": "array", "items": { "$ref": "#/components/schemas/InterviewDto" } }
+        }
+      },
+      "CommonResponseOAuthLoginUrlResponse": {
+        "type": "object",
+        "properties": {
+          "isSuccess": { "type": "boolean" },
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "result": { "$ref": "#/components/schemas/OAuthLoginUrlResponse" }
+        }
+      },
+      "OAuthLoginUrlResponse": { "type": "object", "properties": { "oAuthLoginUrl": { "type": "string" } } }
+    }
+  }
+}
