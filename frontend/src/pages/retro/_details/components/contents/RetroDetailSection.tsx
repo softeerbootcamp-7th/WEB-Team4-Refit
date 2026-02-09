@@ -1,4 +1,4 @@
-import { useState, type RefObject } from 'react'
+import { Fragment, useState, type RefObject } from 'react'
 import { Border, FadeScrollArea } from '@/shared/components'
 import type { QnaSetType } from '@/types/interview'
 import { KptDetailCard } from './KptDetailCard'
@@ -16,7 +16,7 @@ export function RetroDetailSection({ qnaSets, setRef, scrollContainerRef }: Retr
   return (
     <FadeScrollArea ref={scrollContainerRef} className="flex flex-col gap-5 rounded-lg pr-2">
       {qnaSets.map((qnaSet, index) => (
-        <>
+        <Fragment key={qnaSet.qnaSetId}>
           <QnaRetroCard
             key={qnaSet.qnaSetId}
             ref={(el) => setRef(index, el)}
@@ -28,7 +28,7 @@ export function RetroDetailSection({ qnaSets, setRef, scrollContainerRef }: Retr
             onEditingIdChange={(id) => setEditingId(id)}
           />
           <Border />
-        </>
+        </Fragment>
       ))}
       <KptDetailCard
         ref={(el) => setRef(qnaSets.length, el)}
