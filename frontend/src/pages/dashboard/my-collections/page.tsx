@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { Outlet, useNavigate, useParams } from 'react-router'
-import { PlusIcon } from '@/shared/assets'
 import DeleteFolderModal from '@/features/dashboard/my-collections/components/DeleteFolderModal'
 import FolderListItem from '@/features/dashboard/my-collections/components/FolderListItem'
 import FolderModal from '@/features/dashboard/my-collections/components/FolderModal'
+import { PlusIcon } from '@/shared/assets'
 
 interface Folder {
   id: string
