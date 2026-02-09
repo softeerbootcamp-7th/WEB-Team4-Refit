@@ -28,7 +28,7 @@ export default function FilterCard({
   const styles = COLOR_STYLES[colorScheme]
 
   return (
-    <div className="flex h-full flex-col gap-3 rounded-2xl border border-gray-200 bg-white p-5">
+    <div className="flex h-full flex-col gap-3 p-5">
       <div className="flex items-center justify-between">
         <h3 className="title-s-semibold">{title}</h3>
         {selectedIds.length > 0 && <span className={`body-s-medium ${styles.count}`}>{selectedIds.length}개 선택</span>}
@@ -53,6 +53,7 @@ export default function FilterCard({
               isSelected(option.id) ? styles.selected : 'text-gray-600 hover:bg-gray-50'
             }`}
           >
+            {isSelected(option.id) && '✓ '}
             {option.label}
           </button>
         ))}
