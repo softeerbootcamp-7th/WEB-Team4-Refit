@@ -10,6 +10,6 @@ public record KptReviewDto(Long kptReviewId, Long interviewId, String keepText, 
                 interviewSelfReview.getInterview().getId(),
                 interviewSelfReview.getKeepText(),
                 interviewSelfReview.getProblemText(),
-                interviewSelfReview.getProblemText());
+                interviewSelfReview.getTryText());
     }
 }
