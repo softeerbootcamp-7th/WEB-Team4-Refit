@@ -18,16 +18,20 @@ export function RetroWriteCard({ idx, value, onChange }: RetroWriteCardProps) {
     }
   }
 
+  const cardTitle = readOnly ? `${idx}번 질문에 대한 회고` : `${idx}번에 대한 회고를 작성해 보세요`
+
   return (
     <div className="bg-gray-white flex flex-col gap-4 rounded-lg p-5">
       <div className="inline-flex flex-wrap items-center gap-2.5">
         <Badge type="question-label" theme="orange-100" content={`${idx}번 회고`} />
-        <span className="title-m-semibold">{idx}번에 대한 회고를 작성해 보세요</span>
+        <span className="title-m-semibold">{cardTitle}</span>
       </div>
       <Border />
       <div className="relative">
         <textarea
-          className="body-m-regular min-h-40 w-full resize-none rounded-[10px] border-none p-4 focus-visible:outline-none"
+          className={`body-m-regular min-h-40 w-full resize-none rounded-[10px] p-4 ${
+            readOnly ? 'border-none focus-visible:outline-none' : 'outline-gray-150 outline-1'
+          }`}
           value={value}
           onChange={handleChange}
           readOnly={readOnly}

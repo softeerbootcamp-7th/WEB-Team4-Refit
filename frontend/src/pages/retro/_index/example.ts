@@ -1,10 +1,13 @@
 import type { InterviewFullType, QnaSetType, StarAnalysisResult } from '@/types/interview'
 
-export const MOCK_INTERVIEW_INFO_DATA: Partial<InterviewFullType> = {
+export const MOCK_INTERVIEW_INFO_DATA: Pick<
+  InterviewFullType,
+  'company' | 'jobRole' | 'interviewType' | 'interviewStartAt'
+> = {
   company: '현대자동차 소프티어',
   jobRole: '디자인 UI Designer',
-  interviewType: '2차 면접',
-  interviewStartAt: '2026. 03. 01. 오전 11시',
+  interviewType: 'second',
+  interviewStartAt: '2026-03-01T11:00:00',
 }
 
 export type RetroListItem = Pick<QnaSetType, 'qnaSetId' | 'questionText' | 'answerText'> & { isKpt?: boolean }

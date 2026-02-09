@@ -1,14 +1,19 @@
-import { useRetroContext } from '@/pages/retro/_index/contexts'
 import { NoteIcon } from '@/shared/assets'
 import { ContainerWithHeader, ContainerWithoutHeader, ListItemLarge, SidebarLayout } from '@/shared/components'
 import { INTERVIEW_TYPE_LABEL } from '@/shared/constants/interviews'
 import { formatDateTime } from '@/shared/utils/date'
 import type { LabelValueType } from '@/types/global'
-import { MOCK_INTERVIEW_INFO_DATA, MOCK_RETRO_LIST } from '../../example'
+import type { QnaSetType } from '@/types/interview'
+import { MOCK_INTERVIEW_DETAIL } from '../../example'
 
-export function RetroSidebar() {
-  const { currentIndex, updateCurrentIndex } = useRetroContext()
-  const { company, jobRole, interviewStartAt, interviewType } = MOCK_INTERVIEW_INFO_DATA
+type DetailSidebarProps = {
+  qnaSets: QnaSetType[]
+  activeIndex: number
+  onItemClick: (index: number) => void
+}
+
+export function DetailSidebar({ qnaSets, activeIndex, onItemClick }: DetailSidebarProps) {
+  const { company, jobRole, interviewStartAt, interviewType } = MOCK_INTERVIEW_DETAIL
 
   return (
     <SidebarLayout>
@@ -22,15 +27,20 @@ export function RetroSidebar() {
         <InterviewInfoRow label="직무" value={jobRole ?? '-'} />
         <InterviewInfoRow label="면접 유형" value={INTERVIEW_TYPE_LABEL[interviewType]} />
       </ContainerWithoutHeader>
-      <ContainerWithHeader title="회고 리스트">
-        {MOCK_RETRO_LIST.map(({ qnaSetId, questionText }, index) => (
+      <ContainerWithHeader title="회고 리스트" className="overflow-y-auto">
+        {qnaSets.map(({ qnaSetId, questionText }, index) => (
           <ListItemLarge
             key={qnaSetId}
             content={`${index + 1}. ${questionText}`}
-            active={currentIndex === index}
-            onClick={() => updateCurrentIndex(index)}
+            active={activeIndex === index}
+            onClick={() => onItemClick(index)}
           />
         ))}
+        <ListItemLarge
+          content={`${qnaSets.length + 1}. 최종 KPT 회고`}
+          active={activeIndex === qnaSets.length}
+          onClick={() => onItemClick(qnaSets.length)}
+        />
       </ContainerWithHeader>
     </SidebarLayout>
   )

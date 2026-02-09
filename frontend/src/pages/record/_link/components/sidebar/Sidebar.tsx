@@ -1,7 +1,8 @@
 import { useCallback } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import { NoteIcon } from '@/shared/assets'
-import { Border, ListItemSmall, SidebarLayout } from '@/shared/components'
+import { Border, ListItemSmall } from '@/shared/components'
+import { MinimizedSidebarLayout } from '@/shared/components/sidebar/SidebarLayout'
 
 export const RecordLinkSidebar = () => {
   // TODO: 훅으로 분리하기
@@ -18,7 +19,7 @@ export const RecordLinkSidebar = () => {
   }
 
   return (
-    <SidebarLayout isMinimized>
+    <MinimizedSidebarLayout>
       <NoteIcon width="24" height="24" className="shrink-0" />
       <Border />
       <div className="flex w-full flex-col items-center gap-0.5">
@@ -31,7 +32,7 @@ export const RecordLinkSidebar = () => {
           />
         ))}
       </div>
-    </SidebarLayout>
+    </MinimizedSidebarLayout>
   )
 }
 
