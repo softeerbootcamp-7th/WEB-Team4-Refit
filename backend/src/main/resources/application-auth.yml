@@ -2,9 +2,9 @@ spring:
   auth:
     using-https: ${AUTH_USING_HTTPS}
     url:
-      # TODO: public한 API 경로가 더 있는지 검토 필요
       sign-up: "/user/signup"
       whitelists:
+        # TODO: public한 API 경로가 더 있는지 검토 필요
         - "/test/**" # TODO: 추후 prod 환경 도입시 별도 프로필로 분리 후 해당 URL 제거하기
         - "/auth/login/**"
         - "/auth/reissue"
