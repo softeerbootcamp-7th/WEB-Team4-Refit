@@ -1,7 +1,7 @@
 package com.shyashyashya.refit.global.dto;
 
-import com.shyashyashya.refit.global.model.ResponseCode;
 import com.shyashyashya.refit.global.exception.ErrorCode;
+import com.shyashyashya.refit.global.model.ResponseCode;
 
 public record ApiResponse<T>(boolean isSuccess, String code, String message, T result) {
 

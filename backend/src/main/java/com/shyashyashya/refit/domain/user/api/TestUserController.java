@@ -1,11 +1,11 @@
 package com.shyashyashya.refit.domain.user.api;
 
-import static com.shyashyashya.refit.global.model.ResponseCode.COMMON204;
 import static com.shyashyashya.refit.global.exception.ErrorCode.USER_NOT_FOUND;
+import static com.shyashyashya.refit.global.model.ResponseCode.COMMON204;
 
-import com.shyashyashya.refit.global.dto.ApiResponse;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
 import com.shyashyashya.refit.global.auth.repository.RefreshTokenRepository;
+import com.shyashyashya.refit.global.dto.ApiResponse;
 import com.shyashyashya.refit.global.exception.CustomException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

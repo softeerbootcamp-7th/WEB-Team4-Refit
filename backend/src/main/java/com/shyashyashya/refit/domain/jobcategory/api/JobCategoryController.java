@@ -2,9 +2,9 @@ package com.shyashyashya.refit.domain.jobcategory.api;
 
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 
-import com.shyashyashya.refit.global.dto.ApiResponse;
 import com.shyashyashya.refit.domain.jobcategory.dto.response.JobCategoryResponse;
 import com.shyashyashya.refit.domain.jobcategory.service.JobCategoryService;
+import com.shyashyashya.refit.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;

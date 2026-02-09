@@ -3,10 +3,10 @@ package com.shyashyashya.refit.domain.user.api;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON201;
 
-import com.shyashyashya.refit.global.dto.ApiResponse;
 import com.shyashyashya.refit.domain.user.dto.request.UserSignUpRequest;
 import com.shyashyashya.refit.domain.user.dto.response.MyProfileResponse;
 import com.shyashyashya.refit.domain.user.service.UserService;
+import com.shyashyashya.refit.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

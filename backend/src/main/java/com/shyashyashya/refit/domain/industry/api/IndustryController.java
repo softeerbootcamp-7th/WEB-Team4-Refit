@@ -2,9 +2,9 @@ package com.shyashyashya.refit.domain.industry.api;
 
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 
-import com.shyashyashya.refit.global.dto.ApiResponse;
 import com.shyashyashya.refit.domain.industry.dto.IndustryResponse;
 import com.shyashyashya.refit.domain.industry.service.IndustryService;
+import com.shyashyashya.refit.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
