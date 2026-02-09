@@ -18,22 +18,19 @@ export interface SearchableComboboxProps {
 }
 
 const SearchableCombobox = forwardRef<HTMLDivElement, SearchableComboboxProps>(
-  (
-    {
-      label,
-      options,
-      placeholder = '선택해 주세요',
-      // error,
-      required,
-      searchPlaceholder = 'Search',
-      creatable = false,
-      className = '',
-      value,
-      onChange,
-      disabled,
-    },
-    _ref,
-  ) => {
+  ({
+    label,
+    options,
+    placeholder = '선택해 주세요',
+    // error,
+    required,
+    searchPlaceholder = 'Search',
+    creatable = false,
+    className = '',
+    value,
+    onChange,
+    disabled,
+  }) => {
     const containerRef = useRef<HTMLDivElement>(null)
     const [open, setOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState('')
