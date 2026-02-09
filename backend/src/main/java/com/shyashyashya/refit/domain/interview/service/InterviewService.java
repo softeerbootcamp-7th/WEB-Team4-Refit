@@ -96,7 +96,7 @@ public class InterviewService {
 
         InterviewSelfReview kptReview = interviewSelfReviewRepository
                 .findByInterview(interview)
-                .orElseGet(() -> interviewSelfReviewRepository.save(InterviewSelfReview.createEmpty(interview)));
+                .orElseGet(() -> InterviewSelfReview.createEmpty(interview));
 
         return InterviewFullDto.fromInterviewWithQnaSets(
                 interview, qnaSets, selfReviewMap, starAnalysisDtoMap, kptReview);
