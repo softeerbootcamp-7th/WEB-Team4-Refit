@@ -33,7 +33,7 @@ export function RetroDetailSection({ qnaSets, setRef, scrollContainerRef }: Retr
       <KptDetailCard
         ref={(el) => setRef(qnaSets.length, el)}
         isOtherEditing={editingId !== null && editingId !== 'kpt'}
-        onEditingIdChange={(isEditing) => setEditingId(isEditing ? 'kpt' : null)}
+        onEditingIdChange={setEditingId}
       />
     </FadeScrollArea>
   )
