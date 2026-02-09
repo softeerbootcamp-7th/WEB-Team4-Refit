@@ -16,7 +16,7 @@ const FolderModal = ({ isOpen, onClose, onSubmit, initialName = '', title, submi
   const [name, setName] = useState(initialName)
   const [prevIsOpen, setPrevIsOpen] = useState(false)
 
-  if (isOpen && !prevIsOpen) {
+  if (isOpen && (!prevIsOpen || name !== initialName)) {
     setName(initialName)
     setPrevIsOpen(true)
   }
