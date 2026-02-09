@@ -31,7 +31,8 @@ public class GoogleOAuth2Controller implements OAuth2Controller {
     @Operation(summary = "구글 로그인 화면으로 이동하는 url을 생성합니다.")
     @GetMapping
     @Override
-    public ResponseEntity<ApiResponse<OAuth2LoginUrlResponse>> buildOAuth2LoginUrl(@RequestParam String env) {
+    public ResponseEntity<ApiResponse<OAuth2LoginUrlResponse>> buildOAuth2LoginUrl(
+            @RequestParam(required = false) String env) {
         var response = googleOAuth2Service.buildOAuth2LoginUrl(env);
         var body = ApiResponse.success(COMMON200, response);
         return ResponseEntity.ok(body);
