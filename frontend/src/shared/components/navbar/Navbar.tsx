@@ -31,7 +31,7 @@ export default function Navbar() {
 }
 
 const getNavLinkClassName = ({ isActive }: { isActive: boolean }) => {
-  const baseStyles = 'relative flex h-full items-center px-7'
+  const baseStyles = 'relative flex h-full items-center px-7 transition-colors'
   const activeStyles =
     'body-m-semibold text-gray-800 after:absolute after:right-0 after:bottom-0 after:left-0 after:h-0.5 after:bg-orange-500 after:content-[""]'
   const inactiveStyles = 'body-m-medium text-gray-400 hover:text-gray-800'
