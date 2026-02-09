@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "Qna-Set My Controller", description = "나의 질문과 관련된 API 컨트롤러 입니다.")
+@Tag(name = "Qna Set My Controller", description = "나의 질문 아카이브 데이터와 관련된 API 컨트롤러 입니다.")
 @RestController
 @RequestMapping("/qna-set/my")
 @RequiredArgsConstructor

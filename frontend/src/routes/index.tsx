@@ -4,6 +4,7 @@ import {
   DashboardPage,
   RecordConfirmPage,
   RecordLinkPage,
+  RetroDetailPage,
   RetroQuestionPage,
   NotFound,
   SharedComponentExample,
@@ -112,7 +113,7 @@ const router = createBrowserRouter([
           },
           {
             path: getChildPath(ROUTES.RETRO_DETAILS, ROUTES.RETRO),
-            Component: DashboardPage,
+            Component: RetroDetailPage,
           },
         ],
       },
