@@ -66,9 +66,7 @@ public class InterviewController {
     @PatchMapping("/{interviewId}/result-status")
     public ResponseEntity<CommonResponse<Void>> updateInterviewResultStatus(
             @PathVariable Long interviewId, @Valid @RequestBody InterviewResultStatusUpdateRequest request) {
-
         interviewService.updateResultStatus(interviewId, request);
-
         var response = CommonResponse.success(COMMON200);
         return ResponseEntity.ok(response);
     }

@@ -2,8 +2,13 @@ package com.shyashyashya.refit.core;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
+import com.shyashyashya.refit.domain.company.model.Company;
+import com.shyashyashya.refit.domain.company.repository.CompanyRepository;
 import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
+import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
+import com.shyashyashya.refit.domain.interview.model.Interview;
+import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
 import com.shyashyashya.refit.domain.user.model.User;
@@ -37,6 +42,14 @@ public abstract class IntegrationTest {
 
     protected RequestSpecification spec;
 
+    protected User requestUser;
+
+    protected Company company;
+
+    protected Industry industry;
+
+    protected JobCategory jobCategory;
+
     @PersistenceContext
     private EntityManager em;
 
@@ -52,16 +65,23 @@ public abstract class IntegrationTest {
     @Autowired
     private JobCategoryRepository jobCategoryRepository;
 
+    @Autowired
+    private InterviewRepository interviewRepository;
+
+    @Autowired
+    private CompanyRepository companyRepository;
+
     @BeforeEach
     void restAssuredSetUp() {
         clearDatabase();
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
 
-        Industry industry = industryRepository.save(Industry.create("HyunDai"));
-        JobCategory jobCategory = jobCategoryRepository.save(JobCategory.create("BE Developer"));
+        industry = industryRepository.save(Industry.create("제조업"));
+        jobCategory = jobCategoryRepository.save(JobCategory.create("BE Developer"));
+        company = companyRepository.save(Company.create("현대자동차", "logo", true));
 
-        User user = createUser("test@example.com", industry, jobCategory);
-        String accessToken = jwtUtil.createAccessToken(user.getEmail(), user.getId());
+        requestUser = createUser("test@example.com", "default", industry, jobCategory);
+        String accessToken = jwtUtil.createAccessToken(requestUser.getEmail(), requestUser.getId());
         spec = new RequestSpecBuilder()
                 .setPort(port)
                 .addCookie(AuthConstant.ACCESS_TOKEN, accessToken)
@@ -96,7 +116,27 @@ public abstract class IntegrationTest {
         });
     }
 
-    private User createUser(String email, Industry industry, JobCategory jobCategory) {
-        return userRepository.save(User.create(email, "nickname", "imageUrl", false, industry, jobCategory));
+    protected User createUser(String email, String nickname, Industry industry, JobCategory jobCategory) {
+        return userRepository.save(User.create(email, nickname, "imageUrl", false, industry, jobCategory));
+    }
+
+    protected Interview createInterview(InterviewCreateRequest request) {
+        return createInterview(request, requestUser);
+    }
+
+    protected Interview createInterview(InterviewCreateRequest request, User user) {
+        Company company = companyRepository.findByName(request.companyName()).get();
+        Industry industry = industryRepository.findById(request.industryId()).get();
+        JobCategory jobCategory = jobCategoryRepository.findById(request.jobCategoryId()).get();
+
+        Interview interview = Interview.create(
+                request.jobRole(),
+                request.interviewType(),
+                request.startAt(),
+                user,
+                company,
+                industry,
+                jobCategory);
+        return interviewRepository.save(interview);
     }
 }
