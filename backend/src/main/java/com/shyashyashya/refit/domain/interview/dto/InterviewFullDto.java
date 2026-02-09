@@ -2,6 +2,7 @@ package com.shyashyashya.refit.domain.interview.dto;
 
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewResultStatus;
+import com.shyashyashya.refit.domain.interview.model.InterviewSelfReview;
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetSelfReview;
@@ -23,7 +24,8 @@ public record InterviewFullDto(
         String jobRole,
         LocalDateTime updatedAt,
         String pdfUrl,
-        List<QnaSetDto> qnaSets) {
+        List<QnaSetDto> qnaSets,
+        InterviewSelfReviewDto interviewSelfReview) {
     public static InterviewFullDto fromInterviewWithEmptyQnaSets(Interview interview) {
         return InterviewFullDto.builder()
                 .interviewId(interview.getId())
@@ -44,7 +46,8 @@ public record InterviewFullDto(
             Interview interview,
             List<QnaSet> qnaSets,
             Map<Long, QnaSetSelfReview> selfReviewMap,
-            Map<Long, StarAnalysisDto> starAnalysisDtoMap) {
+            Map<Long, StarAnalysisDto> starAnalysisDtoMap,
+            InterviewSelfReview interviewSelfReview) {
         List<QnaSetDto> qnaSetDtos = qnaSets.stream()
                 .map(qnaSet -> {
                     Long qnaSetId = qnaSet.getId();
@@ -53,6 +56,8 @@ public record InterviewFullDto(
                     return QnaSetDto.from(qnaSet, selfReview, starAnalysisDto);
                 })
                 .toList();
+
+        InterviewSelfReviewDto interviewSelfReviewDto = InterviewSelfReviewDto.from(interviewSelfReview);
 
         return InterviewFullDto.builder()
                 .interviewId(interview.getId())
@@ -66,6 +71,7 @@ public record InterviewFullDto(
                 .updatedAt(interview.getUpdatedAt())
                 .pdfUrl(interview.getPdfUrl())
                 .qnaSets(qnaSetDtos)
+                .interviewSelfReview(interviewSelfReviewDto)
                 .build();
     }
 }
