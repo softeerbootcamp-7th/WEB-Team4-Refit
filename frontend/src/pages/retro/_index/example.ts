@@ -7,7 +7,7 @@ export const MOCK_INTERVIEW_INFO_DATA: Pick<
   company: '현대자동차 소프티어',
   jobRole: '디자인 UI Designer',
   interviewType: 'second',
-  interviewStartAt: '2026. 03. 01. 오전 11시',
+  interviewStartAt: '2026-03-01T11:00:00',
 }
 
 export type RetroListItem = Pick<QnaSetType, 'qnaSetId' | 'questionText' | 'answerText'> & { isKpt?: boolean }
