@@ -14,7 +14,7 @@ export function RetroDetailSection({ qnaSets, setRef, scrollContainerRef }: Retr
   const [editingId, setEditingId] = useState<string | null>(null)
 
   return (
-    <FadeScrollArea ref={scrollContainerRef} className="flex flex-col gap-5 rounded-lg pr-4">
+    <FadeScrollArea ref={scrollContainerRef} className="flex flex-col gap-5 rounded-lg pr-2">
       {qnaSets.map((qnaSet, index) => (
         <>
           <QnaRetroCard
