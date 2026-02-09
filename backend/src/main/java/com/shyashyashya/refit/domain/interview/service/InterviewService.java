@@ -155,7 +155,7 @@ public class InterviewService {
     @Transactional(readOnly = true)
     public Page<InterviewDto> searchMyInterviews(InterviewSearchRequest request, Pageable pageable) {
         User requestUser = requestUserContext.getRequestUser();
-
+        // TODO : 복기 완료한 면접에 대해서만 검색하도록 조건 추가
         return interviewRepository
                 .searchInterviews(
                         requestUser,
