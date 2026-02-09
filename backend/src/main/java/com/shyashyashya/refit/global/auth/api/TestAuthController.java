@@ -77,7 +77,8 @@ public class TestAuthController {
         String accessTokenCookie = cookieUtil.createAccessTokenCookie(accessToken);
         String refreshTokenCookie = cookieUtil.createResponseTokenCookie(refreshToken);
 
-        refreshTokenRepository.save(RefreshToken.create(refreshToken, email, jwtUtil.getExpiration(refreshToken)));
+        var refreshTokenExpiration = jwtUtil.getValidatedJwtToken(refreshToken).getExpiration();
+        refreshTokenRepository.save(RefreshToken.create(refreshToken, email, refreshTokenExpiration));
 
         var body = CommonResponse.success(COMMON200, TokenPairDto.of(accessToken, refreshToken));
         return ResponseEntity.ok()

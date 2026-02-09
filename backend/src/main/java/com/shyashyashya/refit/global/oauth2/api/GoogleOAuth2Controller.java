@@ -4,11 +4,12 @@ import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
 
 import com.shyashyashya.refit.domain.common.dto.CommonResponse;
 import com.shyashyashya.refit.global.auth.service.CookieUtil;
-import com.shyashyashya.refit.global.oauth2.dto.OAuthLoginUrlResponse;
+import com.shyashyashya.refit.global.oauth2.dto.OAuth2LoginUrlResponse;
+import com.shyashyashya.refit.global.oauth2.dto.OAuth2ResultDto;
 import com.shyashyashya.refit.global.oauth2.service.GoogleOAuth2Service;
-import com.shyashyashya.refit.global.property.OAuth2Property;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,15 +26,15 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 public class GoogleOAuth2Controller implements OAuth2Controller {
 
-    private final GoogleOAuth2Service googleOAuthService;
-    private final OAuth2Property oAuth2Property;
+    private final GoogleOAuth2Service googleOAuth2Service;
     private final CookieUtil cookieUtil;
 
     @Operation(summary = "구글 로그인 화면으로 이동하는 url을 생성합니다.")
     @GetMapping
     @Override
-    public ResponseEntity<CommonResponse<OAuthLoginUrlResponse>> getOAuth2LoginUrl() {
-        var body = CommonResponse.success(COMMON200, new OAuthLoginUrlResponse(googleOAuthService.getOAuthLoginUrl()));
+    public ResponseEntity<CommonResponse<OAuth2LoginUrlResponse>> buildOAuth2LoginUrl(HttpServletRequest request) {
+        var response = googleOAuth2Service.buildOAuth2LoginUrl(getRequestHostUrlFrom(request));
+        var body = CommonResponse.success(COMMON200, response);
         return ResponseEntity.ok(body);
     }
 
@@ -42,14 +43,14 @@ public class GoogleOAuth2Controller implements OAuth2Controller {
             description = "인가 코드를 활용하여 refit 서비스의 토큰을 발급하여 클라이언트에게 쿠키로 설정합니다.")
     @GetMapping("/callback")
     @Override
-    public ResponseEntity<Void> handleOAuth2Callback(@RequestParam String code) {
-        var result = googleOAuthService.handleOAuthCallback(code);
+    public ResponseEntity<Void> handleOAuth2Callback(@RequestParam String code, @RequestParam String state) {
+        OAuth2ResultDto result = googleOAuth2Service.handleOAuth2Callback(code, state);
         var accessTokenCookie =
                 cookieUtil.createAccessTokenCookie(result.tokenPair().accessToken());
         var refreshTokenCookie =
                 cookieUtil.createResponseTokenCookie(result.tokenPair().refreshToken());
 
-        String redirectUrl = buildRedirectUrl(result.isNeedSignup(), result.nickname(), result.profileImageUrl());
+        String redirectUrl = buildRedirectUrl(result);
 
         return ResponseEntity.status(HttpStatus.FOUND)
                 .header(HttpHeaders.SET_COOKIE, accessTokenCookie)
@@ -58,14 +59,24 @@ public class GoogleOAuth2Controller implements OAuth2Controller {
                 .build();
     }
 
-    private String buildRedirectUrl(boolean isNeedSignup, String nickname, String profileImageUrl) {
-        // TODO: 로그인 성공시 바로 메인페이지로 리다이렉션 가능한지 고민해보기
-        return UriComponentsBuilder.fromUriString(oAuth2Property.frontendRedirectUri())
-                .queryParam("status", isNeedSignup ? "signUpRequired" : "loginSuccess")
-                .queryParam("nickname", nickname)
-                .queryParam("profileImageUrl", profileImageUrl)
-                .encode()
+    private String getRequestHostUrlFrom(HttpServletRequest request) {
+        return UriComponentsBuilder.fromUriString(request.getRequestURL().toString())
+                .replacePath(null)
+                .replaceQuery(null)
                 .build()
                 .toUriString();
+    }
+
+    private String buildRedirectUrl(OAuth2ResultDto oAuth2ResultDto) {
+        boolean isNeedSignup = oAuth2ResultDto.isNeedSignup();
+        var builder = UriComponentsBuilder.fromUriString(oAuth2ResultDto.frontRedirectUri())
+                .queryParam("status", isNeedSignup ? "signUpRequired" : "loginSuccess");
+
+        if (isNeedSignup) {
+            builder.queryParam("nickname", oAuth2ResultDto.nickname())
+                    .queryParam("profileImageUrl", oAuth2ResultDto.profileImageUrl());
+        }
+
+        return builder.encode().build().toUriString();
     }
 }
