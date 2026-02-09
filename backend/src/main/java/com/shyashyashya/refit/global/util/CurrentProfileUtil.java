@@ -12,7 +12,7 @@ public class CurrentProfileUtil {
 
     public String getServerUrl() {
         return switch (currentProfile.toUpperCase()) {
-            case "LOCAL" -> UrlConstant.LOCAL_SERVER_URL;
+            case "TEST", "LOCAL" -> UrlConstant.LOCAL_SERVER_URL;
             case "DEV" -> UrlConstant.DEV_SERVER_URL;
             default -> throw new IllegalStateException("Unknown profile: " + currentProfile);
         };
