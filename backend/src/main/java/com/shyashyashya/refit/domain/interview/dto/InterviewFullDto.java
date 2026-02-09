@@ -45,7 +45,8 @@ public record InterviewFullDto(
             Interview interview,
             List<QnaSet> qnaSets,
             Map<Long, QnaSetSelfReview> selfReviewMap,
-            Map<Long, StarAnalysisDto> starAnalysisDtoMap) {
+            Map<Long, StarAnalysisDto> starAnalysisDtoMap,
+            KptReviewDto kptReviewDto) {
         List<QnaSetDto> qnaSetDtos = qnaSets.stream()
                 .map(qnaSet -> {
                     Long qnaSetId = qnaSet.getId();
@@ -67,6 +68,7 @@ public record InterviewFullDto(
                 .updatedAt(interview.getUpdatedAt())
                 .pdfUrl(interview.getPdfUrl())
                 .qnaSets(qnaSetDtos)
+                .kptReviewDto(kptReviewDto)
                 .build();
     }
 }
