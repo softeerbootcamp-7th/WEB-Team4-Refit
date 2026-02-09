@@ -4,7 +4,7 @@ import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON201;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON204;
 
-import com.shyashyashya.refit.global.dto.CommonResponse;
+import com.shyashyashya.refit.global.dto.ApiResponse;
 import com.shyashyashya.refit.domain.interview.dto.InterviewDto;
 import com.shyashyashya.refit.domain.interview.dto.InterviewFullDto;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
@@ -40,68 +40,68 @@ public class InterviewController {
 
     @Operation(summary = "면접 데이터를 생성합니다.")
     @PostMapping
-    public ResponseEntity<CommonResponse<Void>> createInterview(@Valid @RequestBody InterviewCreateRequest request) {
+    public ResponseEntity<ApiResponse<Void>> createInterview(@Valid @RequestBody InterviewCreateRequest request) {
         interviewService.createInterview(request);
-        var response = CommonResponse.success(COMMON201);
+        var response = ApiResponse.success(COMMON201);
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "특정 면접 정보를 조회합니다.", description = "면접에 대한 정보만 조회하며, 면접에 속한 질문, 회고 등의 정보는 조회하지 않습니다.")
     @GetMapping("/{interviewId}")
-    public ResponseEntity<CommonResponse<InterviewDto>> getInterview(@PathVariable Long interviewId) {
+    public ResponseEntity<ApiResponse<InterviewDto>> getInterview(@PathVariable Long interviewId) {
         var body = interviewService.getInterview(interviewId);
-        var response = CommonResponse.success(COMMON200, body);
+        var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "면접을 삭제합니다.", description = "면접 삭제시 해당 면접에 기록된 질문, 회고 데이터도 함께 삭제됩니다.")
     @DeleteMapping("/{interviewId}")
-    public ResponseEntity<CommonResponse<Void>> deleteInterview(@PathVariable Long interviewId) {
+    public ResponseEntity<ApiResponse<Void>> deleteInterview(@PathVariable Long interviewId) {
         interviewService.deleteInterview(interviewId);
-        var response = CommonResponse.success(COMMON204);
+        var response = ApiResponse.success(COMMON204);
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "면접 결과를 수정합니다.")
     @PatchMapping("/{interviewId}/result-status")
-    public ResponseEntity<CommonResponse<Void>> updateInterviewResultStatus(
+    public ResponseEntity<ApiResponse<Void>> updateInterviewResultStatus(
             @PathVariable Long interviewId, @Valid @RequestBody InterviewResultStatusUpdateRequest request) {
         interviewService.updateResultStatus(interviewId, request);
-        var response = CommonResponse.success(COMMON200);
+        var response = ApiResponse.success(COMMON200);
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "면접 및 면접에 관련된 질문, 회고 데이터를 모두 조회합니다.")
     @GetMapping("/{interviewId}/qna-sets")
-    public ResponseEntity<CommonResponse<InterviewFullDto>> getInterviewFull(@PathVariable Long interviewId) {
+    public ResponseEntity<ApiResponse<InterviewFullDto>> getInterviewFull(@PathVariable Long interviewId) {
         var body = interviewService.getInterviewFull(interviewId);
-        var response = CommonResponse.success(COMMON200, body);
+        var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "면접 기록 중, 가이드 질문을 조회합니다.")
     @GetMapping("/{interviewId}/guide-question")
-    public ResponseEntity<CommonResponse<GuideQuestionResponse>> getGuideQuestion(@PathVariable Long interviewId) {
+    public ResponseEntity<ApiResponse<GuideQuestionResponse>> getGuideQuestion(@PathVariable Long interviewId) {
         String guideQuestion = guideQuestionService.getGuideQuestion(interviewId);
-        var response = CommonResponse.success(COMMON200, new GuideQuestionResponse(guideQuestion));
+        var response = ApiResponse.success(COMMON200, new GuideQuestionResponse(guideQuestion));
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "면접 기록 데이터를 생성/수정합니다.", description = "질문, 답변으로 변환되기 전 raw 면접 기록 데이터를 수정합니다.")
     @PutMapping("/{interviewId}/raw-text")
-    public ResponseEntity<CommonResponse<Void>> updateRawText(
+    public ResponseEntity<ApiResponse<Void>> updateRawText(
             @PathVariable Long interviewId, @Valid @RequestBody RawTextUpdateRequest request) {
         interviewService.updateRawText(interviewId, request);
-        var response = CommonResponse.success(COMMON200);
+        var response = ApiResponse.success(COMMON200);
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "면접에 대한 KPT 회고를 생성/수정합니다.")
     @PutMapping("/{interviewId}/kpt-self-review")
-    public ResponseEntity<CommonResponse<Void>> updateKptSelfReview(
+    public ResponseEntity<ApiResponse<Void>> updateKptSelfReview(
             @PathVariable Long interviewId, @Valid @RequestBody KptSelfReviewUpdateRequest request) {
         interviewService.updateKptSelfReview(interviewId, request);
-        var response = CommonResponse.success(COMMON200);
+        var response = ApiResponse.success(COMMON200);
         return ResponseEntity.ok(response);
     }
 }

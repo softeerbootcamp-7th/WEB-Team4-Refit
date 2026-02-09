@@ -2,7 +2,7 @@ package com.shyashyashya.refit.global.oauth2.api;
 
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 
-import com.shyashyashya.refit.global.dto.CommonResponse;
+import com.shyashyashya.refit.global.dto.ApiResponse;
 import com.shyashyashya.refit.global.auth.service.CookieUtil;
 import com.shyashyashya.refit.global.oauth2.dto.OAuth2LoginUrlResponse;
 import com.shyashyashya.refit.global.oauth2.dto.OAuth2ResultDto;
@@ -32,9 +32,9 @@ public class GoogleOAuth2Controller implements OAuth2Controller {
     @Operation(summary = "구글 로그인 화면으로 이동하는 url을 생성합니다.")
     @GetMapping
     @Override
-    public ResponseEntity<CommonResponse<OAuth2LoginUrlResponse>> buildOAuth2LoginUrl(HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<OAuth2LoginUrlResponse>> buildOAuth2LoginUrl(HttpServletRequest request) {
         var response = googleOAuth2Service.buildOAuth2LoginUrl(getRequestHostUrlFrom(request));
-        var body = CommonResponse.success(COMMON200, response);
+        var body = ApiResponse.success(COMMON200, response);
         return ResponseEntity.ok(body);
     }
 

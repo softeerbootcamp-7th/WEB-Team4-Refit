@@ -3,7 +3,7 @@ package com.shyashyashya.refit.global.auth.api;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 import static com.shyashyashya.refit.global.exception.ErrorCode.USER_NOT_FOUND;
 
-import com.shyashyashya.refit.global.dto.CommonResponse;
+import com.shyashyashya.refit.global.dto.ApiResponse;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
 import com.shyashyashya.refit.global.auth.dto.TokenPairDto;
@@ -40,21 +40,21 @@ public class TestAuthController {
 
     @Operation(summary = "(테스트용) 게스트 회원 토큰을 발급합니다.", description = "발급된 토큰은 요청 주소에 쿠키로 세팅됩니다.")
     @GetMapping("/guest")
-    public ResponseEntity<CommonResponse<TokenPairDto>> getGuestToken(
+    public ResponseEntity<ApiResponse<TokenPairDto>> getGuestToken(
             @RequestParam("email") @NotNull @Email String email) {
         return getTokenResponse(email, null);
     }
 
     @Operation(summary = "(테스트용) 회원 토큰을 발급합니다.", description = "발급된 토큰은 요청 주소에 쿠키로 세팅됩니다.")
     @GetMapping
-    public ResponseEntity<CommonResponse<TokenPairDto>> getToken(@RequestParam("email") @NotNull @Email String email) {
+    public ResponseEntity<ApiResponse<TokenPairDto>> getToken(@RequestParam("email") @NotNull @Email String email) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         return getTokenResponse(user.getEmail(), user.getId());
     }
 
     @Operation(summary = "(테스트용) 쿠키에 설정된 토큰들을 삭제합니다.")
     @DeleteMapping("/cookies")
-    public ResponseEntity<CommonResponse<Void>> deleteTokenCookies(
+    public ResponseEntity<ApiResponse<Void>> deleteTokenCookies(
             @CookieValue(value = AuthConstant.REFRESH_TOKEN, required = false) String refreshToken) {
         String deleteAccessTokenCookie = cookieUtil.deleteCookie(AuthConstant.ACCESS_TOKEN);
         String deleteRefreshTokenCookie = cookieUtil.deleteCookie(AuthConstant.REFRESH_TOKEN);
@@ -63,14 +63,14 @@ public class TestAuthController {
             refreshTokenRepository.deleteByToken(refreshToken);
         }
 
-        var response = CommonResponse.success(COMMON200);
+        var response = ApiResponse.success(COMMON200);
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, deleteAccessTokenCookie)
                 .header(HttpHeaders.SET_COOKIE, deleteRefreshTokenCookie)
                 .body(response);
     }
 
-    private ResponseEntity<CommonResponse<TokenPairDto>> getTokenResponse(String email, Long userId) {
+    private ResponseEntity<ApiResponse<TokenPairDto>> getTokenResponse(String email, Long userId) {
         String accessToken = jwtUtil.createAccessToken(email, userId);
         String refreshToken = jwtUtil.createRefreshToken(email, userId);
 
@@ -80,7 +80,7 @@ public class TestAuthController {
         var refreshTokenExpiration = jwtUtil.getValidatedJwtToken(refreshToken).getExpiration();
         refreshTokenRepository.save(RefreshToken.create(refreshToken, email, refreshTokenExpiration));
 
-        var body = CommonResponse.success(COMMON200, TokenPairDto.of(accessToken, refreshToken));
+        var body = ApiResponse.success(COMMON200, TokenPairDto.of(accessToken, refreshToken));
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, accessTokenCookie)
                 .header(HttpHeaders.SET_COOKIE, refreshTokenCookie)

@@ -2,7 +2,7 @@ package com.shyashyashya.refit.domain.interview.api;
 
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 
-import com.shyashyashya.refit.global.dto.CommonResponse;
+import com.shyashyashya.refit.global.dto.ApiResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardCalendarResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardDebriefIncompletedInterviewResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardHeadlineResponse;
@@ -43,9 +43,9 @@ public class DashboardController {
             #3 "CHECK_INTERVIEW_HISTORY" - 면접 히스토 확인하기 (위 케이스에 해당하지 않는 경우)
             """)
     @GetMapping("/headline")
-    public ResponseEntity<CommonResponse<DashboardHeadlineResponse>> getDashboardHeadline() {
+    public ResponseEntity<ApiResponse<DashboardHeadlineResponse>> getDashboardHeadline() {
         var body = dashboardService.getDashboardHeadlineData();
-        var response = CommonResponse.success(COMMON200, body);
+        var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
 
@@ -55,10 +55,10 @@ public class DashboardController {
             각 면접 일정의 Dday 필드는 과거라면 음수, 미래라면 양수 값을 갖습니다.
             """)
     @GetMapping("/calendar/interview")
-    public ResponseEntity<CommonResponse<List<DashboardCalendarResponse>>> getDashboardCalendarInterviews(
+    public ResponseEntity<ApiResponse<List<DashboardCalendarResponse>>> getDashboardCalendarInterviews(
             @RequestParam @Positive Integer year, @RequestParam @Min(1) @Max(12) Integer month) {
         var body = dashboardService.getDashboardCalendarInterviews(year, month);
-        var response = CommonResponse.success(COMMON200, body);
+        var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
 
@@ -67,28 +67,28 @@ public class DashboardController {
             각 면접 일정의 Dday 필드는 과거라면 음수, 미래라면 양수 값을 갖습니다.
             """)
     @GetMapping("/interview/upcoming")
-    public ResponseEntity<CommonResponse<Page<DashboardUpcomingInterviewResponse>>> getUpcomingInterviews(
+    public ResponseEntity<ApiResponse<Page<DashboardUpcomingInterviewResponse>>> getUpcomingInterviews(
             Pageable pageable) {
         var body = dashboardService.getUpcomingInterviews(pageable);
-        var response = CommonResponse.success(COMMON200, body);
+        var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "대시보드에서 '내가 어렵게 느낀 질문'을 조회합니다.")
     @GetMapping("/qna-set/my/difficult")
-    public ResponseEntity<CommonResponse<Page<DashboardMyDifficultQuestionResponse>>> getMyDifficultQnaSets(
+    public ResponseEntity<ApiResponse<Page<DashboardMyDifficultQuestionResponse>>> getMyDifficultQnaSets(
             Pageable pageable) {
         var body = dashboardService.getMyDifficultQnaSets(pageable);
-        var response = CommonResponse.success(COMMON200, body);
+        var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "대시보드에서 복기 대기중인 면접 리스트를 조회합니다.")
     @GetMapping("/interview/debrief-uncompleted")
-    public ResponseEntity<CommonResponse<Page<DashboardDebriefIncompletedInterviewResponse>>>
+    public ResponseEntity<ApiResponse<Page<DashboardDebriefIncompletedInterviewResponse>>>
             getDebriefIncompletedInterviews(Pageable pageable) {
         var body = dashboardService.getDebriefIncompletedInterviews(pageable);
-        var response = CommonResponse.success(COMMON200, body);
+        var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
 }

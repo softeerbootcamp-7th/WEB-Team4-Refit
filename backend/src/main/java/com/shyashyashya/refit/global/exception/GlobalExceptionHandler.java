@@ -2,7 +2,7 @@ package com.shyashyashya.refit.global.exception;
 
 import static com.shyashyashya.refit.global.exception.ErrorCode.LOGIN_REQUIRED;
 
-import com.shyashyashya.refit.global.dto.CommonResponse;
+import com.shyashyashya.refit.global.dto.ApiResponse;
 import com.shyashyashya.refit.global.auth.service.CookieUtil;
 import com.shyashyashya.refit.global.constant.AuthConstant;
 import lombok.RequiredArgsConstructor;
@@ -20,19 +20,19 @@ public class GlobalExceptionHandler {
     private final CookieUtil cookieUtil;
 
     @ExceptionHandler(CustomException.class)
-    public ResponseEntity<CommonResponse<Void>> handleCustomException(CustomException e) {
+    public ResponseEntity<ApiResponse<Void>> handleCustomException(CustomException e) {
         ErrorCode errorCode = e.getErrorCode();
         log.info("CustomException [{}]: {}", errorCode.name(), errorCode.getMessage());
-        var response = CommonResponse.customException(errorCode);
+        var response = ApiResponse.customException(errorCode);
         return ResponseEntity.status(errorCode.getHttpStatus()).body(response);
     }
 
     @ExceptionHandler(RefreshTokenTheftException.class)
-    private ResponseEntity<CommonResponse<Void>> handleRefreshTokenTheftException(RefreshTokenTheftException e) {
+    private ResponseEntity<ApiResponse<Void>> handleRefreshTokenTheftException(RefreshTokenTheftException e) {
         String deleteAccessTokenCookie = cookieUtil.deleteCookie(AuthConstant.ACCESS_TOKEN);
         String deleteRefreshTokenCookie = cookieUtil.deleteCookie(AuthConstant.REFRESH_TOKEN);
         log.info("RefreshTokenTheftException occurred");
-        var response = CommonResponse.customException(LOGIN_REQUIRED);
+        var response = ApiResponse.customException(LOGIN_REQUIRED);
         return ResponseEntity.status(LOGIN_REQUIRED.getHttpStatus())
                 .header(HttpHeaders.SET_COOKIE, deleteAccessTokenCookie)
                 .header(HttpHeaders.SET_COOKIE, deleteRefreshTokenCookie)
@@ -40,9 +40,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<CommonResponse<Void>> handlerException(Exception e) {
+    public ResponseEntity<ApiResponse<Void>> handlerException(Exception e) {
         log.error("Exception: {}", e.getMessage());
-        var response = CommonResponse.unknownException(e);
+        var response = ApiResponse.unknownException(e);
         return ResponseEntity.internalServerError().body(response);
     }
 }
