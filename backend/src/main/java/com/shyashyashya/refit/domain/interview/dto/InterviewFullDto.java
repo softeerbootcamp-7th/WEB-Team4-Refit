@@ -23,7 +23,8 @@ public record InterviewFullDto(
         String jobRole,
         LocalDateTime updatedAt,
         String pdfUrl,
-        List<QnaSetDto> qnaSets) {
+        List<QnaSetDto> qnaSets,
+        KptReviewDto kptReviewDto) {
     public static InterviewFullDto fromInterviewWithEmptyQnaSets(Interview interview) {
         return InterviewFullDto.builder()
                 .interviewId(interview.getId())
