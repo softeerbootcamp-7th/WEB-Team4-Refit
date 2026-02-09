@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Button from '@/shared/components/button'
 import Input from '@/shared/components/input'
 import Modal from '@/shared/components/modal'
@@ -14,12 +14,15 @@ interface FolderModalProps {
 
 const FolderModal = ({ isOpen, onClose, onSubmit, initialName = '', title, submitLabel }: FolderModalProps) => {
   const [name, setName] = useState(initialName)
+  const [prevIsOpen, setPrevIsOpen] = useState(false)
 
-  useEffect(() => {
-    if (isOpen) {
-      setName(initialName)
-    }
-  }, [isOpen, initialName])
+  if (isOpen && !prevIsOpen) {
+    setName(initialName)
+    setPrevIsOpen(true)
+  }
+  if (!isOpen && prevIsOpen) {
+    setPrevIsOpen(false)
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
