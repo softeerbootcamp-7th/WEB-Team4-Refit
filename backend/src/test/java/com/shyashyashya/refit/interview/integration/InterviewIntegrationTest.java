@@ -489,7 +489,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
         }
 
         @Test
-        void 성공한다() {
+        void KPT_회고_업데이트에_성공한다() {
             // given
             KptSelfReviewUpdateRequest request = new KptSelfReviewUpdateRequest("Keep text", "Problem text", "Try text");
 
@@ -506,7 +506,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
         }
 
         @Test
-        void 존재하지_않는_면접의_KPT_자체_피드백을_업데이트하면_실패한다() {
+        void 존재하지_않는_면접의_KPT_회고를_업데이트하면_실패한다() {
             // given
             KptSelfReviewUpdateRequest request = new KptSelfReviewUpdateRequest("Keep text", "Problem text", "Try text");
 
@@ -523,7 +523,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
         }
 
         @Test
-        void 로그인한_사용자가_아닌_다른_사람의_면접_KPT_자체_피드백을_업데이트하면_실패한다() {
+        void 로그인한_사용자가_아닌_다른_사람의_면접_KPT_회고를_업데이트하면_실패한다() {
             // given
             InterviewCreateRequest createRequest = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
