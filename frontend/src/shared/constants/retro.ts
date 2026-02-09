@@ -31,10 +31,3 @@ export const STATUS_THEME: Record<StarStatus, BadgeTheme> = {
   insufficient: 'orange-50',
   absent: 'red-50',
 }
-
-export const INTERVIEW_INFO_LABELS = [
-  { key: 'company', label: '기업명' },
-  { key: 'interviewStartAt', label: '일시' },
-  { key: 'jobRole', label: '직무' },
-  { key: 'interviewType', label: '면접 유형' },
-] as const

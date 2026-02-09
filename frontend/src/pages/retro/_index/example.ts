@@ -1,9 +1,12 @@
 import type { InterviewFullType, QnaSetType, StarAnalysisResult } from '@/types/interview'
 
-export const MOCK_INTERVIEW_INFO_DATA: Partial<InterviewFullType> = {
+export const MOCK_INTERVIEW_INFO_DATA: Pick<
+  InterviewFullType,
+  'company' | 'jobRole' | 'interviewType' | 'interviewStartAt'
+> = {
   company: '현대자동차 소프티어',
   jobRole: '디자인 UI Designer',
-  interviewType: '2차 면접',
+  interviewType: 'second',
   interviewStartAt: '2026. 03. 01. 오전 11시',
 }
 

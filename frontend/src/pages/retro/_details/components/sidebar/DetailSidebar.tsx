@@ -13,7 +13,7 @@ type DetailSidebarProps = {
 }
 
 export function DetailSidebar({ qnaSets, activeIndex, onItemClick }: DetailSidebarProps) {
-  const interviewInfo = MOCK_INTERVIEW_DETAIL
+  const { company, jobRole, interviewStartAt, interviewType } = MOCK_INTERVIEW_DETAIL
 
   return (
     <SidebarLayout>
@@ -22,10 +22,10 @@ export function DetailSidebar({ qnaSets, activeIndex, onItemClick }: DetailSideb
         <span className="body-l-semibold">내 면접 정보</span>
       </div>
       <ContainerWithoutHeader>
-        <InterviewInfoRow label="기업명" value={interviewInfo.company} />
-        <InterviewInfoRow label="일시" value={formatDateTime(interviewInfo.interviewStartAt)} />
-        <InterviewInfoRow label="직무" value={interviewInfo.jobRole ?? '-'} />
-        <InterviewInfoRow label="면접 유형" value={INTERVIEW_TYPE_LABEL[interviewInfo.interviewType]} />
+        <InterviewInfoRow label="기업명" value={company} />
+        <InterviewInfoRow label="일시" value={formatDateTime(interviewStartAt)} />
+        <InterviewInfoRow label="직무" value={jobRole ?? '-'} />
+        <InterviewInfoRow label="면접 유형" value={INTERVIEW_TYPE_LABEL[interviewType]} />
       </ContainerWithoutHeader>
       <ContainerWithHeader title="회고 리스트">
         {qnaSets.map(({ qnaSetId, questionText }, index) => (
