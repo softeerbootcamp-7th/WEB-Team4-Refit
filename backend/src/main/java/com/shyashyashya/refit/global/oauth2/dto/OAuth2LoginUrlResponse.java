@@ -4,9 +4,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 
 @Builder(access = AccessLevel.PRIVATE)
-public record OAuth2LoginUrlResponse(String oAuthLoginUrl) {
+public record OAuth2LoginUrlResponse(String oAuth2LoginUrl) {
 
-    public static OAuth2LoginUrlResponse from(String oAuthLoginUrl) {
-        return OAuth2LoginUrlResponse.builder().oAuthLoginUrl(oAuthLoginUrl).build();
+    public static OAuth2LoginUrlResponse from(String oAuth2LoginUrl) {
+        return OAuth2LoginUrlResponse.builder().oAuth2LoginUrl(oAuth2LoginUrl).build();
     }
 }

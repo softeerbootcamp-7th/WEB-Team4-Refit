@@ -1,8 +1,8 @@
 package com.shyashyashya.refit.global.oauth2.service;
 
-import static com.shyashyashya.refit.global.exception.ErrorCode.EXTERNAL_OAUTH_SERVER_ERROR;
-import static com.shyashyashya.refit.global.exception.ErrorCode.INVALID_OAUTH_ACCESS_TOKEN;
-import static com.shyashyashya.refit.global.exception.ErrorCode.INVALID_OAUTH_CODE;
+import static com.shyashyashya.refit.global.exception.ErrorCode.EXTERNAL_OAUTH2_SERVER_ERROR;
+import static com.shyashyashya.refit.global.exception.ErrorCode.INVALID_OAUTH2_ACCESS_TOKEN;
+import static com.shyashyashya.refit.global.exception.ErrorCode.INVALID_OAUTH2_CODE;
 
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
@@ -104,11 +104,11 @@ public class GoogleOAuth2Service implements OAuth2Service {
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, (request, response) -> {
                     log.info("Google Access Token 4xx Error: Status={}, Code={}", response.getStatusCode(), code);
-                    throw new CustomException(INVALID_OAUTH_CODE);
+                    throw new CustomException(INVALID_OAUTH2_CODE);
                 })
                 .onStatus(HttpStatusCode::is5xxServerError, (request, response) -> {
                     log.info("Google Access Token 5xx Error: Status={}", response.getStatusCode());
-                    throw new CustomException(EXTERNAL_OAUTH_SERVER_ERROR);
+                    throw new CustomException(EXTERNAL_OAUTH2_SERVER_ERROR);
                 })
                 .body(GoogleTokenResponse.class);
     }
@@ -121,11 +121,11 @@ public class GoogleOAuth2Service implements OAuth2Service {
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, (request, response) -> {
                     log.info("Google UserInfo 4xx Error: Status={}", response.getStatusCode());
-                    throw new CustomException(INVALID_OAUTH_ACCESS_TOKEN);
+                    throw new CustomException(INVALID_OAUTH2_ACCESS_TOKEN);
                 })
                 .onStatus(HttpStatusCode::is5xxServerError, (request, response) -> {
                     log.info("Google UserInfo 5xx Error: Status={}", response.getStatusCode());
-                    throw new CustomException(EXTERNAL_OAUTH_SERVER_ERROR);
+                    throw new CustomException(EXTERNAL_OAUTH2_SERVER_ERROR);
                 })
                 .body(GoogleUserInfo.class);
     }

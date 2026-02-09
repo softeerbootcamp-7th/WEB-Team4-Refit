@@ -10,8 +10,6 @@ import com.shyashyashya.refit.global.oauth2.service.GoogleOAuth2Service;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
-import java.net.URI;
-import java.net.URISyntaxException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -28,14 +26,14 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 public class GoogleOAuth2Controller implements OAuth2Controller {
 
-    private final GoogleOAuth2Service googleOAuthService;
+    private final GoogleOAuth2Service googleOAuth2Service;
     private final CookieUtil cookieUtil;
 
     @Operation(summary = "구글 로그인 화면으로 이동하는 url을 생성합니다.")
     @GetMapping
     @Override
     public ResponseEntity<CommonResponse<OAuth2LoginUrlResponse>> buildOAuth2LoginUrl(HttpServletRequest request) {
-        var response = googleOAuthService.buildOAuth2LoginUrl(getRequestHostUrlFrom(request));
+        var response = googleOAuth2Service.buildOAuth2LoginUrl(getRequestHostUrlFrom(request));
         var body = CommonResponse.success(COMMON200, response);
         return ResponseEntity.ok(body);
     }
@@ -46,7 +44,7 @@ public class GoogleOAuth2Controller implements OAuth2Controller {
     @GetMapping("/callback")
     @Override
     public ResponseEntity<Void> handleOAuth2Callback(@RequestParam String code, @RequestParam String state) {
-        OAuth2ResultDto result = googleOAuthService.handleOAuth2Callback(code, state);
+        OAuth2ResultDto result = googleOAuth2Service.handleOAuth2Callback(code, state);
         var accessTokenCookie =
                 cookieUtil.createAccessTokenCookie(result.tokenPair().accessToken());
         var refreshTokenCookie =
@@ -63,10 +61,10 @@ public class GoogleOAuth2Controller implements OAuth2Controller {
 
     private String getRequestHostUrlFrom(HttpServletRequest request) {
         return UriComponentsBuilder.fromUriString(request.getRequestURL().toString())
-            .replacePath(null)
-            .replaceQuery(null)
-            .build()
-            .toUriString();
+                .replacePath(null)
+                .replaceQuery(null)
+                .build()
+                .toUriString();
     }
 
     private String buildRedirectUrl(OAuth2ResultDto oAuth2ResultDto) {

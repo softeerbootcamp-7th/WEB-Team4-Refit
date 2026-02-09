@@ -1,6 +1,6 @@
 package com.shyashyashya.refit.global.oauth2.service.validator;
 
-import static com.shyashyashya.refit.global.exception.ErrorCode.REQUEST_HOST_OAUTH_REDIRECTION_NOT_ALLOWED;
+import static com.shyashyashya.refit.global.exception.ErrorCode.REQUEST_HOST_OAUTH2_REDIRECTION_NOT_ALLOWED;
 
 import com.shyashyashya.refit.global.constant.UrlConstant;
 import com.shyashyashya.refit.global.exception.CustomException;
@@ -18,7 +18,7 @@ public class OAuth2RedirectionHostValidator {
 
     public void validateRequestHostUrl(String requestHostUrl) {
         if (requestHostUrl == null || requestHostUrl.isBlank() || !allowedHosts.contains(requestHostUrl)) {
-            throw new CustomException(REQUEST_HOST_OAUTH_REDIRECTION_NOT_ALLOWED);
+            throw new CustomException(REQUEST_HOST_OAUTH2_REDIRECTION_NOT_ALLOWED);
         }
     }
 }
