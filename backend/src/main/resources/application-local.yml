@@ -8,13 +8,3 @@ spring:
         format_sql: true
         highlight_sql: true
     defer-datasource-initialization: true
-
-  auth:
-    url:
-      sign-up: "/user/signup"
-      whitelists:
-        - "/test/**"
-        - "/auth/login/**"
-        - "/auth/reissue"
-        - "/swagger-ui/**"
-        - "/v3/api-docs/**"
