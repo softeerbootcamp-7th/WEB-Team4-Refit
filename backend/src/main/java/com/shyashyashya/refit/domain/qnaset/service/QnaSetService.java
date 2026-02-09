@@ -174,7 +174,7 @@ public class QnaSetService {
         Interview interview = qnaSet.getInterview();
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
-        return qnaSetScrapFolderRepository.findAllScrapFoldersWithContainsQnaSet(qnaSet, pageable);
+        return qnaSetScrapFolderRepository.findAllScrapFoldersWithContainsQnaSet(requestUser, qnaSet, pageable);
     }
 
     private List<Long> removeDuplicatedIds(List<Long> list) {

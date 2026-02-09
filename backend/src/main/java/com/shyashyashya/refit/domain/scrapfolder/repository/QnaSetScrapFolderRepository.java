@@ -4,6 +4,7 @@ import com.shyashyashya.refit.domain.qnaset.dto.response.QnaSetScrapFolderRespon
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.scrapfolder.model.QnaSetScrapFolder;
 import com.shyashyashya.refit.domain.scrapfolder.model.ScrapFolder;
+import com.shyashyashya.refit.domain.user.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -34,9 +35,10 @@ public interface QnaSetScrapFolderRepository extends JpaRepository<QnaSetScrapFo
     LEFT JOIN QnaSetScrapFolder qssf
         ON qssf.scrapFolder = sf
        AND qssf.qnaSet = :qnaSet
+    WHERE sf.user = :user
 """)
     Page<QnaSetScrapFolderResponse> findAllScrapFoldersWithContainsQnaSet(
-            @Param("qnaSet") QnaSet qnaSet, Pageable pageable);
+            User user, @Param("qnaSet") QnaSet qnaSet, Pageable pageable);
 
     void deleteAllByScrapFolder(ScrapFolder scrapFolder);
 }
