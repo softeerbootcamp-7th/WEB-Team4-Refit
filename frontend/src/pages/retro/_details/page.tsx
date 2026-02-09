@@ -9,7 +9,7 @@ import { MOCK_INTERVIEW_DETAIL } from './example'
 
 export default function RetroDetailPage() {
   const interviewDetail = MOCK_INTERVIEW_DETAIL
-  const { company, jobRole, interviewType, qnaSets } = interviewDetail
+  const { company, interviewType, qnaSets } = interviewDetail
   const interviewTypeLabel = INTERVIEW_TYPE_LABEL[interviewType]
 
   const [isPdfOpen, setIsPdfOpen] = useState(false)
@@ -21,7 +21,7 @@ export default function RetroDetailPage() {
 
   const togglePdf = () => setIsPdfOpen((v) => !v)
 
-  const title = `${company} ${jobRole} ${interviewTypeLabel} 회고 상세 보기`
+  const title = `${company} ${interviewTypeLabel} 회고 상세 보기`
 
   if (isPdfOpen) {
     return (

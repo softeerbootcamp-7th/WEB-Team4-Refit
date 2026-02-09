@@ -27,7 +27,7 @@ export function DetailSidebar({ qnaSets, activeIndex, onItemClick }: DetailSideb
         <InterviewInfoRow label="직무" value={jobRole ?? '-'} />
         <InterviewInfoRow label="면접 유형" value={INTERVIEW_TYPE_LABEL[interviewType]} />
       </ContainerWithoutHeader>
-      <ContainerWithHeader title="회고 리스트">
+      <ContainerWithHeader title="회고 리스트" className="overflow-y-auto">
         {qnaSets.map(({ qnaSetId, questionText }, index) => (
           <ListItemLarge
             key={qnaSetId}
