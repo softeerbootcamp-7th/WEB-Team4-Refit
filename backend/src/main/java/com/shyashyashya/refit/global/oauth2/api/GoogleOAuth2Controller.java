@@ -9,7 +9,6 @@ import com.shyashyashya.refit.global.oauth2.dto.OAuth2ResultDto;
 import com.shyashyashya.refit.global.oauth2.service.GoogleOAuth2Service;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -32,8 +31,8 @@ public class GoogleOAuth2Controller implements OAuth2Controller {
     @Operation(summary = "구글 로그인 화면으로 이동하는 url을 생성합니다.")
     @GetMapping
     @Override
-    public ResponseEntity<ApiResponse<OAuth2LoginUrlResponse>> buildOAuth2LoginUrl(HttpServletRequest request) {
-        var response = googleOAuth2Service.buildOAuth2LoginUrl(getRequestHostUrlFrom(request));
+    public ResponseEntity<ApiResponse<OAuth2LoginUrlResponse>> buildOAuth2LoginUrl(@RequestParam String env) {
+        var response = googleOAuth2Service.buildOAuth2LoginUrl(env);
         var body = ApiResponse.success(COMMON200, response);
         return ResponseEntity.ok(body);
     }
@@ -57,14 +56,6 @@ public class GoogleOAuth2Controller implements OAuth2Controller {
                 .header(HttpHeaders.SET_COOKIE, refreshTokenCookie)
                 .header(HttpHeaders.LOCATION, redirectUrl)
                 .build();
-    }
-
-    private String getRequestHostUrlFrom(HttpServletRequest request) {
-        return UriComponentsBuilder.fromUriString(request.getRequestURL().toString())
-                .replacePath(null)
-                .replaceQuery(null)
-                .build()
-                .toUriString();
     }
 
     private String buildRedirectUrl(OAuth2ResultDto oAuth2ResultDto) {
