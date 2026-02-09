@@ -14,10 +14,7 @@ export default function RetroDetailPage() {
 
   const [isPdfOpen, setIsPdfOpen] = useState(false)
 
-  const totalSectionCount = qnaSets.length + 1
-  const { activeIndex, setRef, scrollContainerRef, handleItemClick } = useSectionScroll({
-    sectionCount: totalSectionCount,
-  })
+  const { activeIndex, setRef, scrollContainerRef, handleItemClick } = useSectionScroll({ idPrefix: 'retro' })
 
   const togglePdf = () => setIsPdfOpen((v) => !v)
 
