@@ -2,6 +2,9 @@ import { useState, useMemo, useCallback } from 'react'
 import type { FilterBadge, FilterType } from '@/features/dashboard/trend-questions/constants/constants'
 import { INDUSTRIES, JOB_CATEGORIES } from '@/shared/constants/interviews'
 
+const INDUSTRY_MAP = new Map(INDUSTRIES.map((item) => [item.id, item.label]))
+const JOB_CATEGORY_MAP = new Map(JOB_CATEGORIES.map((item) => [item.id, item.label]))
+
 type UseIndustryJobFilterOptions = {
   defaultIndustryIds?: number[]
   defaultJobCategoryIds?: number[]
@@ -30,12 +33,12 @@ export function useIndustryJobFilter(options: UseIndustryJobFilterOptions = {}) 
     const industryBadges = industryIds.map((id) => ({
       id,
       type: 'industry' as FilterType,
-      label: INDUSTRIES.find((item) => item.id === id)?.label ?? '',
+      label: INDUSTRY_MAP.get(id) ?? '',
     }))
     const jobBadges = jobCategoryIds.map((id) => ({
       id,
       type: 'job' as FilterType,
-      label: JOB_CATEGORIES.find((item) => item.id === id)?.label ?? '',
+      label: JOB_CATEGORY_MAP.get(id) ?? '',
     }))
     return [...industryBadges, ...jobBadges]
   }, [industryIds, jobCategoryIds])
