@@ -85,7 +85,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
     class 면접_단일_조회_시 {
 
         private static final String path = "/interview";
-        private static Long interviewId;
+        private Long interviewId;
 
         @BeforeEach
         void setUp() {
