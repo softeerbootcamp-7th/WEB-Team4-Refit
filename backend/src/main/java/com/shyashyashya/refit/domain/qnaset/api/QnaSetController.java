@@ -8,7 +8,7 @@ import com.shyashyashya.refit.domain.qnaset.dto.request.PdfHighlightingUpdateReq
 import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetResponse;
 import com.shyashyashya.refit.domain.qnaset.service.QnaSetService;
-import com.shyashyashya.refit.domain.qnaset.service.StarAnalysisService;
+import com.shyashyashya.refit.domain.qnaset.service.StarAnalysisAsyncService;
 import com.shyashyashya.refit.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class QnaSetController {
 
     private final QnaSetService qnaSetService;
-    private final StarAnalysisService starAnalysisService;
+    private final StarAnalysisAsyncService starAnalysisService;
 
     @Operation(
             summary = "지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다.",
