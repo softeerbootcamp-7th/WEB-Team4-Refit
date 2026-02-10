@@ -143,7 +143,7 @@ public class Interview extends BaseEntity {
     }
 
     public void completeLogging() {
-        if (reviewStatus.equals(InterviewReviewStatus.LOG_DRAFT)) {
+        if (reviewStatus == InterviewReviewStatus.LOG_DRAFT) {
             reviewStatus = InterviewReviewStatus.SELF_REVIEW_DRAFT;
             return;
         }
@@ -151,7 +151,7 @@ public class Interview extends BaseEntity {
     }
 
     public void completeReview() {
-        if (reviewStatus.equals(InterviewReviewStatus.SELF_REVIEW_DRAFT)) {
+        if (reviewStatus == InterviewReviewStatus.SELF_REVIEW_DRAFT) {
             reviewStatus = InterviewReviewStatus.DEBRIEF_COMPLETED;
             return;
         }
