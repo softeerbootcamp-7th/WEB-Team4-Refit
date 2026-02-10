@@ -53,7 +53,9 @@ export const getSearchInterviewsUrl = (params: SearchInterviewsParams) => {
 
   const stringifiedParams = normalizedParams.toString()
 
-  return stringifiedParams.length > 0 ? `/interview/my/search?${stringifiedParams}` : `/interview/my/search`
+  return stringifiedParams.length > 0
+    ? `https://api.refit.my/interview/my/search?${stringifiedParams}`
+    : `https://api.refit.my/interview/my/search`
 }
 
 export const searchInterviews = async (
@@ -158,7 +160,9 @@ export const getGetMyInterviewsUrl = (params: GetMyInterviewsParams) => {
 
   const stringifiedParams = normalizedParams.toString()
 
-  return stringifiedParams.length > 0 ? `/interview/my?${stringifiedParams}` : `/interview/my`
+  return stringifiedParams.length > 0
+    ? `https://api.refit.my/interview/my?${stringifiedParams}`
+    : `https://api.refit.my/interview/my`
 }
 
 export const getMyInterviews = async (
@@ -177,7 +181,7 @@ export const getMyInterviews = async (
 }
 
 export const getGetMyInterviewsQueryKey = (params?: GetMyInterviewsParams) => {
-  return [`/interview/my`, ...(params ? [params] : [])] as const
+  return [`https://api.refit.my/interview/my`, ...(params ? [params] : [])] as const
 }
 
 export const getGetMyInterviewsQueryOptions = <TData = Awaited<ReturnType<typeof getMyInterviews>>, TError = unknown>(
@@ -293,7 +297,9 @@ export const getGetMyInterviewDraftsUrl = (params: GetMyInterviewDraftsParams) =
 
   const stringifiedParams = normalizedParams.toString()
 
-  return stringifiedParams.length > 0 ? `/interview/my/draft?${stringifiedParams}` : `/interview/my/draft`
+  return stringifiedParams.length > 0
+    ? `https://api.refit.my/interview/my/draft?${stringifiedParams}`
+    : `https://api.refit.my/interview/my/draft`
 }
 
 export const getMyInterviewDrafts = async (
@@ -312,7 +318,7 @@ export const getMyInterviewDrafts = async (
 }
 
 export const getGetMyInterviewDraftsQueryKey = (params?: GetMyInterviewDraftsParams) => {
-  return [`/interview/my/draft`, ...(params ? [params] : [])] as const
+  return [`https://api.refit.my/interview/my/draft`, ...(params ? [params] : [])] as const
 }
 
 export const getGetMyInterviewDraftsQueryOptions = <

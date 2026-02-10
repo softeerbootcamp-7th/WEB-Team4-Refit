@@ -46,7 +46,7 @@ export type updateRawTextResponseSuccess = updateRawTextResponse200 & {
 export type updateRawTextResponse = updateRawTextResponseSuccess
 
 export const getUpdateRawTextUrl = (interviewId: number) => {
-  return `/interview/${interviewId}/raw-text`
+  return `https://api.refit.my/interview/${interviewId}/raw-text`
 }
 
 export const updateRawText = async (
@@ -140,7 +140,7 @@ export type updateKptSelfReviewResponseSuccess = updateKptSelfReviewResponse200 
 export type updateKptSelfReviewResponse = updateKptSelfReviewResponseSuccess
 
 export const getUpdateKptSelfReviewUrl = (interviewId: number) => {
-  return `/interview/${interviewId}/kpt-self-review`
+  return `https://api.refit.my/interview/${interviewId}/kpt-self-review`
 }
 
 export const updateKptSelfReview = async (
@@ -234,7 +234,7 @@ export type createInterviewResponseSuccess = createInterviewResponse200 & {
 export type createInterviewResponse = createInterviewResponseSuccess
 
 export const getCreateInterviewUrl = () => {
-  return `/interview`
+  return `https://api.refit.my/interview`
 }
 
 export const createInterview = async (
@@ -326,7 +326,7 @@ export type updateInterviewResultStatusResponseSuccess = updateInterviewResultSt
 export type updateInterviewResultStatusResponse = updateInterviewResultStatusResponseSuccess
 
 export const getUpdateInterviewResultStatusUrl = (interviewId: number) => {
-  return `/interview/${interviewId}/result-status`
+  return `https://api.refit.my/interview/${interviewId}/result-status`
 }
 
 export const updateInterviewResultStatus = async (
@@ -423,7 +423,7 @@ export type getInterviewResponseSuccess = getInterviewResponse200 & {
 export type getInterviewResponse = getInterviewResponseSuccess
 
 export const getGetInterviewUrl = (interviewId: number) => {
-  return `/interview/${interviewId}`
+  return `https://api.refit.my/interview/${interviewId}`
 }
 
 export const getInterview = async (interviewId: number, options?: RequestInit): Promise<getInterviewResponse> => {
@@ -439,7 +439,7 @@ export const getInterview = async (interviewId: number, options?: RequestInit): 
 }
 
 export const getGetInterviewQueryKey = (interviewId: number) => {
-  return [`/interview/${interviewId}`] as const
+  return [`https://api.refit.my/interview/${interviewId}`] as const
 }
 
 export const getGetInterviewQueryOptions = <TData = Awaited<ReturnType<typeof getInterview>>, TError = unknown>(
@@ -542,7 +542,7 @@ export type deleteInterviewResponseSuccess = deleteInterviewResponse200 & {
 export type deleteInterviewResponse = deleteInterviewResponseSuccess
 
 export const getDeleteInterviewUrl = (interviewId: number) => {
-  return `/interview/${interviewId}`
+  return `https://api.refit.my/interview/${interviewId}`
 }
 
 export const deleteInterview = async (interviewId: number, options?: RequestInit): Promise<deleteInterviewResponse> => {
@@ -614,7 +614,7 @@ export type getInterviewFullResponseSuccess = getInterviewFullResponse200 & {
 export type getInterviewFullResponse = getInterviewFullResponseSuccess
 
 export const getGetInterviewFullUrl = (interviewId: number) => {
-  return `/interview/${interviewId}/qna-sets`
+  return `https://api.refit.my/interview/${interviewId}/qna-sets`
 }
 
 export const getInterviewFull = async (
@@ -633,7 +633,7 @@ export const getInterviewFull = async (
 }
 
 export const getGetInterviewFullQueryKey = (interviewId: number) => {
-  return [`/interview/${interviewId}/qna-sets`] as const
+  return [`https://api.refit.my/interview/${interviewId}/qna-sets`] as const
 }
 
 export const getGetInterviewFullQueryOptions = <TData = Awaited<ReturnType<typeof getInterviewFull>>, TError = unknown>(
@@ -735,7 +735,7 @@ export type getGuideQuestionResponseSuccess = getGuideQuestionResponse200 & {
 export type getGuideQuestionResponse = getGuideQuestionResponseSuccess
 
 export const getGetGuideQuestionUrl = (interviewId: number) => {
-  return `/interview/${interviewId}/guide-question`
+  return `https://api.refit.my/interview/${interviewId}/guide-question`
 }
 
 export const getGuideQuestion = async (
@@ -754,7 +754,7 @@ export const getGuideQuestion = async (
 }
 
 export const getGetGuideQuestionQueryKey = (interviewId: number) => {
-  return [`/interview/${interviewId}/guide-question`] as const
+  return [`https://api.refit.my/interview/${interviewId}/guide-question`] as const
 }
 
 export const getGetGuideQuestionQueryOptions = <TData = Awaited<ReturnType<typeof getGuideQuestion>>, TError = unknown>(

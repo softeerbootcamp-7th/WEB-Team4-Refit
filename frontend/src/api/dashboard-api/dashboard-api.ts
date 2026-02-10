@@ -54,8 +54,8 @@ export const getGetMyDifficultQnaSetsUrl = (params: GetMyDifficultQnaSetsParams)
   const stringifiedParams = normalizedParams.toString()
 
   return stringifiedParams.length > 0
-    ? `/dashboard/qna-set/my/difficult?${stringifiedParams}`
-    : `/dashboard/qna-set/my/difficult`
+    ? `https://api.refit.my/dashboard/qna-set/my/difficult?${stringifiedParams}`
+    : `https://api.refit.my/dashboard/qna-set/my/difficult`
 }
 
 export const getMyDifficultQnaSets = async (
@@ -74,7 +74,7 @@ export const getMyDifficultQnaSets = async (
 }
 
 export const getGetMyDifficultQnaSetsQueryKey = (params?: GetMyDifficultQnaSetsParams) => {
-  return [`/dashboard/qna-set/my/difficult`, ...(params ? [params] : [])] as const
+  return [`https://api.refit.my/dashboard/qna-set/my/difficult`, ...(params ? [params] : [])] as const
 }
 
 export const getGetMyDifficultQnaSetsQueryOptions = <
@@ -193,8 +193,8 @@ export const getGetUpcomingInterviewsUrl = (params: GetUpcomingInterviewsParams)
   const stringifiedParams = normalizedParams.toString()
 
   return stringifiedParams.length > 0
-    ? `/dashboard/interview/upcoming?${stringifiedParams}`
-    : `/dashboard/interview/upcoming`
+    ? `https://api.refit.my/dashboard/interview/upcoming?${stringifiedParams}`
+    : `https://api.refit.my/dashboard/interview/upcoming`
 }
 
 export const getUpcomingInterviews = async (
@@ -213,7 +213,7 @@ export const getUpcomingInterviews = async (
 }
 
 export const getGetUpcomingInterviewsQueryKey = (params?: GetUpcomingInterviewsParams) => {
-  return [`/dashboard/interview/upcoming`, ...(params ? [params] : [])] as const
+  return [`https://api.refit.my/dashboard/interview/upcoming`, ...(params ? [params] : [])] as const
 }
 
 export const getGetUpcomingInterviewsQueryOptions = <
@@ -329,8 +329,8 @@ export const getGetDebriefIncompletedInterviewsUrl = (params: GetDebriefIncomple
   const stringifiedParams = normalizedParams.toString()
 
   return stringifiedParams.length > 0
-    ? `/dashboard/interview/debrief-uncompleted?${stringifiedParams}`
-    : `/dashboard/interview/debrief-uncompleted`
+    ? `https://api.refit.my/dashboard/interview/debrief-uncompleted?${stringifiedParams}`
+    : `https://api.refit.my/dashboard/interview/debrief-uncompleted`
 }
 
 export const getDebriefIncompletedInterviews = async (
@@ -349,7 +349,7 @@ export const getDebriefIncompletedInterviews = async (
 }
 
 export const getGetDebriefIncompletedInterviewsQueryKey = (params?: GetDebriefIncompletedInterviewsParams) => {
-  return [`/dashboard/interview/debrief-uncompleted`, ...(params ? [params] : [])] as const
+  return [`https://api.refit.my/dashboard/interview/debrief-uncompleted`, ...(params ? [params] : [])] as const
 }
 
 export const getGetDebriefIncompletedInterviewsQueryOptions = <
@@ -475,7 +475,7 @@ export type getDashboardHeadlineResponseSuccess = getDashboardHeadlineResponse20
 export type getDashboardHeadlineResponse = getDashboardHeadlineResponseSuccess
 
 export const getGetDashboardHeadlineUrl = () => {
-  return `/dashboard/headline`
+  return `https://api.refit.my/dashboard/headline`
 }
 
 export const getDashboardHeadline = async (options?: RequestInit): Promise<getDashboardHeadlineResponse> => {
@@ -491,7 +491,7 @@ export const getDashboardHeadline = async (options?: RequestInit): Promise<getDa
 }
 
 export const getGetDashboardHeadlineQueryKey = () => {
-  return [`/dashboard/headline`] as const
+  return [`https://api.refit.my/dashboard/headline`] as const
 }
 
 export const getGetDashboardHeadlineQueryOptions = <
@@ -604,8 +604,8 @@ export const getGetDashboardCalendarInterviewsUrl = (params: GetDashboardCalenda
   const stringifiedParams = normalizedParams.toString()
 
   return stringifiedParams.length > 0
-    ? `/dashboard/calendar/interview?${stringifiedParams}`
-    : `/dashboard/calendar/interview`
+    ? `https://api.refit.my/dashboard/calendar/interview?${stringifiedParams}`
+    : `https://api.refit.my/dashboard/calendar/interview`
 }
 
 export const getDashboardCalendarInterviews = async (
@@ -624,7 +624,7 @@ export const getDashboardCalendarInterviews = async (
 }
 
 export const getGetDashboardCalendarInterviewsQueryKey = (params?: GetDashboardCalendarInterviewsParams) => {
-  return [`/dashboard/calendar/interview`, ...(params ? [params] : [])] as const
+  return [`https://api.refit.my/dashboard/calendar/interview`, ...(params ? [params] : [])] as const
 }
 
 export const getGetDashboardCalendarInterviewsQueryOptions = <

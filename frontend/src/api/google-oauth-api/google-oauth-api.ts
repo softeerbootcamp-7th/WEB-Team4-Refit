@@ -33,7 +33,7 @@ export type buildOAuth2LoginUrlResponseSuccess = buildOAuth2LoginUrlResponse200 
 export type buildOAuth2LoginUrlResponse = buildOAuth2LoginUrlResponseSuccess
 
 export const getBuildOAuth2LoginUrlUrl = () => {
-  return `/auth/login/google`
+  return `https://api.refit.my/auth/login/google`
 }
 
 export const buildOAuth2LoginUrl = async (options?: RequestInit): Promise<buildOAuth2LoginUrlResponse> => {
@@ -49,7 +49,7 @@ export const buildOAuth2LoginUrl = async (options?: RequestInit): Promise<buildO
 }
 
 export const getBuildOAuth2LoginUrlQueryKey = () => {
-  return [`/auth/login/google`] as const
+  return [`https://api.refit.my/auth/login/google`] as const
 }
 
 export const getBuildOAuth2LoginUrlQueryOptions = <
@@ -159,8 +159,8 @@ export const getHandleOAuth2CallbackUrl = (params: HandleOAuth2CallbackParams) =
   const stringifiedParams = normalizedParams.toString()
 
   return stringifiedParams.length > 0
-    ? `/auth/login/google/callback?${stringifiedParams}`
-    : `/auth/login/google/callback`
+    ? `https://api.refit.my/auth/login/google/callback?${stringifiedParams}`
+    : `https://api.refit.my/auth/login/google/callback`
 }
 
 export const handleOAuth2Callback = async (
@@ -179,7 +179,7 @@ export const handleOAuth2Callback = async (
 }
 
 export const getHandleOAuth2CallbackQueryKey = (params?: HandleOAuth2CallbackParams) => {
-  return [`/auth/login/google/callback`, ...(params ? [params] : [])] as const
+  return [`https://api.refit.my/auth/login/google/callback`, ...(params ? [params] : [])] as const
 }
 
 export const getHandleOAuth2CallbackQueryOptions = <

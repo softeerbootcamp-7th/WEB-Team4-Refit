@@ -34,7 +34,7 @@ export type reissueResponseSuccess = reissueResponse200 & {
 export type reissueResponse = reissueResponseSuccess
 
 export const getReissueUrl = () => {
-  return `/auth/reissue`
+  return `https://api.refit.my/auth/reissue`
 }
 
 export const reissue = async (options?: RequestInit): Promise<reissueResponse> => {
@@ -50,7 +50,7 @@ export const reissue = async (options?: RequestInit): Promise<reissueResponse> =
 }
 
 export const getReissueQueryKey = () => {
-  return [`/auth/reissue`] as const
+  return [`https://api.refit.my/auth/reissue`] as const
 }
 
 export const getReissueQueryOptions = <TData = Awaited<ReturnType<typeof reissue>>, TError = unknown>(options?: {

@@ -55,7 +55,9 @@ export const getSearchMyQnaSetUrl = (params: SearchMyQnaSetParams) => {
 
   const stringifiedParams = normalizedParams.toString()
 
-  return stringifiedParams.length > 0 ? `/qna-set/my/search?${stringifiedParams}` : `/qna-set/my/search`
+  return stringifiedParams.length > 0
+    ? `https://api.refit.my/qna-set/my/search?${stringifiedParams}`
+    : `https://api.refit.my/qna-set/my/search`
 }
 
 export const searchMyQnaSet = async (
@@ -161,8 +163,8 @@ export const getGetMyFrequentQnaSetCategoriesUrl = (params: GetMyFrequentQnaSetC
   const stringifiedParams = normalizedParams.toString()
 
   return stringifiedParams.length > 0
-    ? `/qna-set/my/frequent/category?${stringifiedParams}`
-    : `/qna-set/my/frequent/category`
+    ? `https://api.refit.my/qna-set/my/frequent/category?${stringifiedParams}`
+    : `https://api.refit.my/qna-set/my/frequent/category`
 }
 
 export const getMyFrequentQnaSetCategories = async (
@@ -181,7 +183,7 @@ export const getMyFrequentQnaSetCategories = async (
 }
 
 export const getGetMyFrequentQnaSetCategoriesQueryKey = (params?: GetMyFrequentQnaSetCategoriesParams) => {
-  return [`/qna-set/my/frequent/category`, ...(params ? [params] : [])] as const
+  return [`https://api.refit.my/qna-set/my/frequent/category`, ...(params ? [params] : [])] as const
 }
 
 export const getGetMyFrequentQnaSetCategoriesQueryOptions = <
@@ -315,8 +317,8 @@ export const getGetMyFrequentQnaSetCategoryQuestionsUrl = (
   const stringifiedParams = normalizedParams.toString()
 
   return stringifiedParams.length > 0
-    ? `/qna-set/my/frequent/category/${categoryId}?${stringifiedParams}`
-    : `/qna-set/my/frequent/category/${categoryId}`
+    ? `https://api.refit.my/qna-set/my/frequent/category/${categoryId}?${stringifiedParams}`
+    : `https://api.refit.my/qna-set/my/frequent/category/${categoryId}`
 }
 
 export const getMyFrequentQnaSetCategoryQuestions = async (
@@ -339,7 +341,7 @@ export const getGetMyFrequentQnaSetCategoryQuestionsQueryKey = (
   categoryId: number,
   params?: GetMyFrequentQnaSetCategoryQuestionsParams,
 ) => {
-  return [`/qna-set/my/frequent/category/${categoryId}`, ...(params ? [params] : [])] as const
+  return [`https://api.refit.my/qna-set/my/frequent/category/${categoryId}`, ...(params ? [params] : [])] as const
 }
 
 export const getGetMyFrequentQnaSetCategoryQuestionsQueryOptions = <

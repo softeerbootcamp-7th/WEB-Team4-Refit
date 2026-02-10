@@ -44,7 +44,7 @@ export type updateQnaSetResponseSuccess = updateQnaSetResponse200 & {
 export type updateQnaSetResponse = updateQnaSetResponseSuccess
 
 export const getUpdateQnaSetUrl = (qnaSetId: number) => {
-  return `/qna-set/${qnaSetId}`
+  return `https://api.refit.my/qna-set/${qnaSetId}`
 }
 
 export const updateQnaSet = async (
@@ -138,7 +138,7 @@ export type getPdfHighlightingsResponseSuccess = getPdfHighlightingsResponse200 
 export type getPdfHighlightingsResponse = getPdfHighlightingsResponseSuccess
 
 export const getGetPdfHighlightingsUrl = (qnaSetId: number) => {
-  return `/qna-set/${qnaSetId}/pdf-highlightings`
+  return `https://api.refit.my/qna-set/${qnaSetId}/pdf-highlightings`
 }
 
 export const getPdfHighlightings = async (
@@ -157,7 +157,7 @@ export const getPdfHighlightings = async (
 }
 
 export const getGetPdfHighlightingsQueryKey = (qnaSetId: number) => {
-  return [`/qna-set/${qnaSetId}/pdf-highlightings`] as const
+  return [`https://api.refit.my/qna-set/${qnaSetId}/pdf-highlightings`] as const
 }
 
 export const getGetPdfHighlightingsQueryOptions = <
@@ -262,7 +262,7 @@ export type updatePdfHighlightingResponseSuccess = updatePdfHighlightingResponse
 export type updatePdfHighlightingResponse = updatePdfHighlightingResponseSuccess
 
 export const getUpdatePdfHighlightingUrl = (qnaSetId: number) => {
-  return `/qna-set/${qnaSetId}/pdf-highlightings`
+  return `https://api.refit.my/qna-set/${qnaSetId}/pdf-highlightings`
 }
 
 export const updatePdfHighlighting = async (
@@ -356,7 +356,7 @@ export type unmarkDifficultQuestionResponseSuccess = unmarkDifficultQuestionResp
 export type unmarkDifficultQuestionResponse = unmarkDifficultQuestionResponseSuccess
 
 export const getUnmarkDifficultQuestionUrl = (qnaSetId: number) => {
-  return `/qna-set/${qnaSetId}/difficult/unmark`
+  return `https://api.refit.my/qna-set/${qnaSetId}/difficult/unmark`
 }
 
 export const unmarkDifficultQuestion = async (
@@ -436,7 +436,7 @@ export type markDifficultQuestionResponseSuccess = markDifficultQuestionResponse
 export type markDifficultQuestionResponse = markDifficultQuestionResponseSuccess
 
 export const getMarkDifficultQuestionUrl = (qnaSetId: number) => {
-  return `/qna-set/${qnaSetId}/difficult/mark`
+  return `https://api.refit.my/qna-set/${qnaSetId}/difficult/mark`
 }
 
 export const markDifficultQuestion = async (
@@ -527,7 +527,9 @@ export const getGetFrequentQuestionsUrl = (params: GetFrequentQuestionsParams) =
 
   const stringifiedParams = normalizedParams.toString()
 
-  return stringifiedParams.length > 0 ? `/qna-set/frequent?${stringifiedParams}` : `/qna-set/frequent`
+  return stringifiedParams.length > 0
+    ? `https://api.refit.my/qna-set/frequent?${stringifiedParams}`
+    : `https://api.refit.my/qna-set/frequent`
 }
 
 export const getFrequentQuestions = async (
@@ -546,7 +548,7 @@ export const getFrequentQuestions = async (
 }
 
 export const getGetFrequentQuestionsQueryKey = (params?: GetFrequentQuestionsParams) => {
-  return [`/qna-set/frequent`, ...(params ? [params] : [])] as const
+  return [`https://api.refit.my/qna-set/frequent`, ...(params ? [params] : [])] as const
 }
 
 export const getGetFrequentQuestionsQueryOptions = <

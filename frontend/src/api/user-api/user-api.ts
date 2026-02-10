@@ -37,7 +37,7 @@ export type signUpResponseSuccess = signUpResponse200 & {
 export type signUpResponse = signUpResponseSuccess
 
 export const getSignUpUrl = () => {
-  return `/user/signup`
+  return `https://api.refit.my/user/signup`
 }
 
 export const signUp = async (userSignUpRequest: UserSignUpRequest, options?: RequestInit): Promise<signUpResponse> => {
@@ -104,7 +104,7 @@ export type agreeToTermsResponseSuccess = agreeToTermsResponse200 & {
 export type agreeToTermsResponse = agreeToTermsResponseSuccess
 
 export const getAgreeToTermsUrl = () => {
-  return `/user/my/terms/agree`
+  return `https://api.refit.my/user/my/terms/agree`
 }
 
 export const agreeToTerms = async (options?: RequestInit): Promise<agreeToTermsResponse> => {
@@ -167,7 +167,7 @@ export type getMyProfileInfoResponseSuccess = getMyProfileInfoResponse200 & {
 export type getMyProfileInfoResponse = getMyProfileInfoResponseSuccess
 
 export const getGetMyProfileInfoUrl = () => {
-  return `/user/my`
+  return `https://api.refit.my/user/my`
 }
 
 export const getMyProfileInfo = async (options?: RequestInit): Promise<getMyProfileInfoResponse> => {
@@ -183,7 +183,7 @@ export const getMyProfileInfo = async (options?: RequestInit): Promise<getMyProf
 }
 
 export const getGetMyProfileInfoQueryKey = () => {
-  return [`/user/my`] as const
+  return [`https://api.refit.my/user/my`] as const
 }
 
 export const getGetMyProfileInfoQueryOptions = <

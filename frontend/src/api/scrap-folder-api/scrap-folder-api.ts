@@ -55,7 +55,9 @@ export const getGetMyScrapFoldersUrl = (params: GetMyScrapFoldersParams) => {
 
   const stringifiedParams = normalizedParams.toString()
 
-  return stringifiedParams.length > 0 ? `/scrap-folder?${stringifiedParams}` : `/scrap-folder`
+  return stringifiedParams.length > 0
+    ? `https://api.refit.my/scrap-folder?${stringifiedParams}`
+    : `https://api.refit.my/scrap-folder`
 }
 
 export const getMyScrapFolders = async (
@@ -74,7 +76,7 @@ export const getMyScrapFolders = async (
 }
 
 export const getGetMyScrapFoldersQueryKey = (params?: GetMyScrapFoldersParams) => {
-  return [`/scrap-folder`, ...(params ? [params] : [])] as const
+  return [`https://api.refit.my/scrap-folder`, ...(params ? [params] : [])] as const
 }
 
 export const getGetMyScrapFoldersQueryOptions = <
@@ -179,7 +181,7 @@ export type createScrapFolderResponseSuccess = createScrapFolderResponse200 & {
 export type createScrapFolderResponse = createScrapFolderResponseSuccess
 
 export const getCreateScrapFolderUrl = () => {
-  return `/scrap-folder`
+  return `https://api.refit.my/scrap-folder`
 }
 
 export const createScrapFolder = async (
@@ -272,7 +274,7 @@ export type updateScrapFolderNameResponseSuccess = updateScrapFolderNameResponse
 export type updateScrapFolderNameResponse = updateScrapFolderNameResponseSuccess
 
 export const getUpdateScrapFolderNameUrl = (scrapFolderId: number) => {
-  return `/scrap-folder/${scrapFolderId}/name`
+  return `https://api.refit.my/scrap-folder/${scrapFolderId}/name`
 }
 
 export const updateScrapFolderName = async (
@@ -378,8 +380,8 @@ export const getGetQnaSetsInScrapFolderUrl = (scrapFolderId: number, params: Get
   const stringifiedParams = normalizedParams.toString()
 
   return stringifiedParams.length > 0
-    ? `/scrap-folder/${scrapFolderId}?${stringifiedParams}`
-    : `/scrap-folder/${scrapFolderId}`
+    ? `https://api.refit.my/scrap-folder/${scrapFolderId}?${stringifiedParams}`
+    : `https://api.refit.my/scrap-folder/${scrapFolderId}`
 }
 
 export const getQnaSetsInScrapFolder = async (
@@ -399,7 +401,7 @@ export const getQnaSetsInScrapFolder = async (
 }
 
 export const getGetQnaSetsInScrapFolderQueryKey = (scrapFolderId: number, params?: GetQnaSetsInScrapFolderParams) => {
-  return [`/scrap-folder/${scrapFolderId}`, ...(params ? [params] : [])] as const
+  return [`https://api.refit.my/scrap-folder/${scrapFolderId}`, ...(params ? [params] : [])] as const
 }
 
 export const getGetQnaSetsInScrapFolderQueryOptions = <
@@ -521,7 +523,7 @@ export type deleteScrapFolderResponseSuccess = deleteScrapFolderResponse200 & {
 export type deleteScrapFolderResponse = deleteScrapFolderResponseSuccess
 
 export const getDeleteScrapFolderUrl = (scrapFolderId: number) => {
-  return `/scrap-folder/${scrapFolderId}`
+  return `https://api.refit.my/scrap-folder/${scrapFolderId}`
 }
 
 export const deleteScrapFolder = async (

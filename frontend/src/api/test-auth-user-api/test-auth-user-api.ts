@@ -53,7 +53,9 @@ export const getGetTokenUrl = (params: GetTokenParams) => {
 
   const stringifiedParams = normalizedParams.toString()
 
-  return stringifiedParams.length > 0 ? `/test/auth/token?${stringifiedParams}` : `/test/auth/token`
+  return stringifiedParams.length > 0
+    ? `https://api.refit.my/test/auth/token?${stringifiedParams}`
+    : `https://api.refit.my/test/auth/token`
 }
 
 export const getToken = async (params: GetTokenParams, options?: RequestInit): Promise<getTokenResponse> => {
@@ -69,7 +71,7 @@ export const getToken = async (params: GetTokenParams, options?: RequestInit): P
 }
 
 export const getGetTokenQueryKey = (params?: GetTokenParams) => {
-  return [`/test/auth/token`, ...(params ? [params] : [])] as const
+  return [`https://api.refit.my/test/auth/token`, ...(params ? [params] : [])] as const
 }
 
 export const getGetTokenQueryOptions = <TData = Awaited<ReturnType<typeof getToken>>, TError = unknown>(
@@ -174,7 +176,9 @@ export const getGetGuestTokenUrl = (params: GetGuestTokenParams) => {
 
   const stringifiedParams = normalizedParams.toString()
 
-  return stringifiedParams.length > 0 ? `/test/auth/token/guest?${stringifiedParams}` : `/test/auth/token/guest`
+  return stringifiedParams.length > 0
+    ? `https://api.refit.my/test/auth/token/guest?${stringifiedParams}`
+    : `https://api.refit.my/test/auth/token/guest`
 }
 
 export const getGuestToken = async (
@@ -193,7 +197,7 @@ export const getGuestToken = async (
 }
 
 export const getGetGuestTokenQueryKey = (params?: GetGuestTokenParams) => {
-  return [`/test/auth/token/guest`, ...(params ? [params] : [])] as const
+  return [`https://api.refit.my/test/auth/token/guest`, ...(params ? [params] : [])] as const
 }
 
 export const getGetGuestTokenQueryOptions = <TData = Awaited<ReturnType<typeof getGuestToken>>, TError = unknown>(
@@ -305,7 +309,9 @@ export const getDeleteUserByEmailUrl = (params: DeleteUserByEmailParams) => {
 
   const stringifiedParams = normalizedParams.toString()
 
-  return stringifiedParams.length > 0 ? `/test/user?${stringifiedParams}` : `/test/user`
+  return stringifiedParams.length > 0
+    ? `https://api.refit.my/test/user?${stringifiedParams}`
+    : `https://api.refit.my/test/user`
 }
 
 export const deleteUserByEmail = async (
@@ -396,7 +402,7 @@ export type deleteUserByIdResponseSuccess = deleteUserByIdResponse200 & {
 export type deleteUserByIdResponse = deleteUserByIdResponseSuccess
 
 export const getDeleteUserByIdUrl = (userId: number) => {
-  return `/test/user/${userId}`
+  return `https://api.refit.my/test/user/${userId}`
 }
 
 export const deleteUserById = async (userId: number, options?: RequestInit): Promise<deleteUserByIdResponse> => {
@@ -461,7 +467,7 @@ export type deleteTokenCookiesResponseSuccess = deleteTokenCookiesResponse200 & 
 export type deleteTokenCookiesResponse = deleteTokenCookiesResponseSuccess
 
 export const getDeleteTokenCookiesUrl = () => {
-  return `/test/auth/token/cookies`
+  return `https://api.refit.my/test/auth/token/cookies`
 }
 
 export const deleteTokenCookies = async (options?: RequestInit): Promise<deleteTokenCookiesResponse> => {

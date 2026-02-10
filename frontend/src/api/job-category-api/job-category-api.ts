@@ -33,7 +33,7 @@ export type getAllJobCategoriesResponseSuccess = getAllJobCategoriesResponse200 
 export type getAllJobCategoriesResponse = getAllJobCategoriesResponseSuccess
 
 export const getGetAllJobCategoriesUrl = () => {
-  return `/job-category`
+  return `https://api.refit.my/job-category`
 }
 
 export const getAllJobCategories = async (options?: RequestInit): Promise<getAllJobCategoriesResponse> => {
@@ -49,7 +49,7 @@ export const getAllJobCategories = async (options?: RequestInit): Promise<getAll
 }
 
 export const getGetAllJobCategoriesQueryKey = () => {
-  return [`/job-category`] as const
+  return [`https://api.refit.my/job-category`] as const
 }
 
 export const getGetAllJobCategoriesQueryOptions = <

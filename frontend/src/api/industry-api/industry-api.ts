@@ -33,7 +33,7 @@ export type getIndustriesResponseSuccess = getIndustriesResponse200 & {
 export type getIndustriesResponse = getIndustriesResponseSuccess
 
 export const getGetIndustriesUrl = () => {
-  return `/industry`
+  return `https://api.refit.my/industry`
 }
 
 export const getIndustries = async (options?: RequestInit): Promise<getIndustriesResponse> => {
@@ -49,7 +49,7 @@ export const getIndustries = async (options?: RequestInit): Promise<getIndustrie
 }
 
 export const getGetIndustriesQueryKey = () => {
-  return [`/industry`] as const
+  return [`https://api.refit.my/industry`] as const
 }
 
 export const getGetIndustriesQueryOptions = <
