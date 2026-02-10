@@ -3,8 +3,11 @@ package com.shyashyashya.refit.domain.user.service;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INDUSTRY_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.JOB_CATEGORY_NOT_FOUND;
 
+import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
+import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
+import com.shyashyashya.refit.domain.user.dto.request.MyPageUpdateRequest;
 import com.shyashyashya.refit.domain.user.dto.request.UserSignUpRequest;
 import com.shyashyashya.refit.domain.user.dto.response.MyProfileResponse;
 import com.shyashyashya.refit.domain.user.model.User;
@@ -68,5 +71,20 @@ public class UserService {
     public MyProfileResponse getMyProfileInfo() {
         User user = requestUserContext.getRequestUser();
         return MyProfileResponse.from(user);
+    }
+
+    @Transactional
+    public void updateMyProfile(MyPageUpdateRequest myPageUpdateRequest) {
+        User user = requestUserContext.getRequestUser();
+
+        Industry industry = industryRepository
+                .findById(myPageUpdateRequest.industryId())
+                .orElseThrow(() -> new CustomException(INDUSTRY_NOT_FOUND));
+
+        JobCategory jobCategory = jobCategoryRepository
+                .findById(myPageUpdateRequest.jobCategoryId())
+                .orElseThrow(() -> new CustomException(JOB_CATEGORY_NOT_FOUND));
+
+        user.updateMyPage(myPageUpdateRequest.nickname(), industry, jobCategory);
     }
 }
