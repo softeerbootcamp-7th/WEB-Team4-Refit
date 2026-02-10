@@ -51,7 +51,7 @@ public class StarAnalysis extends BaseEntity {
     @Column(name = "analysis_status", nullable = false)
     private StarAnalysisStatus status;
 
-    @JoinColumn(name = "qna_set_id", nullable = false)
+    @JoinColumn(name = "qna_set_id", nullable = false, unique = true)
     @ManyToOne(fetch = FetchType.LAZY)
     private QnaSet qnaSet;
 
