@@ -1,13 +1,13 @@
 package com.shyashyashya.refit.domain.interview.api;
 
-import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
+import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 
-import com.shyashyashya.refit.domain.common.dto.CommonResponse;
 import com.shyashyashya.refit.domain.interview.dto.InterviewDto;
 import com.shyashyashya.refit.domain.interview.dto.InterviewSimpleDto;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewSearchRequest;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.service.InterviewService;
+import com.shyashyashya.refit.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -31,19 +31,19 @@ public class InterviewMyController {
 
     @Operation(summary = "내가 복기 완료한 면접 정보를 조회합니다. (검색 API 와 통합 예정입니다)", deprecated = true)
     @GetMapping
-    public ResponseEntity<CommonResponse<Page<InterviewSimpleDto>>> getMyInterviews(
+    public ResponseEntity<ApiResponse<Page<InterviewSimpleDto>>> getMyInterviews(
             @RequestParam InterviewReviewStatus interviewReviewStatus, Pageable pageable) {
         var body = interviewService.getMyInterviewsByReviewStatus(interviewReviewStatus, pageable);
-        var response = CommonResponse.success(COMMON200, body);
+        var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "내가 복기 완료한 면접을 검색합니다.")
     @PostMapping("/search")
-    public ResponseEntity<CommonResponse<Page<InterviewDto>>> searchInterviews(
+    public ResponseEntity<ApiResponse<Page<InterviewDto>>> searchInterviews(
             @RequestBody InterviewSearchRequest request, Pageable pageable) {
         var body = interviewService.searchMyInterviews(request, pageable);
-        var response = CommonResponse.success(COMMON200, body);
+        var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
 
@@ -52,10 +52,10 @@ public class InterviewMyController {
             이외의 값에 대해서는 400 에러를 응답합니다.
             """)
     @GetMapping("/draft")
-    public ResponseEntity<CommonResponse<Page<InterviewSimpleDto>>> getMyInterviewDrafts(
+    public ResponseEntity<ApiResponse<Page<InterviewSimpleDto>>> getMyInterviewDrafts(
             @RequestParam InterviewReviewStatus interviewReviewStatus, Pageable pageable) {
         var body = interviewService.getMyInterviewDraftsByReviewStatus(interviewReviewStatus, pageable);
-        var response = CommonResponse.success(COMMON200, body);
+        var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
 }

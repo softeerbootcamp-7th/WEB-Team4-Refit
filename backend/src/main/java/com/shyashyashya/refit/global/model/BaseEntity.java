@@ -1,4 +1,4 @@
-package com.shyashyashya.refit.domain.common.model;
+package com.shyashyashya.refit.global.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

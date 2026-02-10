@@ -12,12 +12,12 @@ const navItems = [
 
 export default function Navbar() {
   return (
-    <nav className="bg-gray-white fixed top-0 right-0 left-0 z-50 flex h-15 items-center gap-6 px-6 py-3">
+    <nav className="bg-gray-white fixed top-0 right-0 left-0 z-50 flex h-15 items-center gap-6 px-6">
       <NavLink to={ROUTES.DASHBOARD} className="flex items-center">
-        <Logo className="h-6 w-auto" />
+        <Logo className="h-6 w-auto text-orange-500" />
       </NavLink>
 
-      <div className="flex items-center gap-2">
+      <div className="flex h-full items-center gap-2">
         {navItems.map((item) => (
           <NavLink key={item.to} to={item.to} end={item.end} className={getNavLinkClassName}>
             {item.label}
@@ -31,8 +31,9 @@ export default function Navbar() {
 }
 
 const getNavLinkClassName = ({ isActive }: { isActive: boolean }) => {
-  const baseStyles = 'px-7'
-  const activeStyles = 'body-m-semibold text-gray-800'
+  const baseStyles = 'relative flex h-full items-center px-7 transition-colors'
+  const activeStyles =
+    'body-m-semibold text-gray-800 after:absolute after:right-0 after:bottom-0 after:left-0 after:h-0.5 after:bg-orange-500 after:content-[""]'
   const inactiveStyles = 'body-m-medium text-gray-400 hover:text-gray-800'
 
   return isActive ? `${baseStyles} ${activeStyles}` : `${baseStyles} ${inactiveStyles}`

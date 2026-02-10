@@ -15,7 +15,7 @@ export default function SigninPage() {
             className="rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
             aria-label="홈으로"
           >
-            <Logo className="h-7 w-auto text-gray-800 sm:h-8" aria-hidden />
+            <Logo className="h-7 w-auto text-orange-500 sm:h-8" aria-hidden />
           </Link>
           <div className="flex flex-col items-center gap-4">
             <h1 className="headline-m-bold text-center text-gray-900">로그인</h1>

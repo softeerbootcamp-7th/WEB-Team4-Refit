@@ -1,7 +1,10 @@
 package com.shyashyashya.refit.global.config;
 
 import static com.shyashyashya.refit.global.constant.UrlConstant.DEV_CLIENT_URL;
+import static com.shyashyashya.refit.global.constant.UrlConstant.DEV_SERVER_URL;
 import static com.shyashyashya.refit.global.constant.UrlConstant.LOCAL_CLIENT_URL;
+import static com.shyashyashya.refit.global.constant.UrlConstant.LOCAL_SERVER_URL;
+import static com.shyashyashya.refit.global.constant.UrlConstant.MAIN_CLIENT_URL;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -14,7 +17,7 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins(LOCAL_CLIENT_URL, DEV_CLIENT_URL)
+                .allowedOrigins(LOCAL_CLIENT_URL, DEV_CLIENT_URL, MAIN_CLIENT_URL, LOCAL_SERVER_URL, DEV_SERVER_URL)
                 .allowedMethods(
                         HttpMethod.GET.name(),
                         HttpMethod.POST.name(),

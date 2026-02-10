@@ -22,12 +22,7 @@ export default function SignupPage() {
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100 px-4 py-8 sm:px-6 sm:py-12">
       <div className="bg-gray-white w-full max-w-120 overflow-hidden rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.06)] sm:rounded-3xl">
         <div className="border-gray-150 flex items-center gap-2 border-b px-6 py-4 sm:px-8 sm:py-5">
-          <div
-            className="rounded-lg text-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
-            aria-label="리핏 로고"
-          >
-            <Logo className="h-6 w-auto sm:h-7" aria-hidden />
-          </div>
+          <Logo className="h-6 w-auto text-orange-500 sm:h-7" aria-label="리핏 로고" />
         </div>
 
         <div className="flex flex-col px-6 py-6 sm:px-8 sm:py-8">
