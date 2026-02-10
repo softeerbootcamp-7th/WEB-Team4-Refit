@@ -92,10 +92,10 @@ public class QnaSetController {
 
     @Operation(summary = "지정한 질문 답변 세트가 스크랩 폴더에 포함되어 있는 지 여부가 포함된 스크랩 폴더 리스트를 조회합니다.")
     @GetMapping("/{qnaSetId}/scrap-folder")
-    public ResponseEntity<CommonResponse<Page<QnaSetScrapFolderResponse>>> getScrapFoldersContainingQnaSet(
+    public ResponseEntity<ApiResponse<Page<QnaSetScrapFolderResponse>>> getScrapFoldersContainingQnaSet(
             @PathVariable Long qnaSetId, Pageable pageable) {
         var body = qnaSetService.getScrapFoldersContainingQnaSet(qnaSetId, pageable);
-        var response = CommonResponse.success(COMMON200, body);
+        var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
 }
