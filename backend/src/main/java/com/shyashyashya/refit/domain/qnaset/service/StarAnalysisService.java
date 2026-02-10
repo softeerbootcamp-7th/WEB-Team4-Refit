@@ -32,7 +32,7 @@ public class StarAnalysisService {
         GeminiGenerateRequest requestBody = GeminiGenerateRequest.ofText(prompt);
 
         CompletableFuture<GeminiGenerateResponse> reqFuture =
-                geminiClient.createGeminiRequest(requestBody).toFuture();
+                geminiClient.createGeminiRequest(requestBody);
 
         return reqFuture
                 .thenApplyAsync(geminiRsp -> starAnalysisTxService.onRequestSuccess(starAnalysis.getId(), geminiRsp))

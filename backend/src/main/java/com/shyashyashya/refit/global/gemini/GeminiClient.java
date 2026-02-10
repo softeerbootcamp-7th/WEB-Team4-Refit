@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.concurrent.CompletableFuture;
+
 @Component
 @RequiredArgsConstructor
 public class GeminiClient {
@@ -18,7 +20,7 @@ public class GeminiClient {
             "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent";
     private static final String GEMINI_API_KEY = System.getenv("GEMINI_API_KEY");
 
-    public Mono<GeminiGenerateResponse> createGeminiRequest(GeminiGenerateRequest requestBody) {
+    public CompletableFuture<GeminiGenerateResponse> createGeminiRequest(GeminiGenerateRequest requestBody) {
         return webClient
                 .post()
                 .uri(GEMINI_API_URL)
@@ -26,6 +28,7 @@ public class GeminiClient {
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(requestBody)
                 .retrieve()
-                .bodyToMono(GeminiGenerateResponse.class);
+                .bodyToMono(GeminiGenerateResponse.class)
+                .toFuture();
     }
 }
