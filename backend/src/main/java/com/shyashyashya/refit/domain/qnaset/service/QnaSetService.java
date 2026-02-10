@@ -1,15 +1,15 @@
 package com.shyashyashya.refit.domain.qnaset.service;
 
-import static com.shyashyashya.refit.global.exception.ErrorCode.INDUSTRY_NOT_FOUND;
-import static com.shyashyashya.refit.global.exception.ErrorCode.JOB_CATEGORY_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.QNA_SET_NOT_FOUND;
 
 import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
+import com.shyashyashya.refit.domain.industry.service.validator.IndustryValidator;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
+import com.shyashyashya.refit.domain.jobcategory.service.validator.JobCategoryValidator;
 import com.shyashyashya.refit.domain.qnaset.dto.PdfHighlightingDto;
 import com.shyashyashya.refit.domain.qnaset.dto.request.PdfHighlightingUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetUpdateRequest;
@@ -43,21 +43,20 @@ public class QnaSetService {
     private final QnaSetSelfReviewRepository qnaSetSelfReviewRepository;
     private final PdfHighlightingRepository pdfHighlightingRepository;
     private final PdfHighlightingRectRepository pdfHighlightingRectRepository;
-
     private final RequestUserContext requestUserContext;
     private final InterviewValidator interviewValidator;
+    private final IndustryValidator industryValidator;
+    private final JobCategoryValidator jobCategoryValidator;
 
     @Transactional(readOnly = true)
-    public List<FrequentQnaSetResponse> getFrequentQuestions(Long industryId, Long jobCategoryId) {
+    public List<FrequentQnaSetResponse> getFrequentQuestions(List<Long> industryIds, List<Long> jobCategoryIds) {
+        List<Industry> industries = industryRepository.findAllById(industryIds);
+        List<JobCategory> jobCategories = jobCategoryRepository.findAllById(jobCategoryIds);
 
-        Industry industry =
-                industryRepository.findById(industryId).orElseThrow(() -> new CustomException(INDUSTRY_NOT_FOUND));
+        industryValidator.validateIndustriesAllExist(industries, industryIds);
+        jobCategoryValidator.validateJobCategoriesAllExist(jobCategories, jobCategoryIds);
 
-        JobCategory jobCategory = jobCategoryRepository
-                .findById(jobCategoryId)
-                .orElseThrow(() -> new CustomException(JOB_CATEGORY_NOT_FOUND));
-
-        return qnaSetRepository.findAllByIndustryAndJobCategory(industry, jobCategory).stream()
+        return qnaSetRepository.findAllByIndustriesAndJobCategories(industries, jobCategories).stream()
                 .map(FrequentQnaSetResponse::from)
                 .toList();
     }
