@@ -30,6 +30,10 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
     boolean existsByUser(User user);
 
     boolean existsByUserAndReviewStatusIn(User user, List<InterviewReviewStatus> reviewStatuses);
+
+    Page<Interview> findAllByUserAndReviewStatusIn(
+            User user, List<InterviewReviewStatus> reviewStatuses, Pageable pageable);
+
     // QueryDSL 적용
     @Query("""
         SELECT i
@@ -57,4 +61,13 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
            AND i.jobCategory = :jobCategory
     """)
     List<Interview> findAllSimilarInterviewsByUser(User user, Industry interview, JobCategory jobCategory);
+
+    @Query("""
+        SELECT i
+          FROM Interview i
+         WHERE i.user = :user
+           AND i.startAt BETWEEN :monthStart AND :monthEnd
+         ORDER BY i.startAt
+    """)
+    List<Interview> findAllByUserAndYearMonth(User user, LocalDateTime monthStart, LocalDateTime monthEnd);
 }

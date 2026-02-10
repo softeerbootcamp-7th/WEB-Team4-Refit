@@ -9,4 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ScrapFolderRepository extends JpaRepository<ScrapFolder, Long> {
 
     Page<ScrapFolder> findAllByUser(User user, Pageable pageable);
+
+    boolean existsByNameAndUser(String name, User user);
 }

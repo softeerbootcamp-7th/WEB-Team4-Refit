@@ -1,27 +1,546 @@
 package com.shyashyashya.refit.interview.integration;
 
+import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
+import static com.shyashyashya.refit.global.model.ResponseCode.COMMON201;
+import static com.shyashyashya.refit.global.model.ResponseCode.COMMON204;
+import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_ACCESSIBLE;
+import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_FOUND;
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 
 import com.shyashyashya.refit.core.IntegrationTest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
+import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatusUpdateRequest;
+import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
+import com.shyashyashya.refit.domain.interview.dto.request.KptSelfReviewUpdateRequest;
+import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
+import com.shyashyashya.refit.domain.interview.model.InterviewResultStatus;
 import java.time.LocalDateTime;
+import java.util.List;
+
+import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
+import com.shyashyashya.refit.domain.qnaset.model.QnaSetCategory;
+import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
+import com.shyashyashya.refit.domain.qnaset.repository.QnaSetCategoryRepository;
+import com.shyashyashya.refit.domain.user.model.User;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class InterviewIntegrationTest extends IntegrationTest {
 
-    @Test
-    void 인터뷰_생성에_성공한다() {
-        // given
-        InterviewCreateRequest request = new InterviewCreateRequest(
-                LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "HyunDai", 1L, 1L, "BE Developer");
+    @Autowired
+    private QnaSetRepository qnaSetRepository;
 
-        // when & then
-        given(spec)
-                .body(request)
-        .when()
-                .post("/interview")
-        .then()
-                .assertThat().statusCode(200);
+    @Autowired
+    private QnaSetCategoryRepository qnaSetCategoryRepository;
+
+    @Nested
+    class 면접_생성_시 {
+
+        private static final String path = "/interview";
+
+        @Test
+        void 과거_면접_데이터_생성에_성공한다() {
+            // given
+            InterviewCreateRequest request = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "HyunDai", 1L, 1L, "BE Developer");
+
+            // when & then
+            given(spec)
+                    .body(request)
+            .when()
+                    .post(path)
+            .then()
+                    .assertThat().statusCode(200)
+                    .body("code", equalTo(COMMON201.name()))
+                    .body("message", equalTo(COMMON201.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @Test
+        void 미래_면접_데이터_생성에_성공한다() {
+            // given
+            InterviewCreateRequest request = new InterviewCreateRequest(
+                    LocalDateTime.of(2999, 12, 31, 0, 0, 0), InterviewType.FIRST, "HyunDai", 1L, 1L, "BE Developer");
+
+            // when & then
+            given(spec)
+                    .body(request)
+            .when()
+                    .post(path)
+            .then()
+                    .assertThat().statusCode(200)
+                    .body("code", equalTo(COMMON201.name()))
+                    .body("message", equalTo(COMMON201.getMessage()))
+                    .body("result", nullValue());
+        }
+    }
+
+    @Nested
+    class 면접_단일_조회_시 {
+
+        private static final String path = "/interview";
+        private Long interviewId;
+
+        @BeforeEach
+        void setUp() {
+            InterviewCreateRequest request = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            interviewId = createInterview(request).getId();
+        }
+
+        @Test
+        void 성공한다() {
+            // when & then
+            given(spec).
+            when().
+                    get(path + "/" + interviewId).
+            then().
+                    statusCode(200).
+                    body("code", equalTo(COMMON200.name())).
+                    body("message", equalTo(COMMON200.getMessage())).
+                    body("result", notNullValue()).
+                    body("result.interviewId", notNullValue());
+        }
+
+        @Test
+        void 존재하지_않는_면접을_조회하면_실패한다() {
+            // when & then
+            given(spec).
+                    when().
+                    get(path + "/" + (interviewId + 1)).
+                    then().
+                    statusCode(404).
+                    body("code", equalTo(INTERVIEW_NOT_FOUND.name())).
+                    body("message", equalTo(INTERVIEW_NOT_FOUND.getMessage())).
+                    body("result", nullValue());
+        }
+
+        @Test
+        void 로그인한_사용자가_아닌_다른_사람의_면접을_조회하면_실패한다() {
+            // given
+            InterviewCreateRequest request = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            User user = createUser("other@example.com", "other", industry, jobCategory);
+            Long otherInterviewId = createInterview(request, user).getId();
+
+            // when & then
+            given(spec).
+            when().
+                    get(path + "/" + otherInterviewId).
+            then().
+                    statusCode(403).
+                    body("code", equalTo(INTERVIEW_NOT_ACCESSIBLE.name())).
+                    body("message", equalTo(INTERVIEW_NOT_ACCESSIBLE.getMessage())).
+                    body("result", nullValue());
+        }
+    }
+
+    @Nested
+    class 면접_삭제_시 {
+
+        private static final String path = "/interview";
+        private Long interviewId;
+
+        @BeforeEach
+        void setUp() {
+            InterviewCreateRequest request = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            interviewId = createInterview(request).getId();
+        }
+
+        @Test
+        void 성공한다() {
+            // when & then
+            given(spec)
+            .when()
+                    .delete(path + "/" + interviewId)
+            .then()
+                    .assertThat().statusCode(200)
+                    .body("code", equalTo(COMMON204.name()))
+                    .body("message", equalTo(COMMON204.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @Test
+        void 존재하지_않는_면접을_삭제하면_실패한다() {
+            // when & then
+            given(spec)
+            .when()
+                    .delete(path + "/" + (interviewId + 1))
+            .then()
+                    .assertThat().statusCode(404)
+                    .body("code", equalTo(INTERVIEW_NOT_FOUND.name()))
+                    .body("message", equalTo(INTERVIEW_NOT_FOUND.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @Test
+        void 로그인한_사용자가_아닌_다른_사람의_면접을_삭제하면_실패한다() {
+            // given
+            InterviewCreateRequest request = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            User user = createUser("other@example.com", "other", industry, jobCategory);
+            Long otherInterviewId = createInterview(request, user).getId();
+
+            // when & then
+            given(spec)
+            .when()
+                    .delete(path + "/" + otherInterviewId)
+            .then()
+                    .assertThat().statusCode(403)
+                    .body("code", equalTo(INTERVIEW_NOT_ACCESSIBLE.name()))
+                    .body("message", equalTo(INTERVIEW_NOT_ACCESSIBLE.getMessage()))
+                    .body("result", nullValue());
+        }
+    }
+
+    @Nested
+    class 면접_결과_상태_업데이트_시 {
+
+        private static final String path = "/interview";
+        private Long interviewId;
+
+        @BeforeEach
+        void setUp() {
+            InterviewCreateRequest request = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            interviewId = createInterview(request).getId();
+        }
+
+        @Test
+        void 성공한다() {
+            // given
+            InterviewResultStatusUpdateRequest request = new InterviewResultStatusUpdateRequest(InterviewResultStatus.PASS);
+
+            // when & then
+            given(spec)
+                    .body(request)
+            .when()
+                    .patch(path + "/" + interviewId + "/result-status")
+            .then()
+                    .assertThat().statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @Test
+        void 존재하지_않는_면접의_결과_상태를_업데이트하면_실패한다() {
+            // given
+            InterviewResultStatusUpdateRequest request = new InterviewResultStatusUpdateRequest(InterviewResultStatus.FAIL);
+
+            // when & then
+            given(spec)
+                    .body(request)
+            .when()
+                    .patch(path + "/" + (interviewId + 1) + "/result-status")
+            .then()
+                    .assertThat().statusCode(404)
+                    .body("code", equalTo(INTERVIEW_NOT_FOUND.name()))
+                    .body("message", equalTo(INTERVIEW_NOT_FOUND.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @Test
+        void 로그인한_사용자가_아닌_다른_사람의_면접_결과_상태를_업데이트하면_실패한다() {
+            // given
+            InterviewCreateRequest createRequest = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            User user = createUser("other@example.com", "other", industry, jobCategory);
+            Long otherInterviewId = createInterview(createRequest, user).getId();
+            InterviewResultStatusUpdateRequest updateRequest = new InterviewResultStatusUpdateRequest(InterviewResultStatus.PASS);
+
+            // when & then
+            given(spec)
+                    .body(updateRequest)
+            .when()
+                    .patch(path + "/" + otherInterviewId + "/result-status")
+            .then()
+                    .assertThat().statusCode(403)
+                    .body("code", equalTo(INTERVIEW_NOT_ACCESSIBLE.name()))
+                    .body("message", equalTo(INTERVIEW_NOT_ACCESSIBLE.getMessage()))
+                    .body("result", nullValue());
+        }
+    }
+
+    @Nested
+    class 면접_전체_상세_정보_조회_시 {
+
+        private static final String path = "/interview";
+        private Long interviewId;
+        private QnaSetCategory qnaSetCategory;
+        private List<QnaSet> qnaSets;
+
+        @BeforeEach
+        void setUp() {
+            InterviewCreateRequest request = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview interview = createInterview(request);
+            interviewId = interview.getId();
+
+            // Create QnaSetCategory
+            qnaSetCategory = qnaSetCategoryRepository.save(
+                    QnaSetCategory.create("기술 면접", "기술 관련 질문입니다.", 0.8));
+
+            // Create QnaSets and associate them with the Interview and QnaSetCategory
+            QnaSet qnaSet1 = QnaSet.create("질문1", "답변1", false, interview, qnaSetCategory);
+            QnaSet qnaSet2 = QnaSet.create("질문2", "답변2", true, interview, qnaSetCategory);
+            qnaSets = qnaSetRepository.saveAll(List.of(qnaSet1, qnaSet2));
+        }
+
+        @Test
+        void 성공한다() {
+            // when & then
+            given(spec).
+            when().
+                    get(path + "/" + interviewId + "/qna-sets").
+            then().
+                    assertThat().statusCode(200).
+                    body("code", equalTo(COMMON200.name())).
+                    body("message", equalTo(COMMON200.getMessage())).
+                    body("result", notNullValue()).
+                    body("result.interviewId", equalTo(interviewId.intValue())).
+                    body("result.qnaSets.size()", equalTo(qnaSets.size())).
+                    body("result.qnaSets[0].questionText", equalTo(qnaSets.get(0).getQuestionText())).
+                    body("result.qnaSets[0].answerText", equalTo(qnaSets.get(0).getAnswerText())).
+                    body("result.qnaSets[1].questionText", equalTo(qnaSets.get(1).getQuestionText())).
+                    body("result.qnaSets[1].answerText", equalTo(qnaSets.get(1).getAnswerText()));
+        }
+
+        @Test
+        void 존재하지_않는_면접의_전체_상세_정보를_조회하면_실패한다() {
+            // when & then
+            given(spec).
+            when().
+                    get(path + "/" + (interviewId + 1) + "/qna-sets").
+            then().
+                    assertThat().statusCode(404).
+                    body("code", equalTo(INTERVIEW_NOT_FOUND.name())).
+                    body("message", equalTo(INTERVIEW_NOT_FOUND.getMessage())).
+                    body("result", nullValue());
+        }
+
+        @Test
+        void 로그인한_사용자가_아닌_다른_사람의_면접_전체_상세_정보를_조회하면_실패한다() {
+            // given
+            InterviewCreateRequest createRequest = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            User user = createUser("other@example.com", "other", industry, jobCategory);
+            Long otherInterviewId = createInterview(createRequest, user).getId();
+
+            // when & then
+            given(spec).
+            when().
+                    get(path + "/" + otherInterviewId + "/qna-sets").
+            then().
+                    assertThat().statusCode(403).
+                    body("code", equalTo(INTERVIEW_NOT_ACCESSIBLE.name())).
+                    body("message", equalTo(INTERVIEW_NOT_ACCESSIBLE.getMessage())).
+                    body("result", nullValue());
+        }
+    }
+
+    @Nested
+    class 면접_가이드_질문_조회_시 {
+
+        private static final String path = "/interview";
+        private Long interviewId;
+
+        @BeforeEach
+        void setUp() {
+            InterviewCreateRequest request = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            interviewId = createInterview(request).getId();
+        }
+
+        @Test
+        void 성공한다() {
+            // when & then
+            given(spec)
+            .when()
+                    .get(path + "/" + interviewId + "/guide-question")
+            .then()
+                    .assertThat().statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result", notNullValue())
+                    .body("result.guideQuestion", notNullValue());
+        }
+
+        @Test
+        void 존재하지_않는_면접의_가이드_질문을_조회하면_실패한다() {
+            // when & then
+            given(spec)
+            .when()
+                    .get(path + "/" + (interviewId + 1) + "/guide-question")
+            .then()
+                    .assertThat().statusCode(404)
+                    .body("code", equalTo(INTERVIEW_NOT_FOUND.name()))
+                    .body("message", equalTo(INTERVIEW_NOT_FOUND.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @Test
+        void 로그인한_사용자가_아닌_다른_사람의_면접_가이드_질문을_조회하면_실패한다() {
+            // given
+            InterviewCreateRequest createRequest = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            User user = createUser("other@example.com", "other", industry, jobCategory);
+            Long otherInterviewId = createInterview(createRequest, user).getId();
+
+            // when & then
+            given(spec)
+            .when()
+                    .get(path + "/" + otherInterviewId + "/guide-question")
+            .then()
+                    .assertThat().statusCode(403)
+                    .body("code", equalTo(INTERVIEW_NOT_ACCESSIBLE.name()))
+                    .body("message", equalTo(INTERVIEW_NOT_ACCESSIBLE.getMessage()))
+                    .body("result", nullValue());
+        }
+    }
+
+    @Nested
+    class 면접_기록_원문_텍스트_업데이트_시 {
+
+        private static final String path = "/interview";
+        private Long interviewId;
+
+        @BeforeEach
+        void setUp() {
+            InterviewCreateRequest request = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            interviewId = createInterview(request).getId();
+        }
+
+        @Test
+        void 성공한다() {
+            // given
+            RawTextUpdateRequest request = new RawTextUpdateRequest("Updated raw text content.");
+
+            // when & then
+            given(spec)
+                    .body(request)
+            .when()
+                    .put(path + "/" + interviewId + "/raw-text")
+            .then()
+                    .assertThat().statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @Test
+        void 존재하지_않는_면접의_원문_텍스트를_업데이트하면_실패한다() {
+            // given
+            RawTextUpdateRequest request = new RawTextUpdateRequest("Updated raw text content.");
+
+            // when & then
+            given(spec)
+                    .body(request)
+            .when()
+                    .put(path + "/" + (interviewId + 1) + "/raw-text")
+            .then()
+                    .assertThat().statusCode(404)
+                    .body("code", equalTo(INTERVIEW_NOT_FOUND.name()))
+                    .body("message", equalTo(INTERVIEW_NOT_FOUND.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @Test
+        void 로그인한_사용자가_아닌_다른_사람의_면접_원문_텍스트를_업데이트하면_실패한다() {
+            // given
+            InterviewCreateRequest createRequest = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            User user = createUser("other@example.com", "other", industry, jobCategory);
+            Long otherInterviewId = createInterview(createRequest, user).getId();
+            RawTextUpdateRequest updateRequest = new RawTextUpdateRequest("Raw text for another user.");
+
+            // when & then
+            given(spec)
+                    .body(updateRequest)
+            .when()
+                    .put(path + "/" + otherInterviewId + "/raw-text")
+            .then()
+                    .assertThat().statusCode(403)
+                    .body("code", equalTo(INTERVIEW_NOT_ACCESSIBLE.name()))
+                    .body("message", equalTo(INTERVIEW_NOT_ACCESSIBLE.getMessage()))
+                    .body("result", nullValue());
+        }
+    }
+
+    @Nested
+    class 면접_KPT_회고_업데이트_시 {
+
+        private static final String path = "/interview";
+        private Long interviewId;
+
+        @BeforeEach
+        void setUp() {
+            InterviewCreateRequest request = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            interviewId = createInterview(request).getId();
+        }
+
+        @Test
+        void KPT_회고_업데이트에_성공한다() {
+            // given
+            KptSelfReviewUpdateRequest request = new KptSelfReviewUpdateRequest("Keep text", "Problem text", "Try text");
+
+            // when & then
+            given(spec)
+                    .body(request)
+            .when()
+                    .put(path + "/" + interviewId + "/kpt-self-review")
+            .then()
+                    .assertThat().statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @Test
+        void 존재하지_않는_면접의_KPT_회고를_업데이트하면_실패한다() {
+            // given
+            KptSelfReviewUpdateRequest request = new KptSelfReviewUpdateRequest("Keep text", "Problem text", "Try text");
+
+            // when & then
+            given(spec)
+                    .body(request)
+            .when()
+                    .put(path + "/" + (interviewId + 1) + "/kpt-self-review")
+            .then()
+                    .assertThat().statusCode(404)
+                    .body("code", equalTo(INTERVIEW_NOT_FOUND.name()))
+                    .body("message", equalTo(INTERVIEW_NOT_FOUND.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @Test
+        void 로그인한_사용자가_아닌_다른_사람의_면접_KPT_회고를_업데이트하면_실패한다() {
+            // given
+            InterviewCreateRequest createRequest = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            User user = createUser("other@example.com", "other", industry, jobCategory);
+            Long otherInterviewId = createInterview(createRequest, user).getId();
+            KptSelfReviewUpdateRequest updateRequest = new KptSelfReviewUpdateRequest("Other Keep", "Other Problem", "Other Try");
+
+            // when & then
+            given(spec)
+                    .body(updateRequest)
+            .when()
+                    .put(path + "/" + otherInterviewId + "/kpt-self-review")
+            .then()
+                    .assertThat().statusCode(403)
+                    .body("code", equalTo(INTERVIEW_NOT_ACCESSIBLE.name()))
+                    .body("message", equalTo(INTERVIEW_NOT_ACCESSIBLE.getMessage()))
+                    .body("result", nullValue());
+        }
     }
 }

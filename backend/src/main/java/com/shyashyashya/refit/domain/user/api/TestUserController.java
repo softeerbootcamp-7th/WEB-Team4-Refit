@@ -1,13 +1,13 @@
 package com.shyashyashya.refit.domain.user.api;
 
-import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON204;
 import static com.shyashyashya.refit.global.exception.ErrorCode.USER_NOT_FOUND;
+import static com.shyashyashya.refit.global.model.ResponseCode.COMMON204;
 
-import com.shyashyashya.refit.domain.common.dto.CommonResponse;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
 import com.shyashyashya.refit.global.auth.repository.RefreshTokenRepository;
-import com.shyashyashya.refit.global.auth.service.CookieUtil;
+import com.shyashyashya.refit.global.dto.ApiResponse;
 import com.shyashyashya.refit.global.exception.CustomException;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
@@ -27,11 +27,11 @@ public class TestUserController {
 
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final CookieUtil cookieUtil;
 
+    @Operation(summary = "(테스트용) 유저를 이메일로 찾아 삭제합니다.")
     @DeleteMapping
     @Transactional
-    public ResponseEntity<CommonResponse<Void>> deleteUserByEmail(@RequestParam @Email String email) {
+    public ResponseEntity<ApiResponse<Void>> deleteUserByEmail(@RequestParam @Email String email) {
         userRepository
                 .findByEmail(email)
                 .map(user -> {
@@ -41,13 +41,14 @@ public class TestUserController {
                 })
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-        var body = CommonResponse.success(COMMON204);
+        var body = ApiResponse.success(COMMON204);
         return ResponseEntity.ok(body);
     }
 
+    @Operation(summary = "(테스트용) 유저를 id로 찾아 삭제합니다.")
     @DeleteMapping("/{userId}")
     @Transactional
-    public ResponseEntity<CommonResponse<Void>> deleteUserById(@PathVariable Long userId) {
+    public ResponseEntity<ApiResponse<Void>> deleteUserById(@PathVariable Long userId) {
         userRepository
                 .findById(userId)
                 .map(user -> {
@@ -57,7 +58,7 @@ public class TestUserController {
                 })
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-        var body = CommonResponse.success(COMMON204);
+        var body = ApiResponse.success(COMMON204);
         return ResponseEntity.ok(body);
     }
 }

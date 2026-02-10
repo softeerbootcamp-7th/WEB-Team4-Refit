@@ -1,13 +1,23 @@
-import { type PropsWithChildren, useCallback, useEffect, useRef, useState } from 'react'
+import { type PropsWithChildren, type Ref, useCallback, useEffect, useRef, useState } from 'react'
 
 type FadeScrollAreaProps = PropsWithChildren<{
+  ref?: Ref<HTMLDivElement>
   className?: string
 }>
 
-export default function FadeScrollArea({ children, className = '' }: FadeScrollAreaProps) {
+export default function FadeScrollArea({ ref, children, className = '' }: FadeScrollAreaProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const [canScrollUp, setCanScrollUp] = useState(false)
   const [canScrollDown, setCanScrollDown] = useState(false)
+
+  const setRefs = useCallback(
+    (el: HTMLDivElement | null) => {
+      scrollRef.current = el
+      if (typeof ref === 'function') ref(el)
+      else if (ref) ref.current = el
+    },
+    [ref],
+  )
 
   const updateScrollState = useCallback(() => {
     const el = scrollRef.current
@@ -30,7 +40,7 @@ export default function FadeScrollArea({ children, className = '' }: FadeScrollA
       <div
         className={`pointer-events-none absolute top-0 right-0 left-0 z-10 h-12 bg-linear-to-b from-gray-100 to-transparent transition-opacity ${canScrollUp ? 'opacity-100' : 'opacity-0'}`}
       />
-      <div ref={scrollRef} onScroll={updateScrollState} className={`absolute inset-0 overflow-y-auto ${className}`}>
+      <div ref={setRefs} onScroll={updateScrollState} className={`absolute inset-0 overflow-y-auto ${className}`}>
         {children}
       </div>
       <div

@@ -2,9 +2,10 @@ spring:
   auth:
     using-https: false
     url:
-      # TODO: public한 API 경로가 더 있는지 검토 필요
       sign-up: "/user/signup"
       whitelists:
+        # TODO: public한 API 경로가 더 있는지 검토 필요
+        - "/test/**"
         - "/auth/login/**"
         - "/auth/reissue"
         - "/swagger-ui/**"
@@ -15,11 +16,11 @@ spring:
         access-token: 1h
         refresh-token: 7d
     oauth2:
-      frontend-redirect-uri: "${OAUTH2_FRONTEND_REDIRECT_URI}"
+      state-expiration: 5m
       google:
         client-id: "${GOOGLE_CLIENT_ID}"
         client-secret: "${GOOGLE_CLIENT_SECRET}"
-        redirect-uri: "${GOOGLE_REDIRECT_URI}"
+        redirect-path: "${GOOGLE_REDIRECT_PATH}"
         scope:
           - openid
           - profile

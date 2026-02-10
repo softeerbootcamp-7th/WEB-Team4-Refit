@@ -22,7 +22,7 @@ export type StarAnalysisResult = {
 
 type InterviewFullType = {
   interviewId: number
-  interviewType: string
+  interviewType: keyof typeof INTERVIEW_TYPE_LABEL
   interviewStartAt: string
   interviewReviewStatus: string
   interviewResultStatus: string

@@ -1,7 +1,7 @@
 package com.shyashyashya.refit.domain.qnaset.model;
 
-import com.shyashyashya.refit.domain.common.model.BaseEntity;
 import com.shyashyashya.refit.domain.interview.model.Interview;
+import com.shyashyashya.refit.global.model.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

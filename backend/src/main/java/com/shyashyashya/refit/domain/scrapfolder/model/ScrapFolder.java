@@ -1,7 +1,7 @@
 package com.shyashyashya.refit.domain.scrapfolder.model;
 
-import com.shyashyashya.refit.domain.common.model.BaseEntity;
 import com.shyashyashya.refit.domain.user.model.User;
+import com.shyashyashya.refit.global.model.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -11,13 +11,19 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "scrap_folders")
+@Table(
+        name = "scrap_folders",
+        uniqueConstraints =
+                @UniqueConstraint(
+                        name = "uk_user_scrap_folder_name",
+                        columnNames = {"user_id", "scrap_folder_name"}))
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ScrapFolder extends BaseEntity {
@@ -45,5 +51,9 @@ public class ScrapFolder extends BaseEntity {
     private ScrapFolder(String name, User user) {
         this.name = name;
         this.user = user;
+    }
+
+    public void updateName(String name) {
+        this.name = name;
     }
 }

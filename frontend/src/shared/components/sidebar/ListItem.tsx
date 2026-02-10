@@ -33,5 +33,4 @@ export const ListItemLarge = ({ content, active = false, onClick, className }: L
   )
 }
 
-const baseStyles =
-  'flex w-full items-center rounded-[10px] py-2.5 hover:bg-gray-100 cursor-pointer focus:outline-none focus:bg-gray-100'
+const baseStyles = 'flex w-full items-center rounded-[10px] py-2.5 hover:bg-gray-100 cursor-pointer'

@@ -1,6 +1,6 @@
 package com.shyashyashya.refit.domain.interview.model;
 
-import com.shyashyashya.refit.domain.common.model.BaseEntity;
+import com.shyashyashya.refit.global.model.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -47,6 +47,15 @@ public class InterviewSelfReview extends BaseEntity {
                 .keepText(keepText == null ? "" : keepText)
                 .problemText(problemText == null ? "" : problemText)
                 .tryText(tryText == null ? "" : tryText)
+                .interview(interview)
+                .build();
+    }
+
+    public static InterviewSelfReview createEmpty(Interview interview) {
+        return InterviewSelfReview.builder()
+                .keepText("")
+                .problemText("")
+                .tryText("")
                 .interview(interview)
                 .build();
     }

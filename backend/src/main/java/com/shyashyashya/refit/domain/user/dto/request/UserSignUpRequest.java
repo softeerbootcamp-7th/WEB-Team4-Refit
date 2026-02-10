@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Size;
 
 public record UserSignUpRequest(
         @Email @NotBlank @Size(max = 255) String email,
+        @NotBlank String env,
         @NotBlank @Size(max = 30) String nickname,
         @NotBlank @Size(max = 2048) String profileImageUrl,
         @NotNull Long industryId,
