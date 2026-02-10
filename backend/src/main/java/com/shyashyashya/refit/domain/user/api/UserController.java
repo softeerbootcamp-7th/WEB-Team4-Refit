@@ -2,6 +2,7 @@ package com.shyashyashya.refit.domain.user.api;
 
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 
+import com.shyashyashya.refit.domain.user.dto.request.MyPageUpdateRequest;
 import com.shyashyashya.refit.domain.user.dto.request.UserSignUpRequest;
 import com.shyashyashya.refit.domain.user.dto.response.MyProfileResponse;
 import com.shyashyashya.refit.domain.user.service.UserService;
@@ -18,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -62,5 +64,13 @@ public class UserController {
         var myPageResponse = userService.getMyProfileInfo();
         var response = ApiResponse.success(COMMON200, myPageResponse);
         return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "사용자 프로필을 수정합니다.")
+    @PutMapping("/my")
+    public ResponseEntity<ApiResponse<Void>> updateMyProfile(
+            @Valid @RequestBody MyPageUpdateRequest myPageUpdateRequest) {
+        userService.updateMyProfile(myPageUpdateRequest);
+        return ResponseEntity.ok(ApiResponse.success(COMMON200));
     }
 }
