@@ -53,7 +53,7 @@ export default function FilterCard({
               isSelected(option.id) ? styles.selected : 'text-gray-600 hover:bg-gray-50'
             }`}
           >
-            {isSelected(option.id) && '✓ '}
+            {isSelected(option.id) && <span className="mr-2">✓</span>}
             {option.label}
           </button>
         ))}
