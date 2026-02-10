@@ -12,6 +12,7 @@ import com.shyashyashya.refit.domain.qnaset.service.QnaSetService;
 import com.shyashyashya.refit.domain.qnaset.service.StarAnalysisService;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/qna-set")
@@ -78,10 +78,11 @@ public class QnaSetController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/star-test")
-    public Mono<ResponseEntity<CommonResponse<StarAnalysisDto>>> createStarAnalysis() {
+    @PostMapping("/{qnaSetId}/star-analysis")
+    public CompletableFuture<ResponseEntity<CommonResponse<StarAnalysisDto>>> createStarAnalysis(
+            @PathVariable Long qnaSetId) {
         return starAnalysisService
-                .createStarAnalysisLongPoll(1L)
-                .map(dto -> ResponseEntity.ok(CommonResponse.success(COMMON200, dto)));
+                .createStarAnalysis(qnaSetId)
+                .thenApply(rsp -> ResponseEntity.ok(CommonResponse.success(COMMON200, rsp)));
     }
 }
