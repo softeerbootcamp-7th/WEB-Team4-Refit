@@ -9,9 +9,7 @@ import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
 import com.shyashyashya.refit.domain.interview.repository.InterviewCustomRepository;
 import com.shyashyashya.refit.domain.user.model.User;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -37,7 +35,9 @@ public class InterviewCustomRepositoryImpl implements InterviewCustomRepository 
                 .where(
                         interview.user.id.eq(user.getId()),
                         interview.reviewStatus.eq(InterviewReviewStatus.DEBRIEF_COMPLETED),
-                        keyword == null || keyword.isEmpty() ? null : interview.company.name.containsIgnoreCase(keyword),
+                        keyword == null || keyword.isEmpty()
+                                ? null
+                                : interview.company.name.containsIgnoreCase(keyword),
                         interviewTypes == null || interviewTypes.isEmpty()
                                 ? null
                                 : interview.interviewType.in(interviewTypes),
@@ -45,7 +45,9 @@ public class InterviewCustomRepositoryImpl implements InterviewCustomRepository 
                                 ? null
                                 : interview.resultStatus.in(interviewResultStatuses),
                         startDate == null ? null : interview.startAt.after(startDate.atStartOfDay()),
-                        endDate == null ? null : interview.startAt.before(endDate.plusDays(1).atStartOfDay()))
+                        endDate == null
+                                ? null
+                                : interview.startAt.before(endDate.plusDays(1).atStartOfDay()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -56,9 +58,7 @@ public class InterviewCustomRepositoryImpl implements InterviewCustomRepository 
                 .where(
                         interview.user.eq(user),
                         interview.reviewStatus.eq(InterviewReviewStatus.DEBRIEF_COMPLETED),
-                        keyword == null || keyword.isEmpty()
-                                ? null
-                                : interview.jobRole.containsIgnoreCase(keyword),
+                        keyword == null || keyword.isEmpty() ? null : interview.jobRole.containsIgnoreCase(keyword),
                         interviewTypes == null || interviewTypes.isEmpty()
                                 ? null
                                 : interview.interviewType.in(interviewTypes),
@@ -66,7 +66,9 @@ public class InterviewCustomRepositoryImpl implements InterviewCustomRepository 
                                 ? null
                                 : interview.resultStatus.in(interviewResultStatuses),
                         startDate == null ? null : interview.startAt.after(startDate.atStartOfDay()),
-                        endDate == null ? null : interview.startAt.before(endDate.plusDays(1).atStartOfDay()))
+                        endDate == null
+                                ? null
+                                : interview.startAt.before(endDate.plusDays(1).atStartOfDay()))
                 .fetchOne();
 
         return new PageImpl<>(interviews, pageable, totalSize);

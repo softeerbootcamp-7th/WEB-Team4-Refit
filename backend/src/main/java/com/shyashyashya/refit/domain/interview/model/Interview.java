@@ -1,5 +1,9 @@
 package com.shyashyashya.refit.domain.interview.model;
 
+import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_REVIEW_STATUS_NOT_UPDATABLE_TO_DEBRIEF_COMPLETED;
+import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_REVIEW_STATUS_NOT_UPDATABLE_TO_LOG_DRAFT;
+import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_REVIEW_STATUS_NOT_UPDATABLE_TO_SELF_REVIEW_DRAFT;
+
 import com.shyashyashya.refit.domain.common.model.BaseEntity;
 import com.shyashyashya.refit.domain.company.model.Company;
 import com.shyashyashya.refit.domain.industry.model.Industry;
@@ -22,10 +26,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_REVIEW_STATUS_NOT_UPDATABLE_TO_DEBRIEF_COMPLETED;
-import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_REVIEW_STATUS_NOT_UPDATABLE_TO_LOG_DRAFT;
-import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_REVIEW_STATUS_NOT_UPDATABLE_TO_SELF_REVIEW_DRAFT;
 
 @Getter
 @Entity
