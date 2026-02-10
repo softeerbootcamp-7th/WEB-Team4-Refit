@@ -99,7 +99,8 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
                     .body("code", equalTo(COMMON200.name()))
                     .body("message", equalTo(COMMON200.getMessage()))
                     .body("result", notNullValue())
-                    .body("result.content", hasSize(4));
+                    .body("result.content", hasSize(4))
+                    .body("result.totalElements", equalTo(4));
         }
 
         @Test
@@ -117,7 +118,8 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
                     .body("message", equalTo(COMMON200.getMessage()))
                     .body("result.content", hasSize(2))
                     .body("result.content[0].companyName", in(List.of(company3.getName(), company4.getName())))
-                    .body("result.content[1].companyName", in(List.of(company3.getName(), company4.getName())));
+                    .body("result.content[1].companyName", in(List.of(company3.getName(), company4.getName())))
+                    .body("result.totalElements", equalTo(2));
         }
 
         @Test
@@ -137,7 +139,8 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
                     .body("message", equalTo(COMMON200.getMessage()))
                     .body("result.content", hasSize(2))
                     .body("result.content[0].companyName", in(List.of(company1.getName(), company4.getName())))
-                    .body("result.content[1].companyName", in(List.of(company1.getName(), company4.getName())));
+                    .body("result.content[1].companyName", in(List.of(company1.getName(), company4.getName())))
+                    .body("result.totalElements", equalTo(2));
         }
 
         @Test
@@ -154,7 +157,8 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
                     .body("message", equalTo(COMMON200.getMessage()))
                     .body("result.content", hasSize(2))
                     .body("result.content[0].companyName", in(List.of(company2.getName(), company4.getName())))
-                    .body("result.content[1].companyName", in(List.of(company2.getName(), company4.getName())));
+                    .body("result.content[1].companyName", in(List.of(company2.getName(), company4.getName())))
+                    .body("result.totalElements", equalTo(2));
         }
 
         @Test
@@ -174,7 +178,8 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
                     .body("message", equalTo(COMMON200.getMessage()))
                     .body("result.content", hasSize(2))
                     .body("result.content[0].companyName", in(List.of(company1.getName(), company2.getName())))
-                    .body("result.content[1].companyName", in(List.of(company1.getName(), company2.getName())));
+                    .body("result.content[1].companyName", in(List.of(company1.getName(), company2.getName())))
+                    .body("result.totalElements", equalTo(2));
         }
 
         @Test
@@ -193,7 +198,8 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
                     .statusCode(200)
                     .body("message", equalTo(COMMON200.getMessage()))
                     .body("result.content", hasSize(1))
-                    .body("result.content[0].companyName", equalTo(company4.getName()));
+                    .body("result.content[0].companyName", equalTo(company4.getName()))
+                    .body("result.totalElements", equalTo(1));
         }
 
         @Test
@@ -208,7 +214,8 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
                     .statusCode(200)
                     .body("code", equalTo(COMMON200.name()))
                     .body("message", equalTo(COMMON200.getMessage()))
-                    .body("result.content", hasSize(0));
+                    .body("result.content", hasSize(0))
+                    .body("result.totalElements", equalTo(0));
         }
 
         @Test
@@ -234,7 +241,8 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
                     .body("message", equalTo(COMMON200.getMessage()))
                     .body("result.content", hasSize(2))
                     .body("result.content[0].companyName", in(List.of(company3.getName(), company4.getName())))
-                    .body("result.content[1].companyName", in(List.of(company3.getName(), company4.getName())));
+                    .body("result.content[1].companyName", in(List.of(company3.getName(), company4.getName())))
+                    .body("result.totalElements", equalTo(2));
         }
 
         @Test
@@ -263,7 +271,8 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
                     .body("message", equalTo(COMMON200.getMessage()))
                     .body("result.content", hasSize(2))
                     .body("result.content[0].companyName", in(List.of(company3.getName(), company4.getName())))
-                    .body("result.content[1].companyName", in(List.of(company3.getName(), company4.getName())));
+                    .body("result.content[1].companyName", in(List.of(company3.getName(), company4.getName())))
+                    .body("result.totalElements", equalTo(2));
         }
     }
 }
