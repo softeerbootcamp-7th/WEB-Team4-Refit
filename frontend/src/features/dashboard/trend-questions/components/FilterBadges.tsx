@@ -5,16 +5,14 @@ import {
   type FilterType,
 } from '@/features/dashboard/trend-questions/constants/constants'
 import { CloseIcon } from '@/shared/assets'
-import { Button } from '@/shared/components'
 
 type FilterBadgesProps = {
   badges: FilterBadge[]
   onRemove: (type: FilterType, id: number) => void
   onClearAll: () => void
-  onSearch: () => void
 }
 
-export default function FilterBadges({ badges, onRemove, onClearAll, onSearch }: FilterBadgesProps) {
+export default function FilterBadges({ badges, onRemove, onClearAll }: FilterBadgesProps) {
   const hasFilter = badges.length > 0
   const visibleBadges = badges.slice(0, MAX_VISIBLE_BADGES)
   const hiddenCount = badges.length - MAX_VISIBLE_BADGES
@@ -50,9 +48,6 @@ export default function FilterBadges({ badges, onRemove, onClearAll, onSearch }:
           <span className="body-m-medium text-gray-400">필터를 선택하세요</span>
         )}
       </div>
-      <Button size="sm" variant="fill-orange-500" onClick={onSearch}>
-        선택한 조건으로 모아보기
-      </Button>
     </div>
   )
 }
