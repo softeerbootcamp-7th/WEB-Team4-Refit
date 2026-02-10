@@ -26,16 +26,16 @@ public interface QnaSetRepository extends JpaRepository<QnaSet, Long> {
     @Query("""
         SELECT q
           FROM QnaSet q
-         WHERE q.interview.industry.id = :industryId
-           AND q.interview.jobCategory.id = :jobCategoryId
+         WHERE q.interview.industry = :industry
+           AND q.interview.jobCategory = :jobCategory
     """)
     List<QnaSet> findAllByIndustryAndJobCategory(Industry industry, JobCategory jobCategory);
 
     @Query("""
         SELECT q
           FROM QnaSet q
-         WHERE q.interview.industry.id IN :industries
-           AND q.interview.jobCategory.id IN :jobCategories
+         WHERE q.interview.industry IN :industries
+           AND q.interview.jobCategory IN :jobCategories
     """)
     List<QnaSet> findAllByIndustriesAndJobCategories(List<Industry> industries, List<JobCategory> jobCategories);
 
