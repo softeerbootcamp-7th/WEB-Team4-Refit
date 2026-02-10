@@ -32,13 +32,13 @@ public class InterviewCustomRepositoryImpl implements InterviewCustomRepository 
             LocalDate endDate,
             Pageable pageable) {
         BooleanExpression[] searchConditions = {
-                interview.user.eq(user),
-                interview.reviewStatus.eq(InterviewReviewStatus.DEBRIEF_COMPLETED),
-                companyNameContains(keyword),
-                interviewTypesIn(interviewTypes),
-                interviewResultStatusIn(interviewResultStatuses),
-                interviewDateIsAfter(startDate),
-                interviewDateIsBefore(endDate)
+            interview.user.eq(user),
+            interview.reviewStatus.eq(InterviewReviewStatus.DEBRIEF_COMPLETED),
+            companyNameContains(keyword),
+            interviewTypesIn(interviewTypes),
+            interviewResultStatusIn(interviewResultStatuses),
+            interviewDateIsAfter(startDate),
+            interviewDateIsBefore(endDate)
         };
 
         List<Interview> interviews = jpaQueryFactory
