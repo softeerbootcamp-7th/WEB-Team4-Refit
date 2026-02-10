@@ -18,6 +18,8 @@ import org.springframework.web.context.annotation.RequestScope;
 @Slf4j
 public class RequestUserContext {
 
+    private static final String ERROR_MSG_EMAIL = "RequestUserContext에 설정된 email이 없습니다.";
+    private static final String ERROR_MSG_USER_ID = "RequestUserContext에 설정된 userId가 없습니다.";
     private final UserRepository userRepository;
 
     @Setter
@@ -28,16 +30,16 @@ public class RequestUserContext {
 
     public String getEmail() {
         if (this.email == null) {
-            log.error("RequestUserContext에 설정된 email이 없습니다.");
-            throw new IllegalStateException("RequestUserContext에 설정된 email이 없습니다.");
+            log.error(ERROR_MSG_EMAIL);
+            throw new IllegalStateException(ERROR_MSG_EMAIL);
         }
         return this.email;
     }
 
     public User getRequestUser() {
         if (userId == null) {
-            log.error("RequestUserContext에 설정된 userId가 없습니다.");
-            throw new IllegalStateException("RequestUserContext에 설정된 userId가 없습니다.");
+            log.error(ERROR_MSG_USER_ID);
+            throw new IllegalStateException(ERROR_MSG_USER_ID);
         }
         return userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
     }
