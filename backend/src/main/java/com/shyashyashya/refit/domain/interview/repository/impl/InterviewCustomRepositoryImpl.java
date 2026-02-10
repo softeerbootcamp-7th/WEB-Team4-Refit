@@ -33,7 +33,7 @@ public class InterviewCustomRepositoryImpl implements InterviewCustomRepository 
             Pageable pageable) {
         List<Interview> interviews = jpaQueryFactory
                 .selectFrom(interview)
-                .where(interview.user.id.eq(user.getId()),
+                .where(interview.user.eq(user),
                         interview.reviewStatus.eq(InterviewReviewStatus.DEBRIEF_COMPLETED),
                         companyNameContains(keyword),
                         interviewTypesIn(interviewTypes),
@@ -47,7 +47,7 @@ public class InterviewCustomRepositoryImpl implements InterviewCustomRepository 
         long totalSize = jpaQueryFactory
                 .select(interview.count())
                 .from(interview)
-                .where(interview.user.id.eq(user.getId()),
+                .where(interview.user.eq(user),
                         interview.reviewStatus.eq(InterviewReviewStatus.DEBRIEF_COMPLETED),
                         companyNameContains(keyword),
                         interviewTypesIn(interviewTypes),
