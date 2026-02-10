@@ -5,7 +5,6 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.USER_NOT_FOUND;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
 import com.shyashyashya.refit.global.exception.CustomException;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +19,7 @@ import org.springframework.web.context.annotation.RequestScope;
 public class RequestUserContext {
 
     private final UserRepository userRepository;
+
     @Setter
     private String email;
 
