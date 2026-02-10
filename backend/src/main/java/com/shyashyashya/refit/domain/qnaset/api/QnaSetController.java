@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/qna-set")
@@ -77,10 +78,10 @@ public class QnaSetController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/{qnaSetId}/star-analysis")
-    public ResponseEntity<CommonResponse<StarAnalysisDto>> createStarAnalysis(@PathVariable Long qnaSetId) {
-        var body = starAnalysisService.createStarAnalysis(qnaSetId);
-        var response = CommonResponse.success(COMMON200, body);
-        return ResponseEntity.ok(response);
+    @PostMapping("/star-test")
+    public Mono<ResponseEntity<CommonResponse<StarAnalysisDto>>> createStarAnalysis() {
+        return starAnalysisService
+                .createStarAnalysisLongPoll(1L)
+                .map(dto -> ResponseEntity.ok(CommonResponse.success(COMMON200, dto)));
     }
 }

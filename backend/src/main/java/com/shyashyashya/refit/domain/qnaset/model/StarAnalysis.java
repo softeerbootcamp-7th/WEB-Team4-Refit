@@ -89,6 +89,19 @@ public class StarAnalysis extends BaseEntity {
                 .build();
     }
 
+    public void update(
+            StarInclusionLevel s,
+            StarInclusionLevel t,
+            StarInclusionLevel a,
+            StarInclusionLevel r,
+            String overallSummaryText) {
+        this.sInclusionLevel = s;
+        this.tInclusionLevel = t;
+        this.aInclusionLevel = a;
+        this.rInclusionLevel = r;
+        this.overallSummaryText = overallSummaryText;
+    }
+
     @Builder(access = AccessLevel.PRIVATE)
     private StarAnalysis(
             StarInclusionLevel sInclusionLevel,
