@@ -86,7 +86,7 @@ public class InterviewCustomRepositoryImpl implements InterviewCustomRepository 
         if (startDate == null) {
             return null;
         }
-        return interview.startAt.after(startDate.atStartOfDay());
+        return interview.startAt.goe(startDate.atStartOfDay());
     }
 
     private BooleanExpression interviewDateIsBefore(LocalDate endDate) {
