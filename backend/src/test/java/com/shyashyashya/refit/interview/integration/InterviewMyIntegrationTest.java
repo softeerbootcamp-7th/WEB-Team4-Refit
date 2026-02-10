@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.in;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -273,6 +274,19 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
                     .body("result.content[0].companyName", in(List.of(company3.getName(), company4.getName())))
                     .body("result.content[1].companyName", in(List.of(company3.getName(), company4.getName())))
                     .body("result.totalElements", equalTo(2));
+        }
+
+        @Test
+        void searchFilter_필드를_null로_전송하면_유효성_검증에_실패한다() {
+            InterviewSearchRequest request = new InterviewSearchRequest("", null);
+
+            given(spec)
+                    .body(request)
+            .when()
+                    .post(path)
+            .then()
+                    .statusCode(400)
+                    .body("result", nullValue());
         }
     }
 }
