@@ -21,6 +21,7 @@ public class StarAnalysisService {
 
     private final StarAnalysisTxService starAnalysisTxService;
     private final GeminiClient geminiClient;
+    private final StarAnalysisGeneratePrompt starAnalysisGeneratePrompt;
 
     public CompletableFuture<StarAnalysisDto> createStarAnalysis(Long qnaSetId) {
 
@@ -28,7 +29,8 @@ public class StarAnalysisService {
         QnaSet qnaSet = starAnalysisTxService.temp(qnaSetId);
         StarAnalysis starAnalysis = starAnalysisTxService.createInProgressStarAnalysisTx(qnaSetId);
 
-        String prompt = StarAnalysisGeneratePrompt.buildPrompt(qnaSet);
+        String prompt = starAnalysisGeneratePrompt.buildPrompt(qnaSet);
+        //log.info("Prompt: \n" + prompt);
         GeminiGenerateRequest requestBody = GeminiGenerateRequest.ofText(prompt);
 
         CompletableFuture<GeminiGenerateResponse> reqFuture = geminiClient.createGeminiRequest(requestBody);
