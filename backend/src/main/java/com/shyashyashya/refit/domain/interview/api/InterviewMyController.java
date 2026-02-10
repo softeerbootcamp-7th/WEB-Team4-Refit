@@ -10,6 +10,7 @@ import com.shyashyashya.refit.domain.interview.service.InterviewService;
 import com.shyashyashya.refit.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,7 +35,7 @@ public class InterviewMyController {
             """)
     @PostMapping("/search")
     public ResponseEntity<ApiResponse<Page<InterviewDto>>> searchInterviews(
-            @RequestBody InterviewSearchRequest request, Pageable pageable) {
+            @Valid @RequestBody InterviewSearchRequest request, Pageable pageable) {
         var body = interviewService.searchMyInterviews(request, pageable);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
