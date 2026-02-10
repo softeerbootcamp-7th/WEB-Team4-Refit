@@ -148,16 +148,6 @@ public class InterviewService {
     }
 
     @Transactional(readOnly = true)
-    public Page<InterviewSimpleDto> getMyInterviewsByReviewStatus(
-            InterviewReviewStatus reviewStatus, Pageable pageable) {
-        User requestUser = requestUserContext.getRequestUser();
-
-        return interviewRepository
-                .findAllByUserAndReviewStatus(requestUser, reviewStatus, pageable)
-                .map(InterviewSimpleDto::from);
-    }
-
-    @Transactional(readOnly = true)
     public Page<InterviewDto> searchMyInterviews(InterviewSearchRequest request, Pageable pageable) {
         User requestUser = requestUserContext.getRequestUser();
         return interviewRepository

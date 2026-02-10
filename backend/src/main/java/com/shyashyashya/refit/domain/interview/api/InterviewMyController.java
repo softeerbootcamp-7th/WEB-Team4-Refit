@@ -29,15 +29,6 @@ public class InterviewMyController {
 
     private final InterviewService interviewService;
 
-    @Operation(summary = "내가 복기 완료한 면접 정보를 조회합니다. (검색 API 와 통합 예정입니다)", deprecated = true)
-    @GetMapping
-    public ResponseEntity<ApiResponse<Page<InterviewSimpleDto>>> getMyInterviews(
-            @RequestParam InterviewReviewStatus interviewReviewStatus, Pageable pageable) {
-        var body = interviewService.getMyInterviewsByReviewStatus(interviewReviewStatus, pageable);
-        var response = ApiResponse.success(COMMON200, body);
-        return ResponseEntity.ok(response);
-    }
-
     @Operation(summary = "내가 복기 완료한 면접을 검색합니다.", description = """
             searchFilter 필드는 null 이 될 수 없습니다. 검색 조건이 없는 경우에도 해당 필드를 빈 배열, null 등으로 채워서 보내주세요.
             """)
