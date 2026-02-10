@@ -43,10 +43,10 @@ public class UserService {
                 .findById(userSignUpRequest.jobCategoryId())
                 .orElseThrow(() -> new CustomException(JOB_CATEGORY_NOT_FOUND));
 
-        userValidator.validateEmailConflict(userSignUpRequest.email());
+        userValidator.validateEmailConflict(requestUserContext.getEmail());
 
         var user = User.create(
-                userSignUpRequest.email(),
+                requestUserContext.getEmail(),
                 userSignUpRequest.nickname(),
                 userSignUpRequest.profileImageUrl(),
                 false,
