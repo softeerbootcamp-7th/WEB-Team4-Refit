@@ -2,13 +2,11 @@ package com.shyashyashya.refit.domain.qnaset.constant;
 
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.global.property.GeminiProperty;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.springframework.stereotype.Component;
 
 @Component
 public class StarAnalysisGeneratePrompt {
@@ -22,7 +20,7 @@ public class StarAnalysisGeneratePrompt {
         Path tailPath = promptDir.resolve("star_analysis_tail.txt");
 
         this.promptTemplateHeader = readTextFile(headerPath);
-        this.promptTemplateTail   = readTextFile(tailPath);
+        this.promptTemplateTail = readTextFile(tailPath);
     }
 
     private String readTextFile(Path path) {
@@ -32,6 +30,7 @@ public class StarAnalysisGeneratePrompt {
             throw new IllegalStateException("프롬프트 파일을 읽지 못했습니다: " + path.toAbsolutePath(), e);
         }
     }
+
     public String buildPrompt(QnaSet qnaSet) {
         return promptTemplateHeader + "\n"
                 + "[면접 질문]" + "\n"

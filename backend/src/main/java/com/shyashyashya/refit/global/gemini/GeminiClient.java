@@ -1,8 +1,7 @@
 package com.shyashyashya.refit.global.gemini;
 
-import java.util.concurrent.CompletableFuture;
-
 import com.shyashyashya.refit.global.property.GeminiProperty;
+import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
