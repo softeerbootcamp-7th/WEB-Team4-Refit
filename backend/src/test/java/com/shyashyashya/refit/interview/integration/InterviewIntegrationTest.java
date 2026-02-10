@@ -1,8 +1,8 @@
 package com.shyashyashya.refit.interview.integration;
 
-import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
-import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON201;
-import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON204;
+import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
+import static com.shyashyashya.refit.global.model.ResponseCode.COMMON201;
+import static com.shyashyashya.refit.global.model.ResponseCode.COMMON204;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_ACCESSIBLE;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_FOUND;
 import static io.restassured.RestAssured.given;

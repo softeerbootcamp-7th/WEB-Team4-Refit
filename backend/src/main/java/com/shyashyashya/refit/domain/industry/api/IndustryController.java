@@ -1,10 +1,10 @@
 package com.shyashyashya.refit.domain.industry.api;
 
-import static com.shyashyashya.refit.domain.common.model.ResponseCode.COMMON200;
+import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 
-import com.shyashyashya.refit.domain.common.dto.CommonResponse;
 import com.shyashyashya.refit.domain.industry.dto.IndustryResponse;
 import com.shyashyashya.refit.domain.industry.service.IndustryService;
+import com.shyashyashya.refit.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
@@ -24,9 +24,9 @@ public class IndustryController {
 
     @Operation(summary = "산업군 리스트를 조회합니다.")
     @GetMapping
-    public ResponseEntity<CommonResponse<List<IndustryResponse>>> getIndustries() {
+    public ResponseEntity<ApiResponse<List<IndustryResponse>>> getIndustries() {
         var body = industryService.getIndustries();
-        var response = CommonResponse.success(COMMON200, body);
+        var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
 }
