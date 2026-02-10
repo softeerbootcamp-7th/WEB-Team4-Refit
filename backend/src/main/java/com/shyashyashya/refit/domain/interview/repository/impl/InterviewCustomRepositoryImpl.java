@@ -31,32 +31,29 @@ public class InterviewCustomRepositoryImpl implements InterviewCustomRepository 
             LocalDate startDate,
             LocalDate endDate,
             Pageable pageable) {
+        BooleanExpression[] searchConditions = {
+                interview.user.eq(user),
+                interview.reviewStatus.eq(InterviewReviewStatus.DEBRIEF_COMPLETED),
+                companyNameContains(keyword),
+                interviewTypesIn(interviewTypes),
+                interviewResultStatusIn(interviewResultStatuses),
+                interviewDateIsAfter(startDate),
+                interviewDateIsBefore(endDate)
+        };
+
         List<Interview> interviews = jpaQueryFactory
                 .selectFrom(interview)
-                .where(
-                        interview.user.eq(user),
-                        interview.reviewStatus.eq(InterviewReviewStatus.DEBRIEF_COMPLETED),
-                        companyNameContains(keyword),
-                        interviewTypesIn(interviewTypes),
-                        interviewResultStatusIn(interviewResultStatuses),
-                        interviewDateIsAfter(startDate),
-                        interviewDateIsBefore(endDate))
+                .where(searchConditions)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        long totalSize = jpaQueryFactory
+        Long totalSize = jpaQueryFactory
                 .select(interview.count())
                 .from(interview)
-                .where(
-                        interview.user.eq(user),
-                        interview.reviewStatus.eq(InterviewReviewStatus.DEBRIEF_COMPLETED),
-                        companyNameContains(keyword),
-                        interviewTypesIn(interviewTypes),
-                        interviewResultStatusIn(interviewResultStatuses),
-                        interviewDateIsAfter(startDate),
-                        interviewDateIsBefore(endDate))
+                .where(searchConditions)
                 .fetchOne();
+        totalSize = totalSize == null ? 0L : totalSize;
 
         return new PageImpl<>(interviews, pageable, totalSize);
     }
