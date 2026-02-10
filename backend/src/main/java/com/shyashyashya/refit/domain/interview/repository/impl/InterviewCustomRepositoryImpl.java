@@ -1,5 +1,7 @@
 package com.shyashyashya.refit.domain.interview.repository.impl;
 
+import static com.shyashyashya.refit.domain.interview.model.QInterview.interview;
+
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.shyashyashya.refit.domain.interview.model.Interview;
@@ -14,8 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-
-import static com.shyashyashya.refit.domain.interview.model.QInterview.interview;
 
 @RequiredArgsConstructor
 public class InterviewCustomRepositoryImpl implements InterviewCustomRepository {
@@ -33,7 +33,8 @@ public class InterviewCustomRepositoryImpl implements InterviewCustomRepository 
             Pageable pageable) {
         List<Interview> interviews = jpaQueryFactory
                 .selectFrom(interview)
-                .where(interview.user.eq(user),
+                .where(
+                        interview.user.eq(user),
                         interview.reviewStatus.eq(InterviewReviewStatus.DEBRIEF_COMPLETED),
                         companyNameContains(keyword),
                         interviewTypesIn(interviewTypes),
@@ -47,7 +48,8 @@ public class InterviewCustomRepositoryImpl implements InterviewCustomRepository 
         long totalSize = jpaQueryFactory
                 .select(interview.count())
                 .from(interview)
-                .where(interview.user.eq(user),
+                .where(
+                        interview.user.eq(user),
                         interview.reviewStatus.eq(InterviewReviewStatus.DEBRIEF_COMPLETED),
                         companyNameContains(keyword),
                         interviewTypesIn(interviewTypes),
