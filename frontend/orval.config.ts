@@ -10,6 +10,8 @@ export default defineConfig({
       httpClient: 'fetch',
       client: 'react-query',
       prettier: true,
+      baseUrl: 'https://api.refit.my',
+      mock: true,
     },
   },
 })
