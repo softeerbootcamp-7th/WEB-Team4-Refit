@@ -4,8 +4,9 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import { useQuery } from '@tanstack/react-query'
-import type { CommonResponseOAuth2LoginUrlResponse, HandleOAuth2CallbackParams } from '../refit-api.schemas'
+import {
+  useQuery
+} from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -15,123 +16,141 @@ import type {
   QueryKey,
   UndefinedInitialDataOptions,
   UseQueryOptions,
-  UseQueryResult,
-} from '@tanstack/react-query'
+  UseQueryResult
+} from '@tanstack/react-query';
+
+import type {
+  ApiResponseOAuth2LoginUrlResponse,
+  BuildOAuth2LoginUrlParams,
+  HandleOAuth2CallbackParams
+} from '../refit-api.schemas';
+
+
+
 
 
 /**
  * @summary 구글 로그인 화면으로 이동하는 url을 생성합니다.
  */
 export type buildOAuth2LoginUrlResponse200 = {
-  data: CommonResponseOAuth2LoginUrlResponse
+  data: ApiResponseOAuth2LoginUrlResponse
   status: 200
 }
+    
+export type buildOAuth2LoginUrlResponseSuccess = (buildOAuth2LoginUrlResponse200) & {
+  headers: Headers;
+};
+;
 
-export type buildOAuth2LoginUrlResponseSuccess = buildOAuth2LoginUrlResponse200 & {
-  headers: Headers
+export type buildOAuth2LoginUrlResponse = (buildOAuth2LoginUrlResponseSuccess)
+
+export const getBuildOAuth2LoginUrlUrl = (params?: BuildOAuth2LoginUrlParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `https://api.refit.my/auth/login/google?${stringifiedParams}` : `https://api.refit.my/auth/login/google`
 }
-export type buildOAuth2LoginUrlResponse = buildOAuth2LoginUrlResponseSuccess
 
-export const getBuildOAuth2LoginUrlUrl = () => {
-  return `https://api.refit.my/auth/login/google`
-}
-
-export const buildOAuth2LoginUrl = async (options?: RequestInit): Promise<buildOAuth2LoginUrlResponse> => {
-  const res = await fetch(getBuildOAuth2LoginUrlUrl(), {
+export const buildOAuth2LoginUrl = async (params?: BuildOAuth2LoginUrlParams, options?: RequestInit): Promise<buildOAuth2LoginUrlResponse> => {
+  
+  const res = await fetch(getBuildOAuth2LoginUrlUrl(params),
+  {      
     ...options,
-    method: 'GET',
-  })
+    method: 'GET'
+    
+    
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: buildOAuth2LoginUrlResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as buildOAuth2LoginUrlResponse
 }
 
-export const getBuildOAuth2LoginUrlQueryKey = () => {
-  return [`https://api.refit.my/auth/login/google`] as const
-}
 
-export const getBuildOAuth2LoginUrlQueryOptions = <
-  TData = Awaited<ReturnType<typeof buildOAuth2LoginUrl>>,
-  TError = unknown,
->(options?: {
-  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof buildOAuth2LoginUrl>>, TError, TData>>
-  fetch?: RequestInit
-}) => {
-  const { query: queryOptions, fetch: fetchOptions } = options ?? {}
 
-  const queryKey = queryOptions?.queryKey ?? getBuildOAuth2LoginUrlQueryKey()
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof buildOAuth2LoginUrl>>> = ({ signal }) =>
-    buildOAuth2LoginUrl({ signal, ...fetchOptions })
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof buildOAuth2LoginUrl>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> }
+export const getBuildOAuth2LoginUrlQueryKey = (params?: BuildOAuth2LoginUrlParams,) => {
+    return [
+    `https://api.refit.my/auth/login/google`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+    
+export const getBuildOAuth2LoginUrlQueryOptions = <TData = Awaited<ReturnType<typeof buildOAuth2LoginUrl>>, TError = unknown>(params?: BuildOAuth2LoginUrlParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof buildOAuth2LoginUrl>>, TError, TData>>, fetch?: RequestInit}
+) => {
+
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getBuildOAuth2LoginUrlQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof buildOAuth2LoginUrl>>> = ({ signal }) => buildOAuth2LoginUrl(params, { signal, ...fetchOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof buildOAuth2LoginUrl>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type BuildOAuth2LoginUrlQueryResult = NonNullable<Awaited<ReturnType<typeof buildOAuth2LoginUrl>>>
 export type BuildOAuth2LoginUrlQueryError = unknown
 
+
 export function useBuildOAuth2LoginUrl<TData = Awaited<ReturnType<typeof buildOAuth2LoginUrl>>, TError = unknown>(
-  options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof buildOAuth2LoginUrl>>, TError, TData>> &
-      Pick<
+ params: undefined |  BuildOAuth2LoginUrlParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof buildOAuth2LoginUrl>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof buildOAuth2LoginUrl>>,
           TError,
           Awaited<ReturnType<typeof buildOAuth2LoginUrl>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useBuildOAuth2LoginUrl<TData = Awaited<ReturnType<typeof buildOAuth2LoginUrl>>, TError = unknown>(
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof buildOAuth2LoginUrl>>, TError, TData>> &
-      Pick<
+ params?: BuildOAuth2LoginUrlParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof buildOAuth2LoginUrl>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof buildOAuth2LoginUrl>>,
           TError,
           Awaited<ReturnType<typeof buildOAuth2LoginUrl>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useBuildOAuth2LoginUrl<TData = Awaited<ReturnType<typeof buildOAuth2LoginUrl>>, TError = unknown>(
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof buildOAuth2LoginUrl>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+ params?: BuildOAuth2LoginUrlParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof buildOAuth2LoginUrl>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary 구글 로그인 화면으로 이동하는 url을 생성합니다.
  */
 
 export function useBuildOAuth2LoginUrl<TData = Awaited<ReturnType<typeof buildOAuth2LoginUrl>>, TError = unknown>(
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof buildOAuth2LoginUrl>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getBuildOAuth2LoginUrlQueryOptions(options)
+ params?: BuildOAuth2LoginUrlParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof buildOAuth2LoginUrl>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>
-  }
+  const queryOptions = getBuildOAuth2LoginUrlQueryOptions(params,options)
 
-  return { ...query, queryKey: queryOptions.queryKey }
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
 
 /**
  * 인가 코드를 활용하여 refit 서비스의 토큰을 발급하여 클라이언트에게 쿠키로 설정합니다.
@@ -141,131 +160,119 @@ export type handleOAuth2CallbackResponse200 = {
   data: void
   status: 200
 }
+    
+export type handleOAuth2CallbackResponseSuccess = (handleOAuth2CallbackResponse200) & {
+  headers: Headers;
+};
+;
 
-export type handleOAuth2CallbackResponseSuccess = handleOAuth2CallbackResponse200 & {
-  headers: Headers
-}
-export type handleOAuth2CallbackResponse = handleOAuth2CallbackResponseSuccess
+export type handleOAuth2CallbackResponse = (handleOAuth2CallbackResponseSuccess)
 
-export const getHandleOAuth2CallbackUrl = (params: HandleOAuth2CallbackParams) => {
-  const normalizedParams = new URLSearchParams()
+export const getHandleOAuth2CallbackUrl = (params: HandleOAuth2CallbackParams,) => {
+  const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
+    
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  })
+  });
 
-  const stringifiedParams = normalizedParams.toString()
+  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `https://api.refit.my/auth/login/google/callback?${stringifiedParams}`
-    : `https://api.refit.my/auth/login/google/callback`
+  return stringifiedParams.length > 0 ? `https://api.refit.my/auth/login/google/callback?${stringifiedParams}` : `https://api.refit.my/auth/login/google/callback`
 }
 
-export const handleOAuth2Callback = async (
-  params: HandleOAuth2CallbackParams,
-  options?: RequestInit,
-): Promise<handleOAuth2CallbackResponse> => {
-  const res = await fetch(getHandleOAuth2CallbackUrl(params), {
+export const handleOAuth2Callback = async (params: HandleOAuth2CallbackParams, options?: RequestInit): Promise<handleOAuth2CallbackResponse> => {
+  
+  const res = await fetch(getHandleOAuth2CallbackUrl(params),
+  {      
     ...options,
-    method: 'GET',
-  })
+    method: 'GET'
+    
+    
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: handleOAuth2CallbackResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as handleOAuth2CallbackResponse
 }
 
-export const getHandleOAuth2CallbackQueryKey = (params?: HandleOAuth2CallbackParams) => {
-  return [`https://api.refit.my/auth/login/google/callback`, ...(params ? [params] : [])] as const
-}
 
-export const getHandleOAuth2CallbackQueryOptions = <
-  TData = Awaited<ReturnType<typeof handleOAuth2Callback>>,
-  TError = unknown,
->(
-  params: HandleOAuth2CallbackParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof handleOAuth2Callback>>, TError, TData>>
-    fetch?: RequestInit
-  },
+
+
+
+export const getHandleOAuth2CallbackQueryKey = (params?: HandleOAuth2CallbackParams,) => {
+    return [
+    `https://api.refit.my/auth/login/google/callback`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+    
+export const getHandleOAuth2CallbackQueryOptions = <TData = Awaited<ReturnType<typeof handleOAuth2Callback>>, TError = unknown>(params: HandleOAuth2CallbackParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof handleOAuth2Callback>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-  const { query: queryOptions, fetch: fetchOptions } = options ?? {}
 
-  const queryKey = queryOptions?.queryKey ?? getHandleOAuth2CallbackQueryKey(params)
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof handleOAuth2Callback>>> = ({ signal }) =>
-    handleOAuth2Callback(params, { signal, ...fetchOptions })
+  const queryKey =  queryOptions?.queryKey ?? getHandleOAuth2CallbackQueryKey(params);
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof handleOAuth2Callback>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> }
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof handleOAuth2Callback>>> = ({ signal }) => handleOAuth2Callback(params, { signal, ...fetchOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof handleOAuth2Callback>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type HandleOAuth2CallbackQueryResult = NonNullable<Awaited<ReturnType<typeof handleOAuth2Callback>>>
 export type HandleOAuth2CallbackQueryError = unknown
 
+
 export function useHandleOAuth2Callback<TData = Awaited<ReturnType<typeof handleOAuth2Callback>>, TError = unknown>(
-  params: HandleOAuth2CallbackParams,
-  options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof handleOAuth2Callback>>, TError, TData>> &
-      Pick<
+ params: HandleOAuth2CallbackParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof handleOAuth2Callback>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof handleOAuth2Callback>>,
           TError,
           Awaited<ReturnType<typeof handleOAuth2Callback>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useHandleOAuth2Callback<TData = Awaited<ReturnType<typeof handleOAuth2Callback>>, TError = unknown>(
-  params: HandleOAuth2CallbackParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof handleOAuth2Callback>>, TError, TData>> &
-      Pick<
+ params: HandleOAuth2CallbackParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof handleOAuth2Callback>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof handleOAuth2Callback>>,
           TError,
           Awaited<ReturnType<typeof handleOAuth2Callback>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useHandleOAuth2Callback<TData = Awaited<ReturnType<typeof handleOAuth2Callback>>, TError = unknown>(
-  params: HandleOAuth2CallbackParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof handleOAuth2Callback>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+ params: HandleOAuth2CallbackParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof handleOAuth2Callback>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary 구글 로그인에 성공했을 때 호출되는 콜백 API 입니다.
  */
 
 export function useHandleOAuth2Callback<TData = Awaited<ReturnType<typeof handleOAuth2Callback>>, TError = unknown>(
-  params: HandleOAuth2CallbackParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof handleOAuth2Callback>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getHandleOAuth2CallbackQueryOptions(params, options)
+ params: HandleOAuth2CallbackParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof handleOAuth2Callback>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>
-  }
+  const queryOptions = getHandleOAuth2CallbackQueryOptions(params,options)
 
-  return { ...query, queryKey: queryOptions.queryKey }
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
+

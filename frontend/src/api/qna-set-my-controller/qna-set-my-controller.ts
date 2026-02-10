@@ -4,16 +4,10 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import { useMutation, useQuery } from '@tanstack/react-query'
-import type {
-  CommonResponsePageFrequentQnaSetCategoryQuestionResponse,
-  CommonResponsePageFrequentQnaSetCategoryResponse,
-  CommonResponsePageQnaSetSearchResponse,
-  GetMyFrequentQnaSetCategoriesParams,
-  GetMyFrequentQnaSetCategoryQuestionsParams,
-  QnaSetSearchRequest,
-  SearchMyQnaSetParams,
-} from '../refit-api.schemas'
+import {
+  useMutation,
+  useQuery
+} from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -26,8 +20,21 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
-} from '@tanstack/react-query'
+  UseQueryResult
+} from '@tanstack/react-query';
+
+import type {
+  ApiResponsePageFrequentQnaSetCategoryQuestionResponse,
+  ApiResponsePageFrequentQnaSetCategoryResponse,
+  ApiResponsePageQnaSetSearchResponse,
+  GetMyFrequentQnaSetCategoriesParams,
+  GetMyFrequentQnaSetCategoryQuestionsParams,
+  QnaSetSearchRequest,
+  SearchMyQnaSetParams
+} from '../refit-api.schemas';
+
+
+
 
 
 /**
@@ -35,418 +42,351 @@ import type {
  * @summary 나의 면접 질문들을 검색합니다.
  */
 export type searchMyQnaSetResponse200 = {
-  data: CommonResponsePageQnaSetSearchResponse
+  data: ApiResponsePageQnaSetSearchResponse
   status: 200
 }
+    
+export type searchMyQnaSetResponseSuccess = (searchMyQnaSetResponse200) & {
+  headers: Headers;
+};
+;
 
-export type searchMyQnaSetResponseSuccess = searchMyQnaSetResponse200 & {
-  headers: Headers
-}
-export type searchMyQnaSetResponse = searchMyQnaSetResponseSuccess
+export type searchMyQnaSetResponse = (searchMyQnaSetResponseSuccess)
 
-export const getSearchMyQnaSetUrl = (params: SearchMyQnaSetParams) => {
-  const normalizedParams = new URLSearchParams()
+export const getSearchMyQnaSetUrl = (params: SearchMyQnaSetParams,) => {
+  const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
+    
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  })
+  });
 
-  const stringifiedParams = normalizedParams.toString()
+  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `https://api.refit.my/qna-set/my/search?${stringifiedParams}`
-    : `https://api.refit.my/qna-set/my/search`
+  return stringifiedParams.length > 0 ? `https://api.refit.my/qna-set/my/search?${stringifiedParams}` : `https://api.refit.my/qna-set/my/search`
 }
 
-export const searchMyQnaSet = async (
-  qnaSetSearchRequest: QnaSetSearchRequest,
-  params: SearchMyQnaSetParams,
-  options?: RequestInit,
-): Promise<searchMyQnaSetResponse> => {
-  const res = await fetch(getSearchMyQnaSetUrl(params), {
+export const searchMyQnaSet = async (qnaSetSearchRequest: QnaSetSearchRequest,
+    params: SearchMyQnaSetParams, options?: RequestInit): Promise<searchMyQnaSetResponse> => {
+  
+  const res = await fetch(getSearchMyQnaSetUrl(params),
+  {      
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(qnaSetSearchRequest),
-  })
+    body: JSON.stringify(
+      qnaSetSearchRequest,)
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: searchMyQnaSetResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as searchMyQnaSetResponse
 }
 
-export const getSearchMyQnaSetMutationOptions = <TError = unknown, TContext = unknown>(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof searchMyQnaSet>>,
-    TError,
-    { data: QnaSetSearchRequest; params: SearchMyQnaSetParams },
-    TContext
-  >
-  fetch?: RequestInit
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof searchMyQnaSet>>,
-  TError,
-  { data: QnaSetSearchRequest; params: SearchMyQnaSetParams },
-  TContext
-> => {
-  const mutationKey = ['searchMyQnaSet']
-  const { mutation: mutationOptions, fetch: fetchOptions } = options
-    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, fetch: undefined }
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof searchMyQnaSet>>,
-    { data: QnaSetSearchRequest; params: SearchMyQnaSetParams }
-  > = (props) => {
-    const { data, params } = props ?? {}
 
-    return searchMyQnaSet(data, params, fetchOptions)
-  }
 
-  return { mutationFn, ...mutationOptions }
-}
+export const getSearchMyQnaSetMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof searchMyQnaSet>>, TError,{data: QnaSetSearchRequest;params: SearchMyQnaSetParams}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof searchMyQnaSet>>, TError,{data: QnaSetSearchRequest;params: SearchMyQnaSetParams}, TContext> => {
 
-export type SearchMyQnaSetMutationResult = NonNullable<Awaited<ReturnType<typeof searchMyQnaSet>>>
-export type SearchMyQnaSetMutationBody = QnaSetSearchRequest
-export type SearchMyQnaSetMutationError = unknown
+const mutationKey = ['searchMyQnaSet'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
 
-/**
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof searchMyQnaSet>>, {data: QnaSetSearchRequest;params: SearchMyQnaSetParams}> = (props) => {
+          const {data,params} = props ?? {};
+
+          return  searchMyQnaSet(data,params,fetchOptions)
+        }
+
+
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SearchMyQnaSetMutationResult = NonNullable<Awaited<ReturnType<typeof searchMyQnaSet>>>
+    export type SearchMyQnaSetMutationBody = QnaSetSearchRequest
+    export type SearchMyQnaSetMutationError = unknown
+
+    /**
  * @summary 나의 면접 질문들을 검색합니다.
  */
-export const useSearchMyQnaSet = <TError = unknown, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof searchMyQnaSet>>,
-      TError,
-      { data: QnaSetSearchRequest; params: SearchMyQnaSetParams },
-      TContext
-    >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof searchMyQnaSet>>,
-  TError,
-  { data: QnaSetSearchRequest; params: SearchMyQnaSetParams },
-  TContext
-> => {
-  return useMutation(getSearchMyQnaSetMutationOptions(options), queryClient)
-}
-/**
+export const useSearchMyQnaSet = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof searchMyQnaSet>>, TError,{data: QnaSetSearchRequest;params: SearchMyQnaSetParams}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof searchMyQnaSet>>,
+        TError,
+        {data: QnaSetSearchRequest;params: SearchMyQnaSetParams},
+        TContext
+      > => {
+      return useMutation(getSearchMyQnaSetMutationOptions(options), queryClient);
+    }
+    /**
  * 나의 빈출 질문 카테고리 리스트와 각 카테고리 별 질문 개수를 질문 개수가 많은 카테고리 순으로 정렬하여 조회합니다.
  * @summary 나의 빈출 질문 카테고리 리스트와 각 카테고리 별 질문 개수를 조회합니다.
  */
 export type getMyFrequentQnaSetCategoriesResponse200 = {
-  data: CommonResponsePageFrequentQnaSetCategoryResponse
+  data: ApiResponsePageFrequentQnaSetCategoryResponse
   status: 200
 }
+    
+export type getMyFrequentQnaSetCategoriesResponseSuccess = (getMyFrequentQnaSetCategoriesResponse200) & {
+  headers: Headers;
+};
+;
 
-export type getMyFrequentQnaSetCategoriesResponseSuccess = getMyFrequentQnaSetCategoriesResponse200 & {
-  headers: Headers
-}
-export type getMyFrequentQnaSetCategoriesResponse = getMyFrequentQnaSetCategoriesResponseSuccess
+export type getMyFrequentQnaSetCategoriesResponse = (getMyFrequentQnaSetCategoriesResponseSuccess)
 
-export const getGetMyFrequentQnaSetCategoriesUrl = (params: GetMyFrequentQnaSetCategoriesParams) => {
-  const normalizedParams = new URLSearchParams()
+export const getGetMyFrequentQnaSetCategoriesUrl = (params: GetMyFrequentQnaSetCategoriesParams,) => {
+  const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
+    
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  })
+  });
 
-  const stringifiedParams = normalizedParams.toString()
+  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `https://api.refit.my/qna-set/my/frequent/category?${stringifiedParams}`
-    : `https://api.refit.my/qna-set/my/frequent/category`
+  return stringifiedParams.length > 0 ? `https://api.refit.my/qna-set/my/frequent/category?${stringifiedParams}` : `https://api.refit.my/qna-set/my/frequent/category`
 }
 
-export const getMyFrequentQnaSetCategories = async (
-  params: GetMyFrequentQnaSetCategoriesParams,
-  options?: RequestInit,
-): Promise<getMyFrequentQnaSetCategoriesResponse> => {
-  const res = await fetch(getGetMyFrequentQnaSetCategoriesUrl(params), {
+export const getMyFrequentQnaSetCategories = async (params: GetMyFrequentQnaSetCategoriesParams, options?: RequestInit): Promise<getMyFrequentQnaSetCategoriesResponse> => {
+  
+  const res = await fetch(getGetMyFrequentQnaSetCategoriesUrl(params),
+  {      
     ...options,
-    method: 'GET',
-  })
+    method: 'GET'
+    
+    
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: getMyFrequentQnaSetCategoriesResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as getMyFrequentQnaSetCategoriesResponse
 }
 
-export const getGetMyFrequentQnaSetCategoriesQueryKey = (params?: GetMyFrequentQnaSetCategoriesParams) => {
-  return [`https://api.refit.my/qna-set/my/frequent/category`, ...(params ? [params] : [])] as const
-}
 
-export const getGetMyFrequentQnaSetCategoriesQueryOptions = <
-  TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>,
-  TError = unknown,
->(
-  params: GetMyFrequentQnaSetCategoriesParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>, TError, TData>>
-    fetch?: RequestInit
-  },
+
+
+
+export const getGetMyFrequentQnaSetCategoriesQueryKey = (params?: GetMyFrequentQnaSetCategoriesParams,) => {
+    return [
+    `https://api.refit.my/qna-set/my/frequent/category`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+    
+export const getGetMyFrequentQnaSetCategoriesQueryOptions = <TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>, TError = unknown>(params: GetMyFrequentQnaSetCategoriesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-  const { query: queryOptions, fetch: fetchOptions } = options ?? {}
 
-  const queryKey = queryOptions?.queryKey ?? getGetMyFrequentQnaSetCategoriesQueryKey(params)
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>> = ({ signal }) =>
-    getMyFrequentQnaSetCategories(params, { signal, ...fetchOptions })
+  const queryKey =  queryOptions?.queryKey ?? getGetMyFrequentQnaSetCategoriesQueryKey(params);
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> }
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>> = ({ signal }) => getMyFrequentQnaSetCategories(params, { signal, ...fetchOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type GetMyFrequentQnaSetCategoriesQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>
->
+export type GetMyFrequentQnaSetCategoriesQueryResult = NonNullable<Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>>
 export type GetMyFrequentQnaSetCategoriesQueryError = unknown
 
-export function useGetMyFrequentQnaSetCategories<
-  TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>,
-  TError = unknown,
->(
-  params: GetMyFrequentQnaSetCategoriesParams,
-  options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>, TError, TData>> &
-      Pick<
+
+export function useGetMyFrequentQnaSetCategories<TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>, TError = unknown>(
+ params: GetMyFrequentQnaSetCategoriesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>,
           TError,
           Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetMyFrequentQnaSetCategories<
-  TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>,
-  TError = unknown,
->(
-  params: GetMyFrequentQnaSetCategoriesParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>, TError, TData>> &
-      Pick<
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMyFrequentQnaSetCategories<TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>, TError = unknown>(
+ params: GetMyFrequentQnaSetCategoriesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>,
           TError,
           Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetMyFrequentQnaSetCategories<
-  TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>,
-  TError = unknown,
->(
-  params: GetMyFrequentQnaSetCategoriesParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMyFrequentQnaSetCategories<TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>, TError = unknown>(
+ params: GetMyFrequentQnaSetCategoriesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary 나의 빈출 질문 카테고리 리스트와 각 카테고리 별 질문 개수를 조회합니다.
  */
 
-export function useGetMyFrequentQnaSetCategories<
-  TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>,
-  TError = unknown,
->(
-  params: GetMyFrequentQnaSetCategoriesParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetMyFrequentQnaSetCategoriesQueryOptions(params, options)
+export function useGetMyFrequentQnaSetCategories<TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>, TError = unknown>(
+ params: GetMyFrequentQnaSetCategoriesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>
-  }
+  const queryOptions = getGetMyFrequentQnaSetCategoriesQueryOptions(params,options)
 
-  return { ...query, queryKey: queryOptions.queryKey }
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
 
 /**
  * 나의 빈출 질문 중 특정 카테고리에 속한 질문들을 조회합니다.
  * @summary 나의 빈출 질문 중 특정 카테고리에 속한 질문들을 조회합니다.
  */
 export type getMyFrequentQnaSetCategoryQuestionsResponse200 = {
-  data: CommonResponsePageFrequentQnaSetCategoryQuestionResponse
+  data: ApiResponsePageFrequentQnaSetCategoryQuestionResponse
   status: 200
 }
+    
+export type getMyFrequentQnaSetCategoryQuestionsResponseSuccess = (getMyFrequentQnaSetCategoryQuestionsResponse200) & {
+  headers: Headers;
+};
+;
 
-export type getMyFrequentQnaSetCategoryQuestionsResponseSuccess = getMyFrequentQnaSetCategoryQuestionsResponse200 & {
-  headers: Headers
-}
-export type getMyFrequentQnaSetCategoryQuestionsResponse = getMyFrequentQnaSetCategoryQuestionsResponseSuccess
+export type getMyFrequentQnaSetCategoryQuestionsResponse = (getMyFrequentQnaSetCategoryQuestionsResponseSuccess)
 
-export const getGetMyFrequentQnaSetCategoryQuestionsUrl = (
-  categoryId: number,
-  params: GetMyFrequentQnaSetCategoryQuestionsParams,
-) => {
-  const normalizedParams = new URLSearchParams()
+export const getGetMyFrequentQnaSetCategoryQuestionsUrl = (categoryId: number,
+    params: GetMyFrequentQnaSetCategoryQuestionsParams,) => {
+  const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
+    
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  })
+  });
 
-  const stringifiedParams = normalizedParams.toString()
+  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `https://api.refit.my/qna-set/my/frequent/category/${categoryId}?${stringifiedParams}`
-    : `https://api.refit.my/qna-set/my/frequent/category/${categoryId}`
+  return stringifiedParams.length > 0 ? `https://api.refit.my/qna-set/my/frequent/category/${categoryId}?${stringifiedParams}` : `https://api.refit.my/qna-set/my/frequent/category/${categoryId}`
 }
 
-export const getMyFrequentQnaSetCategoryQuestions = async (
-  categoryId: number,
-  params: GetMyFrequentQnaSetCategoryQuestionsParams,
-  options?: RequestInit,
-): Promise<getMyFrequentQnaSetCategoryQuestionsResponse> => {
-  const res = await fetch(getGetMyFrequentQnaSetCategoryQuestionsUrl(categoryId, params), {
+export const getMyFrequentQnaSetCategoryQuestions = async (categoryId: number,
+    params: GetMyFrequentQnaSetCategoryQuestionsParams, options?: RequestInit): Promise<getMyFrequentQnaSetCategoryQuestionsResponse> => {
+  
+  const res = await fetch(getGetMyFrequentQnaSetCategoryQuestionsUrl(categoryId,params),
+  {      
     ...options,
-    method: 'GET',
-  })
+    method: 'GET'
+    
+    
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: getMyFrequentQnaSetCategoryQuestionsResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as getMyFrequentQnaSetCategoryQuestionsResponse
 }
 
-export const getGetMyFrequentQnaSetCategoryQuestionsQueryKey = (
-  categoryId: number,
-  params?: GetMyFrequentQnaSetCategoryQuestionsParams,
+
+
+
+
+export const getGetMyFrequentQnaSetCategoryQuestionsQueryKey = (categoryId: number,
+    params?: GetMyFrequentQnaSetCategoryQuestionsParams,) => {
+    return [
+    `https://api.refit.my/qna-set/my/frequent/category/${categoryId}`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+    
+export const getGetMyFrequentQnaSetCategoryQuestionsQueryOptions = <TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>, TError = unknown>(categoryId: number,
+    params: GetMyFrequentQnaSetCategoryQuestionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-  return [`https://api.refit.my/qna-set/my/frequent/category/${categoryId}`, ...(params ? [params] : [])] as const
+
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetMyFrequentQnaSetCategoryQuestionsQueryKey(categoryId,params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>> = ({ signal }) => getMyFrequentQnaSetCategoryQuestions(categoryId,params, { signal, ...fetchOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(categoryId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export const getGetMyFrequentQnaSetCategoryQuestionsQueryOptions = <
-  TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>,
-  TError = unknown,
->(
-  categoryId: number,
-  params: GetMyFrequentQnaSetCategoryQuestionsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>, TError, TData>>
-    fetch?: RequestInit
-  },
-) => {
-  const { query: queryOptions, fetch: fetchOptions } = options ?? {}
-
-  const queryKey = queryOptions?.queryKey ?? getGetMyFrequentQnaSetCategoryQuestionsQueryKey(categoryId, params)
-
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>> = ({ signal }) =>
-    getMyFrequentQnaSetCategoryQuestions(categoryId, params, { signal, ...fetchOptions })
-
-  return { queryKey, queryFn, enabled: !!categoryId, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetMyFrequentQnaSetCategoryQuestionsQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>
->
+export type GetMyFrequentQnaSetCategoryQuestionsQueryResult = NonNullable<Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>>
 export type GetMyFrequentQnaSetCategoryQuestionsQueryError = unknown
 
-export function useGetMyFrequentQnaSetCategoryQuestions<
-  TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>,
-  TError = unknown,
->(
-  categoryId: number,
-  params: GetMyFrequentQnaSetCategoryQuestionsParams,
-  options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>, TError, TData>> &
-      Pick<
+
+export function useGetMyFrequentQnaSetCategoryQuestions<TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>, TError = unknown>(
+ categoryId: number,
+    params: GetMyFrequentQnaSetCategoryQuestionsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>,
           TError,
           Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetMyFrequentQnaSetCategoryQuestions<
-  TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>,
-  TError = unknown,
->(
-  categoryId: number,
-  params: GetMyFrequentQnaSetCategoryQuestionsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>, TError, TData>> &
-      Pick<
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMyFrequentQnaSetCategoryQuestions<TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>, TError = unknown>(
+ categoryId: number,
+    params: GetMyFrequentQnaSetCategoryQuestionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>,
           TError,
           Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetMyFrequentQnaSetCategoryQuestions<
-  TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>,
-  TError = unknown,
->(
-  categoryId: number,
-  params: GetMyFrequentQnaSetCategoryQuestionsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMyFrequentQnaSetCategoryQuestions<TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>, TError = unknown>(
+ categoryId: number,
+    params: GetMyFrequentQnaSetCategoryQuestionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary 나의 빈출 질문 중 특정 카테고리에 속한 질문들을 조회합니다.
  */
 
-export function useGetMyFrequentQnaSetCategoryQuestions<
-  TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>,
-  TError = unknown,
->(
-  categoryId: number,
-  params: GetMyFrequentQnaSetCategoryQuestionsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetMyFrequentQnaSetCategoryQuestionsQueryOptions(categoryId, params, options)
+export function useGetMyFrequentQnaSetCategoryQuestions<TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>, TError = unknown>(
+ categoryId: number,
+    params: GetMyFrequentQnaSetCategoryQuestionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>
-  }
+  const queryOptions = getGetMyFrequentQnaSetCategoryQuestionsQueryOptions(categoryId,params,options)
 
-  return { ...query, queryKey: queryOptions.queryKey }
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
+

@@ -4,8 +4,9 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import { useQuery } from '@tanstack/react-query'
-import type { CommonResponseVoid } from '../refit-api.schemas'
+import {
+  useQuery
+} from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -15,8 +16,15 @@ import type {
   QueryKey,
   UndefinedInitialDataOptions,
   UseQueryOptions,
-  UseQueryResult,
-} from '@tanstack/react-query'
+  UseQueryResult
+} from '@tanstack/react-query';
+
+import type {
+  ApiResponseVoid
+} from '../refit-api.schemas';
+
+
+
 
 
 /**
@@ -24,101 +32,115 @@ import type {
  * @summary 리프레시 토큰과 엑세스 토큰을 재발급합니다.
  */
 export type reissueResponse200 = {
-  data: CommonResponseVoid
+  data: ApiResponseVoid
   status: 200
 }
+    
+export type reissueResponseSuccess = (reissueResponse200) & {
+  headers: Headers;
+};
+;
 
-export type reissueResponseSuccess = reissueResponse200 & {
-  headers: Headers
-}
-export type reissueResponse = reissueResponseSuccess
+export type reissueResponse = (reissueResponseSuccess)
 
 export const getReissueUrl = () => {
+
+
+  
+
   return `https://api.refit.my/auth/reissue`
 }
 
-export const reissue = async (options?: RequestInit): Promise<reissueResponse> => {
-  const res = await fetch(getReissueUrl(), {
+export const reissue = async ( options?: RequestInit): Promise<reissueResponse> => {
+  
+  const res = await fetch(getReissueUrl(),
+  {      
     ...options,
-    method: 'GET',
-  })
+    method: 'GET'
+    
+    
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: reissueResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as reissueResponse
 }
 
+
+
+
+
 export const getReissueQueryKey = () => {
-  return [`https://api.refit.my/auth/reissue`] as const
-}
+    return [
+    `https://api.refit.my/auth/reissue`
+    ] as const;
+    }
 
-export const getReissueQueryOptions = <TData = Awaited<ReturnType<typeof reissue>>, TError = unknown>(options?: {
-  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof reissue>>, TError, TData>>
-  fetch?: RequestInit
-}) => {
-  const { query: queryOptions, fetch: fetchOptions } = options ?? {}
+    
+export const getReissueQueryOptions = <TData = Awaited<ReturnType<typeof reissue>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof reissue>>, TError, TData>>, fetch?: RequestInit}
+) => {
 
-  const queryKey = queryOptions?.queryKey ?? getReissueQueryKey()
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof reissue>>> = ({ signal }) =>
-    reissue({ signal, ...fetchOptions })
+  const queryKey =  queryOptions?.queryKey ?? getReissueQueryKey();
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof reissue>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> }
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof reissue>>> = ({ signal }) => reissue({ signal, ...fetchOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof reissue>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type ReissueQueryResult = NonNullable<Awaited<ReturnType<typeof reissue>>>
 export type ReissueQueryError = unknown
 
+
 export function useReissue<TData = Awaited<ReturnType<typeof reissue>>, TError = unknown>(
-  options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof reissue>>, TError, TData>> &
-      Pick<
-        DefinedInitialDataOptions<Awaited<ReturnType<typeof reissue>>, TError, Awaited<ReturnType<typeof reissue>>>,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof reissue>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof reissue>>,
+          TError,
+          Awaited<ReturnType<typeof reissue>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useReissue<TData = Awaited<ReturnType<typeof reissue>>, TError = unknown>(
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof reissue>>, TError, TData>> &
-      Pick<
-        UndefinedInitialDataOptions<Awaited<ReturnType<typeof reissue>>, TError, Awaited<ReturnType<typeof reissue>>>,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof reissue>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof reissue>>,
+          TError,
+          Awaited<ReturnType<typeof reissue>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useReissue<TData = Awaited<ReturnType<typeof reissue>>, TError = unknown>(
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof reissue>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof reissue>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary 리프레시 토큰과 엑세스 토큰을 재발급합니다.
  */
 
 export function useReissue<TData = Awaited<ReturnType<typeof reissue>>, TError = unknown>(
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof reissue>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof reissue>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
   const queryOptions = getReissueQueryOptions(options)
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>
-  }
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
-  return { ...query, queryKey: queryOptions.queryKey }
+  return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
+

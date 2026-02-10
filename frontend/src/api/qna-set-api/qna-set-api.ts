@@ -4,15 +4,10 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import { useMutation, useQuery } from '@tanstack/react-query'
-import type {
-  CommonResponseListFrequentQnaSetResponse,
-  CommonResponseListPdfHighlightingDto,
-  CommonResponseVoid,
-  GetFrequentQuestionsParams,
-  PdfHighlightingUpdateRequest,
-  QnaSetUpdateRequest,
-} from '../refit-api.schemas'
+import {
+  useMutation,
+  useQuery
+} from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -25,8 +20,20 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
-} from '@tanstack/react-query'
+  UseQueryResult
+} from '@tanstack/react-query';
+
+import type {
+  ApiResponseListFrequentQnaSetResponse,
+  ApiResponseListPdfHighlightingDto,
+  ApiResponseVoid,
+  GetFrequentQuestionsParams,
+  PdfHighlightingUpdateRequest,
+  QnaSetUpdateRequest
+} from '../refit-api.schemas';
+
+
+
 
 
 /**
@@ -34,607 +41,591 @@ import type {
  * @summary 지정한 질문 답변 세트의 질문 답변 내용을 수정합니다.
  */
 export type updateQnaSetResponse200 = {
-  data: CommonResponseVoid
+  data: ApiResponseVoid
   status: 200
 }
+    
+export type updateQnaSetResponseSuccess = (updateQnaSetResponse200) & {
+  headers: Headers;
+};
+;
 
-export type updateQnaSetResponseSuccess = updateQnaSetResponse200 & {
-  headers: Headers
-}
-export type updateQnaSetResponse = updateQnaSetResponseSuccess
+export type updateQnaSetResponse = (updateQnaSetResponseSuccess)
 
-export const getUpdateQnaSetUrl = (qnaSetId: number) => {
+export const getUpdateQnaSetUrl = (qnaSetId: number,) => {
+
+
+  
+
   return `https://api.refit.my/qna-set/${qnaSetId}`
 }
 
-export const updateQnaSet = async (
-  qnaSetId: number,
-  qnaSetUpdateRequest: QnaSetUpdateRequest,
-  options?: RequestInit,
-): Promise<updateQnaSetResponse> => {
-  const res = await fetch(getUpdateQnaSetUrl(qnaSetId), {
+export const updateQnaSet = async (qnaSetId: number,
+    qnaSetUpdateRequest: QnaSetUpdateRequest, options?: RequestInit): Promise<updateQnaSetResponse> => {
+  
+  const res = await fetch(getUpdateQnaSetUrl(qnaSetId),
+  {      
     ...options,
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(qnaSetUpdateRequest),
-  })
+    body: JSON.stringify(
+      qnaSetUpdateRequest,)
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: updateQnaSetResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as updateQnaSetResponse
 }
 
-export const getUpdateQnaSetMutationOptions = <TError = unknown, TContext = unknown>(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof updateQnaSet>>,
-    TError,
-    { qnaSetId: number; data: QnaSetUpdateRequest },
-    TContext
-  >
-  fetch?: RequestInit
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof updateQnaSet>>,
-  TError,
-  { qnaSetId: number; data: QnaSetUpdateRequest },
-  TContext
-> => {
-  const mutationKey = ['updateQnaSet']
-  const { mutation: mutationOptions, fetch: fetchOptions } = options
-    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, fetch: undefined }
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof updateQnaSet>>,
-    { qnaSetId: number; data: QnaSetUpdateRequest }
-  > = (props) => {
-    const { qnaSetId, data } = props ?? {}
 
-    return updateQnaSet(qnaSetId, data, fetchOptions)
-  }
 
-  return { mutationFn, ...mutationOptions }
-}
+export const getUpdateQnaSetMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateQnaSet>>, TError,{qnaSetId: number;data: QnaSetUpdateRequest}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof updateQnaSet>>, TError,{qnaSetId: number;data: QnaSetUpdateRequest}, TContext> => {
 
-export type UpdateQnaSetMutationResult = NonNullable<Awaited<ReturnType<typeof updateQnaSet>>>
-export type UpdateQnaSetMutationBody = QnaSetUpdateRequest
-export type UpdateQnaSetMutationError = unknown
+const mutationKey = ['updateQnaSet'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
 
-/**
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateQnaSet>>, {qnaSetId: number;data: QnaSetUpdateRequest}> = (props) => {
+          const {qnaSetId,data} = props ?? {};
+
+          return  updateQnaSet(qnaSetId,data,fetchOptions)
+        }
+
+
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateQnaSetMutationResult = NonNullable<Awaited<ReturnType<typeof updateQnaSet>>>
+    export type UpdateQnaSetMutationBody = QnaSetUpdateRequest
+    export type UpdateQnaSetMutationError = unknown
+
+    /**
  * @summary 지정한 질문 답변 세트의 질문 답변 내용을 수정합니다.
  */
-export const useUpdateQnaSet = <TError = unknown, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof updateQnaSet>>,
-      TError,
-      { qnaSetId: number; data: QnaSetUpdateRequest },
-      TContext
-    >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof updateQnaSet>>,
-  TError,
-  { qnaSetId: number; data: QnaSetUpdateRequest },
-  TContext
-> => {
-  return useMutation(getUpdateQnaSetMutationOptions(options), queryClient)
-}
-/**
+export const useUpdateQnaSet = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateQnaSet>>, TError,{qnaSetId: number;data: QnaSetUpdateRequest}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateQnaSet>>,
+        TError,
+        {qnaSetId: number;data: QnaSetUpdateRequest},
+        TContext
+      > => {
+      return useMutation(getUpdateQnaSetMutationOptions(options), queryClient);
+    }
+    /**
  * @summary 지정한 질문 답변 세트에 대해 등록된 PDF 하이라이팅 정보를 조회합니다.
  */
 export type getPdfHighlightingsResponse200 = {
-  data: CommonResponseListPdfHighlightingDto
+  data: ApiResponseListPdfHighlightingDto
   status: 200
 }
+    
+export type getPdfHighlightingsResponseSuccess = (getPdfHighlightingsResponse200) & {
+  headers: Headers;
+};
+;
 
-export type getPdfHighlightingsResponseSuccess = getPdfHighlightingsResponse200 & {
-  headers: Headers
-}
-export type getPdfHighlightingsResponse = getPdfHighlightingsResponseSuccess
+export type getPdfHighlightingsResponse = (getPdfHighlightingsResponseSuccess)
 
-export const getGetPdfHighlightingsUrl = (qnaSetId: number) => {
+export const getGetPdfHighlightingsUrl = (qnaSetId: number,) => {
+
+
+  
+
   return `https://api.refit.my/qna-set/${qnaSetId}/pdf-highlightings`
 }
 
-export const getPdfHighlightings = async (
-  qnaSetId: number,
-  options?: RequestInit,
-): Promise<getPdfHighlightingsResponse> => {
-  const res = await fetch(getGetPdfHighlightingsUrl(qnaSetId), {
+export const getPdfHighlightings = async (qnaSetId: number, options?: RequestInit): Promise<getPdfHighlightingsResponse> => {
+  
+  const res = await fetch(getGetPdfHighlightingsUrl(qnaSetId),
+  {      
     ...options,
-    method: 'GET',
-  })
+    method: 'GET'
+    
+    
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: getPdfHighlightingsResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as getPdfHighlightingsResponse
 }
 
-export const getGetPdfHighlightingsQueryKey = (qnaSetId: number) => {
-  return [`https://api.refit.my/qna-set/${qnaSetId}/pdf-highlightings`] as const
-}
 
-export const getGetPdfHighlightingsQueryOptions = <
-  TData = Awaited<ReturnType<typeof getPdfHighlightings>>,
-  TError = unknown,
->(
-  qnaSetId: number,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPdfHighlightings>>, TError, TData>>
-    fetch?: RequestInit
-  },
+
+
+
+export const getGetPdfHighlightingsQueryKey = (qnaSetId: number,) => {
+    return [
+    `https://api.refit.my/qna-set/${qnaSetId}/pdf-highlightings`
+    ] as const;
+    }
+
+    
+export const getGetPdfHighlightingsQueryOptions = <TData = Awaited<ReturnType<typeof getPdfHighlightings>>, TError = unknown>(qnaSetId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPdfHighlightings>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-  const { query: queryOptions, fetch: fetchOptions } = options ?? {}
 
-  const queryKey = queryOptions?.queryKey ?? getGetPdfHighlightingsQueryKey(qnaSetId)
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getPdfHighlightings>>> = ({ signal }) =>
-    getPdfHighlightings(qnaSetId, { signal, ...fetchOptions })
+  const queryKey =  queryOptions?.queryKey ?? getGetPdfHighlightingsQueryKey(qnaSetId);
 
-  return { queryKey, queryFn, enabled: !!qnaSetId, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getPdfHighlightings>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> }
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPdfHighlightings>>> = ({ signal }) => getPdfHighlightings(qnaSetId, { signal, ...fetchOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(qnaSetId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getPdfHighlightings>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type GetPdfHighlightingsQueryResult = NonNullable<Awaited<ReturnType<typeof getPdfHighlightings>>>
 export type GetPdfHighlightingsQueryError = unknown
 
+
 export function useGetPdfHighlightings<TData = Awaited<ReturnType<typeof getPdfHighlightings>>, TError = unknown>(
-  qnaSetId: number,
-  options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPdfHighlightings>>, TError, TData>> &
-      Pick<
+ qnaSetId: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPdfHighlightings>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getPdfHighlightings>>,
           TError,
           Awaited<ReturnType<typeof getPdfHighlightings>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetPdfHighlightings<TData = Awaited<ReturnType<typeof getPdfHighlightings>>, TError = unknown>(
-  qnaSetId: number,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPdfHighlightings>>, TError, TData>> &
-      Pick<
+ qnaSetId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPdfHighlightings>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getPdfHighlightings>>,
           TError,
           Awaited<ReturnType<typeof getPdfHighlightings>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetPdfHighlightings<TData = Awaited<ReturnType<typeof getPdfHighlightings>>, TError = unknown>(
-  qnaSetId: number,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPdfHighlightings>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+ qnaSetId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPdfHighlightings>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary 지정한 질문 답변 세트에 대해 등록된 PDF 하이라이팅 정보를 조회합니다.
  */
 
 export function useGetPdfHighlightings<TData = Awaited<ReturnType<typeof getPdfHighlightings>>, TError = unknown>(
-  qnaSetId: number,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPdfHighlightings>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetPdfHighlightingsQueryOptions(qnaSetId, options)
+ qnaSetId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPdfHighlightings>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>
-  }
+  const queryOptions = getGetPdfHighlightingsQueryOptions(qnaSetId,options)
 
-  return { ...query, queryKey: queryOptions.queryKey }
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
 
 /**
  * @summary 지정한 질문 답변 세트에 대해 PDF 하이라이팅 정보를 등록/수정합니다.
  */
 export type updatePdfHighlightingResponse200 = {
-  data: CommonResponseVoid
+  data: ApiResponseVoid
   status: 200
 }
+    
+export type updatePdfHighlightingResponseSuccess = (updatePdfHighlightingResponse200) & {
+  headers: Headers;
+};
+;
 
-export type updatePdfHighlightingResponseSuccess = updatePdfHighlightingResponse200 & {
-  headers: Headers
-}
-export type updatePdfHighlightingResponse = updatePdfHighlightingResponseSuccess
+export type updatePdfHighlightingResponse = (updatePdfHighlightingResponseSuccess)
 
-export const getUpdatePdfHighlightingUrl = (qnaSetId: number) => {
+export const getUpdatePdfHighlightingUrl = (qnaSetId: number,) => {
+
+
+  
+
   return `https://api.refit.my/qna-set/${qnaSetId}/pdf-highlightings`
 }
 
-export const updatePdfHighlighting = async (
-  qnaSetId: number,
-  pdfHighlightingUpdateRequest: PdfHighlightingUpdateRequest[],
-  options?: RequestInit,
-): Promise<updatePdfHighlightingResponse> => {
-  const res = await fetch(getUpdatePdfHighlightingUrl(qnaSetId), {
+export const updatePdfHighlighting = async (qnaSetId: number,
+    pdfHighlightingUpdateRequest: PdfHighlightingUpdateRequest[], options?: RequestInit): Promise<updatePdfHighlightingResponse> => {
+  
+  const res = await fetch(getUpdatePdfHighlightingUrl(qnaSetId),
+  {      
     ...options,
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(pdfHighlightingUpdateRequest),
-  })
+    body: JSON.stringify(
+      pdfHighlightingUpdateRequest,)
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: updatePdfHighlightingResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as updatePdfHighlightingResponse
 }
 
-export const getUpdatePdfHighlightingMutationOptions = <TError = unknown, TContext = unknown>(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof updatePdfHighlighting>>,
-    TError,
-    { qnaSetId: number; data: PdfHighlightingUpdateRequest[] },
-    TContext
-  >
-  fetch?: RequestInit
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof updatePdfHighlighting>>,
-  TError,
-  { qnaSetId: number; data: PdfHighlightingUpdateRequest[] },
-  TContext
-> => {
-  const mutationKey = ['updatePdfHighlighting']
-  const { mutation: mutationOptions, fetch: fetchOptions } = options
-    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, fetch: undefined }
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof updatePdfHighlighting>>,
-    { qnaSetId: number; data: PdfHighlightingUpdateRequest[] }
-  > = (props) => {
-    const { qnaSetId, data } = props ?? {}
 
-    return updatePdfHighlighting(qnaSetId, data, fetchOptions)
-  }
 
-  return { mutationFn, ...mutationOptions }
-}
+export const getUpdatePdfHighlightingMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updatePdfHighlighting>>, TError,{qnaSetId: number;data: PdfHighlightingUpdateRequest[]}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof updatePdfHighlighting>>, TError,{qnaSetId: number;data: PdfHighlightingUpdateRequest[]}, TContext> => {
 
-export type UpdatePdfHighlightingMutationResult = NonNullable<Awaited<ReturnType<typeof updatePdfHighlighting>>>
-export type UpdatePdfHighlightingMutationBody = PdfHighlightingUpdateRequest[]
-export type UpdatePdfHighlightingMutationError = unknown
+const mutationKey = ['updatePdfHighlighting'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
 
-/**
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updatePdfHighlighting>>, {qnaSetId: number;data: PdfHighlightingUpdateRequest[]}> = (props) => {
+          const {qnaSetId,data} = props ?? {};
+
+          return  updatePdfHighlighting(qnaSetId,data,fetchOptions)
+        }
+
+
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdatePdfHighlightingMutationResult = NonNullable<Awaited<ReturnType<typeof updatePdfHighlighting>>>
+    export type UpdatePdfHighlightingMutationBody = PdfHighlightingUpdateRequest[]
+    export type UpdatePdfHighlightingMutationError = unknown
+
+    /**
  * @summary 지정한 질문 답변 세트에 대해 PDF 하이라이팅 정보를 등록/수정합니다.
  */
-export const useUpdatePdfHighlighting = <TError = unknown, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof updatePdfHighlighting>>,
-      TError,
-      { qnaSetId: number; data: PdfHighlightingUpdateRequest[] },
-      TContext
-    >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof updatePdfHighlighting>>,
-  TError,
-  { qnaSetId: number; data: PdfHighlightingUpdateRequest[] },
-  TContext
-> => {
-  return useMutation(getUpdatePdfHighlightingMutationOptions(options), queryClient)
-}
-/**
+export const useUpdatePdfHighlighting = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updatePdfHighlighting>>, TError,{qnaSetId: number;data: PdfHighlightingUpdateRequest[]}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updatePdfHighlighting>>,
+        TError,
+        {qnaSetId: number;data: PdfHighlightingUpdateRequest[]},
+        TContext
+      > => {
+      return useMutation(getUpdatePdfHighlightingMutationOptions(options), queryClient);
+    }
+    /**
  * @summary 지정한 질문에 대해 어려웠던 질문 마킹을 등록 해제 합니다.
  */
 export type unmarkDifficultQuestionResponse200 = {
-  data: CommonResponseVoid
+  data: ApiResponseVoid
   status: 200
 }
+    
+export type unmarkDifficultQuestionResponseSuccess = (unmarkDifficultQuestionResponse200) & {
+  headers: Headers;
+};
+;
 
-export type unmarkDifficultQuestionResponseSuccess = unmarkDifficultQuestionResponse200 & {
-  headers: Headers
-}
-export type unmarkDifficultQuestionResponse = unmarkDifficultQuestionResponseSuccess
+export type unmarkDifficultQuestionResponse = (unmarkDifficultQuestionResponseSuccess)
 
-export const getUnmarkDifficultQuestionUrl = (qnaSetId: number) => {
+export const getUnmarkDifficultQuestionUrl = (qnaSetId: number,) => {
+
+
+  
+
   return `https://api.refit.my/qna-set/${qnaSetId}/difficult/unmark`
 }
 
-export const unmarkDifficultQuestion = async (
-  qnaSetId: number,
-  options?: RequestInit,
-): Promise<unmarkDifficultQuestionResponse> => {
-  const res = await fetch(getUnmarkDifficultQuestionUrl(qnaSetId), {
+export const unmarkDifficultQuestion = async (qnaSetId: number, options?: RequestInit): Promise<unmarkDifficultQuestionResponse> => {
+  
+  const res = await fetch(getUnmarkDifficultQuestionUrl(qnaSetId),
+  {      
     ...options,
-    method: 'PATCH',
-  })
+    method: 'PATCH'
+    
+    
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: unmarkDifficultQuestionResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as unmarkDifficultQuestionResponse
 }
 
-export const getUnmarkDifficultQuestionMutationOptions = <TError = unknown, TContext = unknown>(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof unmarkDifficultQuestion>>,
-    TError,
-    { qnaSetId: number },
-    TContext
-  >
-  fetch?: RequestInit
-}): UseMutationOptions<Awaited<ReturnType<typeof unmarkDifficultQuestion>>, TError, { qnaSetId: number }, TContext> => {
-  const mutationKey = ['unmarkDifficultQuestion']
-  const { mutation: mutationOptions, fetch: fetchOptions } = options
-    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, fetch: undefined }
 
-  const mutationFn: MutationFunction<Awaited<ReturnType<typeof unmarkDifficultQuestion>>, { qnaSetId: number }> = (
-    props,
-  ) => {
-    const { qnaSetId } = props ?? {}
 
-    return unmarkDifficultQuestion(qnaSetId, fetchOptions)
-  }
 
-  return { mutationFn, ...mutationOptions }
-}
+export const getUnmarkDifficultQuestionMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof unmarkDifficultQuestion>>, TError,{qnaSetId: number}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof unmarkDifficultQuestion>>, TError,{qnaSetId: number}, TContext> => {
 
-export type UnmarkDifficultQuestionMutationResult = NonNullable<Awaited<ReturnType<typeof unmarkDifficultQuestion>>>
+const mutationKey = ['unmarkDifficultQuestion'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
 
-export type UnmarkDifficultQuestionMutationError = unknown
+      
 
-/**
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof unmarkDifficultQuestion>>, {qnaSetId: number}> = (props) => {
+          const {qnaSetId} = props ?? {};
+
+          return  unmarkDifficultQuestion(qnaSetId,fetchOptions)
+        }
+
+
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UnmarkDifficultQuestionMutationResult = NonNullable<Awaited<ReturnType<typeof unmarkDifficultQuestion>>>
+    
+    export type UnmarkDifficultQuestionMutationError = unknown
+
+    /**
  * @summary 지정한 질문에 대해 어려웠던 질문 마킹을 등록 해제 합니다.
  */
-export const useUnmarkDifficultQuestion = <TError = unknown, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof unmarkDifficultQuestion>>,
-      TError,
-      { qnaSetId: number },
-      TContext
-    >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<Awaited<ReturnType<typeof unmarkDifficultQuestion>>, TError, { qnaSetId: number }, TContext> => {
-  return useMutation(getUnmarkDifficultQuestionMutationOptions(options), queryClient)
-}
-/**
+export const useUnmarkDifficultQuestion = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof unmarkDifficultQuestion>>, TError,{qnaSetId: number}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof unmarkDifficultQuestion>>,
+        TError,
+        {qnaSetId: number},
+        TContext
+      > => {
+      return useMutation(getUnmarkDifficultQuestionMutationOptions(options), queryClient);
+    }
+    /**
  * @summary 지정한 질문에 대해 어려웠던 질문 마킹을 등록합니다.
  */
 export type markDifficultQuestionResponse200 = {
-  data: CommonResponseVoid
+  data: ApiResponseVoid
   status: 200
 }
+    
+export type markDifficultQuestionResponseSuccess = (markDifficultQuestionResponse200) & {
+  headers: Headers;
+};
+;
 
-export type markDifficultQuestionResponseSuccess = markDifficultQuestionResponse200 & {
-  headers: Headers
-}
-export type markDifficultQuestionResponse = markDifficultQuestionResponseSuccess
+export type markDifficultQuestionResponse = (markDifficultQuestionResponseSuccess)
 
-export const getMarkDifficultQuestionUrl = (qnaSetId: number) => {
+export const getMarkDifficultQuestionUrl = (qnaSetId: number,) => {
+
+
+  
+
   return `https://api.refit.my/qna-set/${qnaSetId}/difficult/mark`
 }
 
-export const markDifficultQuestion = async (
-  qnaSetId: number,
-  options?: RequestInit,
-): Promise<markDifficultQuestionResponse> => {
-  const res = await fetch(getMarkDifficultQuestionUrl(qnaSetId), {
+export const markDifficultQuestion = async (qnaSetId: number, options?: RequestInit): Promise<markDifficultQuestionResponse> => {
+  
+  const res = await fetch(getMarkDifficultQuestionUrl(qnaSetId),
+  {      
     ...options,
-    method: 'PATCH',
-  })
+    method: 'PATCH'
+    
+    
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: markDifficultQuestionResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as markDifficultQuestionResponse
 }
 
-export const getMarkDifficultQuestionMutationOptions = <TError = unknown, TContext = unknown>(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof markDifficultQuestion>>,
-    TError,
-    { qnaSetId: number },
-    TContext
-  >
-  fetch?: RequestInit
-}): UseMutationOptions<Awaited<ReturnType<typeof markDifficultQuestion>>, TError, { qnaSetId: number }, TContext> => {
-  const mutationKey = ['markDifficultQuestion']
-  const { mutation: mutationOptions, fetch: fetchOptions } = options
-    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, fetch: undefined }
 
-  const mutationFn: MutationFunction<Awaited<ReturnType<typeof markDifficultQuestion>>, { qnaSetId: number }> = (
-    props,
-  ) => {
-    const { qnaSetId } = props ?? {}
 
-    return markDifficultQuestion(qnaSetId, fetchOptions)
-  }
 
-  return { mutationFn, ...mutationOptions }
-}
+export const getMarkDifficultQuestionMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof markDifficultQuestion>>, TError,{qnaSetId: number}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof markDifficultQuestion>>, TError,{qnaSetId: number}, TContext> => {
 
-export type MarkDifficultQuestionMutationResult = NonNullable<Awaited<ReturnType<typeof markDifficultQuestion>>>
+const mutationKey = ['markDifficultQuestion'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
 
-export type MarkDifficultQuestionMutationError = unknown
+      
 
-/**
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof markDifficultQuestion>>, {qnaSetId: number}> = (props) => {
+          const {qnaSetId} = props ?? {};
+
+          return  markDifficultQuestion(qnaSetId,fetchOptions)
+        }
+
+
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type MarkDifficultQuestionMutationResult = NonNullable<Awaited<ReturnType<typeof markDifficultQuestion>>>
+    
+    export type MarkDifficultQuestionMutationError = unknown
+
+    /**
  * @summary 지정한 질문에 대해 어려웠던 질문 마킹을 등록합니다.
  */
-export const useMarkDifficultQuestion = <TError = unknown, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof markDifficultQuestion>>,
-      TError,
-      { qnaSetId: number },
-      TContext
-    >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<Awaited<ReturnType<typeof markDifficultQuestion>>, TError, { qnaSetId: number }, TContext> => {
-  return useMutation(getMarkDifficultQuestionMutationOptions(options), queryClient)
-}
-/**
+export const useMarkDifficultQuestion = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof markDifficultQuestion>>, TError,{qnaSetId: number}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof markDifficultQuestion>>,
+        TError,
+        {qnaSetId: number},
+        TContext
+      > => {
+      return useMutation(getMarkDifficultQuestionMutationOptions(options), queryClient);
+    }
+    /**
  * 지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다. 지정하지 않은 필드에 대해서는 전체를 대상으로 조회합니다.
  * @summary 지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다.
  */
 export type getFrequentQuestionsResponse200 = {
-  data: CommonResponseListFrequentQnaSetResponse
+  data: ApiResponseListFrequentQnaSetResponse
   status: 200
 }
+    
+export type getFrequentQuestionsResponseSuccess = (getFrequentQuestionsResponse200) & {
+  headers: Headers;
+};
+;
 
-export type getFrequentQuestionsResponseSuccess = getFrequentQuestionsResponse200 & {
-  headers: Headers
-}
-export type getFrequentQuestionsResponse = getFrequentQuestionsResponseSuccess
+export type getFrequentQuestionsResponse = (getFrequentQuestionsResponseSuccess)
 
-export const getGetFrequentQuestionsUrl = (params: GetFrequentQuestionsParams) => {
-  const normalizedParams = new URLSearchParams()
+export const getGetFrequentQuestionsUrl = (params: GetFrequentQuestionsParams,) => {
+  const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
+    
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  })
+  });
 
-  const stringifiedParams = normalizedParams.toString()
+  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `https://api.refit.my/qna-set/frequent?${stringifiedParams}`
-    : `https://api.refit.my/qna-set/frequent`
+  return stringifiedParams.length > 0 ? `https://api.refit.my/qna-set/frequent?${stringifiedParams}` : `https://api.refit.my/qna-set/frequent`
 }
 
-export const getFrequentQuestions = async (
-  params: GetFrequentQuestionsParams,
-  options?: RequestInit,
-): Promise<getFrequentQuestionsResponse> => {
-  const res = await fetch(getGetFrequentQuestionsUrl(params), {
+export const getFrequentQuestions = async (params: GetFrequentQuestionsParams, options?: RequestInit): Promise<getFrequentQuestionsResponse> => {
+  
+  const res = await fetch(getGetFrequentQuestionsUrl(params),
+  {      
     ...options,
-    method: 'GET',
-  })
+    method: 'GET'
+    
+    
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: getFrequentQuestionsResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as getFrequentQuestionsResponse
 }
 
-export const getGetFrequentQuestionsQueryKey = (params?: GetFrequentQuestionsParams) => {
-  return [`https://api.refit.my/qna-set/frequent`, ...(params ? [params] : [])] as const
-}
 
-export const getGetFrequentQuestionsQueryOptions = <
-  TData = Awaited<ReturnType<typeof getFrequentQuestions>>,
-  TError = unknown,
->(
-  params: GetFrequentQuestionsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getFrequentQuestions>>, TError, TData>>
-    fetch?: RequestInit
-  },
+
+
+
+export const getGetFrequentQuestionsQueryKey = (params?: GetFrequentQuestionsParams,) => {
+    return [
+    `https://api.refit.my/qna-set/frequent`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+    
+export const getGetFrequentQuestionsQueryOptions = <TData = Awaited<ReturnType<typeof getFrequentQuestions>>, TError = unknown>(params: GetFrequentQuestionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getFrequentQuestions>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-  const { query: queryOptions, fetch: fetchOptions } = options ?? {}
 
-  const queryKey = queryOptions?.queryKey ?? getGetFrequentQuestionsQueryKey(params)
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getFrequentQuestions>>> = ({ signal }) =>
-    getFrequentQuestions(params, { signal, ...fetchOptions })
+  const queryKey =  queryOptions?.queryKey ?? getGetFrequentQuestionsQueryKey(params);
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getFrequentQuestions>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> }
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getFrequentQuestions>>> = ({ signal }) => getFrequentQuestions(params, { signal, ...fetchOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getFrequentQuestions>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type GetFrequentQuestionsQueryResult = NonNullable<Awaited<ReturnType<typeof getFrequentQuestions>>>
 export type GetFrequentQuestionsQueryError = unknown
 
+
 export function useGetFrequentQuestions<TData = Awaited<ReturnType<typeof getFrequentQuestions>>, TError = unknown>(
-  params: GetFrequentQuestionsParams,
-  options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getFrequentQuestions>>, TError, TData>> &
-      Pick<
+ params: GetFrequentQuestionsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getFrequentQuestions>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getFrequentQuestions>>,
           TError,
           Awaited<ReturnType<typeof getFrequentQuestions>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetFrequentQuestions<TData = Awaited<ReturnType<typeof getFrequentQuestions>>, TError = unknown>(
-  params: GetFrequentQuestionsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getFrequentQuestions>>, TError, TData>> &
-      Pick<
+ params: GetFrequentQuestionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getFrequentQuestions>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getFrequentQuestions>>,
           TError,
           Awaited<ReturnType<typeof getFrequentQuestions>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetFrequentQuestions<TData = Awaited<ReturnType<typeof getFrequentQuestions>>, TError = unknown>(
-  params: GetFrequentQuestionsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getFrequentQuestions>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+ params: GetFrequentQuestionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getFrequentQuestions>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary 지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다.
  */
 
 export function useGetFrequentQuestions<TData = Awaited<ReturnType<typeof getFrequentQuestions>>, TError = unknown>(
-  params: GetFrequentQuestionsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getFrequentQuestions>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetFrequentQuestionsQueryOptions(params, options)
+ params: GetFrequentQuestionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getFrequentQuestions>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>
-  }
+  const queryOptions = getGetFrequentQuestionsQueryOptions(params,options)
 
-  return { ...query, queryKey: queryOptions.queryKey }
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
+

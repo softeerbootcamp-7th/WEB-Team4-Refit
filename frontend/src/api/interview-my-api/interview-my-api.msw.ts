@@ -4,353 +4,68 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import { faker } from '@faker-js/faker'
+import {
+  faker
+} from '@faker-js/faker';
 
-import { HttpResponse, http } from 'msw'
-import type { CommonResponsePageInterviewDto, CommonResponsePageInterviewSimpleDto } from '../refit-api.schemas'
-import type { RequestHandlerOptions } from 'msw'
+import {
+  HttpResponse,
+  http
+} from 'msw';
+import type {
+  RequestHandlerOptions
+} from 'msw';
+
+import type {
+  ApiResponsePageInterviewDto,
+  ApiResponsePageInterviewSimpleDto
+} from '../refit-api.schemas';
 
 
-export const getSearchInterviewsResponseMock = (
-  overrideResponse: Partial<CommonResponsePageInterviewDto> = {},
-): CommonResponsePageInterviewDto => ({
-  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  result: faker.helpers.arrayElement([
-    {
-      totalElements: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-      totalPages: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-      size: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-      content: faker.helpers.arrayElement([
-        Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({
-          interviewId: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-          interviewType: faker.helpers.arrayElement([
-            faker.helpers.arrayElement([
-              'FIRST',
-              'SECOND',
-              'THIRD',
-              'BEHAVIORAL',
-              'TECHNICAL',
-              'EXECUTIVE',
-              'CULTURE_FIT',
-              'COFFEE_CHAT',
-              'PSEUDO',
-            ] as const),
-            undefined,
-          ]),
-          interviewStartAt: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]),
-          interviewResultStatus: faker.helpers.arrayElement([
-            faker.helpers.arrayElement(['WAIT', 'FAIL', 'PASS'] as const),
-            undefined,
-          ]),
-          interviewRawText: faker.helpers.arrayElement([
-            faker.string.alpha({ length: { min: 10, max: 20 } }),
-            undefined,
-          ]),
-          companyName: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-          jobCategoryId: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-          jobCategoryName: faker.helpers.arrayElement([
-            faker.string.alpha({ length: { min: 10, max: 20 } }),
-            undefined,
-          ]),
-          updatedAt: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]),
-          createdAt: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]),
-        })),
-        undefined,
-      ]),
-      number: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-      sort: faker.helpers.arrayElement([
-        {
-          empty: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-          sorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-          unsorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-        },
-        undefined,
-      ]),
-      pageable: faker.helpers.arrayElement([
-        {
-          offset: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-          sort: faker.helpers.arrayElement([
-            {
-              empty: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-              sorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-              unsorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-            },
-            undefined,
-          ]),
-          paged: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-          pageNumber: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-          pageSize: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-          unpaged: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-        },
-        undefined,
-      ]),
-      first: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-      numberOfElements: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-      last: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-      empty: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-    },
-    undefined,
-  ]),
-  ...overrideResponse,
-})
+export const getSearchInterviewsResponseMock = (overrideResponse: Partial< ApiResponsePageInterviewDto > = {}): ApiResponsePageInterviewDto => ({isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), result: faker.helpers.arrayElement([{totalElements: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), totalPages: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), size: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), content: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({interviewId: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), interviewType: faker.helpers.arrayElement([faker.helpers.arrayElement(['FIRST','SECOND','THIRD','BEHAVIORAL','TECHNICAL','EXECUTIVE','CULTURE_FIT','COFFEE_CHAT','PSEUDO'] as const), undefined]), interviewStartAt: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]), interviewResultStatus: faker.helpers.arrayElement([faker.helpers.arrayElement(['WAIT','FAIL','PASS'] as const), undefined]), interviewRawText: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), companyName: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), jobCategoryId: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), jobCategoryName: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), updatedAt: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]), createdAt: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined])})), undefined]), number: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), sort: faker.helpers.arrayElement([{empty: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), sorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), unsorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined])}, undefined]), pageable: faker.helpers.arrayElement([{offset: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), sort: faker.helpers.arrayElement([{empty: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), sorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), unsorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined])}, undefined]), paged: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), pageNumber: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), pageSize: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), unpaged: faker.helpers.arrayElement([faker.datatype.boolean(), undefined])}, undefined]), first: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), numberOfElements: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), last: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), empty: faker.helpers.arrayElement([faker.datatype.boolean(), undefined])}, undefined]), ...overrideResponse})
 
-export const getGetMyInterviewsResponseMock = (
-  overrideResponse: Partial<CommonResponsePageInterviewSimpleDto> = {},
-): CommonResponsePageInterviewSimpleDto => ({
-  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  result: faker.helpers.arrayElement([
-    {
-      totalElements: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-      totalPages: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-      size: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-      content: faker.helpers.arrayElement([
-        Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({
-          interviewId: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-          interviewType: faker.helpers.arrayElement([
-            faker.helpers.arrayElement([
-              'FIRST',
-              'SECOND',
-              'THIRD',
-              'BEHAVIORAL',
-              'TECHNICAL',
-              'EXECUTIVE',
-              'CULTURE_FIT',
-              'COFFEE_CHAT',
-              'PSEUDO',
-            ] as const),
-            undefined,
-          ]),
-          interviewStartAt: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]),
-          companyInfo: faker.helpers.arrayElement([
-            {
-              companyId: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-              companyName: faker.helpers.arrayElement([
-                faker.string.alpha({ length: { min: 10, max: 20 } }),
-                undefined,
-              ]),
-              companyLogoUrl: faker.helpers.arrayElement([
-                faker.string.alpha({ length: { min: 10, max: 20 } }),
-                undefined,
-              ]),
-            },
-            undefined,
-          ]),
-          jobCategoryName: faker.helpers.arrayElement([
-            faker.string.alpha({ length: { min: 10, max: 20 } }),
-            undefined,
-          ]),
-          updatedAt: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]),
-        })),
-        undefined,
-      ]),
-      number: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-      sort: faker.helpers.arrayElement([
-        {
-          empty: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-          sorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-          unsorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-        },
-        undefined,
-      ]),
-      pageable: faker.helpers.arrayElement([
-        {
-          offset: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-          sort: faker.helpers.arrayElement([
-            {
-              empty: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-              sorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-              unsorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-            },
-            undefined,
-          ]),
-          paged: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-          pageNumber: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-          pageSize: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-          unpaged: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-        },
-        undefined,
-      ]),
-      first: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-      numberOfElements: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-      last: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-      empty: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-    },
-    undefined,
-  ]),
-  ...overrideResponse,
-})
+export const getGetMyInterviewsResponseMock = (overrideResponse: Partial< ApiResponsePageInterviewSimpleDto > = {}): ApiResponsePageInterviewSimpleDto => ({isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), result: faker.helpers.arrayElement([{totalElements: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), totalPages: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), size: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), content: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({interviewId: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), interviewType: faker.helpers.arrayElement([faker.helpers.arrayElement(['FIRST','SECOND','THIRD','BEHAVIORAL','TECHNICAL','EXECUTIVE','CULTURE_FIT','COFFEE_CHAT','PSEUDO'] as const), undefined]), interviewStartAt: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]), companyInfo: faker.helpers.arrayElement([{companyId: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), companyName: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), companyLogoUrl: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, undefined]), jobCategoryName: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), updatedAt: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined])})), undefined]), number: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), sort: faker.helpers.arrayElement([{empty: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), sorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), unsorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined])}, undefined]), pageable: faker.helpers.arrayElement([{offset: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), sort: faker.helpers.arrayElement([{empty: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), sorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), unsorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined])}, undefined]), paged: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), pageNumber: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), pageSize: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), unpaged: faker.helpers.arrayElement([faker.datatype.boolean(), undefined])}, undefined]), first: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), numberOfElements: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), last: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), empty: faker.helpers.arrayElement([faker.datatype.boolean(), undefined])}, undefined]), ...overrideResponse})
 
-export const getGetMyInterviewDraftsResponseMock = (
-  overrideResponse: Partial<CommonResponsePageInterviewSimpleDto> = {},
-): CommonResponsePageInterviewSimpleDto => ({
-  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  result: faker.helpers.arrayElement([
-    {
-      totalElements: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-      totalPages: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-      size: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-      content: faker.helpers.arrayElement([
-        Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({
-          interviewId: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-          interviewType: faker.helpers.arrayElement([
-            faker.helpers.arrayElement([
-              'FIRST',
-              'SECOND',
-              'THIRD',
-              'BEHAVIORAL',
-              'TECHNICAL',
-              'EXECUTIVE',
-              'CULTURE_FIT',
-              'COFFEE_CHAT',
-              'PSEUDO',
-            ] as const),
-            undefined,
-          ]),
-          interviewStartAt: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]),
-          companyInfo: faker.helpers.arrayElement([
-            {
-              companyId: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-              companyName: faker.helpers.arrayElement([
-                faker.string.alpha({ length: { min: 10, max: 20 } }),
-                undefined,
-              ]),
-              companyLogoUrl: faker.helpers.arrayElement([
-                faker.string.alpha({ length: { min: 10, max: 20 } }),
-                undefined,
-              ]),
-            },
-            undefined,
-          ]),
-          jobCategoryName: faker.helpers.arrayElement([
-            faker.string.alpha({ length: { min: 10, max: 20 } }),
-            undefined,
-          ]),
-          updatedAt: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]),
-        })),
-        undefined,
-      ]),
-      number: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-      sort: faker.helpers.arrayElement([
-        {
-          empty: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-          sorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-          unsorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-        },
-        undefined,
-      ]),
-      pageable: faker.helpers.arrayElement([
-        {
-          offset: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-          sort: faker.helpers.arrayElement([
-            {
-              empty: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-              sorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-              unsorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-            },
-            undefined,
-          ]),
-          paged: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-          pageNumber: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-          pageSize: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-          unpaged: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-        },
-        undefined,
-      ]),
-      first: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-      numberOfElements: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-      last: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-      empty: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-    },
-    undefined,
-  ]),
-  ...overrideResponse,
-})
+export const getGetMyInterviewDraftsResponseMock = (overrideResponse: Partial< ApiResponsePageInterviewSimpleDto > = {}): ApiResponsePageInterviewSimpleDto => ({isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), result: faker.helpers.arrayElement([{totalElements: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), totalPages: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), size: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), content: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({interviewId: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), interviewType: faker.helpers.arrayElement([faker.helpers.arrayElement(['FIRST','SECOND','THIRD','BEHAVIORAL','TECHNICAL','EXECUTIVE','CULTURE_FIT','COFFEE_CHAT','PSEUDO'] as const), undefined]), interviewStartAt: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]), companyInfo: faker.helpers.arrayElement([{companyId: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), companyName: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), companyLogoUrl: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, undefined]), jobCategoryName: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), updatedAt: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined])})), undefined]), number: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), sort: faker.helpers.arrayElement([{empty: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), sorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), unsorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined])}, undefined]), pageable: faker.helpers.arrayElement([{offset: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), sort: faker.helpers.arrayElement([{empty: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), sorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), unsorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined])}, undefined]), paged: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), pageNumber: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), pageSize: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), unpaged: faker.helpers.arrayElement([faker.datatype.boolean(), undefined])}, undefined]), first: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), numberOfElements: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), last: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), empty: faker.helpers.arrayElement([faker.datatype.boolean(), undefined])}, undefined]), ...overrideResponse})
 
-export const getSearchInterviewsMockHandler = (
-  overrideResponse?:
-    | CommonResponsePageInterviewDto
-    | ((
-        info: Parameters<Parameters<typeof http.post>[1]>[0],
-      ) => Promise<CommonResponsePageInterviewDto> | CommonResponsePageInterviewDto),
-  options?: RequestHandlerOptions,
-) => {
-  return http.post(
-    '*/interview/my/search',
-    async (info) => {
-      return new HttpResponse(
-        JSON.stringify(
-          overrideResponse !== undefined
-            ? typeof overrideResponse === 'function'
-              ? await overrideResponse(info)
-              : overrideResponse
-            : getSearchInterviewsResponseMock(),
-        ),
-        { status: 200, headers: { 'Content-Type': 'application/json' } },
-      )
-    },
-    options,
-  )
+
+export const getSearchInterviewsMockHandler = (overrideResponse?: ApiResponsePageInterviewDto | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<ApiResponsePageInterviewDto> | ApiResponsePageInterviewDto), options?: RequestHandlerOptions) => {
+  return http.post('*/interview/my/search', async (info) => {
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getSearchInterviewsResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  }, options)
 }
 
-export const getGetMyInterviewsMockHandler = (
-  overrideResponse?:
-    | CommonResponsePageInterviewSimpleDto
-    | ((
-        info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Promise<CommonResponsePageInterviewSimpleDto> | CommonResponsePageInterviewSimpleDto),
-  options?: RequestHandlerOptions,
-) => {
-  return http.get(
-    '*/interview/my',
-    async (info) => {
-      return new HttpResponse(
-        JSON.stringify(
-          overrideResponse !== undefined
-            ? typeof overrideResponse === 'function'
-              ? await overrideResponse(info)
-              : overrideResponse
-            : getGetMyInterviewsResponseMock(),
-        ),
-        { status: 200, headers: { 'Content-Type': 'application/json' } },
-      )
-    },
-    options,
-  )
+export const getGetMyInterviewsMockHandler = (overrideResponse?: ApiResponsePageInterviewSimpleDto | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ApiResponsePageInterviewSimpleDto> | ApiResponsePageInterviewSimpleDto), options?: RequestHandlerOptions) => {
+  return http.get('*/interview/my', async (info) => {
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetMyInterviewsResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  }, options)
 }
 
-export const getGetMyInterviewDraftsMockHandler = (
-  overrideResponse?:
-    | CommonResponsePageInterviewSimpleDto
-    | ((
-        info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Promise<CommonResponsePageInterviewSimpleDto> | CommonResponsePageInterviewSimpleDto),
-  options?: RequestHandlerOptions,
-) => {
-  return http.get(
-    '*/interview/my/draft',
-    async (info) => {
-      return new HttpResponse(
-        JSON.stringify(
-          overrideResponse !== undefined
-            ? typeof overrideResponse === 'function'
-              ? await overrideResponse(info)
-              : overrideResponse
-            : getGetMyInterviewDraftsResponseMock(),
-        ),
-        { status: 200, headers: { 'Content-Type': 'application/json' } },
-      )
-    },
-    options,
-  )
+export const getGetMyInterviewDraftsMockHandler = (overrideResponse?: ApiResponsePageInterviewSimpleDto | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ApiResponsePageInterviewSimpleDto> | ApiResponsePageInterviewSimpleDto), options?: RequestHandlerOptions) => {
+  return http.get('*/interview/my/draft', async (info) => {
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetMyInterviewDraftsResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  }, options)
 }
 export const getInterviewMyApiMock = () => [
   getSearchInterviewsMockHandler(),
   getGetMyInterviewsMockHandler(),
-  getGetMyInterviewDraftsMockHandler(),
+  getGetMyInterviewDraftsMockHandler()
 ]

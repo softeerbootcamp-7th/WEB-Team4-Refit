@@ -4,396 +4,137 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import { faker } from '@faker-js/faker'
+import {
+  faker
+} from '@faker-js/faker';
 
-import { HttpResponse, http } from 'msw'
+import {
+  HttpResponse,
+  http
+} from 'msw';
 import type {
-  CommonResponseGuideQuestionResponse,
-  CommonResponseInterviewDto,
-  CommonResponseInterviewFullDto,
-  CommonResponseVoid,
-} from '../refit-api.schemas'
-import type { RequestHandlerOptions } from 'msw'
+  RequestHandlerOptions
+} from 'msw';
+
+import type {
+  ApiResponseGuideQuestionResponse,
+  ApiResponseInterviewDto,
+  ApiResponseInterviewFullDto,
+  ApiResponseVoid
+} from '../refit-api.schemas';
 
 
-export const getUpdateRawTextResponseMock = (
-  overrideResponse: Partial<CommonResponseVoid> = {},
-): CommonResponseVoid => ({
-  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  result: faker.helpers.arrayElement([{}, undefined]),
-  ...overrideResponse,
-})
+export const getUpdateRawTextResponseMock = (overrideResponse: Partial< ApiResponseVoid > = {}): ApiResponseVoid => ({isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), result: faker.helpers.arrayElement([{}, undefined]), ...overrideResponse})
 
-export const getUpdateKptSelfReviewResponseMock = (
-  overrideResponse: Partial<CommonResponseVoid> = {},
-): CommonResponseVoid => ({
-  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  result: faker.helpers.arrayElement([{}, undefined]),
-  ...overrideResponse,
-})
+export const getUpdateKptSelfReviewResponseMock = (overrideResponse: Partial< ApiResponseVoid > = {}): ApiResponseVoid => ({isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), result: faker.helpers.arrayElement([{}, undefined]), ...overrideResponse})
 
-export const getCreateInterviewResponseMock = (
-  overrideResponse: Partial<CommonResponseVoid> = {},
-): CommonResponseVoid => ({
-  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  result: faker.helpers.arrayElement([{}, undefined]),
-  ...overrideResponse,
-})
+export const getCreateInterviewResponseMock = (overrideResponse: Partial< ApiResponseVoid > = {}): ApiResponseVoid => ({isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), result: faker.helpers.arrayElement([{}, undefined]), ...overrideResponse})
 
-export const getUpdateInterviewResultStatusResponseMock = (
-  overrideResponse: Partial<CommonResponseVoid> = {},
-): CommonResponseVoid => ({
-  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  result: faker.helpers.arrayElement([{}, undefined]),
-  ...overrideResponse,
-})
+export const getUpdateInterviewResultStatusResponseMock = (overrideResponse: Partial< ApiResponseVoid > = {}): ApiResponseVoid => ({isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), result: faker.helpers.arrayElement([{}, undefined]), ...overrideResponse})
 
-export const getGetInterviewResponseMock = (
-  overrideResponse: Partial<CommonResponseInterviewDto> = {},
-): CommonResponseInterviewDto => ({
-  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  result: faker.helpers.arrayElement([
-    {
-      interviewId: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-      interviewType: faker.helpers.arrayElement([
-        faker.helpers.arrayElement([
-          'FIRST',
-          'SECOND',
-          'THIRD',
-          'BEHAVIORAL',
-          'TECHNICAL',
-          'EXECUTIVE',
-          'CULTURE_FIT',
-          'COFFEE_CHAT',
-          'PSEUDO',
-        ] as const),
-        undefined,
-      ]),
-      interviewStartAt: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]),
-      interviewResultStatus: faker.helpers.arrayElement([
-        faker.helpers.arrayElement(['WAIT', 'FAIL', 'PASS'] as const),
-        undefined,
-      ]),
-      interviewRawText: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-      companyName: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-      jobCategoryId: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-      jobCategoryName: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-      updatedAt: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]),
-      createdAt: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]),
-    },
-    undefined,
-  ]),
-  ...overrideResponse,
-})
+export const getGetInterviewResponseMock = (overrideResponse: Partial< ApiResponseInterviewDto > = {}): ApiResponseInterviewDto => ({isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), result: faker.helpers.arrayElement([{interviewId: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), interviewType: faker.helpers.arrayElement([faker.helpers.arrayElement(['FIRST','SECOND','THIRD','BEHAVIORAL','TECHNICAL','EXECUTIVE','CULTURE_FIT','COFFEE_CHAT','PSEUDO'] as const), undefined]), interviewStartAt: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]), interviewResultStatus: faker.helpers.arrayElement([faker.helpers.arrayElement(['WAIT','FAIL','PASS'] as const), undefined]), interviewRawText: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), companyName: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), jobCategoryId: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), jobCategoryName: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), updatedAt: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]), createdAt: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined])}, undefined]), ...overrideResponse})
 
-export const getDeleteInterviewResponseMock = (
-  overrideResponse: Partial<CommonResponseVoid> = {},
-): CommonResponseVoid => ({
-  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  result: faker.helpers.arrayElement([{}, undefined]),
-  ...overrideResponse,
-})
+export const getDeleteInterviewResponseMock = (overrideResponse: Partial< ApiResponseVoid > = {}): ApiResponseVoid => ({isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), result: faker.helpers.arrayElement([{}, undefined]), ...overrideResponse})
 
-export const getGetInterviewFullResponseMock = (
-  overrideResponse: Partial<CommonResponseInterviewFullDto> = {},
-): CommonResponseInterviewFullDto => ({
-  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  result: faker.helpers.arrayElement([
-    {
-      interviewId: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-      interviewType: faker.helpers.arrayElement([
-        faker.helpers.arrayElement([
-          'FIRST',
-          'SECOND',
-          'THIRD',
-          'BEHAVIORAL',
-          'TECHNICAL',
-          'EXECUTIVE',
-          'CULTURE_FIT',
-          'COFFEE_CHAT',
-          'PSEUDO',
-        ] as const),
-        undefined,
-      ]),
-      interviewStartAt: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]),
-      interviewResultStatus: faker.helpers.arrayElement([
-        faker.helpers.arrayElement(['WAIT', 'FAIL', 'PASS'] as const),
-        undefined,
-      ]),
-      company: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-      industryId: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-      jobCategoryId: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-      jobRole: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-      updatedAt: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]),
-      pdfUrl: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-      qnaSets: faker.helpers.arrayElement([
-        Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({
-          qnaSetId: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-          interviewId: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-          questionText: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-          answerText: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-          qnaSetSelfReviewText: faker.helpers.arrayElement([
-            faker.string.alpha({ length: { min: 10, max: 20 } }),
-            undefined,
-          ]),
-          starAnalysis: faker.helpers.arrayElement([
-            {
-              sInclusionLevel: faker.helpers.arrayElement([
-                faker.helpers.arrayElement(['PRESENT', 'INSUFFICIENT', 'ABSENT'] as const),
-                undefined,
-              ]),
-              tInclusionLevel: faker.helpers.arrayElement([
-                faker.helpers.arrayElement(['PRESENT', 'INSUFFICIENT', 'ABSENT'] as const),
-                undefined,
-              ]),
-              aInclusionLevel: faker.helpers.arrayElement([
-                faker.helpers.arrayElement(['PRESENT', 'INSUFFICIENT', 'ABSENT'] as const),
-                undefined,
-              ]),
-              rInclusionLevel: faker.helpers.arrayElement([
-                faker.helpers.arrayElement(['PRESENT', 'INSUFFICIENT', 'ABSENT'] as const),
-                undefined,
-              ]),
-              overallSummary: faker.helpers.arrayElement([
-                faker.string.alpha({ length: { min: 10, max: 20 } }),
-                undefined,
-              ]),
-            },
-            undefined,
-          ]),
-          isMarkedDifficult: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-        })),
-        undefined,
-      ]),
-    },
-    undefined,
-  ]),
-  ...overrideResponse,
-})
+export const getGetInterviewFullResponseMock = (overrideResponse: Partial< ApiResponseInterviewFullDto > = {}): ApiResponseInterviewFullDto => ({isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), result: faker.helpers.arrayElement([{interviewId: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), interviewType: faker.helpers.arrayElement([faker.helpers.arrayElement(['FIRST','SECOND','THIRD','BEHAVIORAL','TECHNICAL','EXECUTIVE','CULTURE_FIT','COFFEE_CHAT','PSEUDO'] as const), undefined]), interviewStartAt: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]), interviewResultStatus: faker.helpers.arrayElement([faker.helpers.arrayElement(['WAIT','FAIL','PASS'] as const), undefined]), company: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), industryId: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), jobCategoryId: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), jobRole: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), updatedAt: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]), pdfUrl: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), qnaSets: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({qnaSetId: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), interviewId: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), questionText: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), answerText: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), qnaSetSelfReviewText: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), starAnalysis: faker.helpers.arrayElement([{sInclusionLevel: faker.helpers.arrayElement([faker.helpers.arrayElement(['PRESENT','INSUFFICIENT','ABSENT'] as const), undefined]), tInclusionLevel: faker.helpers.arrayElement([faker.helpers.arrayElement(['PRESENT','INSUFFICIENT','ABSENT'] as const), undefined]), aInclusionLevel: faker.helpers.arrayElement([faker.helpers.arrayElement(['PRESENT','INSUFFICIENT','ABSENT'] as const), undefined]), rInclusionLevel: faker.helpers.arrayElement([faker.helpers.arrayElement(['PRESENT','INSUFFICIENT','ABSENT'] as const), undefined]), overallSummary: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, undefined]), isMarkedDifficult: faker.helpers.arrayElement([faker.datatype.boolean(), undefined])})), undefined]), interviewSelfReview: faker.helpers.arrayElement([{keepText: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), problemText: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), tryText: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, undefined])}, undefined]), ...overrideResponse})
 
-export const getGetGuideQuestionResponseMock = (
-  overrideResponse: Partial<CommonResponseGuideQuestionResponse> = {},
-): CommonResponseGuideQuestionResponse => ({
-  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  result: faker.helpers.arrayElement([
-    { guideQuestion: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]) },
-    undefined,
-  ]),
-  ...overrideResponse,
-})
+export const getGetGuideQuestionResponseMock = (overrideResponse: Partial< ApiResponseGuideQuestionResponse > = {}): ApiResponseGuideQuestionResponse => ({isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), result: faker.helpers.arrayElement([{guideQuestion: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, undefined]), ...overrideResponse})
 
-export const getUpdateRawTextMockHandler = (
-  overrideResponse?:
-    | CommonResponseVoid
-    | ((info: Parameters<Parameters<typeof http.put>[1]>[0]) => Promise<CommonResponseVoid> | CommonResponseVoid),
-  options?: RequestHandlerOptions,
-) => {
-  return http.put(
-    '*/interview/:interviewId/raw-text',
-    async (info) => {
-      return new HttpResponse(
-        JSON.stringify(
-          overrideResponse !== undefined
-            ? typeof overrideResponse === 'function'
-              ? await overrideResponse(info)
-              : overrideResponse
-            : getUpdateRawTextResponseMock(),
-        ),
-        { status: 200, headers: { 'Content-Type': 'application/json' } },
-      )
-    },
-    options,
-  )
+
+export const getUpdateRawTextMockHandler = (overrideResponse?: ApiResponseVoid | ((info: Parameters<Parameters<typeof http.put>[1]>[0]) => Promise<ApiResponseVoid> | ApiResponseVoid), options?: RequestHandlerOptions) => {
+  return http.put('*/interview/:interviewId/raw-text', async (info) => {
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getUpdateRawTextResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  }, options)
 }
 
-export const getUpdateKptSelfReviewMockHandler = (
-  overrideResponse?:
-    | CommonResponseVoid
-    | ((info: Parameters<Parameters<typeof http.put>[1]>[0]) => Promise<CommonResponseVoid> | CommonResponseVoid),
-  options?: RequestHandlerOptions,
-) => {
-  return http.put(
-    '*/interview/:interviewId/kpt-self-review',
-    async (info) => {
-      return new HttpResponse(
-        JSON.stringify(
-          overrideResponse !== undefined
-            ? typeof overrideResponse === 'function'
-              ? await overrideResponse(info)
-              : overrideResponse
-            : getUpdateKptSelfReviewResponseMock(),
-        ),
-        { status: 200, headers: { 'Content-Type': 'application/json' } },
-      )
-    },
-    options,
-  )
+export const getUpdateKptSelfReviewMockHandler = (overrideResponse?: ApiResponseVoid | ((info: Parameters<Parameters<typeof http.put>[1]>[0]) => Promise<ApiResponseVoid> | ApiResponseVoid), options?: RequestHandlerOptions) => {
+  return http.put('*/interview/:interviewId/kpt-self-review', async (info) => {
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getUpdateKptSelfReviewResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  }, options)
 }
 
-export const getCreateInterviewMockHandler = (
-  overrideResponse?:
-    | CommonResponseVoid
-    | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<CommonResponseVoid> | CommonResponseVoid),
-  options?: RequestHandlerOptions,
-) => {
-  return http.post(
-    '*/interview',
-    async (info) => {
-      return new HttpResponse(
-        JSON.stringify(
-          overrideResponse !== undefined
-            ? typeof overrideResponse === 'function'
-              ? await overrideResponse(info)
-              : overrideResponse
-            : getCreateInterviewResponseMock(),
-        ),
-        { status: 200, headers: { 'Content-Type': 'application/json' } },
-      )
-    },
-    options,
-  )
+export const getCreateInterviewMockHandler = (overrideResponse?: ApiResponseVoid | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<ApiResponseVoid> | ApiResponseVoid), options?: RequestHandlerOptions) => {
+  return http.post('*/interview', async (info) => {
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getCreateInterviewResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  }, options)
 }
 
-export const getUpdateInterviewResultStatusMockHandler = (
-  overrideResponse?:
-    | CommonResponseVoid
-    | ((info: Parameters<Parameters<typeof http.patch>[1]>[0]) => Promise<CommonResponseVoid> | CommonResponseVoid),
-  options?: RequestHandlerOptions,
-) => {
-  return http.patch(
-    '*/interview/:interviewId/result-status',
-    async (info) => {
-      return new HttpResponse(
-        JSON.stringify(
-          overrideResponse !== undefined
-            ? typeof overrideResponse === 'function'
-              ? await overrideResponse(info)
-              : overrideResponse
-            : getUpdateInterviewResultStatusResponseMock(),
-        ),
-        { status: 200, headers: { 'Content-Type': 'application/json' } },
-      )
-    },
-    options,
-  )
+export const getUpdateInterviewResultStatusMockHandler = (overrideResponse?: ApiResponseVoid | ((info: Parameters<Parameters<typeof http.patch>[1]>[0]) => Promise<ApiResponseVoid> | ApiResponseVoid), options?: RequestHandlerOptions) => {
+  return http.patch('*/interview/:interviewId/result-status', async (info) => {
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getUpdateInterviewResultStatusResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  }, options)
 }
 
-export const getGetInterviewMockHandler = (
-  overrideResponse?:
-    | CommonResponseInterviewDto
-    | ((
-        info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Promise<CommonResponseInterviewDto> | CommonResponseInterviewDto),
-  options?: RequestHandlerOptions,
-) => {
-  return http.get(
-    '*/interview/:interviewId',
-    async (info) => {
-      return new HttpResponse(
-        JSON.stringify(
-          overrideResponse !== undefined
-            ? typeof overrideResponse === 'function'
-              ? await overrideResponse(info)
-              : overrideResponse
-            : getGetInterviewResponseMock(),
-        ),
-        { status: 200, headers: { 'Content-Type': 'application/json' } },
-      )
-    },
-    options,
-  )
+export const getGetInterviewMockHandler = (overrideResponse?: ApiResponseInterviewDto | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ApiResponseInterviewDto> | ApiResponseInterviewDto), options?: RequestHandlerOptions) => {
+  return http.get('*/interview/:interviewId', async (info) => {
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetInterviewResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  }, options)
 }
 
-export const getDeleteInterviewMockHandler = (
-  overrideResponse?:
-    | CommonResponseVoid
-    | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<CommonResponseVoid> | CommonResponseVoid),
-  options?: RequestHandlerOptions,
-) => {
-  return http.delete(
-    '*/interview/:interviewId',
-    async (info) => {
-      return new HttpResponse(
-        JSON.stringify(
-          overrideResponse !== undefined
-            ? typeof overrideResponse === 'function'
-              ? await overrideResponse(info)
-              : overrideResponse
-            : getDeleteInterviewResponseMock(),
-        ),
-        { status: 200, headers: { 'Content-Type': 'application/json' } },
-      )
-    },
-    options,
-  )
+export const getDeleteInterviewMockHandler = (overrideResponse?: ApiResponseVoid | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<ApiResponseVoid> | ApiResponseVoid), options?: RequestHandlerOptions) => {
+  return http.delete('*/interview/:interviewId', async (info) => {
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getDeleteInterviewResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  }, options)
 }
 
-export const getGetInterviewFullMockHandler = (
-  overrideResponse?:
-    | CommonResponseInterviewFullDto
-    | ((
-        info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Promise<CommonResponseInterviewFullDto> | CommonResponseInterviewFullDto),
-  options?: RequestHandlerOptions,
-) => {
-  return http.get(
-    '*/interview/:interviewId/qna-sets',
-    async (info) => {
-      return new HttpResponse(
-        JSON.stringify(
-          overrideResponse !== undefined
-            ? typeof overrideResponse === 'function'
-              ? await overrideResponse(info)
-              : overrideResponse
-            : getGetInterviewFullResponseMock(),
-        ),
-        { status: 200, headers: { 'Content-Type': 'application/json' } },
-      )
-    },
-    options,
-  )
+export const getGetInterviewFullMockHandler = (overrideResponse?: ApiResponseInterviewFullDto | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ApiResponseInterviewFullDto> | ApiResponseInterviewFullDto), options?: RequestHandlerOptions) => {
+  return http.get('*/interview/:interviewId/qna-sets', async (info) => {
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetInterviewFullResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  }, options)
 }
 
-export const getGetGuideQuestionMockHandler = (
-  overrideResponse?:
-    | CommonResponseGuideQuestionResponse
-    | ((
-        info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Promise<CommonResponseGuideQuestionResponse> | CommonResponseGuideQuestionResponse),
-  options?: RequestHandlerOptions,
-) => {
-  return http.get(
-    '*/interview/:interviewId/guide-question',
-    async (info) => {
-      return new HttpResponse(
-        JSON.stringify(
-          overrideResponse !== undefined
-            ? typeof overrideResponse === 'function'
-              ? await overrideResponse(info)
-              : overrideResponse
-            : getGetGuideQuestionResponseMock(),
-        ),
-        { status: 200, headers: { 'Content-Type': 'application/json' } },
-      )
-    },
-    options,
-  )
+export const getGetGuideQuestionMockHandler = (overrideResponse?: ApiResponseGuideQuestionResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ApiResponseGuideQuestionResponse> | ApiResponseGuideQuestionResponse), options?: RequestHandlerOptions) => {
+  return http.get('*/interview/:interviewId/guide-question', async (info) => {
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetGuideQuestionResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  }, options)
 }
 export const getInterviewApiMock = () => [
   getUpdateRawTextMockHandler(),
@@ -403,5 +144,5 @@ export const getInterviewApiMock = () => [
   getGetInterviewMockHandler(),
   getDeleteInterviewMockHandler(),
   getGetInterviewFullMockHandler(),
-  getGetGuideQuestionMockHandler(),
+  getGetGuideQuestionMockHandler()
 ]

@@ -4,8 +4,9 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import { useQuery } from '@tanstack/react-query'
-import type { CommonResponseListJobCategoryResponse } from '../refit-api.schemas'
+import {
+  useQuery
+} from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -15,120 +16,130 @@ import type {
   QueryKey,
   UndefinedInitialDataOptions,
   UseQueryOptions,
-  UseQueryResult,
-} from '@tanstack/react-query'
+  UseQueryResult
+} from '@tanstack/react-query';
+
+import type {
+  ApiResponseListJobCategoryResponse
+} from '../refit-api.schemas';
+
+
+
 
 
 /**
  * @summary 직무 리스트를 조회합니다.
  */
 export type getAllJobCategoriesResponse200 = {
-  data: CommonResponseListJobCategoryResponse
+  data: ApiResponseListJobCategoryResponse
   status: 200
 }
+    
+export type getAllJobCategoriesResponseSuccess = (getAllJobCategoriesResponse200) & {
+  headers: Headers;
+};
+;
 
-export type getAllJobCategoriesResponseSuccess = getAllJobCategoriesResponse200 & {
-  headers: Headers
-}
-export type getAllJobCategoriesResponse = getAllJobCategoriesResponseSuccess
+export type getAllJobCategoriesResponse = (getAllJobCategoriesResponseSuccess)
 
 export const getGetAllJobCategoriesUrl = () => {
+
+
+  
+
   return `https://api.refit.my/job-category`
 }
 
-export const getAllJobCategories = async (options?: RequestInit): Promise<getAllJobCategoriesResponse> => {
-  const res = await fetch(getGetAllJobCategoriesUrl(), {
+export const getAllJobCategories = async ( options?: RequestInit): Promise<getAllJobCategoriesResponse> => {
+  
+  const res = await fetch(getGetAllJobCategoriesUrl(),
+  {      
     ...options,
-    method: 'GET',
-  })
+    method: 'GET'
+    
+    
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: getAllJobCategoriesResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as getAllJobCategoriesResponse
 }
 
+
+
+
+
 export const getGetAllJobCategoriesQueryKey = () => {
-  return [`https://api.refit.my/job-category`] as const
-}
+    return [
+    `https://api.refit.my/job-category`
+    ] as const;
+    }
 
-export const getGetAllJobCategoriesQueryOptions = <
-  TData = Awaited<ReturnType<typeof getAllJobCategories>>,
-  TError = unknown,
->(options?: {
-  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getAllJobCategories>>, TError, TData>>
-  fetch?: RequestInit
-}) => {
-  const { query: queryOptions, fetch: fetchOptions } = options ?? {}
+    
+export const getGetAllJobCategoriesQueryOptions = <TData = Awaited<ReturnType<typeof getAllJobCategories>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAllJobCategories>>, TError, TData>>, fetch?: RequestInit}
+) => {
 
-  const queryKey = queryOptions?.queryKey ?? getGetAllJobCategoriesQueryKey()
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getAllJobCategories>>> = ({ signal }) =>
-    getAllJobCategories({ signal, ...fetchOptions })
+  const queryKey =  queryOptions?.queryKey ?? getGetAllJobCategoriesQueryKey();
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getAllJobCategories>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> }
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAllJobCategories>>> = ({ signal }) => getAllJobCategories({ signal, ...fetchOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAllJobCategories>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type GetAllJobCategoriesQueryResult = NonNullable<Awaited<ReturnType<typeof getAllJobCategories>>>
 export type GetAllJobCategoriesQueryError = unknown
 
+
 export function useGetAllJobCategories<TData = Awaited<ReturnType<typeof getAllJobCategories>>, TError = unknown>(
-  options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getAllJobCategories>>, TError, TData>> &
-      Pick<
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAllJobCategories>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getAllJobCategories>>,
           TError,
           Awaited<ReturnType<typeof getAllJobCategories>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetAllJobCategories<TData = Awaited<ReturnType<typeof getAllJobCategories>>, TError = unknown>(
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getAllJobCategories>>, TError, TData>> &
-      Pick<
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAllJobCategories>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getAllJobCategories>>,
           TError,
           Awaited<ReturnType<typeof getAllJobCategories>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetAllJobCategories<TData = Awaited<ReturnType<typeof getAllJobCategories>>, TError = unknown>(
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getAllJobCategories>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAllJobCategories>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary 직무 리스트를 조회합니다.
  */
 
 export function useGetAllJobCategories<TData = Awaited<ReturnType<typeof getAllJobCategories>>, TError = unknown>(
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getAllJobCategories>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAllJobCategories>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
   const queryOptions = getGetAllJobCategoriesQueryOptions(options)
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>
-  }
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
-  return { ...query, queryKey: queryOptions.queryKey }
+  return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
+

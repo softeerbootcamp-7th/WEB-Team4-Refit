@@ -4,8 +4,10 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import { useMutation, useQuery } from '@tanstack/react-query'
-import type { CommonResponseMyProfileResponse, CommonResponseVoid, UserSignUpRequest } from '../refit-api.schemas'
+import {
+  useMutation,
+  useQuery
+} from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -18,251 +20,308 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
-} from '@tanstack/react-query'
+  UseQueryResult
+} from '@tanstack/react-query';
+
+import type {
+  ApiResponseMyProfileResponse,
+  ApiResponseVoid,
+  UserSignUpRequest
+} from '../refit-api.schemas';
+
+
+
 
 
 /**
- * 현재 로그인한 계정이 아직 등록되지 않은 상태일 때만 회원가입 할 수 있습니다.
+ * 현재 로그인한 계정이 아직 등록되지 않은 상태일 때만 회원가입 할 수 있습니다. 회원가입이 성공하면 토큰을 새로 발급합니다.
  * @summary 새롭게 회원가입 합니다.
  */
 export type signUpResponse200 = {
-  data: CommonResponseVoid
+  data: void
   status: 200
 }
+    
+export type signUpResponseSuccess = (signUpResponse200) & {
+  headers: Headers;
+};
+;
 
-export type signUpResponseSuccess = signUpResponse200 & {
-  headers: Headers
-}
-export type signUpResponse = signUpResponseSuccess
+export type signUpResponse = (signUpResponseSuccess)
 
 export const getSignUpUrl = () => {
+
+
+  
+
   return `https://api.refit.my/user/signup`
 }
 
 export const signUp = async (userSignUpRequest: UserSignUpRequest, options?: RequestInit): Promise<signUpResponse> => {
-  const res = await fetch(getSignUpUrl(), {
+  
+  const res = await fetch(getSignUpUrl(),
+  {      
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(userSignUpRequest),
-  })
+    body: JSON.stringify(
+      userSignUpRequest,)
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: signUpResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as signUpResponse
 }
 
-export const getSignUpMutationOptions = <TError = unknown, TContext = unknown>(options?: {
-  mutation?: UseMutationOptions<Awaited<ReturnType<typeof signUp>>, TError, { data: UserSignUpRequest }, TContext>
-  fetch?: RequestInit
-}): UseMutationOptions<Awaited<ReturnType<typeof signUp>>, TError, { data: UserSignUpRequest }, TContext> => {
-  const mutationKey = ['signUp']
-  const { mutation: mutationOptions, fetch: fetchOptions } = options
-    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, fetch: undefined }
 
-  const mutationFn: MutationFunction<Awaited<ReturnType<typeof signUp>>, { data: UserSignUpRequest }> = (props) => {
-    const { data } = props ?? {}
 
-    return signUp(data, fetchOptions)
-  }
 
-  return { mutationFn, ...mutationOptions }
-}
+export const getSignUpMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof signUp>>, TError,{data: UserSignUpRequest}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof signUp>>, TError,{data: UserSignUpRequest}, TContext> => {
 
-export type SignUpMutationResult = NonNullable<Awaited<ReturnType<typeof signUp>>>
-export type SignUpMutationBody = UserSignUpRequest
-export type SignUpMutationError = unknown
+const mutationKey = ['signUp'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
 
-/**
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof signUp>>, {data: UserSignUpRequest}> = (props) => {
+          const {data} = props ?? {};
+
+          return  signUp(data,fetchOptions)
+        }
+
+
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SignUpMutationResult = NonNullable<Awaited<ReturnType<typeof signUp>>>
+    export type SignUpMutationBody = UserSignUpRequest
+    export type SignUpMutationError = unknown
+
+    /**
  * @summary 새롭게 회원가입 합니다.
  */
-export const useSignUp = <TError = unknown, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<Awaited<ReturnType<typeof signUp>>, TError, { data: UserSignUpRequest }, TContext>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<Awaited<ReturnType<typeof signUp>>, TError, { data: UserSignUpRequest }, TContext> => {
-  return useMutation(getSignUpMutationOptions(options), queryClient)
-}
-/**
+export const useSignUp = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof signUp>>, TError,{data: UserSignUpRequest}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof signUp>>,
+        TError,
+        {data: UserSignUpRequest},
+        TContext
+      > => {
+      return useMutation(getSignUpMutationOptions(options), queryClient);
+    }
+    /**
  * @summary 이용 약관에 동의합니다.
  */
 export type agreeToTermsResponse200 = {
-  data: CommonResponseVoid
+  data: ApiResponseVoid
   status: 200
 }
+    
+export type agreeToTermsResponseSuccess = (agreeToTermsResponse200) & {
+  headers: Headers;
+};
+;
 
-export type agreeToTermsResponseSuccess = agreeToTermsResponse200 & {
-  headers: Headers
-}
-export type agreeToTermsResponse = agreeToTermsResponseSuccess
+export type agreeToTermsResponse = (agreeToTermsResponseSuccess)
 
 export const getAgreeToTermsUrl = () => {
+
+
+  
+
   return `https://api.refit.my/user/my/terms/agree`
 }
 
-export const agreeToTerms = async (options?: RequestInit): Promise<agreeToTermsResponse> => {
-  const res = await fetch(getAgreeToTermsUrl(), {
+export const agreeToTerms = async ( options?: RequestInit): Promise<agreeToTermsResponse> => {
+  
+  const res = await fetch(getAgreeToTermsUrl(),
+  {      
     ...options,
-    method: 'POST',
-  })
+    method: 'POST'
+    
+    
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: agreeToTermsResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as agreeToTermsResponse
 }
 
-export const getAgreeToTermsMutationOptions = <TError = unknown, TContext = unknown>(options?: {
-  mutation?: UseMutationOptions<Awaited<ReturnType<typeof agreeToTerms>>, TError, void, TContext>
-  fetch?: RequestInit
-}): UseMutationOptions<Awaited<ReturnType<typeof agreeToTerms>>, TError, void, TContext> => {
-  const mutationKey = ['agreeToTerms']
-  const { mutation: mutationOptions, fetch: fetchOptions } = options
-    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, fetch: undefined }
 
-  const mutationFn: MutationFunction<Awaited<ReturnType<typeof agreeToTerms>>, void> = () => {
-    return agreeToTerms(fetchOptions)
-  }
 
-  return { mutationFn, ...mutationOptions }
-}
 
-export type AgreeToTermsMutationResult = NonNullable<Awaited<ReturnType<typeof agreeToTerms>>>
+export const getAgreeToTermsMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof agreeToTerms>>, TError,void, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof agreeToTerms>>, TError,void, TContext> => {
 
-export type AgreeToTermsMutationError = unknown
+const mutationKey = ['agreeToTerms'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
 
-/**
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof agreeToTerms>>, void> = () => {
+          
+
+          return  agreeToTerms(fetchOptions)
+        }
+
+
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AgreeToTermsMutationResult = NonNullable<Awaited<ReturnType<typeof agreeToTerms>>>
+    
+    export type AgreeToTermsMutationError = unknown
+
+    /**
  * @summary 이용 약관에 동의합니다.
  */
-export const useAgreeToTerms = <TError = unknown, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<Awaited<ReturnType<typeof agreeToTerms>>, TError, void, TContext>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<Awaited<ReturnType<typeof agreeToTerms>>, TError, void, TContext> => {
-  return useMutation(getAgreeToTermsMutationOptions(options), queryClient)
-}
-/**
+export const useAgreeToTerms = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof agreeToTerms>>, TError,void, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof agreeToTerms>>,
+        TError,
+        void,
+        TContext
+      > => {
+      return useMutation(getAgreeToTermsMutationOptions(options), queryClient);
+    }
+    /**
  * @summary 현재 로그인한 유저의 기본 정보를 조회합니다.
  */
 export type getMyProfileInfoResponse200 = {
-  data: CommonResponseMyProfileResponse
+  data: ApiResponseMyProfileResponse
   status: 200
 }
+    
+export type getMyProfileInfoResponseSuccess = (getMyProfileInfoResponse200) & {
+  headers: Headers;
+};
+;
 
-export type getMyProfileInfoResponseSuccess = getMyProfileInfoResponse200 & {
-  headers: Headers
-}
-export type getMyProfileInfoResponse = getMyProfileInfoResponseSuccess
+export type getMyProfileInfoResponse = (getMyProfileInfoResponseSuccess)
 
 export const getGetMyProfileInfoUrl = () => {
+
+
+  
+
   return `https://api.refit.my/user/my`
 }
 
-export const getMyProfileInfo = async (options?: RequestInit): Promise<getMyProfileInfoResponse> => {
-  const res = await fetch(getGetMyProfileInfoUrl(), {
+export const getMyProfileInfo = async ( options?: RequestInit): Promise<getMyProfileInfoResponse> => {
+  
+  const res = await fetch(getGetMyProfileInfoUrl(),
+  {      
     ...options,
-    method: 'GET',
-  })
+    method: 'GET'
+    
+    
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: getMyProfileInfoResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as getMyProfileInfoResponse
 }
 
+
+
+
+
 export const getGetMyProfileInfoQueryKey = () => {
-  return [`https://api.refit.my/user/my`] as const
-}
+    return [
+    `https://api.refit.my/user/my`
+    ] as const;
+    }
 
-export const getGetMyProfileInfoQueryOptions = <
-  TData = Awaited<ReturnType<typeof getMyProfileInfo>>,
-  TError = unknown,
->(options?: {
-  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyProfileInfo>>, TError, TData>>
-  fetch?: RequestInit
-}) => {
-  const { query: queryOptions, fetch: fetchOptions } = options ?? {}
+    
+export const getGetMyProfileInfoQueryOptions = <TData = Awaited<ReturnType<typeof getMyProfileInfo>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyProfileInfo>>, TError, TData>>, fetch?: RequestInit}
+) => {
 
-  const queryKey = queryOptions?.queryKey ?? getGetMyProfileInfoQueryKey()
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyProfileInfo>>> = ({ signal }) =>
-    getMyProfileInfo({ signal, ...fetchOptions })
+  const queryKey =  queryOptions?.queryKey ?? getGetMyProfileInfoQueryKey();
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getMyProfileInfo>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> }
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyProfileInfo>>> = ({ signal }) => getMyProfileInfo({ signal, ...fetchOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMyProfileInfo>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type GetMyProfileInfoQueryResult = NonNullable<Awaited<ReturnType<typeof getMyProfileInfo>>>
 export type GetMyProfileInfoQueryError = unknown
 
+
 export function useGetMyProfileInfo<TData = Awaited<ReturnType<typeof getMyProfileInfo>>, TError = unknown>(
-  options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyProfileInfo>>, TError, TData>> &
-      Pick<
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyProfileInfo>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getMyProfileInfo>>,
           TError,
           Awaited<ReturnType<typeof getMyProfileInfo>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetMyProfileInfo<TData = Awaited<ReturnType<typeof getMyProfileInfo>>, TError = unknown>(
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyProfileInfo>>, TError, TData>> &
-      Pick<
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyProfileInfo>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getMyProfileInfo>>,
           TError,
           Awaited<ReturnType<typeof getMyProfileInfo>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetMyProfileInfo<TData = Awaited<ReturnType<typeof getMyProfileInfo>>, TError = unknown>(
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyProfileInfo>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyProfileInfo>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary 현재 로그인한 유저의 기본 정보를 조회합니다.
  */
 
 export function useGetMyProfileInfo<TData = Awaited<ReturnType<typeof getMyProfileInfo>>, TError = unknown>(
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyProfileInfo>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyProfileInfo>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
   const queryOptions = getGetMyProfileInfoQueryOptions(options)
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>
-  }
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
-  return { ...query, queryKey: queryOptions.queryKey }
+  return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
+

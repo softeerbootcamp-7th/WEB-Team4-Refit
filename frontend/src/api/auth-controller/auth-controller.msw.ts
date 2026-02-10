@@ -4,42 +4,37 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import { faker } from '@faker-js/faker'
+import {
+  faker
+} from '@faker-js/faker';
 
-import { HttpResponse, http } from 'msw'
-import type { CommonResponseVoid } from '../refit-api.schemas'
-import type { RequestHandlerOptions } from 'msw'
+import {
+  HttpResponse,
+  http
+} from 'msw';
+import type {
+  RequestHandlerOptions
+} from 'msw';
+
+import type {
+  ApiResponseVoid
+} from '../refit-api.schemas';
 
 
-export const getReissueResponseMock = (overrideResponse: Partial<CommonResponseVoid> = {}): CommonResponseVoid => ({
-  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  result: faker.helpers.arrayElement([{}, undefined]),
-  ...overrideResponse,
-})
+export const getReissueResponseMock = (overrideResponse: Partial< ApiResponseVoid > = {}): ApiResponseVoid => ({isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), result: faker.helpers.arrayElement([{}, undefined]), ...overrideResponse})
 
-export const getReissueMockHandler = (
-  overrideResponse?:
-    | CommonResponseVoid
-    | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<CommonResponseVoid> | CommonResponseVoid),
-  options?: RequestHandlerOptions,
-) => {
-  return http.get(
-    '*/auth/reissue',
-    async (info) => {
-      return new HttpResponse(
-        JSON.stringify(
-          overrideResponse !== undefined
-            ? typeof overrideResponse === 'function'
-              ? await overrideResponse(info)
-              : overrideResponse
-            : getReissueResponseMock(),
-        ),
-        { status: 200, headers: { 'Content-Type': 'application/json' } },
-      )
-    },
-    options,
-  )
+
+export const getReissueMockHandler = (overrideResponse?: ApiResponseVoid | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ApiResponseVoid> | ApiResponseVoid), options?: RequestHandlerOptions) => {
+  return http.get('*/auth/reissue', async (info) => {
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getReissueResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  }, options)
 }
-export const getAuthControllerMock = () => [getReissueMockHandler()]
+export const getAuthControllerMock = () => [
+  getReissueMockHandler()
+]

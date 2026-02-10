@@ -4,16 +4,10 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import { useMutation, useQuery } from '@tanstack/react-query'
-import type {
-  CommonResponsePageScrapFolderQnaSetResponse,
-  CommonResponsePageScrapFolderResponse,
-  CommonResponseVoid,
-  GetMyScrapFoldersParams,
-  GetQnaSetsInScrapFolderParams,
-  ScrapFolderCreateRequest,
-  ScrapFolderNameUpdateRequest,
-} from '../refit-api.schemas'
+import {
+  useMutation,
+  useQuery
+} from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -26,8 +20,21 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
-} from '@tanstack/react-query'
+  UseQueryResult
+} from '@tanstack/react-query';
+
+import type {
+  ApiResponsePageScrapFolderQnaSetResponse,
+  ApiResponsePageScrapFolderResponse,
+  ApiResponseVoid,
+  GetMyScrapFoldersParams,
+  GetQnaSetsInScrapFolderParams,
+  ScrapFolderCreateRequest,
+  ScrapFolderNameUpdateRequest
+} from '../refit-api.schemas';
+
+
+
 
 
 /**
@@ -35,557 +42,519 @@ import type {
  * @summary 나의 스크랩 폴더 리스트를 조회합니다.
  */
 export type getMyScrapFoldersResponse200 = {
-  data: CommonResponsePageScrapFolderResponse
+  data: ApiResponsePageScrapFolderResponse
   status: 200
 }
+    
+export type getMyScrapFoldersResponseSuccess = (getMyScrapFoldersResponse200) & {
+  headers: Headers;
+};
+;
 
-export type getMyScrapFoldersResponseSuccess = getMyScrapFoldersResponse200 & {
-  headers: Headers
-}
-export type getMyScrapFoldersResponse = getMyScrapFoldersResponseSuccess
+export type getMyScrapFoldersResponse = (getMyScrapFoldersResponseSuccess)
 
-export const getGetMyScrapFoldersUrl = (params: GetMyScrapFoldersParams) => {
-  const normalizedParams = new URLSearchParams()
+export const getGetMyScrapFoldersUrl = (params: GetMyScrapFoldersParams,) => {
+  const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
+    
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  })
+  });
 
-  const stringifiedParams = normalizedParams.toString()
+  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `https://api.refit.my/scrap-folder?${stringifiedParams}`
-    : `https://api.refit.my/scrap-folder`
+  return stringifiedParams.length > 0 ? `https://api.refit.my/scrap-folder?${stringifiedParams}` : `https://api.refit.my/scrap-folder`
 }
 
-export const getMyScrapFolders = async (
-  params: GetMyScrapFoldersParams,
-  options?: RequestInit,
-): Promise<getMyScrapFoldersResponse> => {
-  const res = await fetch(getGetMyScrapFoldersUrl(params), {
+export const getMyScrapFolders = async (params: GetMyScrapFoldersParams, options?: RequestInit): Promise<getMyScrapFoldersResponse> => {
+  
+  const res = await fetch(getGetMyScrapFoldersUrl(params),
+  {      
     ...options,
-    method: 'GET',
-  })
+    method: 'GET'
+    
+    
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: getMyScrapFoldersResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as getMyScrapFoldersResponse
 }
 
-export const getGetMyScrapFoldersQueryKey = (params?: GetMyScrapFoldersParams) => {
-  return [`https://api.refit.my/scrap-folder`, ...(params ? [params] : [])] as const
-}
 
-export const getGetMyScrapFoldersQueryOptions = <
-  TData = Awaited<ReturnType<typeof getMyScrapFolders>>,
-  TError = unknown,
->(
-  params: GetMyScrapFoldersParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyScrapFolders>>, TError, TData>>
-    fetch?: RequestInit
-  },
+
+
+
+export const getGetMyScrapFoldersQueryKey = (params?: GetMyScrapFoldersParams,) => {
+    return [
+    `https://api.refit.my/scrap-folder`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+    
+export const getGetMyScrapFoldersQueryOptions = <TData = Awaited<ReturnType<typeof getMyScrapFolders>>, TError = unknown>(params: GetMyScrapFoldersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyScrapFolders>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-  const { query: queryOptions, fetch: fetchOptions } = options ?? {}
 
-  const queryKey = queryOptions?.queryKey ?? getGetMyScrapFoldersQueryKey(params)
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyScrapFolders>>> = ({ signal }) =>
-    getMyScrapFolders(params, { signal, ...fetchOptions })
+  const queryKey =  queryOptions?.queryKey ?? getGetMyScrapFoldersQueryKey(params);
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getMyScrapFolders>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> }
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyScrapFolders>>> = ({ signal }) => getMyScrapFolders(params, { signal, ...fetchOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMyScrapFolders>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type GetMyScrapFoldersQueryResult = NonNullable<Awaited<ReturnType<typeof getMyScrapFolders>>>
 export type GetMyScrapFoldersQueryError = unknown
 
+
 export function useGetMyScrapFolders<TData = Awaited<ReturnType<typeof getMyScrapFolders>>, TError = unknown>(
-  params: GetMyScrapFoldersParams,
-  options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyScrapFolders>>, TError, TData>> &
-      Pick<
+ params: GetMyScrapFoldersParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyScrapFolders>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getMyScrapFolders>>,
           TError,
           Awaited<ReturnType<typeof getMyScrapFolders>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetMyScrapFolders<TData = Awaited<ReturnType<typeof getMyScrapFolders>>, TError = unknown>(
-  params: GetMyScrapFoldersParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyScrapFolders>>, TError, TData>> &
-      Pick<
+ params: GetMyScrapFoldersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyScrapFolders>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getMyScrapFolders>>,
           TError,
           Awaited<ReturnType<typeof getMyScrapFolders>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetMyScrapFolders<TData = Awaited<ReturnType<typeof getMyScrapFolders>>, TError = unknown>(
-  params: GetMyScrapFoldersParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyScrapFolders>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+ params: GetMyScrapFoldersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyScrapFolders>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary 나의 스크랩 폴더 리스트를 조회합니다.
  */
 
 export function useGetMyScrapFolders<TData = Awaited<ReturnType<typeof getMyScrapFolders>>, TError = unknown>(
-  params: GetMyScrapFoldersParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyScrapFolders>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetMyScrapFoldersQueryOptions(params, options)
+ params: GetMyScrapFoldersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyScrapFolders>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>
-  }
+  const queryOptions = getGetMyScrapFoldersQueryOptions(params,options)
 
-  return { ...query, queryKey: queryOptions.queryKey }
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
 
 /**
  * @summary 스크랩 폴더를 생성합니다.
  */
 export type createScrapFolderResponse200 = {
-  data: CommonResponseVoid
+  data: ApiResponseVoid
   status: 200
 }
+    
+export type createScrapFolderResponseSuccess = (createScrapFolderResponse200) & {
+  headers: Headers;
+};
+;
 
-export type createScrapFolderResponseSuccess = createScrapFolderResponse200 & {
-  headers: Headers
-}
-export type createScrapFolderResponse = createScrapFolderResponseSuccess
+export type createScrapFolderResponse = (createScrapFolderResponseSuccess)
 
 export const getCreateScrapFolderUrl = () => {
+
+
+  
+
   return `https://api.refit.my/scrap-folder`
 }
 
-export const createScrapFolder = async (
-  scrapFolderCreateRequest: ScrapFolderCreateRequest,
-  options?: RequestInit,
-): Promise<createScrapFolderResponse> => {
-  const res = await fetch(getCreateScrapFolderUrl(), {
+export const createScrapFolder = async (scrapFolderCreateRequest: ScrapFolderCreateRequest, options?: RequestInit): Promise<createScrapFolderResponse> => {
+  
+  const res = await fetch(getCreateScrapFolderUrl(),
+  {      
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(scrapFolderCreateRequest),
-  })
+    body: JSON.stringify(
+      scrapFolderCreateRequest,)
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: createScrapFolderResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as createScrapFolderResponse
 }
 
-export const getCreateScrapFolderMutationOptions = <TError = unknown, TContext = unknown>(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof createScrapFolder>>,
-    TError,
-    { data: ScrapFolderCreateRequest },
-    TContext
-  >
-  fetch?: RequestInit
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof createScrapFolder>>,
-  TError,
-  { data: ScrapFolderCreateRequest },
-  TContext
-> => {
-  const mutationKey = ['createScrapFolder']
-  const { mutation: mutationOptions, fetch: fetchOptions } = options
-    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, fetch: undefined }
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof createScrapFolder>>,
-    { data: ScrapFolderCreateRequest }
-  > = (props) => {
-    const { data } = props ?? {}
 
-    return createScrapFolder(data, fetchOptions)
-  }
 
-  return { mutationFn, ...mutationOptions }
-}
+export const getCreateScrapFolderMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createScrapFolder>>, TError,{data: ScrapFolderCreateRequest}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof createScrapFolder>>, TError,{data: ScrapFolderCreateRequest}, TContext> => {
 
-export type CreateScrapFolderMutationResult = NonNullable<Awaited<ReturnType<typeof createScrapFolder>>>
-export type CreateScrapFolderMutationBody = ScrapFolderCreateRequest
-export type CreateScrapFolderMutationError = unknown
+const mutationKey = ['createScrapFolder'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
 
-/**
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createScrapFolder>>, {data: ScrapFolderCreateRequest}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createScrapFolder(data,fetchOptions)
+        }
+
+
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateScrapFolderMutationResult = NonNullable<Awaited<ReturnType<typeof createScrapFolder>>>
+    export type CreateScrapFolderMutationBody = ScrapFolderCreateRequest
+    export type CreateScrapFolderMutationError = unknown
+
+    /**
  * @summary 스크랩 폴더를 생성합니다.
  */
-export const useCreateScrapFolder = <TError = unknown, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof createScrapFolder>>,
-      TError,
-      { data: ScrapFolderCreateRequest },
-      TContext
-    >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof createScrapFolder>>,
-  TError,
-  { data: ScrapFolderCreateRequest },
-  TContext
-> => {
-  return useMutation(getCreateScrapFolderMutationOptions(options), queryClient)
-}
-/**
+export const useCreateScrapFolder = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createScrapFolder>>, TError,{data: ScrapFolderCreateRequest}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof createScrapFolder>>,
+        TError,
+        {data: ScrapFolderCreateRequest},
+        TContext
+      > => {
+      return useMutation(getCreateScrapFolderMutationOptions(options), queryClient);
+    }
+    /**
  * @summary 스크랩 폴더의 이름을 수정합니다.
  */
 export type updateScrapFolderNameResponse200 = {
-  data: CommonResponseVoid
+  data: ApiResponseVoid
   status: 200
 }
+    
+export type updateScrapFolderNameResponseSuccess = (updateScrapFolderNameResponse200) & {
+  headers: Headers;
+};
+;
 
-export type updateScrapFolderNameResponseSuccess = updateScrapFolderNameResponse200 & {
-  headers: Headers
-}
-export type updateScrapFolderNameResponse = updateScrapFolderNameResponseSuccess
+export type updateScrapFolderNameResponse = (updateScrapFolderNameResponseSuccess)
 
-export const getUpdateScrapFolderNameUrl = (scrapFolderId: number) => {
+export const getUpdateScrapFolderNameUrl = (scrapFolderId: number,) => {
+
+
+  
+
   return `https://api.refit.my/scrap-folder/${scrapFolderId}/name`
 }
 
-export const updateScrapFolderName = async (
-  scrapFolderId: number,
-  scrapFolderNameUpdateRequest: ScrapFolderNameUpdateRequest,
-  options?: RequestInit,
-): Promise<updateScrapFolderNameResponse> => {
-  const res = await fetch(getUpdateScrapFolderNameUrl(scrapFolderId), {
+export const updateScrapFolderName = async (scrapFolderId: number,
+    scrapFolderNameUpdateRequest: ScrapFolderNameUpdateRequest, options?: RequestInit): Promise<updateScrapFolderNameResponse> => {
+  
+  const res = await fetch(getUpdateScrapFolderNameUrl(scrapFolderId),
+  {      
     ...options,
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(scrapFolderNameUpdateRequest),
-  })
+    body: JSON.stringify(
+      scrapFolderNameUpdateRequest,)
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: updateScrapFolderNameResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as updateScrapFolderNameResponse
 }
 
-export const getUpdateScrapFolderNameMutationOptions = <TError = unknown, TContext = unknown>(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof updateScrapFolderName>>,
-    TError,
-    { scrapFolderId: number; data: ScrapFolderNameUpdateRequest },
-    TContext
-  >
-  fetch?: RequestInit
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof updateScrapFolderName>>,
-  TError,
-  { scrapFolderId: number; data: ScrapFolderNameUpdateRequest },
-  TContext
-> => {
-  const mutationKey = ['updateScrapFolderName']
-  const { mutation: mutationOptions, fetch: fetchOptions } = options
-    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, fetch: undefined }
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof updateScrapFolderName>>,
-    { scrapFolderId: number; data: ScrapFolderNameUpdateRequest }
-  > = (props) => {
-    const { scrapFolderId, data } = props ?? {}
 
-    return updateScrapFolderName(scrapFolderId, data, fetchOptions)
-  }
 
-  return { mutationFn, ...mutationOptions }
-}
+export const getUpdateScrapFolderNameMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateScrapFolderName>>, TError,{scrapFolderId: number;data: ScrapFolderNameUpdateRequest}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof updateScrapFolderName>>, TError,{scrapFolderId: number;data: ScrapFolderNameUpdateRequest}, TContext> => {
 
-export type UpdateScrapFolderNameMutationResult = NonNullable<Awaited<ReturnType<typeof updateScrapFolderName>>>
-export type UpdateScrapFolderNameMutationBody = ScrapFolderNameUpdateRequest
-export type UpdateScrapFolderNameMutationError = unknown
+const mutationKey = ['updateScrapFolderName'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
 
-/**
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateScrapFolderName>>, {scrapFolderId: number;data: ScrapFolderNameUpdateRequest}> = (props) => {
+          const {scrapFolderId,data} = props ?? {};
+
+          return  updateScrapFolderName(scrapFolderId,data,fetchOptions)
+        }
+
+
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateScrapFolderNameMutationResult = NonNullable<Awaited<ReturnType<typeof updateScrapFolderName>>>
+    export type UpdateScrapFolderNameMutationBody = ScrapFolderNameUpdateRequest
+    export type UpdateScrapFolderNameMutationError = unknown
+
+    /**
  * @summary 스크랩 폴더의 이름을 수정합니다.
  */
-export const useUpdateScrapFolderName = <TError = unknown, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof updateScrapFolderName>>,
-      TError,
-      { scrapFolderId: number; data: ScrapFolderNameUpdateRequest },
-      TContext
-    >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof updateScrapFolderName>>,
-  TError,
-  { scrapFolderId: number; data: ScrapFolderNameUpdateRequest },
-  TContext
-> => {
-  return useMutation(getUpdateScrapFolderNameMutationOptions(options), queryClient)
-}
-/**
+export const useUpdateScrapFolderName = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateScrapFolderName>>, TError,{scrapFolderId: number;data: ScrapFolderNameUpdateRequest}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateScrapFolderName>>,
+        TError,
+        {scrapFolderId: number;data: ScrapFolderNameUpdateRequest},
+        TContext
+      > => {
+      return useMutation(getUpdateScrapFolderNameMutationOptions(options), queryClient);
+    }
+    /**
  * '나의 어려웠던 질문' 폴더는 포함하지 않습니다. 해당 폴더의 내용은 어려웠던 질문을 조회하는 API로 조회합니다.
  * @summary 나의 스크랩 폴더 내 질문 답변 세트 리스트를 조회합니다.
  */
 export type getQnaSetsInScrapFolderResponse200 = {
-  data: CommonResponsePageScrapFolderQnaSetResponse
+  data: ApiResponsePageScrapFolderQnaSetResponse
   status: 200
 }
+    
+export type getQnaSetsInScrapFolderResponseSuccess = (getQnaSetsInScrapFolderResponse200) & {
+  headers: Headers;
+};
+;
 
-export type getQnaSetsInScrapFolderResponseSuccess = getQnaSetsInScrapFolderResponse200 & {
-  headers: Headers
-}
-export type getQnaSetsInScrapFolderResponse = getQnaSetsInScrapFolderResponseSuccess
+export type getQnaSetsInScrapFolderResponse = (getQnaSetsInScrapFolderResponseSuccess)
 
-export const getGetQnaSetsInScrapFolderUrl = (scrapFolderId: number, params: GetQnaSetsInScrapFolderParams) => {
-  const normalizedParams = new URLSearchParams()
+export const getGetQnaSetsInScrapFolderUrl = (scrapFolderId: number,
+    params: GetQnaSetsInScrapFolderParams,) => {
+  const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
+    
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  })
+  });
 
-  const stringifiedParams = normalizedParams.toString()
+  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `https://api.refit.my/scrap-folder/${scrapFolderId}?${stringifiedParams}`
-    : `https://api.refit.my/scrap-folder/${scrapFolderId}`
+  return stringifiedParams.length > 0 ? `https://api.refit.my/scrap-folder/${scrapFolderId}?${stringifiedParams}` : `https://api.refit.my/scrap-folder/${scrapFolderId}`
 }
 
-export const getQnaSetsInScrapFolder = async (
-  scrapFolderId: number,
-  params: GetQnaSetsInScrapFolderParams,
-  options?: RequestInit,
-): Promise<getQnaSetsInScrapFolderResponse> => {
-  const res = await fetch(getGetQnaSetsInScrapFolderUrl(scrapFolderId, params), {
+export const getQnaSetsInScrapFolder = async (scrapFolderId: number,
+    params: GetQnaSetsInScrapFolderParams, options?: RequestInit): Promise<getQnaSetsInScrapFolderResponse> => {
+  
+  const res = await fetch(getGetQnaSetsInScrapFolderUrl(scrapFolderId,params),
+  {      
     ...options,
-    method: 'GET',
-  })
+    method: 'GET'
+    
+    
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: getQnaSetsInScrapFolderResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as getQnaSetsInScrapFolderResponse
 }
 
-export const getGetQnaSetsInScrapFolderQueryKey = (scrapFolderId: number, params?: GetQnaSetsInScrapFolderParams) => {
-  return [`https://api.refit.my/scrap-folder/${scrapFolderId}`, ...(params ? [params] : [])] as const
-}
 
-export const getGetQnaSetsInScrapFolderQueryOptions = <
-  TData = Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>,
-  TError = unknown,
->(
-  scrapFolderId: number,
-  params: GetQnaSetsInScrapFolderParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>, TError, TData>>
-    fetch?: RequestInit
-  },
+
+
+
+export const getGetQnaSetsInScrapFolderQueryKey = (scrapFolderId: number,
+    params?: GetQnaSetsInScrapFolderParams,) => {
+    return [
+    `https://api.refit.my/scrap-folder/${scrapFolderId}`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+    
+export const getGetQnaSetsInScrapFolderQueryOptions = <TData = Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>, TError = unknown>(scrapFolderId: number,
+    params: GetQnaSetsInScrapFolderParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-  const { query: queryOptions, fetch: fetchOptions } = options ?? {}
 
-  const queryKey = queryOptions?.queryKey ?? getGetQnaSetsInScrapFolderQueryKey(scrapFolderId, params)
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>> = ({ signal }) =>
-    getQnaSetsInScrapFolder(scrapFolderId, params, { signal, ...fetchOptions })
+  const queryKey =  queryOptions?.queryKey ?? getGetQnaSetsInScrapFolderQueryKey(scrapFolderId,params);
 
-  return { queryKey, queryFn, enabled: !!scrapFolderId, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> }
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>> = ({ signal }) => getQnaSetsInScrapFolder(scrapFolderId,params, { signal, ...fetchOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(scrapFolderId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type GetQnaSetsInScrapFolderQueryResult = NonNullable<Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>>
 export type GetQnaSetsInScrapFolderQueryError = unknown
 
-export function useGetQnaSetsInScrapFolder<
-  TData = Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>,
-  TError = unknown,
->(
-  scrapFolderId: number,
-  params: GetQnaSetsInScrapFolderParams,
-  options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>, TError, TData>> &
-      Pick<
+
+export function useGetQnaSetsInScrapFolder<TData = Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>, TError = unknown>(
+ scrapFolderId: number,
+    params: GetQnaSetsInScrapFolderParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>,
           TError,
           Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetQnaSetsInScrapFolder<
-  TData = Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>,
-  TError = unknown,
->(
-  scrapFolderId: number,
-  params: GetQnaSetsInScrapFolderParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>, TError, TData>> &
-      Pick<
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetQnaSetsInScrapFolder<TData = Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>, TError = unknown>(
+ scrapFolderId: number,
+    params: GetQnaSetsInScrapFolderParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>,
           TError,
           Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetQnaSetsInScrapFolder<
-  TData = Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>,
-  TError = unknown,
->(
-  scrapFolderId: number,
-  params: GetQnaSetsInScrapFolderParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetQnaSetsInScrapFolder<TData = Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>, TError = unknown>(
+ scrapFolderId: number,
+    params: GetQnaSetsInScrapFolderParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary 나의 스크랩 폴더 내 질문 답변 세트 리스트를 조회합니다.
  */
 
-export function useGetQnaSetsInScrapFolder<
-  TData = Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>,
-  TError = unknown,
->(
-  scrapFolderId: number,
-  params: GetQnaSetsInScrapFolderParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetQnaSetsInScrapFolderQueryOptions(scrapFolderId, params, options)
+export function useGetQnaSetsInScrapFolder<TData = Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>, TError = unknown>(
+ scrapFolderId: number,
+    params: GetQnaSetsInScrapFolderParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>
-  }
+  const queryOptions = getGetQnaSetsInScrapFolderQueryOptions(scrapFolderId,params,options)
 
-  return { ...query, queryKey: queryOptions.queryKey }
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
 
 /**
  * @summary 스크랩 폴더를 삭제합니다.
  */
 export type deleteScrapFolderResponse200 = {
-  data: CommonResponseVoid
+  data: ApiResponseVoid
   status: 200
 }
+    
+export type deleteScrapFolderResponseSuccess = (deleteScrapFolderResponse200) & {
+  headers: Headers;
+};
+;
 
-export type deleteScrapFolderResponseSuccess = deleteScrapFolderResponse200 & {
-  headers: Headers
-}
-export type deleteScrapFolderResponse = deleteScrapFolderResponseSuccess
+export type deleteScrapFolderResponse = (deleteScrapFolderResponseSuccess)
 
-export const getDeleteScrapFolderUrl = (scrapFolderId: number) => {
+export const getDeleteScrapFolderUrl = (scrapFolderId: number,) => {
+
+
+  
+
   return `https://api.refit.my/scrap-folder/${scrapFolderId}`
 }
 
-export const deleteScrapFolder = async (
-  scrapFolderId: number,
-  options?: RequestInit,
-): Promise<deleteScrapFolderResponse> => {
-  const res = await fetch(getDeleteScrapFolderUrl(scrapFolderId), {
+export const deleteScrapFolder = async (scrapFolderId: number, options?: RequestInit): Promise<deleteScrapFolderResponse> => {
+  
+  const res = await fetch(getDeleteScrapFolderUrl(scrapFolderId),
+  {      
     ...options,
-    method: 'DELETE',
-  })
+    method: 'DELETE'
+    
+    
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: deleteScrapFolderResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as deleteScrapFolderResponse
 }
 
-export const getDeleteScrapFolderMutationOptions = <TError = unknown, TContext = unknown>(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof deleteScrapFolder>>,
-    TError,
-    { scrapFolderId: number },
-    TContext
-  >
-  fetch?: RequestInit
-}): UseMutationOptions<Awaited<ReturnType<typeof deleteScrapFolder>>, TError, { scrapFolderId: number }, TContext> => {
-  const mutationKey = ['deleteScrapFolder']
-  const { mutation: mutationOptions, fetch: fetchOptions } = options
-    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, fetch: undefined }
 
-  const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteScrapFolder>>, { scrapFolderId: number }> = (
-    props,
-  ) => {
-    const { scrapFolderId } = props ?? {}
 
-    return deleteScrapFolder(scrapFolderId, fetchOptions)
-  }
 
-  return { mutationFn, ...mutationOptions }
-}
+export const getDeleteScrapFolderMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteScrapFolder>>, TError,{scrapFolderId: number}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteScrapFolder>>, TError,{scrapFolderId: number}, TContext> => {
 
-export type DeleteScrapFolderMutationResult = NonNullable<Awaited<ReturnType<typeof deleteScrapFolder>>>
+const mutationKey = ['deleteScrapFolder'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
 
-export type DeleteScrapFolderMutationError = unknown
+      
 
-/**
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteScrapFolder>>, {scrapFolderId: number}> = (props) => {
+          const {scrapFolderId} = props ?? {};
+
+          return  deleteScrapFolder(scrapFolderId,fetchOptions)
+        }
+
+
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteScrapFolderMutationResult = NonNullable<Awaited<ReturnType<typeof deleteScrapFolder>>>
+    
+    export type DeleteScrapFolderMutationError = unknown
+
+    /**
  * @summary 스크랩 폴더를 삭제합니다.
  */
-export const useDeleteScrapFolder = <TError = unknown, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof deleteScrapFolder>>,
-      TError,
-      { scrapFolderId: number },
-      TContext
-    >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<Awaited<ReturnType<typeof deleteScrapFolder>>, TError, { scrapFolderId: number }, TContext> => {
-  return useMutation(getDeleteScrapFolderMutationOptions(options), queryClient)
-}
+export const useDeleteScrapFolder = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteScrapFolder>>, TError,{scrapFolderId: number}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteScrapFolder>>,
+        TError,
+        {scrapFolderId: number},
+        TContext
+      > => {
+      return useMutation(getDeleteScrapFolderMutationOptions(options), queryClient);
+    }
+    

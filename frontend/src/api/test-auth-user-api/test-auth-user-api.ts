@@ -4,14 +4,10 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import { useMutation, useQuery } from '@tanstack/react-query'
-import type {
-  CommonResponseTokenPairDto,
-  CommonResponseVoid,
-  DeleteUserByEmailParams,
-  GetGuestTokenParams,
-  GetTokenParams,
-} from '../refit-api.schemas'
+import {
+  useMutation,
+  useQuery
+} from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -24,8 +20,20 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
-} from '@tanstack/react-query'
+  UseQueryResult
+} from '@tanstack/react-query';
+
+import type {
+  ApiResponseTokenPairDto,
+  ApiResponseVoid,
+  DeleteTokenCookiesParams,
+  DeleteUserByEmailParams,
+  GetGuestTokenParams,
+  GetTokenParams
+} from '../refit-api.schemas';
+
+
+
 
 
 /**
@@ -33,486 +41,522 @@ import type {
  * @summary (테스트용) 회원 토큰을 발급합니다.
  */
 export type getTokenResponse200 = {
-  data: CommonResponseTokenPairDto
+  data: ApiResponseTokenPairDto
   status: 200
 }
+    
+export type getTokenResponseSuccess = (getTokenResponse200) & {
+  headers: Headers;
+};
+;
 
-export type getTokenResponseSuccess = getTokenResponse200 & {
-  headers: Headers
-}
-export type getTokenResponse = getTokenResponseSuccess
+export type getTokenResponse = (getTokenResponseSuccess)
 
-export const getGetTokenUrl = (params: GetTokenParams) => {
-  const normalizedParams = new URLSearchParams()
+export const getGetTokenUrl = (params: GetTokenParams,) => {
+  const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
+    
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  })
+  });
 
-  const stringifiedParams = normalizedParams.toString()
+  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `https://api.refit.my/test/auth/token?${stringifiedParams}`
-    : `https://api.refit.my/test/auth/token`
+  return stringifiedParams.length > 0 ? `https://api.refit.my/test/auth/token?${stringifiedParams}` : `https://api.refit.my/test/auth/token`
 }
 
 export const getToken = async (params: GetTokenParams, options?: RequestInit): Promise<getTokenResponse> => {
-  const res = await fetch(getGetTokenUrl(params), {
+  
+  const res = await fetch(getGetTokenUrl(params),
+  {      
     ...options,
-    method: 'GET',
-  })
+    method: 'GET'
+    
+    
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: getTokenResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as getTokenResponse
 }
 
-export const getGetTokenQueryKey = (params?: GetTokenParams) => {
-  return [`https://api.refit.my/test/auth/token`, ...(params ? [params] : [])] as const
-}
 
-export const getGetTokenQueryOptions = <TData = Awaited<ReturnType<typeof getToken>>, TError = unknown>(
-  params: GetTokenParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getToken>>, TError, TData>>
-    fetch?: RequestInit
-  },
+
+
+
+export const getGetTokenQueryKey = (params?: GetTokenParams,) => {
+    return [
+    `https://api.refit.my/test/auth/token`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+    
+export const getGetTokenQueryOptions = <TData = Awaited<ReturnType<typeof getToken>>, TError = unknown>(params: GetTokenParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getToken>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-  const { query: queryOptions, fetch: fetchOptions } = options ?? {}
 
-  const queryKey = queryOptions?.queryKey ?? getGetTokenQueryKey(params)
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getToken>>> = ({ signal }) =>
-    getToken(params, { signal, ...fetchOptions })
+  const queryKey =  queryOptions?.queryKey ?? getGetTokenQueryKey(params);
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getToken>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> }
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getToken>>> = ({ signal }) => getToken(params, { signal, ...fetchOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getToken>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type GetTokenQueryResult = NonNullable<Awaited<ReturnType<typeof getToken>>>
 export type GetTokenQueryError = unknown
 
+
 export function useGetToken<TData = Awaited<ReturnType<typeof getToken>>, TError = unknown>(
-  params: GetTokenParams,
-  options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getToken>>, TError, TData>> &
-      Pick<
-        DefinedInitialDataOptions<Awaited<ReturnType<typeof getToken>>, TError, Awaited<ReturnType<typeof getToken>>>,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+ params: GetTokenParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getToken>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getToken>>,
+          TError,
+          Awaited<ReturnType<typeof getToken>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetToken<TData = Awaited<ReturnType<typeof getToken>>, TError = unknown>(
-  params: GetTokenParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getToken>>, TError, TData>> &
-      Pick<
-        UndefinedInitialDataOptions<Awaited<ReturnType<typeof getToken>>, TError, Awaited<ReturnType<typeof getToken>>>,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+ params: GetTokenParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getToken>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getToken>>,
+          TError,
+          Awaited<ReturnType<typeof getToken>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetToken<TData = Awaited<ReturnType<typeof getToken>>, TError = unknown>(
-  params: GetTokenParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getToken>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+ params: GetTokenParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getToken>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary (테스트용) 회원 토큰을 발급합니다.
  */
 
 export function useGetToken<TData = Awaited<ReturnType<typeof getToken>>, TError = unknown>(
-  params: GetTokenParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getToken>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetTokenQueryOptions(params, options)
+ params: GetTokenParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getToken>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>
-  }
+  const queryOptions = getGetTokenQueryOptions(params,options)
 
-  return { ...query, queryKey: queryOptions.queryKey }
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
 
 /**
  * 발급된 토큰은 요청 주소에 쿠키로 세팅됩니다.
  * @summary (테스트용) 게스트 회원 토큰을 발급합니다.
  */
 export type getGuestTokenResponse200 = {
-  data: CommonResponseTokenPairDto
+  data: ApiResponseTokenPairDto
   status: 200
 }
+    
+export type getGuestTokenResponseSuccess = (getGuestTokenResponse200) & {
+  headers: Headers;
+};
+;
 
-export type getGuestTokenResponseSuccess = getGuestTokenResponse200 & {
-  headers: Headers
-}
-export type getGuestTokenResponse = getGuestTokenResponseSuccess
+export type getGuestTokenResponse = (getGuestTokenResponseSuccess)
 
-export const getGetGuestTokenUrl = (params: GetGuestTokenParams) => {
-  const normalizedParams = new URLSearchParams()
+export const getGetGuestTokenUrl = (params: GetGuestTokenParams,) => {
+  const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
+    
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  })
+  });
 
-  const stringifiedParams = normalizedParams.toString()
+  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `https://api.refit.my/test/auth/token/guest?${stringifiedParams}`
-    : `https://api.refit.my/test/auth/token/guest`
+  return stringifiedParams.length > 0 ? `https://api.refit.my/test/auth/token/guest?${stringifiedParams}` : `https://api.refit.my/test/auth/token/guest`
 }
 
-export const getGuestToken = async (
-  params: GetGuestTokenParams,
-  options?: RequestInit,
-): Promise<getGuestTokenResponse> => {
-  const res = await fetch(getGetGuestTokenUrl(params), {
+export const getGuestToken = async (params: GetGuestTokenParams, options?: RequestInit): Promise<getGuestTokenResponse> => {
+  
+  const res = await fetch(getGetGuestTokenUrl(params),
+  {      
     ...options,
-    method: 'GET',
-  })
+    method: 'GET'
+    
+    
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: getGuestTokenResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as getGuestTokenResponse
 }
 
-export const getGetGuestTokenQueryKey = (params?: GetGuestTokenParams) => {
-  return [`https://api.refit.my/test/auth/token/guest`, ...(params ? [params] : [])] as const
-}
 
-export const getGetGuestTokenQueryOptions = <TData = Awaited<ReturnType<typeof getGuestToken>>, TError = unknown>(
-  params: GetGuestTokenParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getGuestToken>>, TError, TData>>
-    fetch?: RequestInit
-  },
+
+
+
+export const getGetGuestTokenQueryKey = (params?: GetGuestTokenParams,) => {
+    return [
+    `https://api.refit.my/test/auth/token/guest`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+    
+export const getGetGuestTokenQueryOptions = <TData = Awaited<ReturnType<typeof getGuestToken>>, TError = unknown>(params: GetGuestTokenParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getGuestToken>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-  const { query: queryOptions, fetch: fetchOptions } = options ?? {}
 
-  const queryKey = queryOptions?.queryKey ?? getGetGuestTokenQueryKey(params)
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getGuestToken>>> = ({ signal }) =>
-    getGuestToken(params, { signal, ...fetchOptions })
+  const queryKey =  queryOptions?.queryKey ?? getGetGuestTokenQueryKey(params);
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getGuestToken>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> }
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getGuestToken>>> = ({ signal }) => getGuestToken(params, { signal, ...fetchOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getGuestToken>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type GetGuestTokenQueryResult = NonNullable<Awaited<ReturnType<typeof getGuestToken>>>
 export type GetGuestTokenQueryError = unknown
 
+
 export function useGetGuestToken<TData = Awaited<ReturnType<typeof getGuestToken>>, TError = unknown>(
-  params: GetGuestTokenParams,
-  options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getGuestToken>>, TError, TData>> &
-      Pick<
+ params: GetGuestTokenParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getGuestToken>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getGuestToken>>,
           TError,
           Awaited<ReturnType<typeof getGuestToken>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetGuestToken<TData = Awaited<ReturnType<typeof getGuestToken>>, TError = unknown>(
-  params: GetGuestTokenParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getGuestToken>>, TError, TData>> &
-      Pick<
+ params: GetGuestTokenParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getGuestToken>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getGuestToken>>,
           TError,
           Awaited<ReturnType<typeof getGuestToken>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetGuestToken<TData = Awaited<ReturnType<typeof getGuestToken>>, TError = unknown>(
-  params: GetGuestTokenParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getGuestToken>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+ params: GetGuestTokenParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getGuestToken>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary (테스트용) 게스트 회원 토큰을 발급합니다.
  */
 
 export function useGetGuestToken<TData = Awaited<ReturnType<typeof getGuestToken>>, TError = unknown>(
-  params: GetGuestTokenParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getGuestToken>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetGuestTokenQueryOptions(params, options)
+ params: GetGuestTokenParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getGuestToken>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>
-  }
+  const queryOptions = getGetGuestTokenQueryOptions(params,options)
 
-  return { ...query, queryKey: queryOptions.queryKey }
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
 
 /**
  * @summary (테스트용) 유저를 이메일로 찾아 삭제합니다.
  */
 export type deleteUserByEmailResponse200 = {
-  data: CommonResponseVoid
+  data: ApiResponseVoid
   status: 200
 }
+    
+export type deleteUserByEmailResponseSuccess = (deleteUserByEmailResponse200) & {
+  headers: Headers;
+};
+;
 
-export type deleteUserByEmailResponseSuccess = deleteUserByEmailResponse200 & {
-  headers: Headers
-}
-export type deleteUserByEmailResponse = deleteUserByEmailResponseSuccess
+export type deleteUserByEmailResponse = (deleteUserByEmailResponseSuccess)
 
-export const getDeleteUserByEmailUrl = (params: DeleteUserByEmailParams) => {
-  const normalizedParams = new URLSearchParams()
+export const getDeleteUserByEmailUrl = (params: DeleteUserByEmailParams,) => {
+  const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
+    
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  })
+  });
 
-  const stringifiedParams = normalizedParams.toString()
+  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `https://api.refit.my/test/user?${stringifiedParams}`
-    : `https://api.refit.my/test/user`
+  return stringifiedParams.length > 0 ? `https://api.refit.my/test/user?${stringifiedParams}` : `https://api.refit.my/test/user`
 }
 
-export const deleteUserByEmail = async (
-  params: DeleteUserByEmailParams,
-  options?: RequestInit,
-): Promise<deleteUserByEmailResponse> => {
-  const res = await fetch(getDeleteUserByEmailUrl(params), {
+export const deleteUserByEmail = async (params: DeleteUserByEmailParams, options?: RequestInit): Promise<deleteUserByEmailResponse> => {
+  
+  const res = await fetch(getDeleteUserByEmailUrl(params),
+  {      
     ...options,
-    method: 'DELETE',
-  })
+    method: 'DELETE'
+    
+    
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: deleteUserByEmailResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as deleteUserByEmailResponse
 }
 
-export const getDeleteUserByEmailMutationOptions = <TError = unknown, TContext = unknown>(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof deleteUserByEmail>>,
-    TError,
-    { params: DeleteUserByEmailParams },
-    TContext
-  >
-  fetch?: RequestInit
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof deleteUserByEmail>>,
-  TError,
-  { params: DeleteUserByEmailParams },
-  TContext
-> => {
-  const mutationKey = ['deleteUserByEmail']
-  const { mutation: mutationOptions, fetch: fetchOptions } = options
-    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, fetch: undefined }
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof deleteUserByEmail>>,
-    { params: DeleteUserByEmailParams }
-  > = (props) => {
-    const { params } = props ?? {}
 
-    return deleteUserByEmail(params, fetchOptions)
-  }
 
-  return { mutationFn, ...mutationOptions }
-}
+export const getDeleteUserByEmailMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteUserByEmail>>, TError,{params: DeleteUserByEmailParams}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteUserByEmail>>, TError,{params: DeleteUserByEmailParams}, TContext> => {
 
-export type DeleteUserByEmailMutationResult = NonNullable<Awaited<ReturnType<typeof deleteUserByEmail>>>
+const mutationKey = ['deleteUserByEmail'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
 
-export type DeleteUserByEmailMutationError = unknown
+      
 
-/**
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteUserByEmail>>, {params: DeleteUserByEmailParams}> = (props) => {
+          const {params} = props ?? {};
+
+          return  deleteUserByEmail(params,fetchOptions)
+        }
+
+
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteUserByEmailMutationResult = NonNullable<Awaited<ReturnType<typeof deleteUserByEmail>>>
+    
+    export type DeleteUserByEmailMutationError = unknown
+
+    /**
  * @summary (테스트용) 유저를 이메일로 찾아 삭제합니다.
  */
-export const useDeleteUserByEmail = <TError = unknown, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof deleteUserByEmail>>,
-      TError,
-      { params: DeleteUserByEmailParams },
-      TContext
-    >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof deleteUserByEmail>>,
-  TError,
-  { params: DeleteUserByEmailParams },
-  TContext
-> => {
-  return useMutation(getDeleteUserByEmailMutationOptions(options), queryClient)
-}
-/**
+export const useDeleteUserByEmail = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteUserByEmail>>, TError,{params: DeleteUserByEmailParams}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteUserByEmail>>,
+        TError,
+        {params: DeleteUserByEmailParams},
+        TContext
+      > => {
+      return useMutation(getDeleteUserByEmailMutationOptions(options), queryClient);
+    }
+    /**
  * @summary (테스트용) 유저를 id로 찾아 삭제합니다.
  */
 export type deleteUserByIdResponse200 = {
-  data: CommonResponseVoid
+  data: ApiResponseVoid
   status: 200
 }
+    
+export type deleteUserByIdResponseSuccess = (deleteUserByIdResponse200) & {
+  headers: Headers;
+};
+;
 
-export type deleteUserByIdResponseSuccess = deleteUserByIdResponse200 & {
-  headers: Headers
-}
-export type deleteUserByIdResponse = deleteUserByIdResponseSuccess
+export type deleteUserByIdResponse = (deleteUserByIdResponseSuccess)
 
-export const getDeleteUserByIdUrl = (userId: number) => {
+export const getDeleteUserByIdUrl = (userId: number,) => {
+
+
+  
+
   return `https://api.refit.my/test/user/${userId}`
 }
 
 export const deleteUserById = async (userId: number, options?: RequestInit): Promise<deleteUserByIdResponse> => {
-  const res = await fetch(getDeleteUserByIdUrl(userId), {
+  
+  const res = await fetch(getDeleteUserByIdUrl(userId),
+  {      
     ...options,
-    method: 'DELETE',
-  })
+    method: 'DELETE'
+    
+    
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: deleteUserByIdResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as deleteUserByIdResponse
 }
 
-export const getDeleteUserByIdMutationOptions = <TError = unknown, TContext = unknown>(options?: {
-  mutation?: UseMutationOptions<Awaited<ReturnType<typeof deleteUserById>>, TError, { userId: number }, TContext>
-  fetch?: RequestInit
-}): UseMutationOptions<Awaited<ReturnType<typeof deleteUserById>>, TError, { userId: number }, TContext> => {
-  const mutationKey = ['deleteUserById']
-  const { mutation: mutationOptions, fetch: fetchOptions } = options
-    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, fetch: undefined }
 
-  const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteUserById>>, { userId: number }> = (props) => {
-    const { userId } = props ?? {}
 
-    return deleteUserById(userId, fetchOptions)
-  }
 
-  return { mutationFn, ...mutationOptions }
-}
+export const getDeleteUserByIdMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteUserById>>, TError,{userId: number}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteUserById>>, TError,{userId: number}, TContext> => {
 
-export type DeleteUserByIdMutationResult = NonNullable<Awaited<ReturnType<typeof deleteUserById>>>
+const mutationKey = ['deleteUserById'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
 
-export type DeleteUserByIdMutationError = unknown
+      
 
-/**
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteUserById>>, {userId: number}> = (props) => {
+          const {userId} = props ?? {};
+
+          return  deleteUserById(userId,fetchOptions)
+        }
+
+
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteUserByIdMutationResult = NonNullable<Awaited<ReturnType<typeof deleteUserById>>>
+    
+    export type DeleteUserByIdMutationError = unknown
+
+    /**
  * @summary (테스트용) 유저를 id로 찾아 삭제합니다.
  */
-export const useDeleteUserById = <TError = unknown, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<Awaited<ReturnType<typeof deleteUserById>>, TError, { userId: number }, TContext>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<Awaited<ReturnType<typeof deleteUserById>>, TError, { userId: number }, TContext> => {
-  return useMutation(getDeleteUserByIdMutationOptions(options), queryClient)
-}
-/**
+export const useDeleteUserById = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteUserById>>, TError,{userId: number}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteUserById>>,
+        TError,
+        {userId: number},
+        TContext
+      > => {
+      return useMutation(getDeleteUserByIdMutationOptions(options), queryClient);
+    }
+    /**
  * @summary (테스트용) 쿠키에 설정된 토큰들을 삭제합니다.
  */
 export type deleteTokenCookiesResponse200 = {
-  data: CommonResponseVoid
+  data: ApiResponseVoid
   status: 200
 }
+    
+export type deleteTokenCookiesResponseSuccess = (deleteTokenCookiesResponse200) & {
+  headers: Headers;
+};
+;
 
-export type deleteTokenCookiesResponseSuccess = deleteTokenCookiesResponse200 & {
-  headers: Headers
+export type deleteTokenCookiesResponse = (deleteTokenCookiesResponseSuccess)
+
+export const getDeleteTokenCookiesUrl = (params?: DeleteTokenCookiesParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `https://api.refit.my/test/auth/token/cookies?${stringifiedParams}` : `https://api.refit.my/test/auth/token/cookies`
 }
-export type deleteTokenCookiesResponse = deleteTokenCookiesResponseSuccess
 
-export const getDeleteTokenCookiesUrl = () => {
-  return `https://api.refit.my/test/auth/token/cookies`
-}
-
-export const deleteTokenCookies = async (options?: RequestInit): Promise<deleteTokenCookiesResponse> => {
-  const res = await fetch(getDeleteTokenCookiesUrl(), {
+export const deleteTokenCookies = async (params?: DeleteTokenCookiesParams, options?: RequestInit): Promise<deleteTokenCookiesResponse> => {
+  
+  const res = await fetch(getDeleteTokenCookiesUrl(params),
+  {      
     ...options,
-    method: 'DELETE',
-  })
+    method: 'DELETE'
+    
+    
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: deleteTokenCookiesResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as deleteTokenCookiesResponse
 }
 
-export const getDeleteTokenCookiesMutationOptions = <TError = unknown, TContext = unknown>(options?: {
-  mutation?: UseMutationOptions<Awaited<ReturnType<typeof deleteTokenCookies>>, TError, void, TContext>
-  fetch?: RequestInit
-}): UseMutationOptions<Awaited<ReturnType<typeof deleteTokenCookies>>, TError, void, TContext> => {
-  const mutationKey = ['deleteTokenCookies']
-  const { mutation: mutationOptions, fetch: fetchOptions } = options
-    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, fetch: undefined }
 
-  const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteTokenCookies>>, void> = () => {
-    return deleteTokenCookies(fetchOptions)
-  }
 
-  return { mutationFn, ...mutationOptions }
-}
 
-export type DeleteTokenCookiesMutationResult = NonNullable<Awaited<ReturnType<typeof deleteTokenCookies>>>
+export const getDeleteTokenCookiesMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTokenCookies>>, TError,{params?: DeleteTokenCookiesParams}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteTokenCookies>>, TError,{params?: DeleteTokenCookiesParams}, TContext> => {
 
-export type DeleteTokenCookiesMutationError = unknown
+const mutationKey = ['deleteTokenCookies'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
 
-/**
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteTokenCookies>>, {params?: DeleteTokenCookiesParams}> = (props) => {
+          const {params} = props ?? {};
+
+          return  deleteTokenCookies(params,fetchOptions)
+        }
+
+
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteTokenCookiesMutationResult = NonNullable<Awaited<ReturnType<typeof deleteTokenCookies>>>
+    
+    export type DeleteTokenCookiesMutationError = unknown
+
+    /**
  * @summary (테스트용) 쿠키에 설정된 토큰들을 삭제합니다.
  */
-export const useDeleteTokenCookies = <TError = unknown, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<Awaited<ReturnType<typeof deleteTokenCookies>>, TError, void, TContext>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<Awaited<ReturnType<typeof deleteTokenCookies>>, TError, void, TContext> => {
-  return useMutation(getDeleteTokenCookiesMutationOptions(options), queryClient)
-}
+export const useDeleteTokenCookies = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTokenCookies>>, TError,{params?: DeleteTokenCookiesParams}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteTokenCookies>>,
+        TError,
+        {params?: DeleteTokenCookiesParams},
+        TContext
+      > => {
+      return useMutation(getDeleteTokenCookiesMutationOptions(options), queryClient);
+    }
+    

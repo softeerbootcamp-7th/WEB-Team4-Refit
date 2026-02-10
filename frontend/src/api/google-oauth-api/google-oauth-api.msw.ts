@@ -4,65 +4,48 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import { faker } from '@faker-js/faker'
+import {
+  faker
+} from '@faker-js/faker';
 
-import { HttpResponse, http } from 'msw'
-import type { CommonResponseOAuth2LoginUrlResponse } from '../refit-api.schemas'
-import type { RequestHandlerOptions } from 'msw'
+import {
+  HttpResponse,
+  http
+} from 'msw';
+import type {
+  RequestHandlerOptions
+} from 'msw';
+
+import type {
+  ApiResponseOAuth2LoginUrlResponse
+} from '../refit-api.schemas';
 
 
-export const getBuildOAuth2LoginUrlResponseMock = (
-  overrideResponse: Partial<CommonResponseOAuth2LoginUrlResponse> = {},
-): CommonResponseOAuth2LoginUrlResponse => ({
-  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  result: faker.helpers.arrayElement([
-    { oAuth2LoginUrl: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]) },
-    undefined,
-  ]),
-  ...overrideResponse,
-})
+export const getBuildOAuth2LoginUrlResponseMock = (overrideResponse: Partial< ApiResponseOAuth2LoginUrlResponse > = {}): ApiResponseOAuth2LoginUrlResponse => ({isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), result: faker.helpers.arrayElement([{oAuth2LoginUrl: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, undefined]), ...overrideResponse})
 
-export const getBuildOAuth2LoginUrlMockHandler = (
-  overrideResponse?:
-    | CommonResponseOAuth2LoginUrlResponse
-    | ((
-        info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Promise<CommonResponseOAuth2LoginUrlResponse> | CommonResponseOAuth2LoginUrlResponse),
-  options?: RequestHandlerOptions,
-) => {
-  return http.get(
-    '*/auth/login/google',
-    async (info) => {
-      return new HttpResponse(
-        JSON.stringify(
-          overrideResponse !== undefined
-            ? typeof overrideResponse === 'function'
-              ? await overrideResponse(info)
-              : overrideResponse
-            : getBuildOAuth2LoginUrlResponseMock(),
-        ),
-        { status: 200, headers: { 'Content-Type': 'application/json' } },
-      )
-    },
-    options,
-  )
+
+export const getBuildOAuth2LoginUrlMockHandler = (overrideResponse?: ApiResponseOAuth2LoginUrlResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ApiResponseOAuth2LoginUrlResponse> | ApiResponseOAuth2LoginUrlResponse), options?: RequestHandlerOptions) => {
+  return http.get('*/auth/login/google', async (info) => {
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getBuildOAuth2LoginUrlResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  }, options)
 }
 
-export const getHandleOAuth2CallbackMockHandler = (
-  overrideResponse?: void | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<void> | void),
-  options?: RequestHandlerOptions,
-) => {
-  return http.get(
-    '*/auth/login/google/callback',
-    async (info) => {
-      if (typeof overrideResponse === 'function') {
-        await overrideResponse(info)
-      }
-      return new HttpResponse(null, { status: 200 })
-    },
-    options,
-  )
+export const getHandleOAuth2CallbackMockHandler = (overrideResponse?: void | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<void> | void), options?: RequestHandlerOptions) => {
+  return http.get('*/auth/login/google/callback', async (info) => {
+  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
+    return new HttpResponse(null,
+      { status: 200,
+        
+      })
+  }, options)
 }
-export const getGoogleOauthApiMock = () => [getBuildOAuth2LoginUrlMockHandler(), getHandleOAuth2CallbackMockHandler()]
+export const getGoogleOauthApiMock = () => [
+  getBuildOAuth2LoginUrlMockHandler(),
+  getHandleOAuth2CallbackMockHandler()
+]

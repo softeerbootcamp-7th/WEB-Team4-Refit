@@ -4,52 +4,37 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import { faker } from '@faker-js/faker'
+import {
+  faker
+} from '@faker-js/faker';
 
-import { HttpResponse, http } from 'msw'
-import type { CommonResponseListIndustryResponse } from '../refit-api.schemas'
-import type { RequestHandlerOptions } from 'msw'
+import {
+  HttpResponse,
+  http
+} from 'msw';
+import type {
+  RequestHandlerOptions
+} from 'msw';
+
+import type {
+  ApiResponseListIndustryResponse
+} from '../refit-api.schemas';
 
 
-export const getGetIndustriesResponseMock = (
-  overrideResponse: Partial<CommonResponseListIndustryResponse> = {},
-): CommonResponseListIndustryResponse => ({
-  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  result: faker.helpers.arrayElement([
-    Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({
-      industryId: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-      industryName: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-    })),
-    undefined,
-  ]),
-  ...overrideResponse,
-})
+export const getGetIndustriesResponseMock = (overrideResponse: Partial< ApiResponseListIndustryResponse > = {}): ApiResponseListIndustryResponse => ({isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), result: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({industryId: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), industryName: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined]), ...overrideResponse})
 
-export const getGetIndustriesMockHandler = (
-  overrideResponse?:
-    | CommonResponseListIndustryResponse
-    | ((
-        info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Promise<CommonResponseListIndustryResponse> | CommonResponseListIndustryResponse),
-  options?: RequestHandlerOptions,
-) => {
-  return http.get(
-    '*/industry',
-    async (info) => {
-      return new HttpResponse(
-        JSON.stringify(
-          overrideResponse !== undefined
-            ? typeof overrideResponse === 'function'
-              ? await overrideResponse(info)
-              : overrideResponse
-            : getGetIndustriesResponseMock(),
-        ),
-        { status: 200, headers: { 'Content-Type': 'application/json' } },
-      )
-    },
-    options,
-  )
+
+export const getGetIndustriesMockHandler = (overrideResponse?: ApiResponseListIndustryResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ApiResponseListIndustryResponse> | ApiResponseListIndustryResponse), options?: RequestHandlerOptions) => {
+  return http.get('*/industry', async (info) => {
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetIndustriesResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  }, options)
 }
-export const getIndustryApiMock = () => [getGetIndustriesMockHandler()]
+export const getIndustryApiMock = () => [
+  getGetIndustriesMockHandler()
+]

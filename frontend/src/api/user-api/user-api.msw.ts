@@ -4,124 +4,64 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import { faker } from '@faker-js/faker'
+import {
+  faker
+} from '@faker-js/faker';
 
-import { HttpResponse, http } from 'msw'
-import type { CommonResponseMyProfileResponse, CommonResponseVoid } from '../refit-api.schemas'
-import type { RequestHandlerOptions } from 'msw'
+import {
+  HttpResponse,
+  http
+} from 'msw';
+import type {
+  RequestHandlerOptions
+} from 'msw';
+
+import type {
+  ApiResponseMyProfileResponse,
+  ApiResponseVoid
+} from '../refit-api.schemas';
 
 
-export const getSignUpResponseMock = (overrideResponse: Partial<CommonResponseVoid> = {}): CommonResponseVoid => ({
-  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  result: faker.helpers.arrayElement([{}, undefined]),
-  ...overrideResponse,
-})
+export const getAgreeToTermsResponseMock = (overrideResponse: Partial< ApiResponseVoid > = {}): ApiResponseVoid => ({isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), result: faker.helpers.arrayElement([{}, undefined]), ...overrideResponse})
 
-export const getAgreeToTermsResponseMock = (
-  overrideResponse: Partial<CommonResponseVoid> = {},
-): CommonResponseVoid => ({
-  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  result: faker.helpers.arrayElement([{}, undefined]),
-  ...overrideResponse,
-})
+export const getGetMyProfileInfoResponseMock = (overrideResponse: Partial< ApiResponseMyProfileResponse > = {}): ApiResponseMyProfileResponse => ({isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), result: faker.helpers.arrayElement([{nickname: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), industryId: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), jobCategoryId: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), profileImageUrl: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, undefined]), ...overrideResponse})
 
-export const getGetMyProfileInfoResponseMock = (
-  overrideResponse: Partial<CommonResponseMyProfileResponse> = {},
-): CommonResponseMyProfileResponse => ({
-  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  result: faker.helpers.arrayElement([
-    {
-      nickname: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-      industryId: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-      jobCategoryId: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-      profileImageUrl: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-    },
-    undefined,
-  ]),
-  ...overrideResponse,
-})
 
-export const getSignUpMockHandler = (
-  overrideResponse?:
-    | CommonResponseVoid
-    | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<CommonResponseVoid> | CommonResponseVoid),
-  options?: RequestHandlerOptions,
-) => {
-  return http.post(
-    '*/user/signup',
-    async (info) => {
-      return new HttpResponse(
-        JSON.stringify(
-          overrideResponse !== undefined
-            ? typeof overrideResponse === 'function'
-              ? await overrideResponse(info)
-              : overrideResponse
-            : getSignUpResponseMock(),
-        ),
-        { status: 200, headers: { 'Content-Type': 'application/json' } },
-      )
-    },
-    options,
-  )
+export const getSignUpMockHandler = (overrideResponse?: void | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void), options?: RequestHandlerOptions) => {
+  return http.post('*/user/signup', async (info) => {
+  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
+    return new HttpResponse(null,
+      { status: 200,
+        
+      })
+  }, options)
 }
 
-export const getAgreeToTermsMockHandler = (
-  overrideResponse?:
-    | CommonResponseVoid
-    | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<CommonResponseVoid> | CommonResponseVoid),
-  options?: RequestHandlerOptions,
-) => {
-  return http.post(
-    '*/user/my/terms/agree',
-    async (info) => {
-      return new HttpResponse(
-        JSON.stringify(
-          overrideResponse !== undefined
-            ? typeof overrideResponse === 'function'
-              ? await overrideResponse(info)
-              : overrideResponse
-            : getAgreeToTermsResponseMock(),
-        ),
-        { status: 200, headers: { 'Content-Type': 'application/json' } },
-      )
-    },
-    options,
-  )
+export const getAgreeToTermsMockHandler = (overrideResponse?: ApiResponseVoid | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<ApiResponseVoid> | ApiResponseVoid), options?: RequestHandlerOptions) => {
+  return http.post('*/user/my/terms/agree', async (info) => {
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getAgreeToTermsResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  }, options)
 }
 
-export const getGetMyProfileInfoMockHandler = (
-  overrideResponse?:
-    | CommonResponseMyProfileResponse
-    | ((
-        info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Promise<CommonResponseMyProfileResponse> | CommonResponseMyProfileResponse),
-  options?: RequestHandlerOptions,
-) => {
-  return http.get(
-    '*/user/my',
-    async (info) => {
-      return new HttpResponse(
-        JSON.stringify(
-          overrideResponse !== undefined
-            ? typeof overrideResponse === 'function'
-              ? await overrideResponse(info)
-              : overrideResponse
-            : getGetMyProfileInfoResponseMock(),
-        ),
-        { status: 200, headers: { 'Content-Type': 'application/json' } },
-      )
-    },
-    options,
-  )
+export const getGetMyProfileInfoMockHandler = (overrideResponse?: ApiResponseMyProfileResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ApiResponseMyProfileResponse> | ApiResponseMyProfileResponse), options?: RequestHandlerOptions) => {
+  return http.get('*/user/my', async (info) => {
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetMyProfileInfoResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  }, options)
 }
 export const getUserApiMock = () => [
   getSignUpMockHandler(),
   getAgreeToTermsMockHandler(),
-  getGetMyProfileInfoMockHandler(),
+  getGetMyProfileInfoMockHandler()
 ]

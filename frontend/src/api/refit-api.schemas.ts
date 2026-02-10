@@ -9,28 +9,28 @@ export interface QnaSetUpdateRequest {
    * @minLength 0
    * @maxLength 200
    */
-  questionText?: string
-  answerText?: string
+  questionText?: string;
+  answerText?: string;
   /**
    * @minLength 0
    * @maxLength 500
    */
-  selfReviewText?: string
+  selfReviewText?: string;
 }
 
-export interface CommonResponseVoid {
-  isSuccess?: boolean
-  code?: string
-  message?: string
-  result?: unknown
+export interface ApiResponseVoid {
+  isSuccess?: boolean;
+  code?: string;
+  message?: string;
+  result?: unknown;
 }
 
 export interface PdfHighlightingRectDto {
-  x?: number
-  y?: number
-  width?: number
-  height?: number
-  pageNumber?: number
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
+  pageNumber?: number;
 }
 
 export interface PdfHighlightingUpdateRequest {
@@ -38,8 +38,8 @@ export interface PdfHighlightingUpdateRequest {
    * @minLength 0
    * @maxLength 2000
    */
-  highlightingText: string
-  rects: PdfHighlightingRectDto[]
+  highlightingText: string;
+  rects: PdfHighlightingRectDto[];
 }
 
 export interface RawTextUpdateRequest {
@@ -47,7 +47,7 @@ export interface RawTextUpdateRequest {
    * @minLength 0
    * @maxLength 10000
    */
-  rawText: string
+  rawText: string;
 }
 
 export interface KptSelfReviewUpdateRequest {
@@ -55,17 +55,17 @@ export interface KptSelfReviewUpdateRequest {
    * @minLength 0
    * @maxLength 8000
    */
-  keepText?: string
+  keepText?: string;
   /**
    * @minLength 0
    * @maxLength 8000
    */
-  problemText?: string
+  problemText?: string;
   /**
    * @minLength 0
    * @maxLength 8000
    */
-  tryText?: string
+  tryText?: string;
 }
 
 export interface UserSignUpRequest {
@@ -73,19 +73,21 @@ export interface UserSignUpRequest {
    * @minLength 0
    * @maxLength 255
    */
-  email: string
+  email: string;
+  /** @minLength 1 */
+  env: string;
   /**
    * @minLength 0
    * @maxLength 30
    */
-  nickname: string
+  nickname: string;
   /**
    * @minLength 0
    * @maxLength 2048
    */
-  profileImageUrl: string
-  industryId: number
-  jobCategoryId: number
+  profileImageUrl: string;
+  industryId: number;
+  jobCategoryId: number;
 }
 
 export interface ScrapFolderCreateRequest {
@@ -93,67 +95,68 @@ export interface ScrapFolderCreateRequest {
    * @minLength 0
    * @maxLength 10
    */
-  scrapFolderName: string
+  scrapFolderName: string;
 }
 
-export type QnaSearchFilterSInclusionLevelsItem =
-  (typeof QnaSearchFilterSInclusionLevelsItem)[keyof typeof QnaSearchFilterSInclusionLevelsItem]
+export type QnaSearchFilterSInclusionLevelsItem = typeof QnaSearchFilterSInclusionLevelsItem[keyof typeof QnaSearchFilterSInclusionLevelsItem];
+
 
 export const QnaSearchFilterSInclusionLevelsItem = {
   PRESENT: 'PRESENT',
   INSUFFICIENT: 'INSUFFICIENT',
   ABSENT: 'ABSENT',
-} as const
+} as const;
 
-export type QnaSearchFilterTInclusionLevelsItem =
-  (typeof QnaSearchFilterTInclusionLevelsItem)[keyof typeof QnaSearchFilterTInclusionLevelsItem]
+export type QnaSearchFilterTInclusionLevelsItem = typeof QnaSearchFilterTInclusionLevelsItem[keyof typeof QnaSearchFilterTInclusionLevelsItem];
+
 
 export const QnaSearchFilterTInclusionLevelsItem = {
   PRESENT: 'PRESENT',
   INSUFFICIENT: 'INSUFFICIENT',
   ABSENT: 'ABSENT',
-} as const
+} as const;
 
-export type QnaSearchFilterAInclusionLevelsItem =
-  (typeof QnaSearchFilterAInclusionLevelsItem)[keyof typeof QnaSearchFilterAInclusionLevelsItem]
+export type QnaSearchFilterAInclusionLevelsItem = typeof QnaSearchFilterAInclusionLevelsItem[keyof typeof QnaSearchFilterAInclusionLevelsItem];
+
 
 export const QnaSearchFilterAInclusionLevelsItem = {
   PRESENT: 'PRESENT',
   INSUFFICIENT: 'INSUFFICIENT',
   ABSENT: 'ABSENT',
-} as const
+} as const;
 
-export type QnaSearchFilterRInclusionLevelsItem =
-  (typeof QnaSearchFilterRInclusionLevelsItem)[keyof typeof QnaSearchFilterRInclusionLevelsItem]
+export type QnaSearchFilterRInclusionLevelsItem = typeof QnaSearchFilterRInclusionLevelsItem[keyof typeof QnaSearchFilterRInclusionLevelsItem];
+
 
 export const QnaSearchFilterRInclusionLevelsItem = {
   PRESENT: 'PRESENT',
   INSUFFICIENT: 'INSUFFICIENT',
   ABSENT: 'ABSENT',
-} as const
+} as const;
 
 export interface QnaSearchFilter {
-  hasStarAnalysis?: boolean
-  sInclusionLevels?: QnaSearchFilterSInclusionLevelsItem[]
-  tInclusionLevels?: QnaSearchFilterTInclusionLevelsItem[]
-  aInclusionLevels?: QnaSearchFilterAInclusionLevelsItem[]
-  rInclusionLevels?: QnaSearchFilterRInclusionLevelsItem[]
+  hasStarAnalysis?: boolean;
+  sInclusionLevels?: QnaSearchFilterSInclusionLevelsItem[];
+  tInclusionLevels?: QnaSearchFilterTInclusionLevelsItem[];
+  aInclusionLevels?: QnaSearchFilterAInclusionLevelsItem[];
+  rInclusionLevels?: QnaSearchFilterRInclusionLevelsItem[];
 }
 
 export interface QnaSetSearchRequest {
-  keyword?: string
-  searchFilter?: QnaSearchFilter
+  keyword?: string;
+  searchFilter?: QnaSearchFilter;
 }
 
 export interface Pageable {
   /** @minimum 0 */
-  page?: number
+  page?: number;
   /** @minimum 1 */
-  size?: number
-  sort?: string[]
+  size?: number;
+  sort?: string[];
 }
 
-export type InterviewDtoInterviewType = (typeof InterviewDtoInterviewType)[keyof typeof InterviewDtoInterviewType]
+export type InterviewDtoInterviewType = typeof InterviewDtoInterviewType[keyof typeof InterviewDtoInterviewType];
+
 
 export const InterviewDtoInterviewType = {
   FIRST: 'FIRST',
@@ -165,79 +168,79 @@ export const InterviewDtoInterviewType = {
   CULTURE_FIT: 'CULTURE_FIT',
   COFFEE_CHAT: 'COFFEE_CHAT',
   PSEUDO: 'PSEUDO',
-} as const
+} as const;
 
-export type InterviewDtoInterviewResultStatus =
-  (typeof InterviewDtoInterviewResultStatus)[keyof typeof InterviewDtoInterviewResultStatus]
+export type InterviewDtoInterviewResultStatus = typeof InterviewDtoInterviewResultStatus[keyof typeof InterviewDtoInterviewResultStatus];
+
 
 export const InterviewDtoInterviewResultStatus = {
   WAIT: 'WAIT',
   FAIL: 'FAIL',
   PASS: 'PASS',
-} as const
+} as const;
 
 export interface InterviewDto {
-  interviewId?: number
-  interviewType?: InterviewDtoInterviewType
-  interviewStartAt?: string
-  interviewResultStatus?: InterviewDtoInterviewResultStatus
-  interviewRawText?: string
-  companyName?: string
-  jobCategoryId?: number
-  jobCategoryName?: string
-  updatedAt?: string
-  createdAt?: string
+  interviewId?: number;
+  interviewType?: InterviewDtoInterviewType;
+  interviewStartAt?: string;
+  interviewResultStatus?: InterviewDtoInterviewResultStatus;
+  interviewRawText?: string;
+  companyName?: string;
+  jobCategoryId?: number;
+  jobCategoryName?: string;
+  updatedAt?: string;
+  createdAt?: string;
 }
 
 export interface QnaSetSimpleDto {
-  qnaSetId?: number
-  questionText?: string
-  answerText?: string
+  qnaSetId?: number;
+  questionText?: string;
+  answerText?: string;
 }
 
 export interface QnaSetSearchResponse {
-  interviewInfo?: InterviewDto
-  qnaSetInfo?: QnaSetSimpleDto
+  interviewInfo?: InterviewDto;
+  qnaSetInfo?: QnaSetSimpleDto;
 }
 
 export interface SortObject {
-  empty?: boolean
-  sorted?: boolean
-  unsorted?: boolean
+  empty?: boolean;
+  sorted?: boolean;
+  unsorted?: boolean;
 }
 
 export interface PageableObject {
-  offset?: number
-  sort?: SortObject
-  paged?: boolean
-  pageNumber?: number
-  pageSize?: number
-  unpaged?: boolean
+  offset?: number;
+  sort?: SortObject;
+  paged?: boolean;
+  pageNumber?: number;
+  pageSize?: number;
+  unpaged?: boolean;
 }
 
 export interface PageQnaSetSearchResponse {
-  totalElements?: number
-  totalPages?: number
-  size?: number
-  content?: QnaSetSearchResponse[]
-  number?: number
-  sort?: SortObject
-  pageable?: PageableObject
-  first?: boolean
-  numberOfElements?: number
-  last?: boolean
-  empty?: boolean
+  totalElements?: number;
+  totalPages?: number;
+  size?: number;
+  content?: QnaSetSearchResponse[];
+  number?: number;
+  sort?: SortObject;
+  pageable?: PageableObject;
+  first?: boolean;
+  numberOfElements?: number;
+  last?: boolean;
+  empty?: boolean;
 }
 
-export interface CommonResponsePageQnaSetSearchResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
-  result?: PageQnaSetSearchResponse
+export interface ApiResponsePageQnaSetSearchResponse {
+  isSuccess?: boolean;
+  code?: string;
+  message?: string;
+  result?: PageQnaSetSearchResponse;
 }
 
-export type InterviewCreateRequestInterviewType =
-  (typeof InterviewCreateRequestInterviewType)[keyof typeof InterviewCreateRequestInterviewType]
+export type InterviewCreateRequestInterviewType = typeof InterviewCreateRequestInterviewType[keyof typeof InterviewCreateRequestInterviewType];
+
 
 export const InterviewCreateRequestInterviewType = {
   FIRST: 'FIRST',
@@ -249,19 +252,19 @@ export const InterviewCreateRequestInterviewType = {
   CULTURE_FIT: 'CULTURE_FIT',
   COFFEE_CHAT: 'COFFEE_CHAT',
   PSEUDO: 'PSEUDO',
-} as const
+} as const;
 
 export interface InterviewCreateRequest {
-  startAt: string
-  interviewType: InterviewCreateRequestInterviewType
-  companyName: string
-  industryId: number
-  jobCategoryId: number
-  jobRole: string
+  startAt: string;
+  interviewType: InterviewCreateRequestInterviewType;
+  companyName: string;
+  industryId: number;
+  jobCategoryId: number;
+  jobRole: string;
 }
 
-export type InterviewSearchFilterInterviewTypeItem =
-  (typeof InterviewSearchFilterInterviewTypeItem)[keyof typeof InterviewSearchFilterInterviewTypeItem]
+export type InterviewSearchFilterInterviewTypeItem = typeof InterviewSearchFilterInterviewTypeItem[keyof typeof InterviewSearchFilterInterviewTypeItem];
+
 
 export const InterviewSearchFilterInterviewTypeItem = {
   FIRST: 'FIRST',
@@ -273,48 +276,48 @@ export const InterviewSearchFilterInterviewTypeItem = {
   CULTURE_FIT: 'CULTURE_FIT',
   COFFEE_CHAT: 'COFFEE_CHAT',
   PSEUDO: 'PSEUDO',
-} as const
+} as const;
 
-export type InterviewSearchFilterInterviewResultStatusItem =
-  (typeof InterviewSearchFilterInterviewResultStatusItem)[keyof typeof InterviewSearchFilterInterviewResultStatusItem]
+export type InterviewSearchFilterInterviewResultStatusItem = typeof InterviewSearchFilterInterviewResultStatusItem[keyof typeof InterviewSearchFilterInterviewResultStatusItem];
+
 
 export const InterviewSearchFilterInterviewResultStatusItem = {
   WAIT: 'WAIT',
   FAIL: 'FAIL',
   PASS: 'PASS',
-} as const
+} as const;
 
 export interface InterviewSearchFilter {
-  interviewType?: InterviewSearchFilterInterviewTypeItem[]
-  interviewResultStatus?: InterviewSearchFilterInterviewResultStatusItem[]
-  startDate?: string
-  endDate?: string
+  interviewType?: InterviewSearchFilterInterviewTypeItem[];
+  interviewResultStatus?: InterviewSearchFilterInterviewResultStatusItem[];
+  startDate?: string;
+  endDate?: string;
 }
 
 export interface InterviewSearchRequest {
-  keyword?: string
-  searchFilter?: InterviewSearchFilter
+  keyword?: string;
+  searchFilter?: InterviewSearchFilter;
 }
 
 export interface PageInterviewDto {
-  totalElements?: number
-  totalPages?: number
-  size?: number
-  content?: InterviewDto[]
-  number?: number
-  sort?: SortObject
-  pageable?: PageableObject
-  first?: boolean
-  numberOfElements?: number
-  last?: boolean
-  empty?: boolean
+  totalElements?: number;
+  totalPages?: number;
+  size?: number;
+  content?: InterviewDto[];
+  number?: number;
+  sort?: SortObject;
+  pageable?: PageableObject;
+  first?: boolean;
+  numberOfElements?: number;
+  last?: boolean;
+  empty?: boolean;
 }
 
-export interface CommonResponsePageInterviewDto {
-  isSuccess?: boolean
-  code?: string
-  message?: string
-  result?: PageInterviewDto
+export interface ApiResponsePageInterviewDto {
+  isSuccess?: boolean;
+  code?: string;
+  message?: string;
+  result?: PageInterviewDto;
 }
 
 export interface ScrapFolderNameUpdateRequest {
@@ -322,144 +325,144 @@ export interface ScrapFolderNameUpdateRequest {
    * @minLength 0
    * @maxLength 10
    */
-  scrapFolderName: string
+  scrapFolderName: string;
 }
 
-export type InterviewResultStatusUpdateRequestInterviewResultStatus =
-  (typeof InterviewResultStatusUpdateRequestInterviewResultStatus)[keyof typeof InterviewResultStatusUpdateRequestInterviewResultStatus]
+export type InterviewResultStatusUpdateRequestInterviewResultStatus = typeof InterviewResultStatusUpdateRequestInterviewResultStatus[keyof typeof InterviewResultStatusUpdateRequestInterviewResultStatus];
+
 
 export const InterviewResultStatusUpdateRequestInterviewResultStatus = {
   WAIT: 'WAIT',
   FAIL: 'FAIL',
   PASS: 'PASS',
-} as const
+} as const;
 
 export interface InterviewResultStatusUpdateRequest {
-  interviewResultStatus: InterviewResultStatusUpdateRequestInterviewResultStatus
+  interviewResultStatus: InterviewResultStatusUpdateRequestInterviewResultStatus;
 }
 
 export interface MyProfileResponse {
-  nickname?: string
-  industryId?: number
-  jobCategoryId?: number
-  profileImageUrl?: string
+  nickname?: string;
+  industryId?: number;
+  jobCategoryId?: number;
+  profileImageUrl?: string;
 }
 
-export interface CommonResponseMyProfileResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
-  result?: MyProfileResponse
+export interface ApiResponseMyProfileResponse {
+  isSuccess?: boolean;
+  code?: string;
+  message?: string;
+  result?: MyProfileResponse;
 }
 
 export interface TokenPairDto {
-  accessToken?: string
-  refreshToken?: string
+  accessToken?: string;
+  refreshToken?: string;
 }
 
-export interface CommonResponseTokenPairDto {
-  isSuccess?: boolean
-  code?: string
-  message?: string
-  result?: TokenPairDto
+export interface ApiResponseTokenPairDto {
+  isSuccess?: boolean;
+  code?: string;
+  message?: string;
+  result?: TokenPairDto;
 }
 
 export interface ScrapFolderResponse {
-  scrapFolderId?: number
-  scrapFolderName?: string
-  qnaSetCount?: number
+  scrapFolderId?: number;
+  scrapFolderName?: string;
+  qnaSetCount?: number;
 }
 
 export interface PageScrapFolderResponse {
-  totalElements?: number
-  totalPages?: number
-  size?: number
-  content?: ScrapFolderResponse[]
-  number?: number
-  sort?: SortObject
-  pageable?: PageableObject
-  first?: boolean
-  numberOfElements?: number
-  last?: boolean
-  empty?: boolean
+  totalElements?: number;
+  totalPages?: number;
+  size?: number;
+  content?: ScrapFolderResponse[];
+  number?: number;
+  sort?: SortObject;
+  pageable?: PageableObject;
+  first?: boolean;
+  numberOfElements?: number;
+  last?: boolean;
+  empty?: boolean;
 }
 
-export interface CommonResponsePageScrapFolderResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
-  result?: PageScrapFolderResponse
+export interface ApiResponsePageScrapFolderResponse {
+  isSuccess?: boolean;
+  code?: string;
+  message?: string;
+  result?: PageScrapFolderResponse;
 }
 
 export interface ScrapFolderQnaSetResponse {
-  interview?: InterviewDto
-  qnaSet?: QnaSetSimpleDto
+  interview?: InterviewDto;
+  qnaSet?: QnaSetSimpleDto;
 }
 
 export interface PageScrapFolderQnaSetResponse {
-  totalElements?: number
-  totalPages?: number
-  size?: number
-  content?: ScrapFolderQnaSetResponse[]
-  number?: number
-  sort?: SortObject
-  pageable?: PageableObject
-  first?: boolean
-  numberOfElements?: number
-  last?: boolean
-  empty?: boolean
+  totalElements?: number;
+  totalPages?: number;
+  size?: number;
+  content?: ScrapFolderQnaSetResponse[];
+  number?: number;
+  sort?: SortObject;
+  pageable?: PageableObject;
+  first?: boolean;
+  numberOfElements?: number;
+  last?: boolean;
+  empty?: boolean;
 }
 
-export interface CommonResponsePageScrapFolderQnaSetResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
-  result?: PageScrapFolderQnaSetResponse
+export interface ApiResponsePageScrapFolderQnaSetResponse {
+  isSuccess?: boolean;
+  code?: string;
+  message?: string;
+  result?: PageScrapFolderQnaSetResponse;
 }
 
 export interface PdfHighlightingDto {
-  pdfHighlightingId?: number
-  highlightingText?: string
-  rects?: PdfHighlightingRectDto[]
+  pdfHighlightingId?: number;
+  highlightingText?: string;
+  rects?: PdfHighlightingRectDto[];
 }
 
-export interface CommonResponseListPdfHighlightingDto {
-  isSuccess?: boolean
-  code?: string
-  message?: string
-  result?: PdfHighlightingDto[]
+export interface ApiResponseListPdfHighlightingDto {
+  isSuccess?: boolean;
+  code?: string;
+  message?: string;
+  result?: PdfHighlightingDto[];
 }
 
 export interface FrequentQnaSetCategoryResponse {
-  categoryId?: number
-  categoryName?: string
-  frequentCount?: number
-  cohesion?: number
+  categoryId?: number;
+  categoryName?: string;
+  frequentCount?: number;
+  cohesion?: number;
 }
 
 export interface PageFrequentQnaSetCategoryResponse {
-  totalElements?: number
-  totalPages?: number
-  size?: number
-  content?: FrequentQnaSetCategoryResponse[]
-  number?: number
-  sort?: SortObject
-  pageable?: PageableObject
-  first?: boolean
-  numberOfElements?: number
-  last?: boolean
-  empty?: boolean
+  totalElements?: number;
+  totalPages?: number;
+  size?: number;
+  content?: FrequentQnaSetCategoryResponse[];
+  number?: number;
+  sort?: SortObject;
+  pageable?: PageableObject;
+  first?: boolean;
+  numberOfElements?: number;
+  last?: boolean;
+  empty?: boolean;
 }
 
-export interface CommonResponsePageFrequentQnaSetCategoryResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
-  result?: PageFrequentQnaSetCategoryResponse
+export interface ApiResponsePageFrequentQnaSetCategoryResponse {
+  isSuccess?: boolean;
+  code?: string;
+  message?: string;
+  result?: PageFrequentQnaSetCategoryResponse;
 }
 
-export type InterviewSimpleDtoInterviewType =
-  (typeof InterviewSimpleDtoInterviewType)[keyof typeof InterviewSimpleDtoInterviewType]
+export type InterviewSimpleDtoInterviewType = typeof InterviewSimpleDtoInterviewType[keyof typeof InterviewSimpleDtoInterviewType];
+
 
 export const InterviewSimpleDtoInterviewType = {
   FIRST: 'FIRST',
@@ -471,81 +474,81 @@ export const InterviewSimpleDtoInterviewType = {
   CULTURE_FIT: 'CULTURE_FIT',
   COFFEE_CHAT: 'COFFEE_CHAT',
   PSEUDO: 'PSEUDO',
-} as const
+} as const;
 
 export interface CompanyDto {
-  companyId?: number
-  companyName?: string
-  companyLogoUrl?: string
+  companyId?: number;
+  companyName?: string;
+  companyLogoUrl?: string;
 }
 
 export interface InterviewSimpleDto {
-  interviewId?: number
-  interviewType?: InterviewSimpleDtoInterviewType
-  interviewStartAt?: string
-  companyInfo?: CompanyDto
-  jobCategoryName?: string
-  updatedAt?: string
+  interviewId?: number;
+  interviewType?: InterviewSimpleDtoInterviewType;
+  interviewStartAt?: string;
+  companyInfo?: CompanyDto;
+  jobCategoryName?: string;
+  updatedAt?: string;
 }
 
 export interface FrequentQnaSetCategoryQuestionResponse {
-  question?: string
-  interviewInfo?: InterviewSimpleDto
+  question?: string;
+  interviewInfo?: InterviewSimpleDto;
 }
 
 export interface PageFrequentQnaSetCategoryQuestionResponse {
-  totalElements?: number
-  totalPages?: number
-  size?: number
-  content?: FrequentQnaSetCategoryQuestionResponse[]
-  number?: number
-  sort?: SortObject
-  pageable?: PageableObject
-  first?: boolean
-  numberOfElements?: number
-  last?: boolean
-  empty?: boolean
+  totalElements?: number;
+  totalPages?: number;
+  size?: number;
+  content?: FrequentQnaSetCategoryQuestionResponse[];
+  number?: number;
+  sort?: SortObject;
+  pageable?: PageableObject;
+  first?: boolean;
+  numberOfElements?: number;
+  last?: boolean;
+  empty?: boolean;
 }
 
-export interface CommonResponsePageFrequentQnaSetCategoryQuestionResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
-  result?: PageFrequentQnaSetCategoryQuestionResponse
+export interface ApiResponsePageFrequentQnaSetCategoryQuestionResponse {
+  isSuccess?: boolean;
+  code?: string;
+  message?: string;
+  result?: PageFrequentQnaSetCategoryQuestionResponse;
 }
 
 export interface FrequentQnaSetResponse {
-  question?: string
+  question?: string;
 }
 
-export interface CommonResponseListFrequentQnaSetResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
-  result?: FrequentQnaSetResponse[]
+export interface ApiResponseListFrequentQnaSetResponse {
+  isSuccess?: boolean;
+  code?: string;
+  message?: string;
+  result?: FrequentQnaSetResponse[];
 }
 
 export interface JobCategoryResponse {
-  jobCategoryId?: number
-  jobCategoryName?: string
+  jobCategoryId?: number;
+  jobCategoryName?: string;
 }
 
-export interface CommonResponseListJobCategoryResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
-  result?: JobCategoryResponse[]
+export interface ApiResponseListJobCategoryResponse {
+  isSuccess?: boolean;
+  code?: string;
+  message?: string;
+  result?: JobCategoryResponse[];
 }
 
-export interface CommonResponseInterviewDto {
-  isSuccess?: boolean
-  code?: string
-  message?: string
-  result?: InterviewDto
+export interface ApiResponseInterviewDto {
+  isSuccess?: boolean;
+  code?: string;
+  message?: string;
+  result?: InterviewDto;
 }
 
-export type InterviewFullDtoInterviewType =
-  (typeof InterviewFullDtoInterviewType)[keyof typeof InterviewFullDtoInterviewType]
+export type InterviewFullDtoInterviewType = typeof InterviewFullDtoInterviewType[keyof typeof InterviewFullDtoInterviewType];
+
 
 export const InterviewFullDtoInterviewType = {
   FIRST: 'FIRST',
@@ -557,358 +560,376 @@ export const InterviewFullDtoInterviewType = {
   CULTURE_FIT: 'CULTURE_FIT',
   COFFEE_CHAT: 'COFFEE_CHAT',
   PSEUDO: 'PSEUDO',
-} as const
+} as const;
 
-export type InterviewFullDtoInterviewResultStatus =
-  (typeof InterviewFullDtoInterviewResultStatus)[keyof typeof InterviewFullDtoInterviewResultStatus]
+export type InterviewFullDtoInterviewResultStatus = typeof InterviewFullDtoInterviewResultStatus[keyof typeof InterviewFullDtoInterviewResultStatus];
+
 
 export const InterviewFullDtoInterviewResultStatus = {
   WAIT: 'WAIT',
   FAIL: 'FAIL',
   PASS: 'PASS',
-} as const
+} as const;
 
-export type StarAnalysisDtoSInclusionLevel =
-  (typeof StarAnalysisDtoSInclusionLevel)[keyof typeof StarAnalysisDtoSInclusionLevel]
+export type StarAnalysisDtoSInclusionLevel = typeof StarAnalysisDtoSInclusionLevel[keyof typeof StarAnalysisDtoSInclusionLevel];
+
 
 export const StarAnalysisDtoSInclusionLevel = {
   PRESENT: 'PRESENT',
   INSUFFICIENT: 'INSUFFICIENT',
   ABSENT: 'ABSENT',
-} as const
+} as const;
 
-export type StarAnalysisDtoTInclusionLevel =
-  (typeof StarAnalysisDtoTInclusionLevel)[keyof typeof StarAnalysisDtoTInclusionLevel]
+export type StarAnalysisDtoTInclusionLevel = typeof StarAnalysisDtoTInclusionLevel[keyof typeof StarAnalysisDtoTInclusionLevel];
+
 
 export const StarAnalysisDtoTInclusionLevel = {
   PRESENT: 'PRESENT',
   INSUFFICIENT: 'INSUFFICIENT',
   ABSENT: 'ABSENT',
-} as const
+} as const;
 
-export type StarAnalysisDtoAInclusionLevel =
-  (typeof StarAnalysisDtoAInclusionLevel)[keyof typeof StarAnalysisDtoAInclusionLevel]
+export type StarAnalysisDtoAInclusionLevel = typeof StarAnalysisDtoAInclusionLevel[keyof typeof StarAnalysisDtoAInclusionLevel];
+
 
 export const StarAnalysisDtoAInclusionLevel = {
   PRESENT: 'PRESENT',
   INSUFFICIENT: 'INSUFFICIENT',
   ABSENT: 'ABSENT',
-} as const
+} as const;
 
-export type StarAnalysisDtoRInclusionLevel =
-  (typeof StarAnalysisDtoRInclusionLevel)[keyof typeof StarAnalysisDtoRInclusionLevel]
+export type StarAnalysisDtoRInclusionLevel = typeof StarAnalysisDtoRInclusionLevel[keyof typeof StarAnalysisDtoRInclusionLevel];
+
 
 export const StarAnalysisDtoRInclusionLevel = {
   PRESENT: 'PRESENT',
   INSUFFICIENT: 'INSUFFICIENT',
   ABSENT: 'ABSENT',
-} as const
+} as const;
 
 export interface StarAnalysisDto {
-  sInclusionLevel?: StarAnalysisDtoSInclusionLevel
-  tInclusionLevel?: StarAnalysisDtoTInclusionLevel
-  aInclusionLevel?: StarAnalysisDtoAInclusionLevel
-  rInclusionLevel?: StarAnalysisDtoRInclusionLevel
-  overallSummary?: string
+  sInclusionLevel?: StarAnalysisDtoSInclusionLevel;
+  tInclusionLevel?: StarAnalysisDtoTInclusionLevel;
+  aInclusionLevel?: StarAnalysisDtoAInclusionLevel;
+  rInclusionLevel?: StarAnalysisDtoRInclusionLevel;
+  overallSummary?: string;
 }
 
 export interface QnaSetDto {
-  qnaSetId?: number
-  interviewId?: number
-  questionText?: string
-  answerText?: string
-  qnaSetSelfReviewText?: string
-  starAnalysis?: StarAnalysisDto
-  isMarkedDifficult?: boolean
+  qnaSetId?: number;
+  interviewId?: number;
+  questionText?: string;
+  answerText?: string;
+  qnaSetSelfReviewText?: string;
+  starAnalysis?: StarAnalysisDto;
+  isMarkedDifficult?: boolean;
+}
+
+export interface InterviewSelfReviewDto {
+  keepText?: string;
+  problemText?: string;
+  tryText?: string;
 }
 
 export interface InterviewFullDto {
-  interviewId?: number
-  interviewType?: InterviewFullDtoInterviewType
-  interviewStartAt?: string
-  interviewResultStatus?: InterviewFullDtoInterviewResultStatus
-  company?: string
-  industryId?: number
-  jobCategoryId?: number
-  jobRole?: string
-  updatedAt?: string
-  pdfUrl?: string
-  qnaSets?: QnaSetDto[]
+  interviewId?: number;
+  interviewType?: InterviewFullDtoInterviewType;
+  interviewStartAt?: string;
+  interviewResultStatus?: InterviewFullDtoInterviewResultStatus;
+  company?: string;
+  industryId?: number;
+  jobCategoryId?: number;
+  jobRole?: string;
+  updatedAt?: string;
+  pdfUrl?: string;
+  qnaSets?: QnaSetDto[];
+  interviewSelfReview?: InterviewSelfReviewDto;
 }
 
-export interface CommonResponseInterviewFullDto {
-  isSuccess?: boolean
-  code?: string
-  message?: string
-  result?: InterviewFullDto
+export interface ApiResponseInterviewFullDto {
+  isSuccess?: boolean;
+  code?: string;
+  message?: string;
+  result?: InterviewFullDto;
 }
 
 export interface GuideQuestionResponse {
-  guideQuestion?: string
+  guideQuestion?: string;
 }
 
-export interface CommonResponseGuideQuestionResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
-  result?: GuideQuestionResponse
+export interface ApiResponseGuideQuestionResponse {
+  isSuccess?: boolean;
+  code?: string;
+  message?: string;
+  result?: GuideQuestionResponse;
 }
 
 export interface PageInterviewSimpleDto {
-  totalElements?: number
-  totalPages?: number
-  size?: number
-  content?: InterviewSimpleDto[]
-  number?: number
-  sort?: SortObject
-  pageable?: PageableObject
-  first?: boolean
-  numberOfElements?: number
-  last?: boolean
-  empty?: boolean
+  totalElements?: number;
+  totalPages?: number;
+  size?: number;
+  content?: InterviewSimpleDto[];
+  number?: number;
+  sort?: SortObject;
+  pageable?: PageableObject;
+  first?: boolean;
+  numberOfElements?: number;
+  last?: boolean;
+  empty?: boolean;
 }
 
-export interface CommonResponsePageInterviewSimpleDto {
-  isSuccess?: boolean
-  code?: string
-  message?: string
-  result?: PageInterviewSimpleDto
+export interface ApiResponsePageInterviewSimpleDto {
+  isSuccess?: boolean;
+  code?: string;
+  message?: string;
+  result?: PageInterviewSimpleDto;
 }
 
 export interface IndustryResponse {
-  industryId?: number
-  industryName?: string
+  industryId?: number;
+  industryName?: string;
 }
 
-export interface CommonResponseListIndustryResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
-  result?: IndustryResponse[]
+export interface ApiResponseListIndustryResponse {
+  isSuccess?: boolean;
+  code?: string;
+  message?: string;
+  result?: IndustryResponse[];
 }
 
 export interface DashboardMyDifficultQuestionResponse {
-  question?: string
-  interview?: InterviewDto
+  question?: string;
+  interview?: InterviewDto;
 }
 
 export interface PageDashboardMyDifficultQuestionResponse {
-  totalElements?: number
-  totalPages?: number
-  size?: number
-  content?: DashboardMyDifficultQuestionResponse[]
-  number?: number
-  sort?: SortObject
-  pageable?: PageableObject
-  first?: boolean
-  numberOfElements?: number
-  last?: boolean
-  empty?: boolean
+  totalElements?: number;
+  totalPages?: number;
+  size?: number;
+  content?: DashboardMyDifficultQuestionResponse[];
+  number?: number;
+  sort?: SortObject;
+  pageable?: PageableObject;
+  first?: boolean;
+  numberOfElements?: number;
+  last?: boolean;
+  empty?: boolean;
 }
 
-export interface CommonResponsePageDashboardMyDifficultQuestionResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
-  result?: PageDashboardMyDifficultQuestionResponse
+export interface ApiResponsePageDashboardMyDifficultQuestionResponse {
+  isSuccess?: boolean;
+  code?: string;
+  message?: string;
+  result?: PageDashboardMyDifficultQuestionResponse;
 }
 
 export interface DashboardUpcomingInterviewResponse {
-  upcomingInterview?: InterviewDto
-  frequentlyAskedQuestions?: string[]
-  relatedInterviews?: InterviewDto[]
+  upcomingInterview?: InterviewDto;
+  frequentlyAskedQuestions?: string[];
+  relatedInterviews?: InterviewDto[];
 }
 
 export interface PageDashboardUpcomingInterviewResponse {
-  totalElements?: number
-  totalPages?: number
-  size?: number
-  content?: DashboardUpcomingInterviewResponse[]
-  number?: number
-  sort?: SortObject
-  pageable?: PageableObject
-  first?: boolean
-  numberOfElements?: number
-  last?: boolean
-  empty?: boolean
+  totalElements?: number;
+  totalPages?: number;
+  size?: number;
+  content?: DashboardUpcomingInterviewResponse[];
+  number?: number;
+  sort?: SortObject;
+  pageable?: PageableObject;
+  first?: boolean;
+  numberOfElements?: number;
+  last?: boolean;
+  empty?: boolean;
 }
 
-export interface CommonResponsePageDashboardUpcomingInterviewResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
-  result?: PageDashboardUpcomingInterviewResponse
+export interface ApiResponsePageDashboardUpcomingInterviewResponse {
+  isSuccess?: boolean;
+  code?: string;
+  message?: string;
+  result?: PageDashboardUpcomingInterviewResponse;
 }
 
 export interface DashboardDebriefIncompletedInterviewResponse {
-  interview?: InterviewDto
-  passedDays?: number
+  interview?: InterviewDto;
+  passedDays?: number;
 }
 
 export interface PageDashboardDebriefIncompletedInterviewResponse {
-  totalElements?: number
-  totalPages?: number
-  size?: number
-  content?: DashboardDebriefIncompletedInterviewResponse[]
-  number?: number
-  sort?: SortObject
-  pageable?: PageableObject
-  first?: boolean
-  numberOfElements?: number
-  last?: boolean
-  empty?: boolean
+  totalElements?: number;
+  totalPages?: number;
+  size?: number;
+  content?: DashboardDebriefIncompletedInterviewResponse[];
+  number?: number;
+  sort?: SortObject;
+  pageable?: PageableObject;
+  first?: boolean;
+  numberOfElements?: number;
+  last?: boolean;
+  empty?: boolean;
 }
 
-export interface CommonResponsePageDashboardDebriefIncompletedInterviewResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
-  result?: PageDashboardDebriefIncompletedInterviewResponse
+export interface ApiResponsePageDashboardDebriefIncompletedInterviewResponse {
+  isSuccess?: boolean;
+  code?: string;
+  message?: string;
+  result?: PageDashboardDebriefIncompletedInterviewResponse;
 }
 
-export type DashboardHeadlineResponseHeadlineType =
-  (typeof DashboardHeadlineResponseHeadlineType)[keyof typeof DashboardHeadlineResponseHeadlineType]
+export type DashboardHeadlineResponseHeadlineType = typeof DashboardHeadlineResponseHeadlineType[keyof typeof DashboardHeadlineResponseHeadlineType];
+
 
 export const DashboardHeadlineResponseHeadlineType = {
   REGISTER_INTERVIEW: 'REGISTER_INTERVIEW',
   PREPARE_INTERVIEW: 'PREPARE_INTERVIEW',
   REVIEW_INTERVIEW: 'REVIEW_INTERVIEW',
   CHECK_INTERVIEW_HISTORY: 'CHECK_INTERVIEW_HISTORY',
-} as const
+} as const;
 
 export interface DashboardHeadlineResponse {
-  headlineType?: DashboardHeadlineResponseHeadlineType
-  nickname?: string
-  upcomingInterviewDday?: number
+  headlineType?: DashboardHeadlineResponseHeadlineType;
+  nickname?: string;
+  upcomingInterviewDday?: number;
 }
 
-export interface CommonResponseDashboardHeadlineResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
-  result?: DashboardHeadlineResponse
+export interface ApiResponseDashboardHeadlineResponse {
+  isSuccess?: boolean;
+  code?: string;
+  message?: string;
+  result?: DashboardHeadlineResponse;
 }
 
 export interface DashboardCalendarResponse {
-  date?: string
-  dDay?: number
-  interviews?: InterviewDto[]
+  date?: string;
+  dDay?: number;
+  interviews?: InterviewDto[];
 }
 
-export interface CommonResponseListDashboardCalendarResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
-  result?: DashboardCalendarResponse[]
+export interface ApiResponseListDashboardCalendarResponse {
+  isSuccess?: boolean;
+  code?: string;
+  message?: string;
+  result?: DashboardCalendarResponse[];
 }
 
 export interface OAuth2LoginUrlResponse {
-  oAuth2LoginUrl?: string
+  oAuth2LoginUrl?: string;
 }
 
-export interface CommonResponseOAuth2LoginUrlResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
-  result?: OAuth2LoginUrlResponse
+export interface ApiResponseOAuth2LoginUrlResponse {
+  isSuccess?: boolean;
+  code?: string;
+  message?: string;
+  result?: OAuth2LoginUrlResponse;
 }
 
 export type GetMyScrapFoldersParams = {
-  pageable: Pageable
-}
+pageable: Pageable;
+};
 
 export type SearchMyQnaSetParams = {
-  pageable: Pageable
-}
+pageable: Pageable;
+};
 
 export type SearchInterviewsParams = {
-  pageable: Pageable
-}
+pageable: Pageable;
+};
 
 export type GetTokenParams = {
-  email: string
-}
+email: string;
+env?: string;
+};
 
 export type GetGuestTokenParams = {
-  email: string
-}
+email: string;
+env?: string;
+};
 
 export type GetQnaSetsInScrapFolderParams = {
-  pageable: Pageable
-}
+pageable: Pageable;
+};
 
 export type GetMyFrequentQnaSetCategoriesParams = {
-  pageable: Pageable
-}
+pageable: Pageable;
+};
 
 export type GetMyFrequentQnaSetCategoryQuestionsParams = {
-  pageable: Pageable
-}
+pageable: Pageable;
+};
 
 export type GetFrequentQuestionsParams = {
-  industryId: number
-  jobCategoryId: number
-}
+industryId: number;
+jobCategoryId: number;
+};
 
 export type GetMyInterviewsParams = {
-  interviewReviewStatus: GetMyInterviewsInterviewReviewStatus
-  pageable: Pageable
-}
+interviewReviewStatus: GetMyInterviewsInterviewReviewStatus;
+pageable: Pageable;
+};
 
-export type GetMyInterviewsInterviewReviewStatus =
-  (typeof GetMyInterviewsInterviewReviewStatus)[keyof typeof GetMyInterviewsInterviewReviewStatus]
+export type GetMyInterviewsInterviewReviewStatus = typeof GetMyInterviewsInterviewReviewStatus[keyof typeof GetMyInterviewsInterviewReviewStatus];
+
 
 export const GetMyInterviewsInterviewReviewStatus = {
   NOT_LOGGED: 'NOT_LOGGED',
   LOG_DRAFT: 'LOG_DRAFT',
   SELF_REVIEW_DRAFT: 'SELF_REVIEW_DRAFT',
   DEBRIEF_COMPLETED: 'DEBRIEF_COMPLETED',
-} as const
+} as const;
 
 export type GetMyInterviewDraftsParams = {
-  interviewReviewStatus: GetMyInterviewDraftsInterviewReviewStatus
-  pageable: Pageable
-}
+interviewReviewStatus: GetMyInterviewDraftsInterviewReviewStatus;
+pageable: Pageable;
+};
 
-export type GetMyInterviewDraftsInterviewReviewStatus =
-  (typeof GetMyInterviewDraftsInterviewReviewStatus)[keyof typeof GetMyInterviewDraftsInterviewReviewStatus]
+export type GetMyInterviewDraftsInterviewReviewStatus = typeof GetMyInterviewDraftsInterviewReviewStatus[keyof typeof GetMyInterviewDraftsInterviewReviewStatus];
+
 
 export const GetMyInterviewDraftsInterviewReviewStatus = {
   NOT_LOGGED: 'NOT_LOGGED',
   LOG_DRAFT: 'LOG_DRAFT',
   SELF_REVIEW_DRAFT: 'SELF_REVIEW_DRAFT',
   DEBRIEF_COMPLETED: 'DEBRIEF_COMPLETED',
-} as const
+} as const;
 
 export type GetMyDifficultQnaSetsParams = {
-  pageable: Pageable
-}
+pageable: Pageable;
+};
 
 export type GetUpcomingInterviewsParams = {
-  pageable: Pageable
-}
+pageable: Pageable;
+};
 
 export type GetDebriefIncompletedInterviewsParams = {
-  pageable: Pageable
-}
+pageable: Pageable;
+};
 
 export type GetDashboardCalendarInterviewsParams = {
-  /**
-   * @exclusiveMinimum 0
-   */
-  year: number
-  /**
-   * @minimum 1
-   * @maximum 12
-   */
-  month: number
-}
+/**
+ * @exclusiveMinimum 0
+ */
+year: number;
+/**
+ * @minimum 1
+ * @maximum 12
+ */
+month: number;
+};
+
+export type BuildOAuth2LoginUrlParams = {
+env?: string;
+};
 
 export type HandleOAuth2CallbackParams = {
-  code: string
-  state: string
-}
+code: string;
+state: string;
+};
 
 export type DeleteUserByEmailParams = {
-  email: string
-}
+email: string;
+};
+
+export type DeleteTokenCookiesParams = {
+env?: string;
+};
+

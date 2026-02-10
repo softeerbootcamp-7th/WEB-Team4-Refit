@@ -4,18 +4,9 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import { useQuery } from '@tanstack/react-query'
-import type {
-  CommonResponseDashboardHeadlineResponse,
-  CommonResponseListDashboardCalendarResponse,
-  CommonResponsePageDashboardDebriefIncompletedInterviewResponse,
-  CommonResponsePageDashboardMyDifficultQuestionResponse,
-  CommonResponsePageDashboardUpcomingInterviewResponse,
-  GetDashboardCalendarInterviewsParams,
-  GetDebriefIncompletedInterviewsParams,
-  GetMyDifficultQnaSetsParams,
-  GetUpcomingInterviewsParams,
-} from '../refit-api.schemas'
+import {
+  useQuery
+} from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -25,145 +16,147 @@ import type {
   QueryKey,
   UndefinedInitialDataOptions,
   UseQueryOptions,
-  UseQueryResult,
-} from '@tanstack/react-query'
+  UseQueryResult
+} from '@tanstack/react-query';
+
+import type {
+  ApiResponseDashboardHeadlineResponse,
+  ApiResponseListDashboardCalendarResponse,
+  ApiResponsePageDashboardDebriefIncompletedInterviewResponse,
+  ApiResponsePageDashboardMyDifficultQuestionResponse,
+  ApiResponsePageDashboardUpcomingInterviewResponse,
+  GetDashboardCalendarInterviewsParams,
+  GetDebriefIncompletedInterviewsParams,
+  GetMyDifficultQnaSetsParams,
+  GetUpcomingInterviewsParams
+} from '../refit-api.schemas';
+
+
+
 
 
 /**
  * @summary 대시보드에서 '내가 어렵게 느낀 질문'을 조회합니다.
  */
 export type getMyDifficultQnaSetsResponse200 = {
-  data: CommonResponsePageDashboardMyDifficultQuestionResponse
+  data: ApiResponsePageDashboardMyDifficultQuestionResponse
   status: 200
 }
+    
+export type getMyDifficultQnaSetsResponseSuccess = (getMyDifficultQnaSetsResponse200) & {
+  headers: Headers;
+};
+;
 
-export type getMyDifficultQnaSetsResponseSuccess = getMyDifficultQnaSetsResponse200 & {
-  headers: Headers
-}
-export type getMyDifficultQnaSetsResponse = getMyDifficultQnaSetsResponseSuccess
+export type getMyDifficultQnaSetsResponse = (getMyDifficultQnaSetsResponseSuccess)
 
-export const getGetMyDifficultQnaSetsUrl = (params: GetMyDifficultQnaSetsParams) => {
-  const normalizedParams = new URLSearchParams()
+export const getGetMyDifficultQnaSetsUrl = (params: GetMyDifficultQnaSetsParams,) => {
+  const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
+    
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  })
+  });
 
-  const stringifiedParams = normalizedParams.toString()
+  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `https://api.refit.my/dashboard/qna-set/my/difficult?${stringifiedParams}`
-    : `https://api.refit.my/dashboard/qna-set/my/difficult`
+  return stringifiedParams.length > 0 ? `https://api.refit.my/dashboard/qna-set/my/difficult?${stringifiedParams}` : `https://api.refit.my/dashboard/qna-set/my/difficult`
 }
 
-export const getMyDifficultQnaSets = async (
-  params: GetMyDifficultQnaSetsParams,
-  options?: RequestInit,
-): Promise<getMyDifficultQnaSetsResponse> => {
-  const res = await fetch(getGetMyDifficultQnaSetsUrl(params), {
+export const getMyDifficultQnaSets = async (params: GetMyDifficultQnaSetsParams, options?: RequestInit): Promise<getMyDifficultQnaSetsResponse> => {
+  
+  const res = await fetch(getGetMyDifficultQnaSetsUrl(params),
+  {      
     ...options,
-    method: 'GET',
-  })
+    method: 'GET'
+    
+    
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: getMyDifficultQnaSetsResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as getMyDifficultQnaSetsResponse
 }
 
-export const getGetMyDifficultQnaSetsQueryKey = (params?: GetMyDifficultQnaSetsParams) => {
-  return [`https://api.refit.my/dashboard/qna-set/my/difficult`, ...(params ? [params] : [])] as const
-}
 
-export const getGetMyDifficultQnaSetsQueryOptions = <
-  TData = Awaited<ReturnType<typeof getMyDifficultQnaSets>>,
-  TError = unknown,
->(
-  params: GetMyDifficultQnaSetsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError, TData>>
-    fetch?: RequestInit
-  },
+
+
+
+export const getGetMyDifficultQnaSetsQueryKey = (params?: GetMyDifficultQnaSetsParams,) => {
+    return [
+    `https://api.refit.my/dashboard/qna-set/my/difficult`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+    
+export const getGetMyDifficultQnaSetsQueryOptions = <TData = Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError = unknown>(params: GetMyDifficultQnaSetsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-  const { query: queryOptions, fetch: fetchOptions } = options ?? {}
 
-  const queryKey = queryOptions?.queryKey ?? getGetMyDifficultQnaSetsQueryKey(params)
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyDifficultQnaSets>>> = ({ signal }) =>
-    getMyDifficultQnaSets(params, { signal, ...fetchOptions })
+  const queryKey =  queryOptions?.queryKey ?? getGetMyDifficultQnaSetsQueryKey(params);
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getMyDifficultQnaSets>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> }
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyDifficultQnaSets>>> = ({ signal }) => getMyDifficultQnaSets(params, { signal, ...fetchOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type GetMyDifficultQnaSetsQueryResult = NonNullable<Awaited<ReturnType<typeof getMyDifficultQnaSets>>>
 export type GetMyDifficultQnaSetsQueryError = unknown
 
+
 export function useGetMyDifficultQnaSets<TData = Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError = unknown>(
-  params: GetMyDifficultQnaSetsParams,
-  options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError, TData>> &
-      Pick<
+ params: GetMyDifficultQnaSetsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getMyDifficultQnaSets>>,
           TError,
           Awaited<ReturnType<typeof getMyDifficultQnaSets>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetMyDifficultQnaSets<TData = Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError = unknown>(
-  params: GetMyDifficultQnaSetsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError, TData>> &
-      Pick<
+ params: GetMyDifficultQnaSetsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getMyDifficultQnaSets>>,
           TError,
           Awaited<ReturnType<typeof getMyDifficultQnaSets>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetMyDifficultQnaSets<TData = Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError = unknown>(
-  params: GetMyDifficultQnaSetsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+ params: GetMyDifficultQnaSetsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary 대시보드에서 '내가 어렵게 느낀 질문'을 조회합니다.
  */
 
 export function useGetMyDifficultQnaSets<TData = Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError = unknown>(
-  params: GetMyDifficultQnaSetsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetMyDifficultQnaSetsQueryOptions(params, options)
+ params: GetMyDifficultQnaSetsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>
-  }
+  const queryOptions = getGetMyDifficultQnaSetsQueryOptions(params,options)
 
-  return { ...query, queryKey: queryOptions.queryKey }
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
 
 /**
  * 곧 보게되는 면접 정보, 유사 산업군/직군 면접 질문, 유사 면접 리스트를 조회합니다.
@@ -172,287 +165,247 @@ export function useGetMyDifficultQnaSets<TData = Awaited<ReturnType<typeof getMy
  * @summary 대시보드에서 '곧 있을 면접' 영역의 데이터를 조회합니다.
  */
 export type getUpcomingInterviewsResponse200 = {
-  data: CommonResponsePageDashboardUpcomingInterviewResponse
+  data: ApiResponsePageDashboardUpcomingInterviewResponse
   status: 200
 }
+    
+export type getUpcomingInterviewsResponseSuccess = (getUpcomingInterviewsResponse200) & {
+  headers: Headers;
+};
+;
 
-export type getUpcomingInterviewsResponseSuccess = getUpcomingInterviewsResponse200 & {
-  headers: Headers
-}
-export type getUpcomingInterviewsResponse = getUpcomingInterviewsResponseSuccess
+export type getUpcomingInterviewsResponse = (getUpcomingInterviewsResponseSuccess)
 
-export const getGetUpcomingInterviewsUrl = (params: GetUpcomingInterviewsParams) => {
-  const normalizedParams = new URLSearchParams()
+export const getGetUpcomingInterviewsUrl = (params: GetUpcomingInterviewsParams,) => {
+  const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
+    
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  })
+  });
 
-  const stringifiedParams = normalizedParams.toString()
+  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `https://api.refit.my/dashboard/interview/upcoming?${stringifiedParams}`
-    : `https://api.refit.my/dashboard/interview/upcoming`
+  return stringifiedParams.length > 0 ? `https://api.refit.my/dashboard/interview/upcoming?${stringifiedParams}` : `https://api.refit.my/dashboard/interview/upcoming`
 }
 
-export const getUpcomingInterviews = async (
-  params: GetUpcomingInterviewsParams,
-  options?: RequestInit,
-): Promise<getUpcomingInterviewsResponse> => {
-  const res = await fetch(getGetUpcomingInterviewsUrl(params), {
+export const getUpcomingInterviews = async (params: GetUpcomingInterviewsParams, options?: RequestInit): Promise<getUpcomingInterviewsResponse> => {
+  
+  const res = await fetch(getGetUpcomingInterviewsUrl(params),
+  {      
     ...options,
-    method: 'GET',
-  })
+    method: 'GET'
+    
+    
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: getUpcomingInterviewsResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as getUpcomingInterviewsResponse
 }
 
-export const getGetUpcomingInterviewsQueryKey = (params?: GetUpcomingInterviewsParams) => {
-  return [`https://api.refit.my/dashboard/interview/upcoming`, ...(params ? [params] : [])] as const
-}
 
-export const getGetUpcomingInterviewsQueryOptions = <
-  TData = Awaited<ReturnType<typeof getUpcomingInterviews>>,
-  TError = unknown,
->(
-  params: GetUpcomingInterviewsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getUpcomingInterviews>>, TError, TData>>
-    fetch?: RequestInit
-  },
+
+
+
+export const getGetUpcomingInterviewsQueryKey = (params?: GetUpcomingInterviewsParams,) => {
+    return [
+    `https://api.refit.my/dashboard/interview/upcoming`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+    
+export const getGetUpcomingInterviewsQueryOptions = <TData = Awaited<ReturnType<typeof getUpcomingInterviews>>, TError = unknown>(params: GetUpcomingInterviewsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUpcomingInterviews>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-  const { query: queryOptions, fetch: fetchOptions } = options ?? {}
 
-  const queryKey = queryOptions?.queryKey ?? getGetUpcomingInterviewsQueryKey(params)
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getUpcomingInterviews>>> = ({ signal }) =>
-    getUpcomingInterviews(params, { signal, ...fetchOptions })
+  const queryKey =  queryOptions?.queryKey ?? getGetUpcomingInterviewsQueryKey(params);
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getUpcomingInterviews>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> }
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getUpcomingInterviews>>> = ({ signal }) => getUpcomingInterviews(params, { signal, ...fetchOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getUpcomingInterviews>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type GetUpcomingInterviewsQueryResult = NonNullable<Awaited<ReturnType<typeof getUpcomingInterviews>>>
 export type GetUpcomingInterviewsQueryError = unknown
 
+
 export function useGetUpcomingInterviews<TData = Awaited<ReturnType<typeof getUpcomingInterviews>>, TError = unknown>(
-  params: GetUpcomingInterviewsParams,
-  options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getUpcomingInterviews>>, TError, TData>> &
-      Pick<
+ params: GetUpcomingInterviewsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUpcomingInterviews>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getUpcomingInterviews>>,
           TError,
           Awaited<ReturnType<typeof getUpcomingInterviews>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetUpcomingInterviews<TData = Awaited<ReturnType<typeof getUpcomingInterviews>>, TError = unknown>(
-  params: GetUpcomingInterviewsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getUpcomingInterviews>>, TError, TData>> &
-      Pick<
+ params: GetUpcomingInterviewsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUpcomingInterviews>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getUpcomingInterviews>>,
           TError,
           Awaited<ReturnType<typeof getUpcomingInterviews>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetUpcomingInterviews<TData = Awaited<ReturnType<typeof getUpcomingInterviews>>, TError = unknown>(
-  params: GetUpcomingInterviewsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getUpcomingInterviews>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+ params: GetUpcomingInterviewsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUpcomingInterviews>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary 대시보드에서 '곧 있을 면접' 영역의 데이터를 조회합니다.
  */
 
 export function useGetUpcomingInterviews<TData = Awaited<ReturnType<typeof getUpcomingInterviews>>, TError = unknown>(
-  params: GetUpcomingInterviewsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getUpcomingInterviews>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetUpcomingInterviewsQueryOptions(params, options)
+ params: GetUpcomingInterviewsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUpcomingInterviews>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>
-  }
+  const queryOptions = getGetUpcomingInterviewsQueryOptions(params,options)
 
-  return { ...query, queryKey: queryOptions.queryKey }
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
 
 /**
  * @summary 대시보드에서 복기 대기중인 면접 리스트를 조회합니다.
  */
 export type getDebriefIncompletedInterviewsResponse200 = {
-  data: CommonResponsePageDashboardDebriefIncompletedInterviewResponse
+  data: ApiResponsePageDashboardDebriefIncompletedInterviewResponse
   status: 200
 }
+    
+export type getDebriefIncompletedInterviewsResponseSuccess = (getDebriefIncompletedInterviewsResponse200) & {
+  headers: Headers;
+};
+;
 
-export type getDebriefIncompletedInterviewsResponseSuccess = getDebriefIncompletedInterviewsResponse200 & {
-  headers: Headers
-}
-export type getDebriefIncompletedInterviewsResponse = getDebriefIncompletedInterviewsResponseSuccess
+export type getDebriefIncompletedInterviewsResponse = (getDebriefIncompletedInterviewsResponseSuccess)
 
-export const getGetDebriefIncompletedInterviewsUrl = (params: GetDebriefIncompletedInterviewsParams) => {
-  const normalizedParams = new URLSearchParams()
+export const getGetDebriefIncompletedInterviewsUrl = (params: GetDebriefIncompletedInterviewsParams,) => {
+  const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
+    
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  })
+  });
 
-  const stringifiedParams = normalizedParams.toString()
+  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `https://api.refit.my/dashboard/interview/debrief-uncompleted?${stringifiedParams}`
-    : `https://api.refit.my/dashboard/interview/debrief-uncompleted`
+  return stringifiedParams.length > 0 ? `https://api.refit.my/dashboard/interview/debrief-uncompleted?${stringifiedParams}` : `https://api.refit.my/dashboard/interview/debrief-uncompleted`
 }
 
-export const getDebriefIncompletedInterviews = async (
-  params: GetDebriefIncompletedInterviewsParams,
-  options?: RequestInit,
-): Promise<getDebriefIncompletedInterviewsResponse> => {
-  const res = await fetch(getGetDebriefIncompletedInterviewsUrl(params), {
+export const getDebriefIncompletedInterviews = async (params: GetDebriefIncompletedInterviewsParams, options?: RequestInit): Promise<getDebriefIncompletedInterviewsResponse> => {
+  
+  const res = await fetch(getGetDebriefIncompletedInterviewsUrl(params),
+  {      
     ...options,
-    method: 'GET',
-  })
+    method: 'GET'
+    
+    
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: getDebriefIncompletedInterviewsResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as getDebriefIncompletedInterviewsResponse
 }
 
-export const getGetDebriefIncompletedInterviewsQueryKey = (params?: GetDebriefIncompletedInterviewsParams) => {
-  return [`https://api.refit.my/dashboard/interview/debrief-uncompleted`, ...(params ? [params] : [])] as const
-}
 
-export const getGetDebriefIncompletedInterviewsQueryOptions = <
-  TData = Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>,
-  TError = unknown,
->(
-  params: GetDebriefIncompletedInterviewsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>, TError, TData>>
-    fetch?: RequestInit
-  },
+
+
+
+export const getGetDebriefIncompletedInterviewsQueryKey = (params?: GetDebriefIncompletedInterviewsParams,) => {
+    return [
+    `https://api.refit.my/dashboard/interview/debrief-uncompleted`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+    
+export const getGetDebriefIncompletedInterviewsQueryOptions = <TData = Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>, TError = unknown>(params: GetDebriefIncompletedInterviewsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-  const { query: queryOptions, fetch: fetchOptions } = options ?? {}
 
-  const queryKey = queryOptions?.queryKey ?? getGetDebriefIncompletedInterviewsQueryKey(params)
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>> = ({ signal }) =>
-    getDebriefIncompletedInterviews(params, { signal, ...fetchOptions })
+  const queryKey =  queryOptions?.queryKey ?? getGetDebriefIncompletedInterviewsQueryKey(params);
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> }
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>> = ({ signal }) => getDebriefIncompletedInterviews(params, { signal, ...fetchOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type GetDebriefIncompletedInterviewsQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>
->
+export type GetDebriefIncompletedInterviewsQueryResult = NonNullable<Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>>
 export type GetDebriefIncompletedInterviewsQueryError = unknown
 
-export function useGetDebriefIncompletedInterviews<
-  TData = Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>,
-  TError = unknown,
->(
-  params: GetDebriefIncompletedInterviewsParams,
-  options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>, TError, TData>> &
-      Pick<
+
+export function useGetDebriefIncompletedInterviews<TData = Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>, TError = unknown>(
+ params: GetDebriefIncompletedInterviewsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>,
           TError,
           Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetDebriefIncompletedInterviews<
-  TData = Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>,
-  TError = unknown,
->(
-  params: GetDebriefIncompletedInterviewsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>, TError, TData>> &
-      Pick<
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetDebriefIncompletedInterviews<TData = Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>, TError = unknown>(
+ params: GetDebriefIncompletedInterviewsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>,
           TError,
           Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetDebriefIncompletedInterviews<
-  TData = Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>,
-  TError = unknown,
->(
-  params: GetDebriefIncompletedInterviewsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetDebriefIncompletedInterviews<TData = Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>, TError = unknown>(
+ params: GetDebriefIncompletedInterviewsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary 대시보드에서 복기 대기중인 면접 리스트를 조회합니다.
  */
 
-export function useGetDebriefIncompletedInterviews<
-  TData = Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>,
-  TError = unknown,
->(
-  params: GetDebriefIncompletedInterviewsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetDebriefIncompletedInterviewsQueryOptions(params, options)
+export function useGetDebriefIncompletedInterviews<TData = Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>, TError = unknown>(
+ params: GetDebriefIncompletedInterviewsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>
-  }
+  const queryOptions = getGetDebriefIncompletedInterviewsQueryOptions(params,options)
 
-  return { ...query, queryKey: queryOptions.queryKey }
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
 
 /**
  * 대시보드 헤드라인 타입과, 해당 타입에서 필요한 데이터를 응답합니다.
@@ -465,115 +418,117 @@ export function useGetDebriefIncompletedInterviews<
  * @summary 대시보드 헤드라인에 들어갈 정보를 조회합니다.
  */
 export type getDashboardHeadlineResponse200 = {
-  data: CommonResponseDashboardHeadlineResponse
+  data: ApiResponseDashboardHeadlineResponse
   status: 200
 }
+    
+export type getDashboardHeadlineResponseSuccess = (getDashboardHeadlineResponse200) & {
+  headers: Headers;
+};
+;
 
-export type getDashboardHeadlineResponseSuccess = getDashboardHeadlineResponse200 & {
-  headers: Headers
-}
-export type getDashboardHeadlineResponse = getDashboardHeadlineResponseSuccess
+export type getDashboardHeadlineResponse = (getDashboardHeadlineResponseSuccess)
 
 export const getGetDashboardHeadlineUrl = () => {
+
+
+  
+
   return `https://api.refit.my/dashboard/headline`
 }
 
-export const getDashboardHeadline = async (options?: RequestInit): Promise<getDashboardHeadlineResponse> => {
-  const res = await fetch(getGetDashboardHeadlineUrl(), {
+export const getDashboardHeadline = async ( options?: RequestInit): Promise<getDashboardHeadlineResponse> => {
+  
+  const res = await fetch(getGetDashboardHeadlineUrl(),
+  {      
     ...options,
-    method: 'GET',
-  })
+    method: 'GET'
+    
+    
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: getDashboardHeadlineResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as getDashboardHeadlineResponse
 }
 
+
+
+
+
 export const getGetDashboardHeadlineQueryKey = () => {
-  return [`https://api.refit.my/dashboard/headline`] as const
-}
+    return [
+    `https://api.refit.my/dashboard/headline`
+    ] as const;
+    }
 
-export const getGetDashboardHeadlineQueryOptions = <
-  TData = Awaited<ReturnType<typeof getDashboardHeadline>>,
-  TError = unknown,
->(options?: {
-  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDashboardHeadline>>, TError, TData>>
-  fetch?: RequestInit
-}) => {
-  const { query: queryOptions, fetch: fetchOptions } = options ?? {}
+    
+export const getGetDashboardHeadlineQueryOptions = <TData = Awaited<ReturnType<typeof getDashboardHeadline>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDashboardHeadline>>, TError, TData>>, fetch?: RequestInit}
+) => {
 
-  const queryKey = queryOptions?.queryKey ?? getGetDashboardHeadlineQueryKey()
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getDashboardHeadline>>> = ({ signal }) =>
-    getDashboardHeadline({ signal, ...fetchOptions })
+  const queryKey =  queryOptions?.queryKey ?? getGetDashboardHeadlineQueryKey();
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getDashboardHeadline>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> }
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getDashboardHeadline>>> = ({ signal }) => getDashboardHeadline({ signal, ...fetchOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getDashboardHeadline>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type GetDashboardHeadlineQueryResult = NonNullable<Awaited<ReturnType<typeof getDashboardHeadline>>>
 export type GetDashboardHeadlineQueryError = unknown
 
+
 export function useGetDashboardHeadline<TData = Awaited<ReturnType<typeof getDashboardHeadline>>, TError = unknown>(
-  options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDashboardHeadline>>, TError, TData>> &
-      Pick<
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDashboardHeadline>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getDashboardHeadline>>,
           TError,
           Awaited<ReturnType<typeof getDashboardHeadline>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetDashboardHeadline<TData = Awaited<ReturnType<typeof getDashboardHeadline>>, TError = unknown>(
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDashboardHeadline>>, TError, TData>> &
-      Pick<
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDashboardHeadline>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getDashboardHeadline>>,
           TError,
           Awaited<ReturnType<typeof getDashboardHeadline>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetDashboardHeadline<TData = Awaited<ReturnType<typeof getDashboardHeadline>>, TError = unknown>(
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDashboardHeadline>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDashboardHeadline>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary 대시보드 헤드라인에 들어갈 정보를 조회합니다.
  */
 
 export function useGetDashboardHeadline<TData = Awaited<ReturnType<typeof getDashboardHeadline>>, TError = unknown>(
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDashboardHeadline>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDashboardHeadline>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
   const queryOptions = getGetDashboardHeadlineQueryOptions(options)
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>
-  }
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
-  return { ...query, queryKey: queryOptions.queryKey }
+  return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
 
 /**
  * 면접 일정이 존재하는 date 리스트, 각 date 별로는 해당 date 에 존재하는 면접 일정 리스트가 조회됩니다.
@@ -583,148 +538,122 @@ date 리스트는 날짜순으로 정렬, 각 date 별 해당 date 에 존재하
  * @summary 대시보드 캘린더에 등록된 면접 일정을 조회합니다.
  */
 export type getDashboardCalendarInterviewsResponse200 = {
-  data: CommonResponseListDashboardCalendarResponse
+  data: ApiResponseListDashboardCalendarResponse
   status: 200
 }
+    
+export type getDashboardCalendarInterviewsResponseSuccess = (getDashboardCalendarInterviewsResponse200) & {
+  headers: Headers;
+};
+;
 
-export type getDashboardCalendarInterviewsResponseSuccess = getDashboardCalendarInterviewsResponse200 & {
-  headers: Headers
-}
-export type getDashboardCalendarInterviewsResponse = getDashboardCalendarInterviewsResponseSuccess
+export type getDashboardCalendarInterviewsResponse = (getDashboardCalendarInterviewsResponseSuccess)
 
-export const getGetDashboardCalendarInterviewsUrl = (params: GetDashboardCalendarInterviewsParams) => {
-  const normalizedParams = new URLSearchParams()
+export const getGetDashboardCalendarInterviewsUrl = (params: GetDashboardCalendarInterviewsParams,) => {
+  const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
+    
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  })
+  });
 
-  const stringifiedParams = normalizedParams.toString()
+  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `https://api.refit.my/dashboard/calendar/interview?${stringifiedParams}`
-    : `https://api.refit.my/dashboard/calendar/interview`
+  return stringifiedParams.length > 0 ? `https://api.refit.my/dashboard/calendar/interview?${stringifiedParams}` : `https://api.refit.my/dashboard/calendar/interview`
 }
 
-export const getDashboardCalendarInterviews = async (
-  params: GetDashboardCalendarInterviewsParams,
-  options?: RequestInit,
-): Promise<getDashboardCalendarInterviewsResponse> => {
-  const res = await fetch(getGetDashboardCalendarInterviewsUrl(params), {
+export const getDashboardCalendarInterviews = async (params: GetDashboardCalendarInterviewsParams, options?: RequestInit): Promise<getDashboardCalendarInterviewsResponse> => {
+  
+  const res = await fetch(getGetDashboardCalendarInterviewsUrl(params),
+  {      
     ...options,
-    method: 'GET',
-  })
+    method: 'GET'
+    
+    
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: getDashboardCalendarInterviewsResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as getDashboardCalendarInterviewsResponse
 }
 
-export const getGetDashboardCalendarInterviewsQueryKey = (params?: GetDashboardCalendarInterviewsParams) => {
-  return [`https://api.refit.my/dashboard/calendar/interview`, ...(params ? [params] : [])] as const
-}
 
-export const getGetDashboardCalendarInterviewsQueryOptions = <
-  TData = Awaited<ReturnType<typeof getDashboardCalendarInterviews>>,
-  TError = unknown,
->(
-  params: GetDashboardCalendarInterviewsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDashboardCalendarInterviews>>, TError, TData>>
-    fetch?: RequestInit
-  },
+
+
+
+export const getGetDashboardCalendarInterviewsQueryKey = (params?: GetDashboardCalendarInterviewsParams,) => {
+    return [
+    `https://api.refit.my/dashboard/calendar/interview`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+    
+export const getGetDashboardCalendarInterviewsQueryOptions = <TData = Awaited<ReturnType<typeof getDashboardCalendarInterviews>>, TError = unknown>(params: GetDashboardCalendarInterviewsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDashboardCalendarInterviews>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-  const { query: queryOptions, fetch: fetchOptions } = options ?? {}
 
-  const queryKey = queryOptions?.queryKey ?? getGetDashboardCalendarInterviewsQueryKey(params)
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getDashboardCalendarInterviews>>> = ({ signal }) =>
-    getDashboardCalendarInterviews(params, { signal, ...fetchOptions })
+  const queryKey =  queryOptions?.queryKey ?? getGetDashboardCalendarInterviewsQueryKey(params);
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getDashboardCalendarInterviews>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> }
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getDashboardCalendarInterviews>>> = ({ signal }) => getDashboardCalendarInterviews(params, { signal, ...fetchOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getDashboardCalendarInterviews>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type GetDashboardCalendarInterviewsQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getDashboardCalendarInterviews>>
->
+export type GetDashboardCalendarInterviewsQueryResult = NonNullable<Awaited<ReturnType<typeof getDashboardCalendarInterviews>>>
 export type GetDashboardCalendarInterviewsQueryError = unknown
 
-export function useGetDashboardCalendarInterviews<
-  TData = Awaited<ReturnType<typeof getDashboardCalendarInterviews>>,
-  TError = unknown,
->(
-  params: GetDashboardCalendarInterviewsParams,
-  options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDashboardCalendarInterviews>>, TError, TData>> &
-      Pick<
+
+export function useGetDashboardCalendarInterviews<TData = Awaited<ReturnType<typeof getDashboardCalendarInterviews>>, TError = unknown>(
+ params: GetDashboardCalendarInterviewsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDashboardCalendarInterviews>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getDashboardCalendarInterviews>>,
           TError,
           Awaited<ReturnType<typeof getDashboardCalendarInterviews>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetDashboardCalendarInterviews<
-  TData = Awaited<ReturnType<typeof getDashboardCalendarInterviews>>,
-  TError = unknown,
->(
-  params: GetDashboardCalendarInterviewsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDashboardCalendarInterviews>>, TError, TData>> &
-      Pick<
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetDashboardCalendarInterviews<TData = Awaited<ReturnType<typeof getDashboardCalendarInterviews>>, TError = unknown>(
+ params: GetDashboardCalendarInterviewsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDashboardCalendarInterviews>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getDashboardCalendarInterviews>>,
           TError,
           Awaited<ReturnType<typeof getDashboardCalendarInterviews>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetDashboardCalendarInterviews<
-  TData = Awaited<ReturnType<typeof getDashboardCalendarInterviews>>,
-  TError = unknown,
->(
-  params: GetDashboardCalendarInterviewsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDashboardCalendarInterviews>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetDashboardCalendarInterviews<TData = Awaited<ReturnType<typeof getDashboardCalendarInterviews>>, TError = unknown>(
+ params: GetDashboardCalendarInterviewsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDashboardCalendarInterviews>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary 대시보드 캘린더에 등록된 면접 일정을 조회합니다.
  */
 
-export function useGetDashboardCalendarInterviews<
-  TData = Awaited<ReturnType<typeof getDashboardCalendarInterviews>>,
-  TError = unknown,
->(
-  params: GetDashboardCalendarInterviewsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDashboardCalendarInterviews>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetDashboardCalendarInterviewsQueryOptions(params, options)
+export function useGetDashboardCalendarInterviews<TData = Awaited<ReturnType<typeof getDashboardCalendarInterviews>>, TError = unknown>(
+ params: GetDashboardCalendarInterviewsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDashboardCalendarInterviews>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>
-  }
+  const queryOptions = getGetDashboardCalendarInterviewsQueryOptions(params,options)
 
-  return { ...query, queryKey: queryOptions.queryKey }
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
+

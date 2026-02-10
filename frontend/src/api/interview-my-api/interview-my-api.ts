@@ -4,15 +4,10 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import { useMutation, useQuery } from '@tanstack/react-query'
-import type {
-  CommonResponsePageInterviewDto,
-  CommonResponsePageInterviewSimpleDto,
-  GetMyInterviewDraftsParams,
-  GetMyInterviewsParams,
-  InterviewSearchRequest,
-  SearchInterviewsParams,
-} from '../refit-api.schemas'
+import {
+  useMutation,
+  useQuery
+} from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -25,250 +20,242 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
-} from '@tanstack/react-query'
+  UseQueryResult
+} from '@tanstack/react-query';
+
+import type {
+  ApiResponsePageInterviewDto,
+  ApiResponsePageInterviewSimpleDto,
+  GetMyInterviewDraftsParams,
+  GetMyInterviewsParams,
+  InterviewSearchRequest,
+  SearchInterviewsParams
+} from '../refit-api.schemas';
+
+
+
 
 
 /**
  * @summary 내가 복기 완료한 면접을 검색합니다.
  */
 export type searchInterviewsResponse200 = {
-  data: CommonResponsePageInterviewDto
+  data: ApiResponsePageInterviewDto
   status: 200
 }
+    
+export type searchInterviewsResponseSuccess = (searchInterviewsResponse200) & {
+  headers: Headers;
+};
+;
 
-export type searchInterviewsResponseSuccess = searchInterviewsResponse200 & {
-  headers: Headers
-}
-export type searchInterviewsResponse = searchInterviewsResponseSuccess
+export type searchInterviewsResponse = (searchInterviewsResponseSuccess)
 
-export const getSearchInterviewsUrl = (params: SearchInterviewsParams) => {
-  const normalizedParams = new URLSearchParams()
+export const getSearchInterviewsUrl = (params: SearchInterviewsParams,) => {
+  const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
+    
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  })
+  });
 
-  const stringifiedParams = normalizedParams.toString()
+  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `https://api.refit.my/interview/my/search?${stringifiedParams}`
-    : `https://api.refit.my/interview/my/search`
+  return stringifiedParams.length > 0 ? `https://api.refit.my/interview/my/search?${stringifiedParams}` : `https://api.refit.my/interview/my/search`
 }
 
-export const searchInterviews = async (
-  interviewSearchRequest: InterviewSearchRequest,
-  params: SearchInterviewsParams,
-  options?: RequestInit,
-): Promise<searchInterviewsResponse> => {
-  const res = await fetch(getSearchInterviewsUrl(params), {
+export const searchInterviews = async (interviewSearchRequest: InterviewSearchRequest,
+    params: SearchInterviewsParams, options?: RequestInit): Promise<searchInterviewsResponse> => {
+  
+  const res = await fetch(getSearchInterviewsUrl(params),
+  {      
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(interviewSearchRequest),
-  })
+    body: JSON.stringify(
+      interviewSearchRequest,)
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: searchInterviewsResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as searchInterviewsResponse
 }
 
-export const getSearchInterviewsMutationOptions = <TError = unknown, TContext = unknown>(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof searchInterviews>>,
-    TError,
-    { data: InterviewSearchRequest; params: SearchInterviewsParams },
-    TContext
-  >
-  fetch?: RequestInit
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof searchInterviews>>,
-  TError,
-  { data: InterviewSearchRequest; params: SearchInterviewsParams },
-  TContext
-> => {
-  const mutationKey = ['searchInterviews']
-  const { mutation: mutationOptions, fetch: fetchOptions } = options
-    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, fetch: undefined }
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof searchInterviews>>,
-    { data: InterviewSearchRequest; params: SearchInterviewsParams }
-  > = (props) => {
-    const { data, params } = props ?? {}
 
-    return searchInterviews(data, params, fetchOptions)
-  }
 
-  return { mutationFn, ...mutationOptions }
-}
+export const getSearchInterviewsMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof searchInterviews>>, TError,{data: InterviewSearchRequest;params: SearchInterviewsParams}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof searchInterviews>>, TError,{data: InterviewSearchRequest;params: SearchInterviewsParams}, TContext> => {
 
-export type SearchInterviewsMutationResult = NonNullable<Awaited<ReturnType<typeof searchInterviews>>>
-export type SearchInterviewsMutationBody = InterviewSearchRequest
-export type SearchInterviewsMutationError = unknown
+const mutationKey = ['searchInterviews'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
 
-/**
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof searchInterviews>>, {data: InterviewSearchRequest;params: SearchInterviewsParams}> = (props) => {
+          const {data,params} = props ?? {};
+
+          return  searchInterviews(data,params,fetchOptions)
+        }
+
+
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SearchInterviewsMutationResult = NonNullable<Awaited<ReturnType<typeof searchInterviews>>>
+    export type SearchInterviewsMutationBody = InterviewSearchRequest
+    export type SearchInterviewsMutationError = unknown
+
+    /**
  * @summary 내가 복기 완료한 면접을 검색합니다.
  */
-export const useSearchInterviews = <TError = unknown, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof searchInterviews>>,
-      TError,
-      { data: InterviewSearchRequest; params: SearchInterviewsParams },
-      TContext
-    >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof searchInterviews>>,
-  TError,
-  { data: InterviewSearchRequest; params: SearchInterviewsParams },
-  TContext
-> => {
-  return useMutation(getSearchInterviewsMutationOptions(options), queryClient)
-}
-/**
+export const useSearchInterviews = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof searchInterviews>>, TError,{data: InterviewSearchRequest;params: SearchInterviewsParams}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof searchInterviews>>,
+        TError,
+        {data: InterviewSearchRequest;params: SearchInterviewsParams},
+        TContext
+      > => {
+      return useMutation(getSearchInterviewsMutationOptions(options), queryClient);
+    }
+    /**
  * @deprecated
  * @summary 내가 복기 완료한 면접 정보를 조회합니다. (검색 API 와 통합 예정입니다)
  */
 export type getMyInterviewsResponse200 = {
-  data: CommonResponsePageInterviewSimpleDto
+  data: ApiResponsePageInterviewSimpleDto
   status: 200
 }
+    
+export type getMyInterviewsResponseSuccess = (getMyInterviewsResponse200) & {
+  headers: Headers;
+};
+;
 
-export type getMyInterviewsResponseSuccess = getMyInterviewsResponse200 & {
-  headers: Headers
-}
-export type getMyInterviewsResponse = getMyInterviewsResponseSuccess
+export type getMyInterviewsResponse = (getMyInterviewsResponseSuccess)
 
-export const getGetMyInterviewsUrl = (params: GetMyInterviewsParams) => {
-  const normalizedParams = new URLSearchParams()
+export const getGetMyInterviewsUrl = (params: GetMyInterviewsParams,) => {
+  const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
+    
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  })
+  });
 
-  const stringifiedParams = normalizedParams.toString()
+  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `https://api.refit.my/interview/my?${stringifiedParams}`
-    : `https://api.refit.my/interview/my`
+  return stringifiedParams.length > 0 ? `https://api.refit.my/interview/my?${stringifiedParams}` : `https://api.refit.my/interview/my`
 }
 
-export const getMyInterviews = async (
-  params: GetMyInterviewsParams,
-  options?: RequestInit,
-): Promise<getMyInterviewsResponse> => {
-  const res = await fetch(getGetMyInterviewsUrl(params), {
+export const getMyInterviews = async (params: GetMyInterviewsParams, options?: RequestInit): Promise<getMyInterviewsResponse> => {
+  
+  const res = await fetch(getGetMyInterviewsUrl(params),
+  {      
     ...options,
-    method: 'GET',
-  })
+    method: 'GET'
+    
+    
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: getMyInterviewsResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as getMyInterviewsResponse
 }
 
-export const getGetMyInterviewsQueryKey = (params?: GetMyInterviewsParams) => {
-  return [`https://api.refit.my/interview/my`, ...(params ? [params] : [])] as const
-}
 
-export const getGetMyInterviewsQueryOptions = <TData = Awaited<ReturnType<typeof getMyInterviews>>, TError = unknown>(
-  params: GetMyInterviewsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyInterviews>>, TError, TData>>
-    fetch?: RequestInit
-  },
+
+
+
+export const getGetMyInterviewsQueryKey = (params?: GetMyInterviewsParams,) => {
+    return [
+    `https://api.refit.my/interview/my`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+    
+export const getGetMyInterviewsQueryOptions = <TData = Awaited<ReturnType<typeof getMyInterviews>>, TError = unknown>(params: GetMyInterviewsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyInterviews>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-  const { query: queryOptions, fetch: fetchOptions } = options ?? {}
 
-  const queryKey = queryOptions?.queryKey ?? getGetMyInterviewsQueryKey(params)
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyInterviews>>> = ({ signal }) =>
-    getMyInterviews(params, { signal, ...fetchOptions })
+  const queryKey =  queryOptions?.queryKey ?? getGetMyInterviewsQueryKey(params);
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getMyInterviews>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> }
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyInterviews>>> = ({ signal }) => getMyInterviews(params, { signal, ...fetchOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMyInterviews>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type GetMyInterviewsQueryResult = NonNullable<Awaited<ReturnType<typeof getMyInterviews>>>
 export type GetMyInterviewsQueryError = unknown
 
+
 export function useGetMyInterviews<TData = Awaited<ReturnType<typeof getMyInterviews>>, TError = unknown>(
-  params: GetMyInterviewsParams,
-  options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyInterviews>>, TError, TData>> &
-      Pick<
+ params: GetMyInterviewsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyInterviews>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getMyInterviews>>,
           TError,
           Awaited<ReturnType<typeof getMyInterviews>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetMyInterviews<TData = Awaited<ReturnType<typeof getMyInterviews>>, TError = unknown>(
-  params: GetMyInterviewsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyInterviews>>, TError, TData>> &
-      Pick<
+ params: GetMyInterviewsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyInterviews>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getMyInterviews>>,
           TError,
           Awaited<ReturnType<typeof getMyInterviews>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetMyInterviews<TData = Awaited<ReturnType<typeof getMyInterviews>>, TError = unknown>(
-  params: GetMyInterviewsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyInterviews>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+ params: GetMyInterviewsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyInterviews>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @deprecated
  * @summary 내가 복기 완료한 면접 정보를 조회합니다. (검색 API 와 통합 예정입니다)
  */
 
 export function useGetMyInterviews<TData = Awaited<ReturnType<typeof getMyInterviews>>, TError = unknown>(
-  params: GetMyInterviewsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyInterviews>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetMyInterviewsQueryOptions(params, options)
+ params: GetMyInterviewsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyInterviews>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>
-  }
+  const queryOptions = getGetMyInterviewsQueryOptions(params,options)
 
-  return { ...query, queryKey: queryOptions.queryKey }
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
 
 /**
  * interviewReviewStatus 에는 LOG_DRAFT (기록 중), SELF_REVIEW_DRAFT (회고 중) 값만 들어갈 수 있습니다.
@@ -277,134 +264,122 @@ export function useGetMyInterviews<TData = Awaited<ReturnType<typeof getMyInterv
  * @summary 내가 작성중인 (임시저장) 복기 데이터를 조회합니다.
  */
 export type getMyInterviewDraftsResponse200 = {
-  data: CommonResponsePageInterviewSimpleDto
+  data: ApiResponsePageInterviewSimpleDto
   status: 200
 }
+    
+export type getMyInterviewDraftsResponseSuccess = (getMyInterviewDraftsResponse200) & {
+  headers: Headers;
+};
+;
 
-export type getMyInterviewDraftsResponseSuccess = getMyInterviewDraftsResponse200 & {
-  headers: Headers
-}
-export type getMyInterviewDraftsResponse = getMyInterviewDraftsResponseSuccess
+export type getMyInterviewDraftsResponse = (getMyInterviewDraftsResponseSuccess)
 
-export const getGetMyInterviewDraftsUrl = (params: GetMyInterviewDraftsParams) => {
-  const normalizedParams = new URLSearchParams()
+export const getGetMyInterviewDraftsUrl = (params: GetMyInterviewDraftsParams,) => {
+  const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
+    
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  })
+  });
 
-  const stringifiedParams = normalizedParams.toString()
+  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `https://api.refit.my/interview/my/draft?${stringifiedParams}`
-    : `https://api.refit.my/interview/my/draft`
+  return stringifiedParams.length > 0 ? `https://api.refit.my/interview/my/draft?${stringifiedParams}` : `https://api.refit.my/interview/my/draft`
 }
 
-export const getMyInterviewDrafts = async (
-  params: GetMyInterviewDraftsParams,
-  options?: RequestInit,
-): Promise<getMyInterviewDraftsResponse> => {
-  const res = await fetch(getGetMyInterviewDraftsUrl(params), {
+export const getMyInterviewDrafts = async (params: GetMyInterviewDraftsParams, options?: RequestInit): Promise<getMyInterviewDraftsResponse> => {
+  
+  const res = await fetch(getGetMyInterviewDraftsUrl(params),
+  {      
     ...options,
-    method: 'GET',
-  })
+    method: 'GET'
+    
+    
+  }
+)
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
   const data: getMyInterviewDraftsResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as getMyInterviewDraftsResponse
 }
 
-export const getGetMyInterviewDraftsQueryKey = (params?: GetMyInterviewDraftsParams) => {
-  return [`https://api.refit.my/interview/my/draft`, ...(params ? [params] : [])] as const
-}
 
-export const getGetMyInterviewDraftsQueryOptions = <
-  TData = Awaited<ReturnType<typeof getMyInterviewDrafts>>,
-  TError = unknown,
->(
-  params: GetMyInterviewDraftsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyInterviewDrafts>>, TError, TData>>
-    fetch?: RequestInit
-  },
+
+
+
+export const getGetMyInterviewDraftsQueryKey = (params?: GetMyInterviewDraftsParams,) => {
+    return [
+    `https://api.refit.my/interview/my/draft`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+    
+export const getGetMyInterviewDraftsQueryOptions = <TData = Awaited<ReturnType<typeof getMyInterviewDrafts>>, TError = unknown>(params: GetMyInterviewDraftsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyInterviewDrafts>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-  const { query: queryOptions, fetch: fetchOptions } = options ?? {}
 
-  const queryKey = queryOptions?.queryKey ?? getGetMyInterviewDraftsQueryKey(params)
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyInterviewDrafts>>> = ({ signal }) =>
-    getMyInterviewDrafts(params, { signal, ...fetchOptions })
+  const queryKey =  queryOptions?.queryKey ?? getGetMyInterviewDraftsQueryKey(params);
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getMyInterviewDrafts>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> }
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyInterviewDrafts>>> = ({ signal }) => getMyInterviewDrafts(params, { signal, ...fetchOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMyInterviewDrafts>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type GetMyInterviewDraftsQueryResult = NonNullable<Awaited<ReturnType<typeof getMyInterviewDrafts>>>
 export type GetMyInterviewDraftsQueryError = unknown
 
+
 export function useGetMyInterviewDrafts<TData = Awaited<ReturnType<typeof getMyInterviewDrafts>>, TError = unknown>(
-  params: GetMyInterviewDraftsParams,
-  options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyInterviewDrafts>>, TError, TData>> &
-      Pick<
+ params: GetMyInterviewDraftsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyInterviewDrafts>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getMyInterviewDrafts>>,
           TError,
           Awaited<ReturnType<typeof getMyInterviewDrafts>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetMyInterviewDrafts<TData = Awaited<ReturnType<typeof getMyInterviewDrafts>>, TError = unknown>(
-  params: GetMyInterviewDraftsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyInterviewDrafts>>, TError, TData>> &
-      Pick<
+ params: GetMyInterviewDraftsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyInterviewDrafts>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getMyInterviewDrafts>>,
           TError,
           Awaited<ReturnType<typeof getMyInterviewDrafts>>
-        >,
-        'initialData'
-      >
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetMyInterviewDrafts<TData = Awaited<ReturnType<typeof getMyInterviewDrafts>>, TError = unknown>(
-  params: GetMyInterviewDraftsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyInterviewDrafts>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+ params: GetMyInterviewDraftsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyInterviewDrafts>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary 내가 작성중인 (임시저장) 복기 데이터를 조회합니다.
  */
 
 export function useGetMyInterviewDrafts<TData = Awaited<ReturnType<typeof getMyInterviewDrafts>>, TError = unknown>(
-  params: GetMyInterviewDraftsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyInterviewDrafts>>, TError, TData>>
-    fetch?: RequestInit
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetMyInterviewDraftsQueryOptions(params, options)
+ params: GetMyInterviewDraftsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyInterviewDrafts>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>
-  }
+  const queryOptions = getGetMyInterviewDraftsQueryOptions(params,options)
 
-  return { ...query, queryKey: queryOptions.queryKey }
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
+
