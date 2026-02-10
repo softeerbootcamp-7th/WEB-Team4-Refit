@@ -1,4 +1,4 @@
-package com.shyashyashya.refit.domain.qnaset.service.temp;
+package com.shyashyashya.refit.global.gemini;
 
 import java.util.List;
 import java.util.Optional;

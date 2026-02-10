@@ -1,7 +1,5 @@
 package com.shyashyashya.refit.global.gemini;
 
-import com.shyashyashya.refit.domain.qnaset.service.temp.GeminiGenerateRequest;
-import com.shyashyashya.refit.domain.qnaset.service.temp.GeminiGenerateResponse;
 import java.util.concurrent.CompletableFuture;
 
 import com.shyashyashya.refit.global.property.GeminiProperty;
