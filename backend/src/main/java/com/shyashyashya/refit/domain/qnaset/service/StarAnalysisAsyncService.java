@@ -19,15 +19,14 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class StarAnalysisAsyncService {
 
-    private final StarAnalysisService starAnalysisTxService;
+    private final StarAnalysisService starAnalysisService;
     private final GeminiClient geminiClient;
     private final StarAnalysisGeneratePrompt starAnalysisGeneratePrompt;
 
     public CompletableFuture<StarAnalysisDto> createStarAnalysis(Long qnaSetId) {
 
-        // QnaSet qnaSet = starAnalysisTxService.getValidatedQnaSetForUser(qnaSetId);
-        QnaSet qnaSet = starAnalysisTxService.temp(qnaSetId);
-        StarAnalysis starAnalysis = starAnalysisTxService.createInProgressStarAnalysisTx(qnaSetId);
+        QnaSet qnaSet = starAnalysisService.getValidatedQnaSetForUser(qnaSetId);
+        StarAnalysis starAnalysis = starAnalysisService.createInProgressStarAnalysisTx(qnaSetId);
 
         String prompt = starAnalysisGeneratePrompt.buildPrompt(qnaSet);
         // log.info("Prompt: \n" + prompt);
@@ -36,10 +35,10 @@ public class StarAnalysisAsyncService {
         CompletableFuture<GeminiGenerateResponse> reqFuture = geminiClient.createGeminiRequest(requestBody);
 
         return reqFuture
-                .thenApplyAsync(geminiRsp -> starAnalysisTxService.onRequestSuccess(starAnalysis.getId(), geminiRsp))
+                .thenApplyAsync(geminiRsp -> starAnalysisService.onRequestSuccess(starAnalysis.getId(), geminiRsp))
                 .exceptionally(ex -> {
                     log.error(ex.getMessage());
-                    starAnalysisTxService.onRequestFail(1L, ex);
+                    starAnalysisService.onRequestFail(qnaSetId, ex);
                     throw new CustomException(ErrorCode.STAR_ANALYSIS_CREATE_FAILED);
                 });
     }
