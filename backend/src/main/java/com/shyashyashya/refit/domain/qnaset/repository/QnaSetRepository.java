@@ -37,7 +37,7 @@ public interface QnaSetRepository extends JpaRepository<QnaSet, Long> {
          WHERE q.interview.industry IN :industries
            AND q.interview.jobCategory IN :jobCategories
     """)
-    List<QnaSet> findAllByIndustriesAndJobCategories(List<Industry> industries, List<JobCategory> jobCategories);
+    Page<QnaSet> findAllByIndustriesAndJobCategories(List<Industry> industries, List<JobCategory> jobCategories, Pageable pageable);
 
     // TODO : queryDSL 적용
     @Query("""
