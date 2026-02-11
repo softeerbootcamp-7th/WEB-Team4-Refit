@@ -30,7 +30,7 @@ const BASE_STYLES = 'inline-flex align-middle items-center justify-center rounde
 const TYPE_STYLES = {
   'hard-label': 'py-1 px-2 caption-m-medium',
   'question-label': 'py-1.5 px-2.5 caption-l-semibold',
-  'star-label': 'py-1 px-2.5 body-s-medium rounded-md',
+  'star-label': 'py-1 px-2.5 caption-l-semibold rounded-md',
   'd-day-label': 'py-0.5 px-1.5 body-m-semibold',
 } as const
 
@@ -38,8 +38,12 @@ const THEME_STYLES = {
   'gray-100': 'bg-gray-100 text-gray-500',
   'gray-600': 'bg-gray-600 text-gray-white',
   'gray-white-outline': 'border border-gray-150 bg-gray-white text-gray-600',
+  'gray-outline': 'border border-gray-150 text-gray-600',
   'orange-50': 'bg-orange-50 text-orange-400',
   'orange-100': 'bg-orange-100 text-orange-500',
   'green-100': 'bg-green-50 text-green-400',
   'red-50': 'bg-red-50 text-red-400',
+  'green-50-outline': 'border border-green-400 bg-green-050 text-green-400',
+  'orange-50-outline': 'border border-orange-400 bg-orange-50 text-orange-400',
+  'red-50-outline': 'border border-red-400 bg-red-50 text-red-400',
 } as const

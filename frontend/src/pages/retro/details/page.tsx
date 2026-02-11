@@ -3,7 +3,7 @@ import { DetailHeader } from '@/features/retro/details/components/contents/Detai
 import { RetroDetailSection } from '@/features/retro/details/components/contents/RetroDetailSection'
 import { DetailMinimizedSidebar } from '@/features/retro/details/components/sidebar/DetailMinimizedSidebar'
 import { DetailSidebar } from '@/features/retro/details/components/sidebar/DetailSidebar'
-import { MOCK_INTERVIEW_DETAIL } from '@/features/retro/details/example'
+import { MOCK_INTERVIEW_DETAIL } from '@/shared/constants/example'
 import { INTERVIEW_TYPE_LABEL } from '@/shared/constants/interviews'
 import { useSectionScroll } from '@/shared/hooks/useSectionScroll'
 
