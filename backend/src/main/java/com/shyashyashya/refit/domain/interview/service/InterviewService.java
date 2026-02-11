@@ -18,6 +18,7 @@ import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatus
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewSearchRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.KptSelfReviewUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
+import com.shyashyashya.refit.domain.interview.dto.response.QnaSetCreateResponse;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewSelfReview;
@@ -218,6 +219,16 @@ public class InterviewService {
                                     request.keepText(), request.problemText(), request.tryText(), interview);
                             interviewSelfReviewRepository.save(created);
                         });
+    }
+
+    @Transactional
+    public QnaSetCreateResponse createQnaSet(Long interviewId) {
+        User requestUser = requestUserContext.getRequestUser();
+        Interview interview =
+                interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
+        interviewValidator.validateInterviewOwner(interview, requestUser);
+        QnaSet createdQnaSet = qnaSetRepository.save(QnaSet.createEmpty(interview));
+        return new QnaSetCreateResponse(createdQnaSet.getId());
     }
 
     private Company findOrSaveCompany(InterviewCreateRequest request) {

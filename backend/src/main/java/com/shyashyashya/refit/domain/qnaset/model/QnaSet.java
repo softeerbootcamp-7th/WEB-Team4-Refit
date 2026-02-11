@@ -62,6 +62,16 @@ public class QnaSet extends BaseEntity {
                 .build();
     }
 
+    public static QnaSet createEmpty(Interview interview) {
+        return QnaSet.builder()
+                .questionText("")
+                .answerText("")
+                .isMarkedDifficult(false)
+                .interview(interview)
+                .qnaSetCategory(null)
+                .build();
+    }
+
     public void updateQuestionText(String questionText) {
         if (questionText != null) {
             this.questionText = questionText;

@@ -110,7 +110,7 @@ public class InterviewController {
     @PostMapping("/{interviewId}/qna-set")
     public ResponseEntity<ApiResponse<QnaSetCreateResponse>> createQnaSet(@PathVariable Long interviewId) {
         var body = interviewService.createQnaSet(interviewId);
-        var response = ApiResponse.success(COMMON200);
+        var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
 }
