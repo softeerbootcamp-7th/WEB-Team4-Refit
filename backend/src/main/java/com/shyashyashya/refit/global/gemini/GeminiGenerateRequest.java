@@ -10,7 +10,7 @@ public record GeminiGenerateRequest(List<Content> contents, GenerationConfig gen
 
     public record GenerationConfig(double temperature) {}
 
-    public static GeminiGenerateRequest ofText(String text) {
+    public static GeminiGenerateRequest from(String text) {
         return new GeminiGenerateRequest(List.of(new Content(List.of(new Part(text)))), new GenerationConfig(1.0));
     }
 }

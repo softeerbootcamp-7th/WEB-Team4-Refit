@@ -40,7 +40,7 @@ public enum ErrorCode {
     SCRAP_FOLDER_NOT_FOUND(NOT_FOUND, "스크랩 폴더가 존재하지 않습니다."),
     SCRAP_FOLDER_NAME_DUPLICATED(CONFLICT, "이미 존재하는 스크랩 폴더 이름입니다."),
 
-    STAR_ANALYSIS_CREATION_ALREADY_IN_PROGRESS(CONFLICT, "이미 스타 분석 생성 요청이 진행 중입니다."),
+    STAR_ANALYSIS_CREATION_FAILED_ALREADY_IN_PROGRESS(CONFLICT, "이미 스타 분석 생성 요청이 진행 중입니다."),
     STAR_ANALYSIS_PARSING_FAILED(INTERNAL_SERVER_ERROR, "스타 분석을 파싱 중 오류가 발생하였습니다."),
     STAR_ANALYSIS_CREATE_FAILED(INTERNAL_SERVER_ERROR, "스타 분석 생성 중 오류가 발생하였습니다.");
 

@@ -30,10 +30,10 @@ public class StarAnalysisAsyncService {
 
     public CompletableFuture<StarAnalysisDto> createStarAnalysis(Long qnaSetId) {
         QnaSet qnaSet = qnaSetService.getQnaSet(qnaSetId);
-        StarAnalysis starAnalysis = starAnalysisService.createInProgressStarAnalysisTx(qnaSet);
+        StarAnalysis starAnalysis = starAnalysisService.createInProgressStarAnalysis(qnaSet);
 
         String prompt = starAnalysisGeneratePrompt.buildPrompt(qnaSet);
-        GeminiGenerateRequest requestBody = GeminiGenerateRequest.ofText(prompt);
+        GeminiGenerateRequest requestBody = GeminiGenerateRequest.from(prompt);
 
         CompletableFuture<GeminiGenerateResponse> reqFuture =
                 geminiClient.createGeminiRequest(requestBody, STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC);

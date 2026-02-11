@@ -1,6 +1,5 @@
 package com.shyashyashya.refit.domain.qnaset.service;
 
-import static com.shyashyashya.refit.global.exception.ErrorCode.QNA_SET_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.STAR_ANALYSIS_CREATION_ALREADY_IN_PROGRESS;
 import static com.shyashyashya.refit.global.exception.ErrorCode.STAR_ANALYSIS_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.STAR_ANALYSIS_PARSING_FAILED;
@@ -8,18 +7,13 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.STAR_ANALYSIS_PA
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shyashyashya.refit.domain.interview.dto.StarAnalysisDto;
-import com.shyashyashya.refit.domain.interview.model.Interview;
-import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.StarAnalysis;
 import com.shyashyashya.refit.domain.qnaset.model.StarAnalysisGenerationStatus;
-import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.StarAnalysisRepository;
-import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.gemini.GeminiGenerateResponse;
 import com.shyashyashya.refit.global.gemini.StarAnalysisGeminiResponse;
-import com.shyashyashya.refit.global.util.RequestUserContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -35,7 +29,7 @@ public class StarAnalysisService {
     private final ObjectMapper objectMapper;
 
     @Transactional
-    public StarAnalysis createInProgressStarAnalysisTx(QnaSet qnaSet) {
+    public StarAnalysis createInProgressStarAnalysis(QnaSet qnaSet) {
         if (starAnalysisRepository.existsByQnaSet(qnaSet)) {
             throw new CustomException(STAR_ANALYSIS_CREATION_ALREADY_IN_PROGRESS);
         }
