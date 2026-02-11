@@ -38,10 +38,11 @@ public class UserController {
             description = "현재 로그인한 계정이 아직 등록되지 않은 상태일 때만 회원가입 할 수 있습니다. 회원가입이 성공하면 토큰을 새로 발급합니다.")
     @PostMapping("/signup")
     public ResponseEntity<Void> signUp(@Valid @RequestBody UserSignUpRequest userSignUpRequest) {
+        ClientOriginType originType = ClientOriginType.fromOriginString(userSignUpRequest.origin());
         TokenPairDto tokenPairDto = userService.signUp(userSignUpRequest);
 
-        String accessTokenCookie = cookieUtil.createAccessTokenCookie(tokenPairDto.accessToken());
-        String refreshTokenCookie = cookieUtil.createResponseTokenCookie(tokenPairDto.refreshToken());
+        String accessTokenCookie = cookieUtil.createAccessTokenCookie(tokenPairDto.accessToken(), originType);
+        String refreshTokenCookie = cookieUtil.createResponseTokenCookie(tokenPairDto.refreshToken(), originType);
 
         return ResponseEntity.status(HttpStatus.FOUND)
                 .header(HttpHeaders.SET_COOKIE, accessTokenCookie)
