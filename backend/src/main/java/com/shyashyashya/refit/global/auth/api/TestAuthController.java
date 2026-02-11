@@ -5,7 +5,7 @@ import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
-import com.shyashyashya.refit.global.auth.dto.TokenPairDto;
+import com.shyashyashya.refit.global.auth.dto.TestPublishTokenResponse;
 import com.shyashyashya.refit.global.auth.model.RefreshToken;
 import com.shyashyashya.refit.global.auth.repository.RefreshTokenRepository;
 import com.shyashyashya.refit.global.auth.service.CookieUtil;
@@ -27,13 +27,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Test Auth/User API", description = "개발용 테스트 인증/인가 API입니다.")
 @RestController
-@RequestMapping("/test/auth/token")
+@RequestMapping("/test/auth")
 @RequiredArgsConstructor
 public class TestAuthController {
 
@@ -42,19 +43,23 @@ public class TestAuthController {
     private final CookieUtil cookieUtil;
     private final JwtUtil jwtUtil;
 
-    @Operation(summary = "(테스트용) 게스트 회원 토큰을 발급합니다.", description = "발급된 토큰은 요청 주소에 쿠키로 세팅됩니다.")
-    @GetMapping("/guest")
-    public ResponseEntity<ApiResponse<TokenPairDto>> getGuestToken(
+    @Operation(
+            summary = "(테스트용) Access&Refresh Token을 발급합니다.",
+            description = "발급된 토큰은 origin에 따라 세팅됩니다. response body에 회원가입 필요 여부가 포함됩니다.")
+    @GetMapping("/token")
+    public ResponseEntity<ApiResponse<TestPublishTokenResponse>> publishToken(
             @RequestParam("email") @NotNull @Email String email, @RequestParam(required = false) String origin) {
-        return getTokenResponse(email, null, origin);
+        ClientOriginType clientOriginType = ClientOriginType.fromOriginString(origin);
+        Long userId = userRepository.findByEmail(email).map(User::getId).orElse(null);
+        return getTokenResponse(email, userId, clientOriginType);
     }
 
-    @Operation(summary = "(테스트용) 회원 토큰을 발급합니다.", description = "발급된 토큰은 요청 주소에 쿠키로 세팅됩니다.")
-    @GetMapping
-    public ResponseEntity<ApiResponse<TokenPairDto>> getToken(
-            @RequestParam("email") @NotNull @Email String email, @RequestParam(required = false) String origin) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        return getTokenResponse(user.getEmail(), user.getId(), origin);
+    @GetMapping("/token/{userId}")
+    public ResponseEntity<ApiResponse<TestPublishTokenResponse>> publishTokenByUserId(
+            @PathVariable @NotNull Long userId, @RequestParam(required = false) String origin) {
+        ClientOriginType clientOriginType = ClientOriginType.fromOriginString(origin);
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        return getTokenResponse(user.getEmail(), userId, clientOriginType);
     }
 
     @Operation(summary = "(테스트용) 쿠키에 설정된 토큰들을 삭제합니다.")
@@ -79,8 +84,8 @@ public class TestAuthController {
                 .body(response);
     }
 
-    private ResponseEntity<ApiResponse<TokenPairDto>> getTokenResponse(String email, Long userId, String origin) {
-        ClientOriginType clientOriginType = ClientOriginType.fromOriginString(origin);
+    private ResponseEntity<ApiResponse<TestPublishTokenResponse>> getTokenResponse(
+            String email, Long userId, ClientOriginType clientOriginType) {
         String accessToken = jwtUtil.createAccessToken(email, userId);
         String refreshToken = jwtUtil.createRefreshToken(email, userId);
 
@@ -91,11 +96,10 @@ public class TestAuthController {
                 jwtUtil.getValidatedJwtToken(refreshToken).getExpiration();
         refreshTokenRepository.save(RefreshToken.create(refreshToken, email, refreshTokenExpiration));
 
-        var body = ApiResponse.success(COMMON200, TokenPairDto.of(accessToken, refreshToken));
+        var response = TestPublishTokenResponse.of(userId != null, accessToken, refreshToken);
+        var body = ApiResponse.success(COMMON200, response);
         return ResponseEntity.status(HttpStatus.FOUND)
-                .header(
-                        HttpHeaders.LOCATION,
-                        ClientOriginType.getClientOriginUrl(origin) + UrlConstant.LOGIN_REDIRECT_PATH)
+                .header(HttpHeaders.LOCATION, clientOriginType.getClientOriginUrl() + UrlConstant.LOGIN_REDIRECT_PATH)
                 .header(HttpHeaders.SET_COOKIE, accessTokenCookie)
                 .header(HttpHeaders.SET_COOKIE, refreshTokenCookie)
                 .body(body);
