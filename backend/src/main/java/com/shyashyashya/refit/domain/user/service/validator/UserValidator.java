@@ -15,7 +15,7 @@ public class UserValidator {
 
     private final UserRepository userRepository;
 
-    public void validateEmailConflict(@NonNull String email) {
+    public void validateEmailNotConflict(@NonNull String email) {
         if (userRepository.findByEmail(email).isPresent()) {
             throw new CustomException(USER_SIGNUP_EMAIL_CONFLICT);
         }

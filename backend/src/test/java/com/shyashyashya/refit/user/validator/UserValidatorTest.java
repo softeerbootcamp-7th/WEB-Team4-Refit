@@ -37,7 +37,7 @@ class UserValidatorTest {
 
         // when & then
         CustomException exception =
-                assertThrows(CustomException.class, () -> userValidator.validateEmailConflict(email));
+                assertThrows(CustomException.class, () -> userValidator.validateEmailNotConflict(email));
 
         assertEquals(USER_SIGNUP_EMAIL_CONFLICT, exception.getErrorCode());
         verify(userRepository, times(1)).findByEmail(email);
@@ -50,7 +50,7 @@ class UserValidatorTest {
         given(userRepository.findByEmail(email)).willReturn(Optional.empty());
 
         // when & then
-        assertDoesNotThrow(() -> userValidator.validateEmailConflict(email));
+        assertDoesNotThrow(() -> userValidator.validateEmailNotConflict(email));
         verify(userRepository, times(1)).findByEmail(email);
     }
 
