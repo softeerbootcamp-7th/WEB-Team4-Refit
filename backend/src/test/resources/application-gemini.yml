@@ -1,4 +1,4 @@
 spring:
   gemini:
     api-key: "///"
-    prompt-path: "src/test/resources/prompt/"
+    prompt-path: "src/test/resources/dummyprompt/"
