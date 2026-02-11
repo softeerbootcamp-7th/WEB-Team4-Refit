@@ -11,6 +11,7 @@ import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatus
 import com.shyashyashya.refit.domain.interview.dto.request.KptSelfReviewUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.response.GuideQuestionResponse;
+import com.shyashyashya.refit.domain.interview.dto.response.QnaSetCreateResponse;
 import com.shyashyashya.refit.domain.interview.service.GuideQuestionService;
 import com.shyashyashya.refit.domain.interview.service.InterviewService;
 import com.shyashyashya.refit.global.dto.ApiResponse;
@@ -107,7 +108,7 @@ public class InterviewController {
 
     @Operation(summary = "특정 면접에 새로운 질답 세트를 생성합니다.")
     @PostMapping("/{interviewId}/qna-set")
-    public ResponseEntity<ApiResponse<QnaSetCreateResposne>> createQnaSet(@PathVariable Long interviewId) {
+    public ResponseEntity<ApiResponse<QnaSetCreateResponse>> createQnaSet(@PathVariable Long interviewId) {
         var body = interviewService.createQnaSet(interviewId);
         var response = ApiResponse.success(COMMON200);
         return ResponseEntity.ok(response);
