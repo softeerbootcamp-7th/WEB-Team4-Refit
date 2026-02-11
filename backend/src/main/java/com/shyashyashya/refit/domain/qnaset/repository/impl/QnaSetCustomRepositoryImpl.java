@@ -38,8 +38,6 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
                 .select(qnaSet.count())
                 .from(qnaSet)
                 .where(searchConditions)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
                 .fetchOne();
         totalCount = totalCount == null ? 0L : totalCount;
 
