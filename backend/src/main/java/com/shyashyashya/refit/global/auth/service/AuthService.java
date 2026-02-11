@@ -4,7 +4,7 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.LOGIN_REQUIRED;
 
 import com.shyashyashya.refit.global.auth.dto.TokenReissueResultDto;
 import com.shyashyashya.refit.global.auth.model.RefreshToken;
-import com.shyashyashya.refit.global.auth.model.ValidatedJwtToken;
+import com.shyashyashya.refit.global.auth.model.DecodedJwt;
 import com.shyashyashya.refit.global.auth.repository.RefreshTokenRepository;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.exception.RefreshTokenTheftException;
@@ -88,7 +88,7 @@ public class AuthService {
         return !jwtUtil.getValidatedJwtTokenAllowExpired(accessTokenFromHeader).isExpired();
     }
 
-    private ValidatedJwtToken getValidatedCurrentRefreshToken(@Nullable String refreshTokenFromHeader) {
+    private DecodedJwt getValidatedCurrentRefreshToken(@Nullable String refreshTokenFromHeader) {
         // 토큰이 없거나, 토큰 서명이 불일치 하거나, 토큰이 만료되었으면 로그인 필요
         if (refreshTokenFromHeader == null || refreshTokenFromHeader.isBlank()) {
             throw new CustomException(LOGIN_REQUIRED);

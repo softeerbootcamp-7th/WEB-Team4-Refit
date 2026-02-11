@@ -5,7 +5,7 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.TOKEN_REQUIRED;
 import static com.shyashyashya.refit.global.exception.ErrorCode.TOKEN_VALIDATION_FAILED;
 
 import com.shyashyashya.refit.global.auth.model.JwtTokenType;
-import com.shyashyashya.refit.global.auth.model.ValidatedJwtToken;
+import com.shyashyashya.refit.global.auth.model.DecodedJwt;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.property.AuthJwtProperty;
 import com.shyashyashya.refit.global.property.OAuth2Property;
@@ -69,7 +69,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    public ValidatedJwtToken getValidatedJwtToken(String token) {
+    public DecodedJwt getValidatedJwtToken(String token) {
         var jwtToken = getValidatedJwtTokenAllowExpired(token);
         if (jwtToken.isExpired()) {
             throw new CustomException(TOKEN_EXPIRED);
@@ -77,18 +77,18 @@ public class JwtUtil {
         return jwtToken;
     }
 
-    public ValidatedJwtToken getValidatedJwtTokenAllowExpired(String token) {
+    public DecodedJwt getValidatedJwtTokenAllowExpired(String token) {
         try {
             if (token == null || token.isBlank()) {
                 throw new CustomException(TOKEN_REQUIRED);
             }
 
             Claims claims = jwtParser.parseClaimsJws(token).getBody();
-            return ValidatedJwtToken.createUnexpiredToken(claims, extractJwtTokenTypeOrThrow(claims));
+            return DecodedJwt.createUnexpiredToken(claims, extractJwtTokenTypeOrThrow(claims));
 
         } catch (ExpiredJwtException e) {
             Claims claims = e.getClaims();
-            return ValidatedJwtToken.createExpiredToken(claims, extractJwtTokenTypeOrThrow(claims));
+            return DecodedJwt.createExpiredToken(claims, extractJwtTokenTypeOrThrow(claims));
 
         } catch (JwtException e) {
             log.warn("Invalid JWT token: {}", e.getMessage());
@@ -96,29 +96,29 @@ public class JwtUtil {
         }
     }
 
-    public ClientOriginType getClientOriginType(ValidatedJwtToken validatedJwtToken) {
-        validateOAuth2StateType(validatedJwtToken);
-        return ClientOriginType.fromOriginTypeString(validatedJwtToken.claims().getSubject());
+    public ClientOriginType getClientOriginType(DecodedJwt decodedJwt) {
+        validateOAuth2StateType(decodedJwt);
+        return ClientOriginType.fromOriginString(decodedJwt.claims().getSubject());
     }
 
-    public String getEmail(ValidatedJwtToken validatedJwtToken) {
-        validateAccessOrRefreshType(validatedJwtToken);
-        return validatedJwtToken.claims().getSubject();
+    public String getEmail(DecodedJwt decodedJwt) {
+        validateAccessOrRefreshType(decodedJwt);
+        return decodedJwt.claims().getSubject();
     }
 
-    public Optional<Long> getUserId(ValidatedJwtToken validatedJwtToken) {
-        validateAccessOrRefreshType(validatedJwtToken);
-        return Optional.ofNullable(validatedJwtToken.claims().get(CLAIM_KEY_USER_ID, Long.class));
+    public Optional<Long> getUserId(DecodedJwt decodedJwt) {
+        validateAccessOrRefreshType(decodedJwt);
+        return Optional.ofNullable(decodedJwt.claims().get(CLAIM_KEY_USER_ID, Long.class));
     }
 
-    private void validateAccessOrRefreshType(ValidatedJwtToken jwtToken) {
+    private void validateAccessOrRefreshType(DecodedJwt jwtToken) {
         if (jwtToken.type() != JwtTokenType.ACCESS_TOKEN && jwtToken.type() != JwtTokenType.REFRESH_TOKEN) {
             log.warn("ACCESS_TOKEN or REFRESH_TOKEN type expected.");
             throw new CustomException(TOKEN_VALIDATION_FAILED);
         }
     }
 
-    private void validateOAuth2StateType(ValidatedJwtToken jwtToken) {
+    private void validateOAuth2StateType(DecodedJwt jwtToken) {
         if (jwtToken.type() != JwtTokenType.OAUTH2_STATE_TOKEN) {
             log.warn("OAUTH2_STATE_TOKEN type expected.");
             throw new CustomException(TOKEN_VALIDATION_FAILED);
