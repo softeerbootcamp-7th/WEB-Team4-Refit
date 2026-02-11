@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handlerException(Exception e) {
-        log.error("Exception: {}", e.getMessage());
+        log.error("Exception: {}", e.getMessage(), e);
         var response = ApiResponse.exception(e);
         return ResponseEntity.internalServerError().body(response);
     }

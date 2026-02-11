@@ -21,9 +21,13 @@ public enum ErrorCode {
 
     QNA_SET_CATEGORY_NOT_FOUND(NOT_FOUND, "질문 카테고리가 존재하지 않습니다."),
 
-    QNA_SET_NOT_FOUND(NOT_FOUND, "질문 세트가 존재하지 않습니다."),
     INDUSTRY_NOT_FOUND(NOT_FOUND, "산업군이 존재하지 않습니다."),
+    INDUSTRY_PARTIALLY_NOT_FOUND(NOT_FOUND, "요청한 산업군 중 일부 산업군이 존재하지 않습니다."),
+
     JOB_CATEGORY_NOT_FOUND(NOT_FOUND, "직군이 존재하지 않습니다."),
+    JOB_CATEGORY_PARTIALLY_NOT_FOUND(NOT_FOUND, "요청한 직군 중 일부 직군이 존재하지 않습니다."),
+
+    QNA_SET_NOT_FOUND(NOT_FOUND, "질문 세트가 존재하지 않습니다."),
     USER_NOT_FOUND(NOT_FOUND, "사용자가 존재하지 않습니다."),
 
     USER_SIGNUP_EMAIL_CONFLICT(CONFLICT, "이미 사용 중인 이메일입니다."),

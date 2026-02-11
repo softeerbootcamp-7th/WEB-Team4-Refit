@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import com.shyashyashya.refit.core.IntegrationTest;
+import com.shyashyashya.refit.domain.company.repository.CompanyRepository;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewSearchRequest;
 import com.shyashyashya.refit.domain.interview.model.Interview;
@@ -31,6 +32,9 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
     @Autowired
     private InterviewRepository interviewRepository;
 
+    @Autowired
+    private CompanyRepository companyRepository;
+
     @Nested
     class 면접을_검색할_때 {
 
@@ -43,6 +47,7 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
 
         @BeforeEach
         void createTestData() {
+            companyRepository.deleteAll();
             company1 = createCompany("삼성전자");
             company2 = createCompany("카카오");
             company3 = createCompany("현대건설");
@@ -50,7 +55,7 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
 
             Interview interview1 = createInterview(
                 new InterviewCreateRequest(
-                    LocalDateTime.of(2023, 1, 10, 10, 0, 0), InterviewType.FIRST, company1.getName(), industry.getId(), jobCategory.getId(), "Developer"
+                    LocalDateTime.of(2023, 1, 10, 10, 0, 0), InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
                 ));
             interview1.startLogging();
             interview1.completeLogging();
@@ -58,7 +63,7 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
 
             Interview interview2 = createInterview(
                 new InterviewCreateRequest(
-                    LocalDateTime.of(2023, 2, 15, 11, 0, 0), InterviewType.SECOND, company2.getName(), industry.getId(), jobCategory.getId(), "Engineer"
+                    LocalDateTime.of(2023, 2, 15, 11, 0, 0), InterviewType.SECOND, company2.getName(), industry1.getId(), jobCategory1.getId(), "Engineer"
                 ));
             interview2.startLogging();
             interview2.completeLogging();
@@ -67,7 +72,7 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
 
             Interview interview3 = createInterview(
                 new InterviewCreateRequest(
-                    LocalDateTime.of(2024, 3, 20, 12, 0, 0), InterviewType.THIRD, company3.getName(), industry.getId(), jobCategory.getId(), "Manager"
+                    LocalDateTime.of(2024, 3, 20, 12, 0, 0), InterviewType.THIRD, company3.getName(), industry1.getId(), jobCategory1.getId(), "Manager"
                 ));
             interview3.startLogging();
             interview3.completeLogging();
@@ -76,7 +81,7 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
 
             Interview interview4 = createInterview(
                 new InterviewCreateRequest(
-                    LocalDateTime.of(2024, 4, 25, 13, 0, 0), InterviewType.FIRST, company4.getName(), industry.getId(), jobCategory.getId(), "Developer"
+                    LocalDateTime.of(2024, 4, 25, 13, 0, 0), InterviewType.FIRST, company4.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
                 ));
             interview4.startLogging();
             interview4.completeLogging();
@@ -221,10 +226,10 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
 
         @Test
         void 다른_사용자의_면접은_검색_결과에_포함되지_않는다() {
-            User otherUser = createUser("test2@exmaple.com", "test2", industry, jobCategory);
+            User otherUser = createUser("test2@exmaple.com", "test2", industry1, jobCategory1);
             Interview otherInterview = createInterview(
                     new InterviewCreateRequest(
-                            LocalDateTime.of(2024, 4, 25, 13, 0, 0), InterviewType.FIRST, company.getName(), industry.getId(), jobCategory.getId(), "Developer"
+                            LocalDateTime.of(2024, 4, 25, 13, 0, 0), InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
                     ), otherUser);
             otherInterview.startLogging();
             otherInterview.completeLogging();
@@ -249,14 +254,14 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
         @Test
         void 복기를_완료햐지_않은_면접은_검색_결과에_포함되지_않는다() {
             createInterview(new InterviewCreateRequest(
-                            LocalDateTime.of(2024, 4, 25, 13, 0, 0), InterviewType.FIRST, company.getName(), industry.getId(), jobCategory.getId(), "Developer"));
+                            LocalDateTime.of(2024, 4, 25, 13, 0, 0), InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"));
 
             Interview logDraftInterview = createInterview(new InterviewCreateRequest(
-                    LocalDateTime.of(2024, 4, 25, 13, 0, 0), InterviewType.FIRST, company.getName(), industry.getId(), jobCategory.getId(), "Developer"));
+                    LocalDateTime.of(2024, 4, 25, 13, 0, 0), InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"));
             logDraftInterview.startLogging();
 
             Interview reviewDraftInterview = createInterview(new InterviewCreateRequest(
-                    LocalDateTime.of(2024, 4, 25, 13, 0, 0), InterviewType.FIRST, company.getName(), industry.getId(), jobCategory.getId(), "Developer"));
+                    LocalDateTime.of(2024, 4, 25, 13, 0, 0), InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"));
             reviewDraftInterview.startLogging();
             reviewDraftInterview.completeLogging();
 
