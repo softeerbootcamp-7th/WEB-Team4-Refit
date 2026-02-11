@@ -1,15 +1,52 @@
-import { MOCK_INTERVIEW_INFO_DATA, MOCK_QNA_SET_LIST } from '@/constants/example'
+import { Suspense } from 'react'
+import { useSuspenseQuery } from '@tanstack/react-query'
+import { useParams } from 'react-router'
+import { getGetInterviewFullQueryKey, getInterviewFull } from '@/apis/generated/interview-api/interview-api'
+import { LoadingSpinner } from '@/designs/assets'
 import { useSectionScroll } from '@/features/_common/hooks/useSectionScroll'
 import { RecordSection } from '@/features/record/confirm/components/contents/RecordSection'
 import { RecordConfirmSidebar } from '@/features/record/confirm/components/sidebar/Sidebar'
-import { useQnaList } from '@/features/record/confirm/hooks'
+import { useQnaList } from '@/features/record/confirm/hooks/useQnaList'
+import type { InterviewInfoType, InterviewType, SimpleQnaType } from '@/types/interview'
 
 export default function RecordConfirmPage() {
-  // TODO: API 연동 시 실제 데이터로 교체
-  const interviewInfoItems = MOCK_INTERVIEW_INFO_DATA
+  return (
+    <Suspense
+      fallback={
+        <div className="flex h-full items-center justify-center">
+          <LoadingSpinner className="h-10 w-10 animate-spin text-orange-500" />
+        </div>
+      }
+    >
+      <RecordConfirmContent />
+    </Suspense>
+  )
+}
+
+function RecordConfirmContent() {
+  const { interviewId } = useParams()
+  const id = Number(interviewId)
+  const { data } = useSuspenseQuery({
+    queryKey: getGetInterviewFullQueryKey(id),
+    queryFn: () => getInterviewFull(id),
+  })
+  const interviewFull = data.result!
+
+  const interviewInfoItems: InterviewInfoType = {
+    company: interviewFull.company ?? '',
+    jobRole: interviewFull.jobRole ?? '',
+    interviewType: interviewFull.interviewType as InterviewType,
+    interviewStartAt: interviewFull.interviewStartAt ?? '',
+  }
+
+  const initialQnaList: SimpleQnaType[] = (interviewFull.qnaSets ?? []).map((q) => ({
+    qnaSetId: q.qnaSetId ?? 0,
+    questionText: q.questionText ?? '',
+    answerText: q.answerText ?? '',
+  }))
 
   const { qnaList, isAddMode, handleEdit, handleDelete, handleAddSave, startAddMode, cancelAddMode } =
-    useQnaList(MOCK_QNA_SET_LIST)
+    useQnaList(initialQnaList)
 
   const { activeIndex, setRef, scrollContainerRef, handleItemClick } = useSectionScroll({
     idPrefix: 'record-confirm',
