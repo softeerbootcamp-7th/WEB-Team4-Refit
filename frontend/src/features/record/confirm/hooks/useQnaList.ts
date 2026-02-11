@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useUpdateQnaSet } from '@/apis/generated/qna-set-api/qna-set-api'
 import type { SimpleQnaType } from '@/types/interview'
 
 type UseQnaListOptions = {
@@ -10,11 +11,13 @@ type UseQnaListOptions = {
 export function useQnaList(initialList: SimpleQnaType[], options: UseQnaListOptions = {}) {
   const [qnaList, setQnaList] = useState<SimpleQnaType[]>(initialList)
   const [isAddMode, setIsAddMode] = useState(false)
+  const { mutate: updateQnaSet } = useUpdateQnaSet()
 
   const handleEdit = (qnaSetId: number, question: string, answer: string) => {
     setQnaList((prev) =>
       prev.map((item) => (item.qnaSetId === qnaSetId ? { ...item, questionText: question, answerText: answer } : item)),
     )
+    updateQnaSet({ qnaSetId, data: { questionText: question, answerText: answer, selfReviewText: '' } })
     options.onEdit?.(qnaSetId, question, answer)
   }
 
