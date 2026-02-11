@@ -1,6 +1,6 @@
 import type { RefObject } from 'react'
+import { ROUTES } from '@/routes/routes'
 import { Button } from '@/shared/components'
-import { ROUTES } from '@/shared/constants/routes'
 import { useInterviewNavigate } from '@/shared/hooks/useInterviewNavigation'
 import type { SimpleQnaType } from '@/types/interview'
 import { QnaListSection } from './QnaListSection'

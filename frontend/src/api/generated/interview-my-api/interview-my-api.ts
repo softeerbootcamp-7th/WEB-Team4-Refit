@@ -10,7 +10,6 @@ import type {
   ApiResponsePageInterviewDto,
   ApiResponsePageInterviewSimpleDto,
   GetMyInterviewDraftsParams,
-  GetMyInterviewsParams,
   InterviewSearchRequest,
   SearchInterviewsParams,
 } from '../refit-api.schemas'
@@ -34,6 +33,8 @@ import type {
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
 
 /**
+ * searchFilter 필드는 null 이 될 수 없습니다. 검색 조건이 없는 경우에도 해당 필드를 빈 배열, null 등으로 채워서 보내주세요.
+
  * @summary 내가 복기 완료한 면접을 검색합니다.
  */
 export const getSearchInterviewsUrl = (params: SearchInterviewsParams) => {
@@ -122,124 +123,6 @@ export const useSearchInterviews = <TError = unknown, TContext = unknown>(
 > => {
   return useMutation(getSearchInterviewsMutationOptions(options), queryClient)
 }
-/**
- * @deprecated
- * @summary 내가 복기 완료한 면접 정보를 조회합니다. (검색 API 와 통합 예정입니다)
- */
-export const getGetMyInterviewsUrl = (params: GetMyInterviewsParams) => {
-  const normalizedParams = new URLSearchParams()
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  })
-
-  const stringifiedParams = normalizedParams.toString()
-
-  return stringifiedParams.length > 0 ? `/interview/my?${stringifiedParams}` : `/interview/my`
-}
-
-export const getMyInterviews = async (
-  params: GetMyInterviewsParams,
-  options?: RequestInit,
-): Promise<ApiResponsePageInterviewSimpleDto> => {
-  return customFetch<ApiResponsePageInterviewSimpleDto>(getGetMyInterviewsUrl(params), {
-    ...options,
-    method: 'GET',
-  })
-}
-
-export const getGetMyInterviewsQueryKey = (params?: GetMyInterviewsParams) => {
-  return [`/interview/my`, ...(params ? [params] : [])] as const
-}
-
-export const getGetMyInterviewsQueryOptions = <TData = Awaited<ReturnType<typeof getMyInterviews>>, TError = unknown>(
-  params: GetMyInterviewsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyInterviews>>, TError, TData>>
-    request?: SecondParameter<typeof customFetch>
-  },
-) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {}
-
-  const queryKey = queryOptions?.queryKey ?? getGetMyInterviewsQueryKey(params)
-
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyInterviews>>> = ({ signal }) =>
-    getMyInterviews(params, { signal, ...requestOptions })
-
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getMyInterviews>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetMyInterviewsQueryResult = NonNullable<Awaited<ReturnType<typeof getMyInterviews>>>
-export type GetMyInterviewsQueryError = unknown
-
-export function useGetMyInterviews<TData = Awaited<ReturnType<typeof getMyInterviews>>, TError = unknown>(
-  params: GetMyInterviewsParams,
-  options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyInterviews>>, TError, TData>> &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getMyInterviews>>,
-          TError,
-          Awaited<ReturnType<typeof getMyInterviews>>
-        >,
-        'initialData'
-      >
-    request?: SecondParameter<typeof customFetch>
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetMyInterviews<TData = Awaited<ReturnType<typeof getMyInterviews>>, TError = unknown>(
-  params: GetMyInterviewsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyInterviews>>, TError, TData>> &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getMyInterviews>>,
-          TError,
-          Awaited<ReturnType<typeof getMyInterviews>>
-        >,
-        'initialData'
-      >
-    request?: SecondParameter<typeof customFetch>
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetMyInterviews<TData = Awaited<ReturnType<typeof getMyInterviews>>, TError = unknown>(
-  params: GetMyInterviewsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyInterviews>>, TError, TData>>
-    request?: SecondParameter<typeof customFetch>
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @deprecated
- * @summary 내가 복기 완료한 면접 정보를 조회합니다. (검색 API 와 통합 예정입니다)
- */
-
-export function useGetMyInterviews<TData = Awaited<ReturnType<typeof getMyInterviews>>, TError = unknown>(
-  params: GetMyInterviewsParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyInterviews>>, TError, TData>>
-    request?: SecondParameter<typeof customFetch>
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetMyInterviewsQueryOptions(params, options)
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>
-  }
-
-  return { ...query, queryKey: queryOptions.queryKey }
-}
-
 /**
  * interviewReviewStatus 에는 LOG_DRAFT (기록 중), SELF_REVIEW_DRAFT (회고 중) 값만 들어갈 수 있습니다.
 이외의 값에 대해서는 400 에러를 응답합니다.

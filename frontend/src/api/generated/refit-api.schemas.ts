@@ -295,7 +295,7 @@ export interface InterviewSearchFilter {
 
 export interface InterviewSearchRequest {
   keyword?: string
-  searchFilter?: InterviewSearchFilter
+  searchFilter: InterviewSearchFilter
 }
 
 export interface PageInterviewDto {
@@ -860,21 +860,6 @@ export type GetFrequentQuestionsParams = {
   industryId: number
   jobCategoryId: number
 }
-
-export type GetMyInterviewsParams = {
-  interviewReviewStatus: GetMyInterviewsInterviewReviewStatus
-  pageable: Pageable
-}
-
-export type GetMyInterviewsInterviewReviewStatus =
-  (typeof GetMyInterviewsInterviewReviewStatus)[keyof typeof GetMyInterviewsInterviewReviewStatus]
-
-export const GetMyInterviewsInterviewReviewStatus = {
-  NOT_LOGGED: 'NOT_LOGGED',
-  LOG_DRAFT: 'LOG_DRAFT',
-  SELF_REVIEW_DRAFT: 'SELF_REVIEW_DRAFT',
-  DEBRIEF_COMPLETED: 'DEBRIEF_COMPLETED',
-} as const
 
 export type GetMyInterviewDraftsParams = {
   interviewReviewStatus: GetMyInterviewDraftsInterviewReviewStatus

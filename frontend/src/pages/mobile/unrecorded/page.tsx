@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router'
-import { ROUTES } from '@/shared/constants/routes'
+import { ROUTES } from '@/routes/routes'
 
 const MOCK_INTERVIEWS = [
   {

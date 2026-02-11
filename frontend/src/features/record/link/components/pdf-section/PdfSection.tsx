@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { useHighlightContext } from '@/features/record/link/contexts'
+import { ROUTES } from '@/routes/routes'
 import { FilePlusIcon } from '@/shared/assets'
 import { Button } from '@/shared/components'
-import { ROUTES } from '@/shared/constants/routes'
 import { useInterviewNavigate } from '@/shared/hooks/useInterviewNavigation'
 import { PdfViewer } from './PdfViewer'
 
