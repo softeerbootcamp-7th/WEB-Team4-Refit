@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -52,7 +53,7 @@ public class StarAnalysis extends BaseEntity {
     private StarAnalysisStatus status;
 
     @JoinColumn(name = "qna_set_id", nullable = false, unique = true)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     private QnaSet qnaSet;
 
     /*
