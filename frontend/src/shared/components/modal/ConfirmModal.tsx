@@ -1,13 +1,11 @@
 import Button, { type VariantType } from '@/shared/components/button'
 import Modal from '@/shared/components/modal'
 
-export interface ConfirmModalProps {
+export interface ConfirmModalBaseProps {
   open: boolean
   onClose: () => void
   title?: React.ReactNode
   description?: React.ReactNode
-  hasCancelButton?: boolean
-  cancelText?: string
   okText: string
   okButtonVariant?: VariantType
   onOk: () => void
@@ -16,16 +14,21 @@ export interface ConfirmModalProps {
   isOutsideClickClosable?: boolean
 }
 
+type ConfirmModalStateProps =
+  | { hasCancelButton: false; cancelText?: never }
+  | { hasCancelButton: true; cancelText: string }
+type ConfirmModalProps = ConfirmModalBaseProps & ConfirmModalStateProps
+
 const ConfirmModal = ({
   open,
+  onClose,
   title,
   description,
-  hasCancelButton = true,
-  cancelText = '취소',
-  onClose,
-  okText = '확인',
-  okButtonVariant = 'fill-orange-500',
+  okText,
+  okButtonVariant,
   onOk,
+  hasCancelButton,
+  cancelText,
   size = 'sm',
   className = '',
   isOutsideClickClosable = false,
