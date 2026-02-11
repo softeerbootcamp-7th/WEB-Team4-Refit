@@ -9,7 +9,6 @@ import com.shyashyashya.refit.domain.user.repository.UserRepository;
 import com.shyashyashya.refit.global.auth.model.RefreshToken;
 import com.shyashyashya.refit.global.auth.repository.RefreshTokenRepository;
 import com.shyashyashya.refit.global.auth.service.JwtUtil;
-import com.shyashyashya.refit.global.constant.UrlConstant;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.oauth2.dto.OAuth2LoginUrlResponse;
 import com.shyashyashya.refit.global.oauth2.dto.OAuth2ResultDto;
@@ -43,7 +42,7 @@ public class GoogleOAuth2Service implements OAuth2Service {
     private final RestClient restClient;
 
     @Override
-    public OAuth2LoginUrlResponse buildOAuth2LoginUrl(String origin) {
+    public OAuth2LoginUrlResponse buildOAuth2LoginUrl(ClientOriginType clientOriginType) {
         String googleClientId = oauth2Property.google().clientId();
         String scope = String.join(" ", oauth2Property.google().scope());
         String responseType = "code";
@@ -53,7 +52,7 @@ public class GoogleOAuth2Service implements OAuth2Service {
                 .queryParam("redirect_uri", getRedirectUri())
                 .queryParam("response_type", responseType)
                 .queryParam("scope", scope)
-                .queryParam("state", jwtUtil.createOAuth2StateToken(ClientOriginType.getClientOriginUrl(origin)))
+                .queryParam("state", jwtUtil.createOAuth2StateToken(clientOriginType))
                 .toUriString();
         return OAuth2LoginUrlResponse.from(loginUrlResponseUrl);
     }
@@ -62,8 +61,7 @@ public class GoogleOAuth2Service implements OAuth2Service {
     @Override
     public OAuth2ResultDto handleOAuth2Callback(String code, String state) {
         var validatedOAuth2StateToken = jwtUtil.getValidatedJwtToken(state);
-        var requestHostUrl = jwtUtil.getRequestHostUrl(validatedOAuth2StateToken);
-        String frontendRedirectUrl = requestHostUrl + UrlConstant.LOGIN_REDIRECT_PATH;
+        ClientOriginType clientOriginType = jwtUtil.getClientOriginType(validatedOAuth2StateToken);
 
         var tokenResponse = fetchAccessToken(code);
         var userInfo = fetchUserInfo(tokenResponse.access_token());
@@ -78,8 +76,8 @@ public class GoogleOAuth2Service implements OAuth2Service {
         refreshTokenRepository.save(RefreshToken.create(refreshToken, userInfo.email(), refreshTokenExpiration));
 
         return userOptional
-                .map(user -> OAuth2ResultDto.createUser(accessToken, refreshToken, user, frontendRedirectUrl))
-                .orElseGet(() -> OAuth2ResultDto.createGuest(accessToken, refreshToken, userInfo, frontendRedirectUrl));
+                .map(user -> OAuth2ResultDto.createUser(accessToken, refreshToken, user, clientOriginType))
+                .orElseGet(() -> OAuth2ResultDto.createGuest(accessToken, refreshToken, userInfo, clientOriginType));
     }
 
     private String getRedirectUri() {
