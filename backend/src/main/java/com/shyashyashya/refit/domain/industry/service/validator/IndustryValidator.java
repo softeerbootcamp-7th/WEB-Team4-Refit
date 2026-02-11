@@ -19,7 +19,7 @@ public class IndustryValidator {
             return;
         }
 
-        long count = industryRepository.countAllByIdIn(industryIds);
+        long count = industryRepository.countByIdIn(industryIds);
         if (count != industryIds.size()) {
             throw new CustomException(INDUSTRY_PARTIALLY_NOT_FOUND);
         }
