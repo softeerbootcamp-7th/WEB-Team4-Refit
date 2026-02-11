@@ -14,7 +14,7 @@ import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.oauth2.dto.OAuth2LoginUrlResponse;
 import com.shyashyashya.refit.global.oauth2.dto.OAuth2ResultDto;
 import com.shyashyashya.refit.global.property.OAuth2Property;
-import com.shyashyashya.refit.global.util.CurrentProfileUtil;
+import com.shyashyashya.refit.global.util.ActiveProfileProperty;
 import com.shyashyashya.refit.global.util.RequestHostUrlUtil;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +38,7 @@ public class GoogleOAuth2Service implements OAuth2Service {
     private final RefreshTokenRepository refreshTokenRepository;
 
     private final OAuth2Property oauth2Property;
-    private final CurrentProfileUtil currentProfileUtil;
+    private final ActiveProfileProperty activeProfileProperty;
     private final JwtUtil jwtUtil;
     private final RequestHostUrlUtil requestHostUrlUtil;
     private final RestClient restClient;
@@ -84,7 +84,7 @@ public class GoogleOAuth2Service implements OAuth2Service {
     }
 
     private String getRedirectUri() {
-        return currentProfileUtil.getServerUrl() + oauth2Property.google().redirectPath();
+        return activeProfileProperty.getServerUrl() + oauth2Property.google().redirectPath();
     }
 
     private GoogleTokenResponse fetchAccessToken(String code) {
