@@ -13,26 +13,31 @@ type RetroDetailSectionProps = {
 export function RetroDetailSection({ qnaSets, setRef, scrollContainerRef }: RetroDetailSectionProps) {
   const [editingId, setEditingId] = useState<string | null>(null)
 
+  const isOtherEditing = (qnaSetId: number) => {
+    if (editingId === null) return false
+    return editingId !== `edit-${qnaSetId}`
+  }
+
+  const kptIndex = qnaSets.length
+  const isKptOtherEditing = editingId !== null && editingId !== 'kpt'
+
   return (
     <FadeScrollArea ref={scrollContainerRef} className="flex flex-col gap-5 rounded-lg pr-2">
       {qnaSets.map((qnaSet, index) => (
         <Fragment key={qnaSet.qnaSetId}>
           <QnaRetroCard
-            key={qnaSet.qnaSetId}
             ref={(el) => setRef(index, el)}
             idx={index + 1}
             qnaSet={qnaSet}
-            isOtherEditing={
-              editingId !== null && editingId !== `qna-${qnaSet.qnaSetId}` && editingId !== `retro-${qnaSet.qnaSetId}`
-            }
-            onEditingIdChange={(id) => setEditingId(id)}
+            isOtherEditing={isOtherEditing(qnaSet.qnaSetId)}
+            onEditingIdChange={setEditingId}
           />
           <Border />
         </Fragment>
       ))}
       <KptDetailCard
-        ref={(el) => setRef(qnaSets.length, el)}
-        isOtherEditing={editingId !== null && editingId !== 'kpt'}
+        ref={(el) => setRef(kptIndex, el)}
+        isOtherEditing={isKptOtherEditing}
         onEditingIdChange={setEditingId}
       />
     </FadeScrollArea>
