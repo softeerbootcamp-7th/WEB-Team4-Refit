@@ -201,7 +201,7 @@ public class QnaSetIntegrationTest extends IntegrationTest {
         }
 
         @Test
-        void 존재하지_않는_직무_ID로_조회했을_때_빈_리스트를_반환한다() {
+        void 존재하지_않는_직무_ID로_조회했을_때_404_에러가_발생한다() {
             // when & then
             given(spec)
                     .queryParam("jobCategoryIds", 999L)
