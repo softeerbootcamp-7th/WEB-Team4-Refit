@@ -6,6 +6,7 @@ import com.shyashyashya.refit.global.auth.service.AuthService;
 import com.shyashyashya.refit.global.auth.service.CookieUtil;
 import com.shyashyashya.refit.global.constant.AuthConstant;
 import com.shyashyashya.refit.global.dto.ApiResponse;
+import com.shyashyashya.refit.global.util.ClientOriginType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Auth Controller", description = "인증 관련 API 입니다.")
@@ -29,14 +31,18 @@ public class AuthController {
     @GetMapping("/reissue")
     public ResponseEntity<ApiResponse<Void>> reissue(
             @CookieValue(value = AuthConstant.ACCESS_TOKEN) String accessToken,
-            @CookieValue(value = AuthConstant.REFRESH_TOKEN) String refreshToken) {
+            @CookieValue(value = AuthConstant.REFRESH_TOKEN) String refreshToken,
+            @RequestParam(required = false) String origin) {
 
+        ClientOriginType clientOriginType = ClientOriginType.fromOriginString(origin);
         var response = ApiResponse.success(COMMON200);
         return authService
                 .reissue(accessToken, refreshToken)
                 .map(tokenPair -> {
-                    String accessTokenCookie = cookieUtil.createAccessTokenCookie(tokenPair.accessToken());
-                    String refreshTokenCookie = cookieUtil.createResponseTokenCookie(tokenPair.refreshToken());
+                    String accessTokenCookie =
+                            cookieUtil.createAccessTokenCookie(tokenPair.accessToken(), clientOriginType);
+                    String refreshTokenCookie =
+                            cookieUtil.createResponseTokenCookie(tokenPair.refreshToken(), clientOriginType);
 
                     return ResponseEntity.ok()
                             .header(HttpHeaders.SET_COOKIE, accessTokenCookie)
