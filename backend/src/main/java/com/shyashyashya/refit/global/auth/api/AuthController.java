@@ -30,14 +30,14 @@ public class AuthController {
     @Operation(summary = "리프레시 토큰과 엑세스 토큰을 재발급합니다.", description = "리프레시 토큰이 재발급되면, 기존 리프레시 토큰은 폐기됩니다.")
     @GetMapping("/reissue")
     public ResponseEntity<ApiResponse<Void>> reissue(
-            @CookieValue(value = AuthConstant.ACCESS_TOKEN) String accessToken,
-            @CookieValue(value = AuthConstant.REFRESH_TOKEN) String refreshToken,
+            @CookieValue(value = AuthConstant.ACCESS_TOKEN, required = false) String accessTokenFromHeader,
+            @CookieValue(value = AuthConstant.REFRESH_TOKEN, required = false) String refreshTokenFromHeader,
             @RequestParam(required = false) String originType) {
 
         ClientOriginType clientOriginType = ClientOriginType.fromOriginTypeString(originType);
         var response = ApiResponse.success(COMMON200);
         return authService
-                .reissue(accessToken, refreshToken)
+                .reissue(accessTokenFromHeader, refreshTokenFromHeader)
                 .map(tokenPair -> {
                     String accessTokenCookie =
                             cookieUtil.createAccessTokenCookie(tokenPair.accessToken(), clientOriginType);
