@@ -32,8 +32,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.Instant;
-
 @Tag(name = "Test Auth/User API", description = "개발용 테스트 인증/인가 API입니다.")
 @RestController
 @RequestMapping("/test/auth")

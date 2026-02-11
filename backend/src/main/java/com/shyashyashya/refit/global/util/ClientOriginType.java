@@ -1,19 +1,16 @@
 package com.shyashyashya.refit.global.util;
 
 import com.shyashyashya.refit.global.constant.UrlConstant;
-
 import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
 public enum ClientOriginType {
-
     LOCAL_SERVER("LOCAL_SERVER", UrlConstant.LOCAL_SERVER_URL),
     LOCAL_CLIENT("LOCAL", UrlConstant.LOCAL_CLIENT_URL),
     DEV_SERVER("DEV_SERVER", UrlConstant.DEV_SERVER_URL),
