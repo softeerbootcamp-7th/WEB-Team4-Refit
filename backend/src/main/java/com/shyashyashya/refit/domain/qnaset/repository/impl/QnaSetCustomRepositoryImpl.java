@@ -2,6 +2,7 @@ package com.shyashyashya.refit.domain.qnaset.repository.impl;
 
 import static com.shyashyashya.refit.domain.qnaset.model.QQnaSet.qnaSet;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
@@ -20,16 +21,15 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
     @Override
     public Page<QnaSet> searchByIndustriesAndJobCategories(
             List<Long> industryIds, List<Long> jobCategoryIds, Pageable pageable) {
+        BooleanExpression[] searchConditions = {
+            Expressions.asBoolean(true).isTrue(),
+            containsIndustryIds(industryIds),
+            containsJobCategoryIds(jobCategoryIds)
+        };
+
         List<QnaSet> qnaSets = queryFactory
                 .selectFrom(qnaSet)
-                .where(
-                        Expressions.asBoolean(true).isTrue(),
-                        industryIds == null || industryIds.isEmpty()
-                                ? null
-                                : qnaSet.interview.industry.id.in(industryIds),
-                        jobCategoryIds == null || jobCategoryIds.isEmpty()
-                                ? null
-                                : qnaSet.interview.jobCategory.id.in(jobCategoryIds))
+                .where(searchConditions)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -37,19 +37,26 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
         Long totalCount = queryFactory
                 .select(qnaSet.count())
                 .from(qnaSet)
-                .where(
-                        Expressions.asBoolean(true).isTrue(),
-                        industryIds == null || industryIds.isEmpty()
-                                ? null
-                                : qnaSet.interview.industry.id.in(industryIds),
-                        jobCategoryIds == null || jobCategoryIds.isEmpty()
-                                ? null
-                                : qnaSet.interview.jobCategory.id.in(jobCategoryIds))
+                .where(searchConditions)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchOne();
         totalCount = totalCount == null ? 0L : totalCount;
 
         return new PageImpl<>(qnaSets, pageable, totalCount);
+    }
+
+    private BooleanExpression containsIndustryIds(List<Long> industryIds) {
+        if (industryIds == null || industryIds.isEmpty()) {
+            return null;
+        }
+        return qnaSet.interview.industry.id.in(industryIds);
+    }
+
+    private BooleanExpression containsJobCategoryIds(List<Long> jobCategoryIds) {
+        if (jobCategoryIds == null || jobCategoryIds.isEmpty()) {
+            return null;
+        }
+        return qnaSet.interview.jobCategory.id.in(jobCategoryIds);
     }
 }
