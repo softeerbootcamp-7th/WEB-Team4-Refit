@@ -1,4 +1,93 @@
-import type { InterviewFullType, KptTextsType, QnaSetType } from '@/types/interview'
+import type { InterviewFullType, KptTextsType, InterviewInfoType, QnaSetType } from '@/types/interview'
+
+export const MOCK_QNA_SET_LIST: QnaSetType[] = [
+  {
+    qnaSetId: 1,
+    interviewId: 123,
+    questionText:
+      '마케팅 분야에서 현 시점 가장 중요하다고 생각하는 트렌드는 무엇이며, 왜 그렇게 생각하셨는지 궁금합니다. 마케팅 분야에서 현 시점 가장 중요하다고 생각하는 트렌드는 무엇이며, 왜 그렇게 생각하셨는지 궁금합니다.',
+    answerText:
+      '답변 답변답변 답변 답변답변답변 답변답변답변 답변답변답변 답변답변답변 답변답변답변 답변답변답변 답변답변답변 답변답변답변 답변답변답변 답변답변답변 답변답변답변 답변답변답변 답변답변답변 답변답변답변 답변답변답변 답변답변답변 답변답변답변 답변답변답변 답변답변답변 답변답변ㄴ',
+    qnaSetSelfReviewText: '회고회고 회고',
+    starAnalysis: {
+      sInclusionLevel: 'present',
+      tInclusionLevel: 'insufficient',
+      aInclusionLevel: 'absent',
+      rInclusionLevel: 'present',
+      overallSummary: 'Situation과 Result 항목은 충분하지만 t와 a 항목에서 부족한 모습이 보입니다.',
+    },
+    isMarkedDifficult: true,
+  },
+  {
+    qnaSetId: 2,
+    interviewId: 123,
+    questionText: '최근에 읽은 책이나 논문 중 인상 깊었던 내용이 있다면 소개해 주세요.',
+    answerText: '답변 답변답변',
+    qnaSetSelfReviewText: '회고회고 회고',
+    starAnalysis: {
+      sInclusionLevel: 'insufficient',
+      tInclusionLevel: 'insufficient',
+      aInclusionLevel: 'insufficient',
+      rInclusionLevel: 'insufficient',
+      overallSummary: '전반적으로 Inclusion Level이 부족한 모습이 보입니다. 좀 더 구체적인 사례와 설명이 필요합니다.',
+    },
+    isMarkedDifficult: false,
+  },
+  {
+    qnaSetId: 3,
+    interviewId: 123,
+    questionText: '최근에 읽은 책이나 논문 중 인상 깊었던 내용이 있다면 소개해 주세요.',
+    answerText: '답변 답변답변',
+    qnaSetSelfReviewText: '회고회고 회고',
+    starAnalysis: {
+      sInclusionLevel: 'insufficient',
+      tInclusionLevel: 'insufficient',
+      aInclusionLevel: 'insufficient',
+      rInclusionLevel: 'insufficient',
+      overallSummary: '전반적으로 Inclusion Level이 부족한 모습이 보입니다. 좀 더 구체적인 사례와 설명이 필요합니다.',
+    },
+    isMarkedDifficult: false,
+  },
+  {
+    qnaSetId: 4,
+    interviewId: 123,
+    questionText: '최근에 읽은 책이나 논문 중 인상 깊었던 내용이 있다면 소개해 주세요.',
+    answerText: '답변 답변답변',
+    qnaSetSelfReviewText: '회고회고 회고',
+    starAnalysis: {
+      sInclusionLevel: 'insufficient',
+      tInclusionLevel: 'insufficient',
+      aInclusionLevel: 'insufficient',
+      rInclusionLevel: 'insufficient',
+      overallSummary: '전반적으로 Inclusion Level이 부족한 모습이 보입니다. 좀 더 구체적인 사례와 설명이 필요합니다.',
+    },
+    isMarkedDifficult: false,
+  },
+  {
+    qnaSetId: 5,
+    interviewId: 123,
+    questionText: '최근에 읽은 책이나 논문 중 인상 깊었던 내용이 있다면 소개해 주세요.',
+    answerText: '답변 답변답변',
+    qnaSetSelfReviewText: '회고회고 회고',
+    starAnalysis: {
+      sInclusionLevel: 'insufficient',
+      tInclusionLevel: 'insufficient',
+      aInclusionLevel: 'insufficient',
+      rInclusionLevel: 'insufficient',
+      overallSummary: '전반적으로 Inclusion Level이 부족한 모습이 보입니다. 좀 더 구체적인 사례와 설명이 필요합니다.',
+    },
+    isMarkedDifficult: false,
+  },
+]
+
+export const MOCK_INTERVIEW_INFO_DATA: InterviewInfoType = {
+  company: '현대자동차 소프티어',
+  jobRole: '디자인 UI Designer',
+  interviewType: 'second',
+  interviewStartAt: '2026-03-01T11:00:00',
+}
+
+export type RetroListItem = Pick<QnaSetType, 'qnaSetId' | 'questionText' | 'answerText'> & { isKpt?: boolean }
 
 export const MOCK_INTERVIEW_DETAIL = {
   interviewId: 1,
@@ -121,19 +210,15 @@ export const MOCK_INTERVIEW_DETAIL = {
       isMarkedDifficult: false,
     },
   ] as QnaSetType[],
-  questions: [
-    '자기소개 부탁드립니다',
-    '작업하신 디자인 컨셉에 대해 소개해 주세요.',
-    '해당 디자인 컨셉이나 실제 디자인에서 아쉬운 점은 무엇인가요?',
-    '인생에서 가장 힘들었던 순간이 있었다면 무엇인가요?',
-    '그 디자인 컨셉에 대한 본인만의 차별점은 무엇인가요?',
-    '잘 모르겠는데 아무튼 인성 관련 면접 질문입니다.',
-    '인성관련 면접 질문 2',
-  ],
+  interviewSelfReview: {
+    keepText: '면접 전에 더 많은 연습을 했던 점이 좋았습니다.',
+    problemText: '긴장해서 실수를 한 부분이 아쉬웠습니다.',
+    tryText: '다음에는 더 침착하게 답변하려고 노력하겠습니다.',
+  } as KptTextsType,
 } as InterviewFullType
 
 export const MOCK_KPT_DATA: KptTextsType = {
-  keep_text: '어떤걸 계속할까? 유지할까? 회고 회고 회회고',
-  problem_text: '어떤게 문제인가? 회고 회고 회회고?',
-  try_text: '어떤걸 시도할지? 회고 회고 회회고?',
+  keepText: '어떤걸 계속할까? 유지할까? 회고 회고 회회고',
+  problemText: '어떤게 문제인가? 회고 회고 회회고?',
+  tryText: '어떤걸 시도할지? 회고 회고 회회고?',
 }

@@ -1,10 +1,9 @@
+import { InterviewInfoSection, QuestionListSection } from '@/features/_common/components/sidebar'
 import { NoteIcon } from '@/shared/assets'
-import { ContainerWithHeader, ContainerWithoutHeader, ListItemLarge, SidebarLayout } from '@/shared/components'
-import { INTERVIEW_TYPE_LABEL } from '@/shared/constants/interviews'
-import { formatDateTime } from '@/shared/utils/date'
-import type { LabelValueType } from '@/types/global'
+import { SidebarLayout } from '@/shared/components'
+import { MOCK_INTERVIEW_DETAIL } from '@/shared/constants/example'
+import type { IdLabelType } from '@/types/global'
 import type { QnaSetType } from '@/types/interview'
-import { MOCK_INTERVIEW_DETAIL } from '../../example'
 
 type DetailSidebarProps = {
   qnaSets: QnaSetType[]
@@ -13,7 +12,15 @@ type DetailSidebarProps = {
 }
 
 export function DetailSidebar({ qnaSets, activeIndex, onItemClick }: DetailSidebarProps) {
-  const { company, jobRole, interviewStartAt, interviewType } = MOCK_INTERVIEW_DETAIL
+  const infoItems = MOCK_INTERVIEW_DETAIL
+
+  const questionItems: IdLabelType[] = [
+    ...qnaSets.map(({ qnaSetId, questionText }, index) => ({
+      id: qnaSetId,
+      label: `${index + 1}. ${questionText}`,
+    })),
+    { id: -1, label: `${qnaSets.length + 1}. 최종 KPT 회고` },
+  ]
 
   return (
     <SidebarLayout>
@@ -21,36 +28,26 @@ export function DetailSidebar({ qnaSets, activeIndex, onItemClick }: DetailSideb
         <NoteIcon width="24" height="24" />
         <span className="body-l-semibold">내 면접 정보</span>
       </div>
-      <ContainerWithoutHeader>
-        <InterviewInfoRow label="기업명" value={company} />
-        <InterviewInfoRow label="일시" value={formatDateTime(interviewStartAt)} />
-        <InterviewInfoRow label="직무" value={jobRole ?? '-'} />
-        <InterviewInfoRow label="면접 유형" value={INTERVIEW_TYPE_LABEL[interviewType]} />
-      </ContainerWithoutHeader>
-      <ContainerWithHeader title="회고 리스트" className="overflow-y-auto">
-        {qnaSets.map(({ qnaSetId, questionText }, index) => (
-          <ListItemLarge
-            key={qnaSetId}
-            content={`${index + 1}. ${questionText}`}
-            active={activeIndex === index}
-            onClick={() => onItemClick(index)}
-          />
-        ))}
-        <ListItemLarge
-          content={`${qnaSets.length + 1}. 최종 KPT 회고`}
-          active={activeIndex === qnaSets.length}
-          onClick={() => onItemClick(qnaSets.length)}
-        />
-      </ContainerWithHeader>
+      <InterviewResultStatusSection />
+      <InterviewInfoSection {...infoItems} />
+      <QuestionListSection
+        title="회고 리스트"
+        items={questionItems}
+        activeIndex={activeIndex}
+        onItemClick={onItemClick}
+        className="overflow-y-auto"
+      />
     </SidebarLayout>
   )
 }
 
-const InterviewInfoRow = ({ label, value }: LabelValueType) => {
+function InterviewResultStatusSection() {
   return (
-    <div className="flex gap-2">
-      <label className="body-s-semibold w-18.5 text-gray-300">{label}</label>
-      <span className="body-s-medium w-33.75 text-gray-800">{value}</span>
+    <div className="bg-gray-white rounded-lg p-4">
+      <div className="flex gap-2">
+        <span className="body-s-semibold w-18.5 text-gray-300">결과</span>
+        <span className="body-s-medium w-33.75 text-gray-800">합격</span>
+      </div>
     </div>
   )
 }

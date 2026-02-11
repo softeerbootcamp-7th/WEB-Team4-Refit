@@ -2,15 +2,15 @@ import type { BadgeTheme } from '@/shared/components/badge'
 import type { StarStatus } from '@/types/interview'
 
 export const KPT_SECTIONS = [
-  { key: 'keep_text' as const, label: 'Keep', question: '계속 유지하고 싶은 것은 무엇인가요?' },
-  { key: 'problem_text' as const, label: 'Problem', question: '어려움을 느꼈던 부분은 무엇인가요?' },
-  { key: 'try_text' as const, label: 'Try', question: '새롭게 시도해 볼 내용은 무엇인가요?' },
+  { key: 'keepText' as const, label: 'Keep', question: '계속 유지하고 싶은 것은 무엇인가요?' },
+  { key: 'problemText' as const, label: 'Problem', question: '어려움을 느꼈던 부분은 무엇인가요?' },
+  { key: 'tryText' as const, label: 'Try', question: '새롭게 시도해 볼 내용은 무엇인가요?' },
 ]
 
 export const KPT_LABELS = {
-  keep_text: 'Keep',
-  problem_text: 'Problem',
-  try_text: 'Try',
+  keepText: 'Keep',
+  problemText: 'Problem',
+  tryText: 'Try',
 }
 
 export const STAR_LABELS = [
@@ -27,7 +27,7 @@ export const STAR_VALUES: Record<StarStatus, string> = {
 }
 
 export const STATUS_THEME: Record<StarStatus, BadgeTheme> = {
-  present: 'green-100',
-  insufficient: 'orange-50',
-  absent: 'red-50',
+  present: 'green-50-outline',
+  insufficient: 'orange-50-outline',
+  absent: 'red-50-outline',
 }
