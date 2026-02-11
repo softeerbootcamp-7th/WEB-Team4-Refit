@@ -1,5 +1,7 @@
 package com.shyashyashya.refit.domain.qnaset.service;
 
+import static com.shyashyashya.refit.domain.qnaset.constant.StarAnalysisConstant.STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC;
+
 import com.shyashyashya.refit.domain.interview.dto.StarAnalysisDto;
 import com.shyashyashya.refit.domain.qnaset.constant.StarAnalysisGeneratePrompt;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
@@ -34,7 +36,8 @@ public class StarAnalysisAsyncService {
         // log.info("Prompt: \n" + prompt);
         GeminiGenerateRequest requestBody = GeminiGenerateRequest.ofText(prompt);
 
-        CompletableFuture<GeminiGenerateResponse> reqFuture = geminiClient.createGeminiRequest(requestBody);
+        CompletableFuture<GeminiGenerateResponse> reqFuture =
+                geminiClient.createGeminiRequest(requestBody, STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC);
 
         return reqFuture
                 .thenApplyAsync(

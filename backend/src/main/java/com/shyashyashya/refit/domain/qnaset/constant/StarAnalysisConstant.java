@@ -4,5 +4,5 @@ public final class StarAnalysisConstant {
 
     private StarAnalysisConstant() {}
 
-    public static final int STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC = 30;
+    public static final long STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC = 30;
 }

@@ -1,6 +1,7 @@
 package com.shyashyashya.refit.global.gemini;
 
 import com.shyashyashya.refit.global.property.GeminiProperty;
+import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -17,7 +18,8 @@ public class GeminiClient {
     private static final String GEMINI_API_URL =
             "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent";
 
-    public CompletableFuture<GeminiGenerateResponse> createGeminiRequest(GeminiGenerateRequest requestBody) {
+    public CompletableFuture<GeminiGenerateResponse> createGeminiRequest(
+            GeminiGenerateRequest requestBody, Long timeoutSec) {
         return webClient
                 .post()
                 .uri(GEMINI_API_URL)
@@ -26,6 +28,7 @@ public class GeminiClient {
                 .bodyValue(requestBody)
                 .retrieve()
                 .bodyToMono(GeminiGenerateResponse.class)
+                .timeout(Duration.ofSeconds(timeoutSec))
                 .toFuture();
     }
 }
