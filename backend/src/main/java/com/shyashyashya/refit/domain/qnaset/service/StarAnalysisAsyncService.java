@@ -26,7 +26,7 @@ public class StarAnalysisAsyncService {
     public CompletableFuture<StarAnalysisDto> createStarAnalysis(Long qnaSetId) {
 
         QnaSet qnaSet = starAnalysisService.getValidatedQnaSetForUser(qnaSetId);
-        StarAnalysis starAnalysis = starAnalysisService.createInProgressStarAnalysisTx(qnaSetId);
+        StarAnalysis starAnalysis = starAnalysisService.createInProgressStarAnalysisTx(qnaSet);
 
         String prompt = starAnalysisGeneratePrompt.buildPrompt(qnaSet);
         // log.info("Prompt: \n" + prompt);

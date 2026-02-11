@@ -48,9 +48,7 @@ public class StarAnalysisService {
     }
 
     @Transactional
-    public StarAnalysis createInProgressStarAnalysisTx(Long qnaSetId) {
-        QnaSet qnaSet = getValidatedQnaSetForUser(qnaSetId);
-
+    public StarAnalysis createInProgressStarAnalysisTx(QnaSet qnaSet) {
         if (starAnalysisRepository.existsByQnaSet(qnaSet)) {
             throw new CustomException(STAR_ANALYSIS_CREATION_ALREADY_IN_PROGRESS);
         }
