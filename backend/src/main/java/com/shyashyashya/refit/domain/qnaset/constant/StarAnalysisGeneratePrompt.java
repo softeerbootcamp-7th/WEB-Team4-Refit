@@ -6,22 +6,17 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class StarAnalysisGeneratePrompt {
 
-    private final String promptTemplateHeader;
-    private final String promptTemplateTail;
-
-    public StarAnalysisGeneratePrompt(GeminiProperty geminiProperty) {
-        Path promptDir = Path.of(geminiProperty.promptPath());
-        Path headerPath = promptDir.resolve("star_analysis_header.txt");
-        Path tailPath = promptDir.resolve("star_analysis_tail.txt");
-
-        this.promptTemplateHeader = readTextFile(headerPath);
-        this.promptTemplateTail = readTextFile(tailPath);
-    }
+    private final GeminiProperty geminiProperty;
+    private String promptTemplateHeader;
+    private String promptTemplateTail;
 
     private String readTextFile(Path path) {
         try {
@@ -31,7 +26,21 @@ public class StarAnalysisGeneratePrompt {
         }
     }
 
+    private void init() {
+        Path promptDir = Path.of(geminiProperty.promptPath());
+        Path headerPath = promptDir.resolve("star_analysis_header.txt");
+        Path tailPath = promptDir.resolve("star_analysis_tail.txt");
+
+        this.promptTemplateHeader = readTextFile(headerPath);
+        this.promptTemplateTail = readTextFile(tailPath);
+    }
+
     public String buildPrompt(QnaSet qnaSet) {
+        // Lazy Init()
+        if (promptTemplateHeader == null) {
+            init();
+        }
+
         return promptTemplateHeader + "\n"
                 + "[면접 질문]" + "\n"
                 + qnaSet.getQuestionText() + "\n"
