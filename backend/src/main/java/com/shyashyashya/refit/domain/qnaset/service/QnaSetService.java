@@ -2,11 +2,9 @@ package com.shyashyashya.refit.domain.qnaset.service;
 
 import static com.shyashyashya.refit.global.exception.ErrorCode.QNA_SET_NOT_FOUND;
 
-import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
 import com.shyashyashya.refit.domain.industry.service.validator.IndustryValidator;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
-import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
 import com.shyashyashya.refit.domain.jobcategory.service.validator.JobCategoryValidator;
 import com.shyashyashya.refit.domain.qnaset.dto.PdfHighlightingDto;
 import com.shyashyashya.refit.domain.qnaset.dto.request.PdfHighlightingUpdateRequest;
@@ -38,8 +36,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class QnaSetService {
 
     private final QnaSetRepository qnaSetRepository;
-    private final IndustryRepository industryRepository;
-    private final JobCategoryRepository jobCategoryRepository;
     private final QnaSetSelfReviewRepository qnaSetSelfReviewRepository;
     private final PdfHighlightingRepository pdfHighlightingRepository;
     private final PdfHighlightingRectRepository pdfHighlightingRectRepository;
@@ -51,6 +47,9 @@ public class QnaSetService {
     @Transactional(readOnly = true)
     public Page<FrequentQnaSetResponse> getFrequentQuestions(
             List<Long> industryIds, List<Long> jobCategoryIds, Pageable pageable) {
+        industryIds = industryIds.stream().distinct().toList();
+        jobCategoryIds = jobCategoryIds.stream().distinct().toList();
+
         industryValidator.validateIndustriesAllExist(industryIds);
         jobCategoryValidator.validateJobCategoriesAllExist(jobCategoryIds);
 
