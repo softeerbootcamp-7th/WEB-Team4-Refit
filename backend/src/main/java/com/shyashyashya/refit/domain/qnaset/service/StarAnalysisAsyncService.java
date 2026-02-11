@@ -3,7 +3,7 @@ package com.shyashyashya.refit.domain.qnaset.service;
 import static com.shyashyashya.refit.domain.qnaset.constant.StarAnalysisConstant.STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC;
 
 import com.shyashyashya.refit.domain.interview.dto.StarAnalysisDto;
-import com.shyashyashya.refit.domain.qnaset.constant.StarAnalysisGeneratePrompt;
+import com.shyashyashya.refit.domain.qnaset.constant.StarAnalysisGeneratePromptBuilder;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.StarAnalysis;
 import com.shyashyashya.refit.global.exception.CustomException;
@@ -24,7 +24,7 @@ public class StarAnalysisAsyncService {
 
     private final StarAnalysisService starAnalysisService;
     private final GeminiClient geminiClient;
-    private final StarAnalysisGeneratePrompt starAnalysisGeneratePrompt;
+    private final StarAnalysisGeneratePromptBuilder starAnalysisGeneratePrompt;
     private final Executor geminiPostProcessExecutor;
 
     public CompletableFuture<StarAnalysisDto> createStarAnalysis(Long qnaSetId) {

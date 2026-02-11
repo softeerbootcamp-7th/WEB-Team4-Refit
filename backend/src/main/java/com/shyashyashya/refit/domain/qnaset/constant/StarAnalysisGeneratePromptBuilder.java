@@ -17,7 +17,7 @@ import static com.shyashyashya.refit.domain.qnaset.constant.StarAnalysisConstant
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class StarAnalysisGeneratePrompt {
+public class StarAnalysisGeneratePromptBuilder {
 
     private final GeminiProperty geminiProperty;
     private String promptTemplateHeader;
