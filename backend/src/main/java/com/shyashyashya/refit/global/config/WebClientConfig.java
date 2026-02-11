@@ -14,8 +14,8 @@ public class WebClientConfig {
         return builder.build();
     }
 
-    @Bean(name = "geminiPostProcessExecutor")
-    public Executor appExecutor() {
+    @Bean
+    public Executor geminiPostProcessExecutor() {
         ThreadPoolTaskExecutor ex = new ThreadPoolTaskExecutor();
         ex.setCorePoolSize(20);
         ex.setMaxPoolSize(50);

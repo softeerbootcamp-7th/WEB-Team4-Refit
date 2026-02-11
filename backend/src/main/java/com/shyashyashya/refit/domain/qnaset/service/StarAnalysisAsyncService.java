@@ -10,6 +10,8 @@ import com.shyashyashya.refit.global.gemini.GeminiClient;
 import com.shyashyashya.refit.global.gemini.GeminiGenerateRequest;
 import com.shyashyashya.refit.global.gemini.GeminiGenerateResponse;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ public class StarAnalysisAsyncService {
     private final StarAnalysisService starAnalysisService;
     private final GeminiClient geminiClient;
     private final StarAnalysisGeneratePrompt starAnalysisGeneratePrompt;
+    private final Executor geminiPostProcessExecutor;
 
     public CompletableFuture<StarAnalysisDto> createStarAnalysis(Long qnaSetId) {
 
@@ -35,7 +38,7 @@ public class StarAnalysisAsyncService {
         CompletableFuture<GeminiGenerateResponse> reqFuture = geminiClient.createGeminiRequest(requestBody);
 
         return reqFuture
-                .thenApplyAsync(geminiRsp -> starAnalysisService.onRequestSuccess(starAnalysis.getId(), geminiRsp))
+                .thenApplyAsync(geminiRsp -> starAnalysisService.onRequestSuccess(starAnalysis.getId(), geminiRsp), geminiPostProcessExecutor)
                 .exceptionally(e -> {
                     starAnalysisService.onRequestFail(starAnalysis.getId(), e);
                     throw new CustomException(ErrorCode.STAR_ANALYSIS_CREATE_FAILED);
