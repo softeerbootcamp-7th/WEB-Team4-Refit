@@ -37,7 +37,7 @@ public class StarAnalysisAsyncService {
         return reqFuture
                 .thenApplyAsync(geminiRsp -> starAnalysisService.onRequestSuccess(starAnalysis.getId(), geminiRsp))
                 .exceptionally(e -> {
-                    starAnalysisService.onRequestFail(qnaSetId, e);
+                    starAnalysisService.onRequestFail(starAnalysis.getId(), e);
                     throw new CustomException(ErrorCode.STAR_ANALYSIS_CREATE_FAILED);
                 });
     }
