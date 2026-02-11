@@ -5,8 +5,9 @@ spring:
       whitelists:
         # TODO: public한 API 경로가 더 있는지 검토 필요
         - "/test/**"
-        - "/auth/login/**"
-        - "/auth/reissue"
+        - "/auth/**"
+        - "/industry"
+        - "/job-category"
         - "/swagger-ui/**"
         - "/v3/api-docs/**"
     jwt:
