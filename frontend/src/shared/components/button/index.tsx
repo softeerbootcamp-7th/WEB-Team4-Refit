@@ -2,7 +2,7 @@ import { forwardRef } from 'react'
 import type { ButtonHTMLAttributes } from 'react'
 import { LoadingSpinner } from '@/shared/assets'
 
-type VariantType = keyof typeof VARIANT_STYLES
+export type VariantType = keyof typeof VARIANT_STYLES
 type SizeType = keyof typeof SIZE_STYLES
 type RadiusType = keyof typeof RADIUS_STYLES
 
