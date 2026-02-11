@@ -38,6 +38,7 @@ public class StarAnalysisService {
 
     @Transactional
     public StarAnalysisDto onRequestSuccess(Long starAnalysisId, GeminiGenerateResponse rsp) {
+        // TODO orElse에 적절한 값 또는 에러 날리도록 변경
         String text = rsp.firstText().orElse("");
 
         log.info("[Gemini Response text]\n" + text);
@@ -71,4 +72,6 @@ public class StarAnalysisService {
             throw new CustomException(STAR_ANALYSIS_PARSING_FAILED);
         }
     }
+
+
 }

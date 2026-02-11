@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class StarAnalysisGeminiResponse {
+    //TODO record 변경 시도
     @JsonProperty("S")
     private StarInclusionLevel s;
 
