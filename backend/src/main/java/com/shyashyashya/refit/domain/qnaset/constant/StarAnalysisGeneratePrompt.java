@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import static com.shyashyashya.refit.domain.qnaset.constant.StarAnalysisConstant.PROMPT_HEADER_FILE_NAME;
+import static com.shyashyashya.refit.domain.qnaset.constant.StarAnalysisConstant.PROMPT_TAIL_FILE_NAME;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -31,8 +34,8 @@ public class StarAnalysisGeneratePrompt {
     @PostConstruct
     private void init() {
         Path promptDir = Path.of(geminiProperty.promptPath());
-        Path headerPath = promptDir.resolve("star_analysis_header.txt");
-        Path tailPath = promptDir.resolve("star_analysis_tail.txt");
+        Path headerPath = promptDir.resolve(PROMPT_HEADER_FILE_NAME);
+        Path tailPath = promptDir.resolve(PROMPT_TAIL_FILE_NAME);
 
         this.promptTemplateHeader = readTextFile(headerPath);
         this.promptTemplateTail = readTextFile(tailPath);
