@@ -1,4 +1,4 @@
-import { ArrowRightIcon, NoteIcon } from '@/shared/assets'
+import { ArrowRightIcon, NoteIcon } from '@/designs/assets'
 import { usePopularQuestions, type PopularQuestionItem } from '../../hooks/usePopularQuestions'
 
 export default function PopularQuestionsSection() {

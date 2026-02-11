@@ -1,4 +1,4 @@
-import { ListItemSmall } from '@/shared/components'
+import { ListItemSmall } from '@/designs/components'
 import type { IdLabelType } from '@/types/global'
 
 type MinimizedQuestionListProps = {

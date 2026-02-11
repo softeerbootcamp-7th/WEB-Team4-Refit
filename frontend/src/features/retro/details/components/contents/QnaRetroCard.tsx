@@ -1,9 +1,9 @@
 import { useRef, useState, type Ref } from 'react'
+import { BookmarkIcon, MoreIcon } from '@/designs/assets'
+import { Border, Button } from '@/designs/components'
 import { QnaSetCard, QnaSetEditForm, StarAnalysisSection } from '@/features/_common/components/qna-set'
 import { useOnClickOutside } from '@/features/_common/hooks/useOnClickOutside'
 import { RetroWriteCard } from '@/features/retro/_common/components/RetroWriteCard'
-import { BookmarkIcon, MoreIcon } from '@/shared/assets'
-import { Border, Button } from '@/shared/components'
 import type { QnaSetType } from '@/types/interview'
 
 type QnaRetroCardProps = {

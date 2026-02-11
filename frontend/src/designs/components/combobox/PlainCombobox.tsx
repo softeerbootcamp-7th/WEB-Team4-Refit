@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState, type ReactNode } from 'react'
+import Border from '@/designs/components/border'
 import { useOnClickOutside } from '@/features/_common/hooks/useOnClickOutside'
-import Border from '@/shared/components/border'
 import type { LabelValueType } from '@/types/global'
 
 type PlainComboboxProps = {

@@ -1,6 +1,6 @@
+import { NoteIcon } from '@/designs/assets'
+import { SidebarLayout } from '@/designs/components'
 import { InterviewInfoSection, QuestionListSection } from '@/features/_common/components/sidebar'
-import { NoteIcon } from '@/shared/assets'
-import { SidebarLayout } from '@/shared/components'
 import type { IdLabelType } from '@/types/global'
 import type { InterviewInfoType } from '@/types/interview'
 

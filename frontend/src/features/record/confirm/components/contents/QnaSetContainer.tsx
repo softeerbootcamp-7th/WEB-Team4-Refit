@@ -1,6 +1,6 @@
 import { useState, type Ref } from 'react'
+import { PencilIcon, TrashIcon } from '@/designs/assets'
 import { QnaSetCard, QnaSetEditForm } from '@/features/_common/components/qna-set'
-import { PencilIcon, TrashIcon } from '@/shared/assets'
 import type { SimpleQnaType } from '@/types/interview'
 
 type QnaSetContainerProps = {

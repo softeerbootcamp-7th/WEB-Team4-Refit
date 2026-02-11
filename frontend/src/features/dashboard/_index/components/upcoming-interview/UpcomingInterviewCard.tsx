@@ -1,6 +1,6 @@
-import { CalendarStarIcon, NoteIcon, SmallLogoIcon } from '@/shared/assets'
-import { Badge } from '@/shared/components'
-import Button from '@/shared/components/button'
+import { CalendarStarIcon, NoteIcon, SmallLogoIcon } from '@/designs/assets'
+import { Badge } from '@/designs/components'
+import Button from '@/designs/components/button'
 import type { UpcomingInterviewData } from './types'
 
 interface UpcomingInterviewCardProps {

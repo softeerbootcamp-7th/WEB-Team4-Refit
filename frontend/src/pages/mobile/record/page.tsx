@@ -1,6 +1,6 @@
 import { useState } from 'react'
+import { Button } from '@/designs/components'
 import LiveAudioVisualizer from '@/features/mobile/_common/components/LiveAudioVisualizer'
-import { Button } from '@/shared/components'
 
 const EDIT_PLACEHOLDER = '녹음 내용을 텍스트로 수정할 수 있어요. (추후 음성 인식 결과가 여기에 채워집니다)'
 

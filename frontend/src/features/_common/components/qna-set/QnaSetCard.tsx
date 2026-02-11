@@ -1,5 +1,5 @@
-import { CornerDownRightIcon } from '@/shared/assets'
-import { Badge } from '@/shared/components'
+import { CornerDownRightIcon } from '@/designs/assets'
+import { Badge } from '@/designs/components'
 
 type QnaSetCardProps = {
   idx: number

@@ -1,6 +1,6 @@
 import { forwardRef } from 'react'
 import type { SelectHTMLAttributes } from 'react'
-import { CaretDownIcon } from '@/shared/assets'
+import { CaretDownIcon } from '@/designs/assets'
 
 export interface NativeComboboxProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label?: string

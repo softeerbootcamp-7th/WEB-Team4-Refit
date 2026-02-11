@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router'
-import { useBuildOAuth2LoginUrl } from '@/api'
+import { useBuildOAuth2LoginUrl } from '@/apis'
 import { ROUTES } from '@/routes/routes'
 
 const POPUP_NAME = 'google-oauth-login'

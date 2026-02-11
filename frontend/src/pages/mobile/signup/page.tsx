@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { INDUSTRY_OPTIONS, JOB_OPTIONS } from '@/constants/signup'
+import { Button, Input, NativeCombobox } from '@/designs/components'
 import { ROUTES } from '@/routes/routes'
-import { Button, Input, NativeCombobox } from '@/shared/components'
 
 export default function MobileSignupPage() {
   const navigate = useNavigate()

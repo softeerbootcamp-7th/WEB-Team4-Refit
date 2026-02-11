@@ -1,7 +1,7 @@
 import { useState, type RefObject } from 'react'
+import { CirclePlusIcon } from '@/designs/assets'
+import { Button, FadeScrollArea } from '@/designs/components'
 import { QnaSetEditForm } from '@/features/_common/components/qna-set'
-import { CirclePlusIcon } from '@/shared/assets'
-import { Button, FadeScrollArea } from '@/shared/components'
 import type { SimpleQnaType } from '@/types/interview'
 import { QnaSetContainer } from './QnaSetContainer'
 

@@ -1,5 +1,5 @@
-import { SearchableCombobox } from '@/shared/components'
-import Button from '@/shared/components/button'
+import { SearchableCombobox } from '@/designs/components'
+import Button from '@/designs/components/button'
 
 const INDUSTRY_OPTIONS: { value: string; label: string }[] = [
   { value: 'it', label: 'IT / 소프트웨어' },

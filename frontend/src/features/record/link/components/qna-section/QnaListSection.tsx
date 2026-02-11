@@ -1,5 +1,5 @@
 import type { RefObject } from 'react'
-import { FadeScrollArea } from '@/shared/components'
+import { FadeScrollArea } from '@/designs/components'
 import type { SimpleQnaType } from '@/types/interview'
 import { LinkQnaSetCard } from './LinkQnaSetCard'
 

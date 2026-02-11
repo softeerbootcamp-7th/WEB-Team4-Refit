@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import Button from '@/shared/components/button'
-import Input from '@/shared/components/input'
-import Modal from '@/shared/components/modal'
+import Button from '@/designs/components/button'
+import Input from '@/designs/components/input'
+import Modal from '@/designs/components/modal'
 
 interface FolderModalProps {
   isOpen: boolean

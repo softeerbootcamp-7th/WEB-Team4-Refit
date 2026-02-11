@@ -1,9 +1,9 @@
+import { Badge, Border } from '@/designs/components'
 import {
   RESULT_LABEL,
   RESULT_THEME,
   type InterviewResultStatus,
 } from '@/features/dashboard/my-interviews/constants/constants'
-import { Badge, Border } from '@/shared/components'
 
 type InterviewCardProps = {
   resultStatus: InterviewResultStatus

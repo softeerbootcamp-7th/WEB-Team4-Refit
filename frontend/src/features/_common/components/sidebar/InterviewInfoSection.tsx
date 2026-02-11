@@ -1,6 +1,6 @@
 import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
+import { ContainerWithoutHeader } from '@/designs/components'
 import { formatDateTime } from '@/features/_common/utils'
-import { ContainerWithoutHeader } from '@/shared/components'
 import type { LabelValueType } from '@/types/global'
 import type { InterviewInfoType } from '@/types/interview'
 

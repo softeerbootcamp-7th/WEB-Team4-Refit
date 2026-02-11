@@ -1,4 +1,4 @@
-import { Badge } from '@/shared/components'
+import { Badge } from '@/designs/components'
 
 const MAX_LENGTH = 500
 

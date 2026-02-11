@@ -1,4 +1,4 @@
-import { ContainerWithHeader, ListItemLarge } from '@/shared/components'
+import { ContainerWithHeader, ListItemLarge } from '@/designs/components'
 import type { IdLabelType } from '@/types/global'
 
 type QuestionListSectionProps = {
