@@ -13,7 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface QnaSetRepository extends JpaRepository<QnaSet, Long> {
+public interface QnaSetRepository extends JpaRepository<QnaSet, Long>, QnaSetCustomRepository {
 
     // TODO : queryDSL 적용
     @Query("""
@@ -30,14 +30,6 @@ public interface QnaSetRepository extends JpaRepository<QnaSet, Long> {
            AND q.interview.jobCategory = :jobCategory
     """)
     List<QnaSet> findAllByIndustryAndJobCategory(Industry industry, JobCategory jobCategory);
-
-    @Query("""
-        SELECT q
-          FROM QnaSet q
-         WHERE q.interview.industry IN :industries
-           AND q.interview.jobCategory IN :jobCategories
-    """)
-    Page<QnaSet> findAllByIndustriesAndJobCategories(List<Industry> industries, List<JobCategory> jobCategories, Pageable pageable);
 
     // TODO : queryDSL 적용
     @Query("""

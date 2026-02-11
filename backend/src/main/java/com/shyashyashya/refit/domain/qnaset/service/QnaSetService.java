@@ -52,13 +52,10 @@ public class QnaSetService {
 
     @Transactional(readOnly = true)
     public Page<FrequentQnaSetResponse> getFrequentQuestions(List<Long> industryIds, List<Long> jobCategoryIds, Pageable pageable) {
-        List<Industry> industries = industryRepository.findAllById(industryIds);
-        List<JobCategory> jobCategories = jobCategoryRepository.findAllById(jobCategoryIds);
+        industryValidator.validateIndustriesAllExist(industryIds);
+        jobCategoryValidator.validateJobCategoriesAllExist(jobCategoryIds);
 
-        industryValidator.validateIndustriesAllExist(industries, industryIds);
-        jobCategoryValidator.validateJobCategoriesAllExist(jobCategories, jobCategoryIds);
-
-        return qnaSetRepository.findAllByIndustriesAndJobCategories(industries, jobCategories, pageable)
+        return qnaSetRepository.searchByIndustriesAndJobCategories(industryIds, jobCategoryIds, pageable)
                 .map(FrequentQnaSetResponse::from);
     }
 
