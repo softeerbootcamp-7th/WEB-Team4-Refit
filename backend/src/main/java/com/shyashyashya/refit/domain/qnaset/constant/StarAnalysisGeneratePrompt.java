@@ -24,9 +24,7 @@ public class StarAnalysisGeneratePrompt {
         try {
             return Files.readString(path, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            // throw new IllegalStateException("프롬프트 파일을 읽지 못했습니다: " + path.toAbsolutePath(), e);
-            log.error("프롬프트 파일을 읽지 못했습니다: {}", path.toAbsolutePath(), e);
-            return null;
+            throw new IllegalStateException("프롬프트 파일을 읽지 못했습니다: " + path.toAbsolutePath(), e);
         }
     }
 
