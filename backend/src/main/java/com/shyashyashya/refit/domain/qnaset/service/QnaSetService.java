@@ -2,12 +2,10 @@ package com.shyashyashya.refit.domain.qnaset.service;
 
 import static com.shyashyashya.refit.global.exception.ErrorCode.QNA_SET_NOT_FOUND;
 
-import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
 import com.shyashyashya.refit.domain.industry.service.validator.IndustryValidator;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
-import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
 import com.shyashyashya.refit.domain.jobcategory.service.validator.JobCategoryValidator;
 import com.shyashyashya.refit.domain.qnaset.dto.PdfHighlightingDto;
@@ -51,11 +49,13 @@ public class QnaSetService {
     private final JobCategoryValidator jobCategoryValidator;
 
     @Transactional(readOnly = true)
-    public Page<FrequentQnaSetResponse> getFrequentQuestions(List<Long> industryIds, List<Long> jobCategoryIds, Pageable pageable) {
+    public Page<FrequentQnaSetResponse> getFrequentQuestions(
+            List<Long> industryIds, List<Long> jobCategoryIds, Pageable pageable) {
         industryValidator.validateIndustriesAllExist(industryIds);
         jobCategoryValidator.validateJobCategoriesAllExist(jobCategoryIds);
 
-        return qnaSetRepository.searchByIndustriesAndJobCategories(industryIds, jobCategoryIds, pageable)
+        return qnaSetRepository
+                .searchByIndustriesAndJobCategories(industryIds, jobCategoryIds, pageable)
                 .map(FrequentQnaSetResponse::from);
     }
 

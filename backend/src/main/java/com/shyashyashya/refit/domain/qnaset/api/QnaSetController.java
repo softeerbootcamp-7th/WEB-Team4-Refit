@@ -38,7 +38,9 @@ public class QnaSetController {
             description = "지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다. 지정하지 않은 필드에 대해서는 전체를 대상으로 조회합니다.")
     @GetMapping("/frequent")
     public ResponseEntity<ApiResponse<Page<FrequentQnaSetResponse>>> getFrequentQuestions(
-            @RequestParam(required = false) List<Long> industryIds, @RequestParam(required = false) List<Long> jobCategoryIds, Pageable pageable) {
+            @RequestParam(required = false) List<Long> industryIds,
+            @RequestParam(required = false) List<Long> jobCategoryIds,
+            Pageable pageable) {
         var body = qnaSetService.getFrequentQuestions(industryIds, jobCategoryIds, pageable);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
