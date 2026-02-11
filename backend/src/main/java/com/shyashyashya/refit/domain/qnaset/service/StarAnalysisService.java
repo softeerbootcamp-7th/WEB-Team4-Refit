@@ -58,11 +58,6 @@ public class StarAnalysisService {
         return starAnalysisRepository.save(StarAnalysis.createInProgressStarAnalysis(qnaSet));
     }
 
-    @Transactional(readOnly = true)
-    public QnaSet temp(Long qnaSetId) {
-        return qnaSetRepository.findById(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
-    }
-
     @Transactional
     public StarAnalysisDto onRequestSuccess(Long starAnalysisId, GeminiGenerateResponse rsp) {
         String text = rsp.firstText().orElse("");
