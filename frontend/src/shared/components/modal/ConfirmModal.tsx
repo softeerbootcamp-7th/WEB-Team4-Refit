@@ -3,11 +3,11 @@ import Modal from '@/shared/components/modal'
 
 export interface ConfirmModalProps {
   open: boolean
+  onClose: () => void
   title?: React.ReactNode
   description?: React.ReactNode
-  hasCloseButton?: boolean
-  closeText?: string
-  onClose: () => void
+  hasCancelButton?: boolean
+  cancelText?: string
   okText: string
   okButtonVariant?: VariantType
   onOk: () => void
@@ -20,8 +20,8 @@ const ConfirmModal = ({
   open,
   title,
   description,
-  hasCloseButton = true,
-  closeText = '취소',
+  hasCancelButton = true,
+  cancelText = '취소',
   onClose,
   okText = '확인',
   okButtonVariant = 'fill-orange-500',
@@ -45,9 +45,9 @@ const ConfirmModal = ({
           <span className="title-s-medium text-gray-500">{description}</span>
         </div>
         <div className="flex w-full flex-1 shrink-0 gap-3">
-          {hasCloseButton && (
+          {hasCancelButton && (
             <Button variant="fill-gray-150" size="md" onClick={onClose} className="flex-1 shrink-0">
-              {closeText}
+              {cancelText}
             </Button>
           )}
           <Button variant={okButtonVariant} size="md" onClick={onOk} className="flex-1 shrink-0">
