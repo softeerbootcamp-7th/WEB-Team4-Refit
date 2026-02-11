@@ -4,7 +4,10 @@ import com.shyashyashya.refit.global.constant.AuthConstant;
 import com.shyashyashya.refit.global.constant.UrlConstant;
 import com.shyashyashya.refit.global.property.AuthJwtProperty;
 import com.shyashyashya.refit.global.util.ClientOriginType;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import java.time.Duration;
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
@@ -14,6 +17,19 @@ import org.springframework.stereotype.Component;
 public class CookieUtil {
 
     private final AuthJwtProperty authJwtProperty;
+
+    public String extractCookieValue(HttpServletRequest request, String cookieName) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            return null;
+        }
+
+        return Arrays.stream(cookies)
+                .filter(cookie -> cookieName.equals(cookie.getName()))
+                .findFirst()
+                .map(Cookie::getValue)
+                .orElse(null);
+    }
 
     public String createAccessTokenCookie(String accessToken, ClientOriginType originType) {
         return createCookie(
