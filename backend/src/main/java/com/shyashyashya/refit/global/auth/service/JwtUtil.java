@@ -4,7 +4,7 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.TOKEN_EXPIRED;
 import static com.shyashyashya.refit.global.exception.ErrorCode.TOKEN_REQUIRED;
 import static com.shyashyashya.refit.global.exception.ErrorCode.TOKEN_VALIDATION_FAILED;
 
-import com.shyashyashya.refit.global.auth.model.JwtTokenType;
+import com.shyashyashya.refit.global.auth.model.DecodedJwtType;
 import com.shyashyashya.refit.global.auth.model.DecodedJwt;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.property.AuthJwtProperty;
@@ -49,11 +49,11 @@ public class JwtUtil {
     }
 
     public String createAccessToken(@NotNull String email, @Nullable Long userId) {
-        return createAccessOrRefreshJwtToken(email, userId, accessTokenExpiration, JwtTokenType.ACCESS_TOKEN);
+        return createAccessOrRefreshJwtToken(email, userId, accessTokenExpiration, DecodedJwtType.ACCESS_TOKEN);
     }
 
     public String createRefreshToken(@NotNull String email, @Nullable Long userId) {
-        return createAccessOrRefreshJwtToken(email, userId, refreshTokenExpiration, JwtTokenType.REFRESH_TOKEN);
+        return createAccessOrRefreshJwtToken(email, userId, refreshTokenExpiration, DecodedJwtType.REFRESH_TOKEN);
     }
 
     public String createOAuth2StateToken(ClientOriginType clientOriginType) {
@@ -62,7 +62,7 @@ public class JwtUtil {
 
         return Jwts.builder()
                 .setSubject(clientOriginType.getOriginType())
-                .claim(CLAIM_KEY_JWT_TOKEN_TYPE, JwtTokenType.OAUTH2_STATE_TOKEN)
+                .claim(CLAIM_KEY_JWT_TOKEN_TYPE, DecodedJwtType.OAUTH2_STATE_TOKEN)
                 .setIssuedAt(Date.from(now))
                 .setExpiration(Date.from(expiration))
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -112,14 +112,14 @@ public class JwtUtil {
     }
 
     private void validateAccessOrRefreshType(DecodedJwt jwtToken) {
-        if (jwtToken.type() != JwtTokenType.ACCESS_TOKEN && jwtToken.type() != JwtTokenType.REFRESH_TOKEN) {
+        if (jwtToken.type() != DecodedJwtType.ACCESS_TOKEN && jwtToken.type() != DecodedJwtType.REFRESH_TOKEN) {
             log.warn("ACCESS_TOKEN or REFRESH_TOKEN type expected.");
             throw new CustomException(TOKEN_VALIDATION_FAILED);
         }
     }
 
     private void validateOAuth2StateType(DecodedJwt jwtToken) {
-        if (jwtToken.type() != JwtTokenType.OAUTH2_STATE_TOKEN) {
+        if (jwtToken.type() != DecodedJwtType.OAUTH2_STATE_TOKEN) {
             log.warn("OAUTH2_STATE_TOKEN type expected.");
             throw new CustomException(TOKEN_VALIDATION_FAILED);
         }
@@ -129,9 +129,9 @@ public class JwtUtil {
             @NotNull String email,
             @Nullable Long userId,
             @NotNull Duration expirationDuration,
-            @NotNull JwtTokenType jwtTokenType) {
+            @NotNull DecodedJwtType jwtTokenType) {
 
-        if (jwtTokenType == JwtTokenType.OAUTH2_STATE_TOKEN) {
+        if (jwtTokenType == DecodedJwtType.OAUTH2_STATE_TOKEN) {
             throw new IllegalArgumentException("ACCESS_TOKEN or REFRESH_TOKEN type expected.");
         }
 
@@ -152,10 +152,10 @@ public class JwtUtil {
         return builder.compact();
     }
 
-    private JwtTokenType extractJwtTokenTypeOrThrow(Claims claims) {
+    private DecodedJwtType extractJwtTokenTypeOrThrow(Claims claims) {
         try {
             String jwtTokenType = claims.get(CLAIM_KEY_JWT_TOKEN_TYPE, String.class);
-            return JwtTokenType.valueOf(jwtTokenType);
+            return DecodedJwtType.valueOf(jwtTokenType);
         } catch (NullPointerException | IllegalArgumentException e) {
             log.warn("Failed to extract JWT token type: {}", e.getMessage());
             throw new CustomException(TOKEN_VALIDATION_FAILED);

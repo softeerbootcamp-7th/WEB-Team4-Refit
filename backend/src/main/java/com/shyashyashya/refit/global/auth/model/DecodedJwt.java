@@ -5,13 +5,13 @@ import java.time.Instant;
 import lombok.Builder;
 
 @Builder(access = lombok.AccessLevel.PRIVATE)
-public record DecodedJwt(Claims claims, boolean isExpired, JwtTokenType type) {
+public record DecodedJwt(Claims claims, boolean isExpired, DecodedJwtType type) {
 
     public Instant getExpiration() {
         return claims.getExpiration().toInstant();
     }
 
-    public static DecodedJwt createUnexpiredToken(Claims claims, JwtTokenType type) {
+    public static DecodedJwt createUnexpiredToken(Claims claims, DecodedJwtType type) {
         return DecodedJwt.builder()
                 .claims(claims)
                 .isExpired(false)
@@ -19,7 +19,7 @@ public record DecodedJwt(Claims claims, boolean isExpired, JwtTokenType type) {
                 .build();
     }
 
-    public static DecodedJwt createExpiredToken(Claims claims, JwtTokenType type) {
+    public static DecodedJwt createExpiredToken(Claims claims, DecodedJwtType type) {
         return DecodedJwt.builder()
                 .claims(claims)
                 .isExpired(true)
