@@ -23,14 +23,6 @@ public class StarAnalysisGeneratePromptBuilder {
     private String promptTemplateHeader;
     private String promptTemplateTail;
 
-    private String readTextFile(Path path) {
-        try {
-            return Files.readString(path, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new IllegalStateException("프롬프트 파일을 읽지 못했습니다: " + path.toAbsolutePath(), e);
-        }
-    }
-
     @PostConstruct
     private void init() {
         Path promptDir = Path.of(geminiProperty.promptPath());
@@ -48,5 +40,13 @@ public class StarAnalysisGeneratePromptBuilder {
                 + "[면접 답변]" + "\n"
                 + qnaSet.getAnswerText() + "\n"
                 + promptTemplateTail;
+    }
+
+    private String readTextFile(Path path) {
+        try {
+            return Files.readString(path, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new IllegalStateException("프롬프트 파일을 읽지 못했습니다: " + path.toAbsolutePath(), e);
+        }
     }
 }
