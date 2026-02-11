@@ -12,7 +12,7 @@ import static org.hamcrest.Matchers.nullValue;
 
 import com.shyashyashya.refit.core.IntegrationTest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
-import com.shyashyashya.refit.domain.interview.model.Interview;;
+import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 

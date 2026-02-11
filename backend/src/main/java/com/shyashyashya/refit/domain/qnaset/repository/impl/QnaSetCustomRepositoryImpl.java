@@ -42,8 +42,6 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
 
         Long totalCount = queryFactory
                 .select(qnaSet.count())
-                .join(qnaSet.interview)
-                .fetchJoin()
                 .from(qnaSet)
                 .where(searchConditions)
                 .fetchOne();
