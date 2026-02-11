@@ -16,12 +16,19 @@ public enum ErrorCode {
     INTERVIEW_NOT_FOUND(NOT_FOUND, "인터뷰가 존재하지 않습니다."),
     INTERVIEW_NOT_ACCESSIBLE(FORBIDDEN, "인터뷰에 접근할 수 없습니다."),
     INTERVIEW_NOT_IN_DRAFT_STATUS(BAD_REQUEST, "임시저장 상태의 인터뷰만 조회할 수 있습니다."),
+    INTERVIEW_REVIEW_STATUS_NOT_UPDATABLE_TO_LOG_DRAFT(BAD_REQUEST, "인터뷰 상태가 기록전 상태일 때만 기록중으로 바뀔 수 있습니다"),
+    INTERVIEW_REVIEW_STATUS_NOT_UPDATABLE_TO_SELF_REVIEW_DRAFT(BAD_REQUEST, "인터뷰 상태가 기록중 상태일 때만 회고중으로 바뀔 수 있습니다"),
+    INTERVIEW_REVIEW_STATUS_NOT_UPDATABLE_TO_DEBRIEF_COMPLETED(BAD_REQUEST, "인터뷰 상태가 회고중 상태일 때만 회고완료로 바뀔 수 있습니다"),
 
     QNA_SET_CATEGORY_NOT_FOUND(NOT_FOUND, "질문 카테고리가 존재하지 않습니다."),
 
-    QNA_SET_NOT_FOUND(NOT_FOUND, "질문 세트가 존재하지 않습니다."),
     INDUSTRY_NOT_FOUND(NOT_FOUND, "산업군이 존재하지 않습니다."),
+    INDUSTRY_PARTIALLY_NOT_FOUND(NOT_FOUND, "요청한 산업군 중 일부 산업군이 존재하지 않습니다."),
+
     JOB_CATEGORY_NOT_FOUND(NOT_FOUND, "직군이 존재하지 않습니다."),
+    JOB_CATEGORY_PARTIALLY_NOT_FOUND(NOT_FOUND, "요청한 직군 중 일부 직군이 존재하지 않습니다."),
+
+    QNA_SET_NOT_FOUND(NOT_FOUND, "질문 세트가 존재하지 않습니다."),
     USER_NOT_FOUND(NOT_FOUND, "사용자가 존재하지 않습니다."),
 
     USER_SIGNUP_EMAIL_CONFLICT(CONFLICT, "이미 사용 중인 이메일입니다."),

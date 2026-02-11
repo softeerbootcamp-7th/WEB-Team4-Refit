@@ -5,3 +5,8 @@ export type LabelValueType = {
   label: string
   value: string
 }
+
+export type IdLabelType = {
+  id: number
+  label: string
+}

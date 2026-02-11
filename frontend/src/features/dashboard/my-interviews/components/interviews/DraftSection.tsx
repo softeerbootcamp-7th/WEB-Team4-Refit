@@ -1,5 +1,5 @@
-import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/components'
-import { INTERVIEW_TYPE_LABEL } from '@/shared/constants/interviews'
+import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
+import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/designs/components'
 import { MOCK_DRAFTS } from '../../example'
 
 type DraftSectionProps = {

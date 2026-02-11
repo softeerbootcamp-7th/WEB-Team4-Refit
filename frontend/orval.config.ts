@@ -4,12 +4,22 @@ export default defineConfig({
   'refit-api': {
     input: './api-docs.json',
     output: {
-      workspace: './src/api',
-      target: './refit-api.ts',
+      client: 'react-query',
+      workspace: './src/apis',
+      target: './generated/refit-api.ts',
       mode: 'tags-split',
       httpClient: 'fetch',
-      client: 'react-query',
       prettier: true,
+      mock: true,
+      override: {
+        fetch: {
+          includeHttpResponseReturnType: false,
+        },
+        mutator: {
+          path: './custom-fetch.ts',
+          name: 'customFetch',
+        },
+      },
     },
   },
 })

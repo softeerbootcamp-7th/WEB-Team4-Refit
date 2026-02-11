@@ -1,5 +1,5 @@
-import { CloseIcon, SearchColorIcon } from '@/shared/assets'
-import Button from '@/shared/components/button'
+import { CloseIcon, SearchColorIcon } from '@/designs/assets'
+import Button from '@/designs/components/button'
 
 type SearchResultBarProps = {
   query: string

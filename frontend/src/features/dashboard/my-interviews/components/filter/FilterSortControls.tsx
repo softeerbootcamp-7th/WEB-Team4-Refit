@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { CaretDownIcon, FilterIcon } from '@/shared/assets'
-import { Button, PlainCombobox } from '@/shared/components'
+import { CaretDownIcon, FilterIcon } from '@/designs/assets'
+import { Button, PlainCombobox } from '@/designs/components'
 import type { LabelValueType } from '@/types/global'
 import type { InterviewFilter } from '@/types/interview'
 import InterviewFilterModal from './InterviewFilterModal'

@@ -1,9 +1,14 @@
 package com.shyashyashya.refit.domain.interview.model;
 
+import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_REVIEW_STATUS_NOT_UPDATABLE_TO_DEBRIEF_COMPLETED;
+import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_REVIEW_STATUS_NOT_UPDATABLE_TO_LOG_DRAFT;
+import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_REVIEW_STATUS_NOT_UPDATABLE_TO_SELF_REVIEW_DRAFT;
+
 import com.shyashyashya.refit.domain.company.model.Company;
 import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.user.model.User;
+import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.model.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -127,6 +132,30 @@ public class Interview extends BaseEntity {
         this.company = company;
         this.industry = industry;
         this.jobCategory = jobCategory;
+    }
+
+    public void startLogging() {
+        if (reviewStatus == InterviewReviewStatus.NOT_LOGGED) {
+            reviewStatus = InterviewReviewStatus.LOG_DRAFT;
+            return;
+        }
+        throw new CustomException(INTERVIEW_REVIEW_STATUS_NOT_UPDATABLE_TO_LOG_DRAFT);
+    }
+
+    public void completeLogging() {
+        if (reviewStatus == InterviewReviewStatus.LOG_DRAFT) {
+            reviewStatus = InterviewReviewStatus.SELF_REVIEW_DRAFT;
+            return;
+        }
+        throw new CustomException(INTERVIEW_REVIEW_STATUS_NOT_UPDATABLE_TO_SELF_REVIEW_DRAFT);
+    }
+
+    public void completeReview() {
+        if (reviewStatus == InterviewReviewStatus.SELF_REVIEW_DRAFT) {
+            reviewStatus = InterviewReviewStatus.DEBRIEF_COMPLETED;
+            return;
+        }
+        throw new CustomException(INTERVIEW_REVIEW_STATUS_NOT_UPDATABLE_TO_DEBRIEF_COMPLETED);
     }
 
     public void updateResultStatus(InterviewResultStatus interviewResultStatus) {

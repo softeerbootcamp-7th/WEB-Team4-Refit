@@ -1,8 +1,10 @@
-import { useState, type Ref } from 'react'
+import { useRef, useState, type Ref } from 'react'
 import { useParams } from 'react-router'
-import { KptWriteCard } from '@/features/retro/_index/components/retro-section/KptWriteCard'
-import { Button } from '@/shared/components'
-import { MOCK_KPT_DATA } from '../../example'
+import { MOCK_KPT_DATA } from '@/constants/example'
+import { MoreIcon } from '@/designs/assets'
+import { Button } from '@/designs/components'
+import { useOnClickOutside } from '@/features/_common/hooks/useOnClickOutside'
+import { KptWriteCard } from '@/features/retro/_common/components/KptWriteCard'
 
 type KptDetailCardProps = {
   ref?: Ref<HTMLDivElement>
@@ -17,14 +19,19 @@ export function KptDetailCard({ ref, isOtherEditing, onEditingIdChange }: KptDet
   const [isEditing, setIsEditing] = useState(false)
   const [resetKey, setResetKey] = useState(0)
 
-  const handleEdit = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
+  useOnClickOutside(menuRef, () => setIsMenuOpen(false))
+
+  const handleStartEdit = () => {
     setIsEditing(true)
+    setIsMenuOpen(false)
     onEditingIdChange?.('kpt')
   }
 
   const handleCancel = () => {
     setIsEditing(false)
-    setResetKey((k) => k + 1)
+    setResetKey((prev) => prev + 1)
     onEditingIdChange?.(null)
   }
 
@@ -34,13 +41,16 @@ export function KptDetailCard({ ref, isOtherEditing, onEditingIdChange }: KptDet
     console.log(interviewId)
   }
 
+  const containerClassName = [
+    'relative transition-opacity',
+    isEditing ? 'rounded-lg border border-gray-300 shadow-md' : '',
+    isOtherEditing ? 'pointer-events-none opacity-30' : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+
   return (
-    <div
-      ref={ref}
-      className={`relative transition-opacity ${
-        isEditing ? 'rounded-lg border border-gray-300 shadow-md' : ''
-      } ${isOtherEditing ? 'pointer-events-none opacity-30' : ''}`}
-    >
+    <div ref={ref} className={containerClassName}>
       <div className="absolute top-5 right-5 z-10 flex gap-2">
         {isEditing ? (
           <>
@@ -52,9 +62,24 @@ export function KptDetailCard({ ref, isOtherEditing, onEditingIdChange }: KptDet
             </Button>
           </>
         ) : (
-          <Button size="xs" variant="fill-gray-150" onClick={handleEdit}>
-            수정
-          </Button>
+          <div className="relative" ref={menuRef}>
+            <button
+              onClick={() => setIsMenuOpen((prev) => !prev)}
+              className="flex items-center justify-center rounded-md text-gray-400 hover:bg-gray-200 hover:text-gray-600"
+            >
+              <MoreIcon className="h-7 w-7" />
+            </button>
+            {isMenuOpen && (
+              <div className="absolute top-full right-0 z-10 mt-1 min-w-30 overflow-hidden rounded-lg border border-gray-100 bg-white shadow-lg ring-1 ring-black/5">
+                <button
+                  onClick={handleStartEdit}
+                  className="body-s-medium w-full px-4 py-2.5 text-left text-gray-700 hover:bg-gray-50"
+                >
+                  수정하기
+                </button>
+              </div>
+            )}
+          </div>
         )}
       </div>
       <KptWriteCard key={resetKey} defaultValue={kptData} readOnly={!isEditing} />

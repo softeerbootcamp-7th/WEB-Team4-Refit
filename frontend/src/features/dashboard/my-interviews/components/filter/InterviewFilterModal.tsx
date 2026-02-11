@@ -1,7 +1,7 @@
 import { useState } from 'react'
+import { INTERVIEW_TYPE_OPTIONS } from '@/constants/interviews'
+import { Button, Checkbox, Modal } from '@/designs/components'
 import { EMPTY_FILTER, RESULT_STATUS_ITEMS } from '@/features/dashboard/my-interviews/constants/constants'
-import { Button, Checkbox, Modal } from '@/shared/components'
-import { INTERVIEW_TYPE_OPTIONS } from '@/shared/constants/interviews'
 import type { InterviewFilter } from '@/types/interview'
 
 type InterviewFilterModalProps = {

@@ -1,5 +1,5 @@
+import { SearchIcon } from '@/designs/assets'
 import type { ColorScheme, FilterItem } from '@/features/dashboard/trend-questions/constants/constants'
-import { SearchIcon } from '@/shared/assets'
 
 type FilterCardProps = {
   title: string

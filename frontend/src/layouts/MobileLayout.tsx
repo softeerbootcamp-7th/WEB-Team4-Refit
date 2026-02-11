@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router'
-import { MobileNavbar } from '@/shared/components'
+import { MobileNavbar } from '@/designs/components'
 
 export default function MobileLayout() {
   return (
