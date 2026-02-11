@@ -2,15 +2,20 @@ package com.shyashyashya.refit.domain.qnaset.constant;
 
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.global.property.GeminiProperty;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class StarAnalysisGeneratePrompt {
 
     private final GeminiProperty geminiProperty;
@@ -21,10 +26,13 @@ public class StarAnalysisGeneratePrompt {
         try {
             return Files.readString(path, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            throw new IllegalStateException("프롬프트 파일을 읽지 못했습니다: " + path.toAbsolutePath(), e);
+            //throw new IllegalStateException("프롬프트 파일을 읽지 못했습니다: " + path.toAbsolutePath(), e);
+            log.error("프롬프트 파일을 읽지 못했습니다: {}", path.toAbsolutePath(), e);
+            return null;
         }
     }
 
+    @PostConstruct
     private void init() {
         Path promptDir = Path.of(geminiProperty.promptPath());
         Path headerPath = promptDir.resolve("star_analysis_header.txt");
@@ -35,11 +43,6 @@ public class StarAnalysisGeneratePrompt {
     }
 
     public String buildPrompt(QnaSet qnaSet) {
-        // Lazy Init()
-        if (promptTemplateHeader == null) {
-            init();
-        }
-
         return promptTemplateHeader + "\n"
                 + "[면접 질문]" + "\n"
                 + qnaSet.getQuestionText() + "\n"
