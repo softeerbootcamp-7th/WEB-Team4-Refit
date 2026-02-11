@@ -91,6 +91,7 @@ public class QnaSetController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "지정한 질문 답변 세트에 대해 스타 분석 생성을 요청합니다.", description = "Gemini 요청을 수행하고 10~20초 뒤에 응답이 반환됩니다.")
     @PostMapping("/{qnaSetId}/star-analysis")
     public CompletableFuture<ResponseEntity<ApiResponse<StarAnalysisDto>>> createStarAnalysis(
             @PathVariable Long qnaSetId) {
