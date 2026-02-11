@@ -73,7 +73,6 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
         List<QnaSet> contents = queryFactory
                 .selectFrom(qnaSet)
                 .leftJoin(starAnalysis)
-                .fetchJoin()
                 .on(starAnalysis.qnaSet.eq(qnaSet))
                 .where(searchConditions)
                 .offset(pageable.getOffset())
@@ -83,6 +82,8 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
         Long count = queryFactory
                 .select(qnaSet.count())
                 .from(qnaSet)
+                .leftJoin(starAnalysis)
+                .on(starAnalysis.qnaSet.eq(qnaSet))
                 .where(searchConditions)
                 .fetchOne();
         count = count == null ? 0L : count;
@@ -105,6 +106,9 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
     }
 
     private BooleanExpression containsKeyword(String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            return null;
+        }
         return qnaSet.questionText.contains(keyword);
     }
 
