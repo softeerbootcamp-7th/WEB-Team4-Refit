@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
-import { ROUTES } from '@/shared/constants/routes'
+import { ROUTES } from '@/routes/routes'
 
 export default function AuthCallbackPage() {
   const navigate = useNavigate()

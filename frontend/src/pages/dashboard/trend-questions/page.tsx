@@ -1,7 +1,7 @@
+import { SmallLogoIcon } from '@/designs/assets'
 import FilterResultList from '@/features/dashboard/trend-questions/components/FilterResultList'
 import IndustryJobFilter from '@/features/dashboard/trend-questions/components/IndustryJobFilter'
 import { useIndustryJobFilter } from '@/features/dashboard/trend-questions/hooks/useIndustryJobFilter'
-import { SmallLogoIcon } from '@/shared/assets'
 
 export default function TrendQuestionsPage() {
   // TODO: 유저 회원가입 정보에서 기본값 가져오기

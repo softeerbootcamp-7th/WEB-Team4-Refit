@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { CaretDownIcon } from '@/shared/assets'
-import { Button } from '@/shared/components'
+import { CaretDownIcon } from '@/designs/assets'
+import { Button } from '@/designs/components'
 import { MOCK_QUESTION_PREVIEWS, MOCK_QUESTION_RANKS } from '../../example'
 import type { QuestionRankType, QuestionPreviewType } from '../../example'
 

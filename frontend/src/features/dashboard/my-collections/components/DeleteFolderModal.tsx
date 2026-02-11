@@ -1,5 +1,5 @@
-import Button from '@/shared/components/button'
-import Modal from '@/shared/components/modal'
+import Button from '@/designs/components/button'
+import Modal from '@/designs/components/modal'
 
 interface DeleteFolderModalProps {
   isOpen: boolean
@@ -8,30 +8,15 @@ interface DeleteFolderModalProps {
   folderName: string
 }
 
-const DeleteFolderModal = ({
-  isOpen,
-  onClose,
-  onConfirm,
-  folderName,
-}: DeleteFolderModalProps) => {
+const DeleteFolderModal = ({ isOpen, onClose, onConfirm, folderName }: DeleteFolderModalProps) => {
   return (
-    <Modal
-      open={isOpen}
-      onClose={onClose}
-      title="폴더 삭제"
-      showCloseButton={true}
-    >
+    <Modal open={isOpen} onClose={onClose} title="폴더 삭제" showCloseButton={true}>
       <div className="flex flex-col gap-8">
-        <p className="text-gray-600 body-l-medium">
+        <p className="body-l-medium text-gray-600">
           <span className="font-bold text-gray-900">'{folderName}'</span> 폴더를 삭제하시겠습니까?
         </p>
         <div className="flex gap-3">
-          <Button
-            className="flex-1"
-            variant="outline-gray-100"
-            size="lg"
-            onClick={onClose}
-          >
+          <Button className="flex-1" variant="outline-gray-100" size="lg" onClick={onClose}>
             취소
           </Button>
           <Button

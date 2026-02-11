@@ -1,10 +1,10 @@
 import { useRef, useState, type Ref } from 'react'
 import { useParams } from 'react-router'
+import { MOCK_KPT_DATA } from '@/constants/example'
+import { MoreIcon } from '@/designs/assets'
+import { Button } from '@/designs/components'
+import { useOnClickOutside } from '@/features/_common/hooks/useOnClickOutside'
 import { KptWriteCard } from '@/features/retro/_common/components/KptWriteCard'
-import { MoreIcon } from '@/shared/assets'
-import { Button } from '@/shared/components'
-import { MOCK_KPT_DATA } from '@/shared/constants/example'
-import { useOnClickOutside } from '@/shared/hooks/useOnClickOutside'
 
 type KptDetailCardProps = {
   ref?: Ref<HTMLDivElement>

@@ -1,4 +1,4 @@
-export function formatDateTime(dateString: string): string {
+export default function formatDateTime(dateString: string): string {
   return new Date(dateString).toLocaleString('ko-KR', {
     year: 'numeric',
     month: 'long',

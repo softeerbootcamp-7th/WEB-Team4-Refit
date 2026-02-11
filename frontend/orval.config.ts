@@ -5,7 +5,7 @@ export default defineConfig({
     input: './api-docs.json',
     output: {
       client: 'react-query',
-      workspace: './src/shared/api',
+      workspace: './src/apis',
       target: './generated/refit-api.ts',
       mode: 'tags-split',
       httpClient: 'fetch',

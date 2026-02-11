@@ -1,4 +1,4 @@
-import type { INTERVIEW_TYPE_LABEL } from '@/shared/constants/interviews'
+import type { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
 
 export type SimpleQnaType = {
   qnaSetId: number

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
-import { SpeakingChickIcon } from '@/shared/assets'
-import { Button } from '@/shared/components'
-import { ROUTES } from '@/shared/constants/routes'
+import { SpeakingChickIcon } from '@/designs/assets'
+import { Button } from '@/designs/components'
+import { ROUTES } from '@/routes/routes'
 
 function fadeUpClass(isVisible: boolean, delay: string) {
   const motion = isVisible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'

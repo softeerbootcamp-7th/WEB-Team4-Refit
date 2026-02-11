@@ -1,8 +1,8 @@
+import Modal from '@/designs/components/modal'
 import { ScheduleModalContent } from '@/features/dashboard/_index/components/schedule-modal-content/ScheduleModalContent'
 import type { ScheduleFormSubmitValues } from '@/features/dashboard/_index/components/schedule-modal-content/ScheduleModalContent'
 import { SCHEDULE_MODAL_STEP_CONFIG } from '@/features/dashboard/_index/constants/interviewCalendar'
 import { useScheduleModal } from '@/features/dashboard/_index/contexts/ScheduleModalContext'
-import Modal from '@/shared/components/modal'
 
 export default function InterviewScheduleModal() {
   const modalContext = useScheduleModal()

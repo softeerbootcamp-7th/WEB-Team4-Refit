@@ -1,6 +1,6 @@
+import { MicIcon } from '@/designs/assets'
+import { Button } from '@/designs/components'
 import { useAudioRecorder } from '@/features/mobile/_common/hooks/useAudioRecorder'
-import { MicIcon } from '@/shared/assets'
-import { Button } from '@/shared/components'
 
 type LiveAudioVisualizerProps = {
   onCancel?: () => void

@@ -1,7 +1,7 @@
 import { useState, type Ref } from 'react'
+import { Button } from '@/designs/components'
 import { QnaSetCard } from '@/features/_common/components/qna-set'
 import { useHighlightContext } from '@/features/record/link/contexts'
-import { Button } from '@/shared/components'
 import type { SimpleQnaType } from '@/types/interview'
 
 type LinkQnaSetCardProps = {

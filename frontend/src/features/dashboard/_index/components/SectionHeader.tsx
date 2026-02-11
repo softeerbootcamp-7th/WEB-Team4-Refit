@@ -1,4 +1,4 @@
-import { CircleLeftIcon, CircleRightIcon } from '@/shared/assets'
+import { CircleLeftIcon, CircleRightIcon } from '@/designs/assets'
 
 interface SectionHeaderProps {
   title: string

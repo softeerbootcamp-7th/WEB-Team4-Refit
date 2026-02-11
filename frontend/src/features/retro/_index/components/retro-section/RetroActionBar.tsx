@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router'
-import { Button } from '@/shared/components'
-import { ROUTES } from '@/shared/constants/routes'
+import { Button } from '@/designs/components'
+import { ROUTES } from '@/routes/routes'
 
 type RetroActionBarProps = {
   currentIndex: number

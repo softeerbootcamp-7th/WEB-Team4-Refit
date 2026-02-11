@@ -1,10 +1,10 @@
 import { useState } from 'react'
+import { FileSaveIcon } from '@/designs/assets'
+import TabBar from '@/designs/components/tab'
 import { FilterSortControls, SearchBar, SearchResultBar } from '@/features/dashboard/my-interviews/components/filter'
 import { DraftSection, InterviewListSection } from '@/features/dashboard/my-interviews/components/interviews'
 import { FrequentQuestionsSection, QuestionListSection } from '@/features/dashboard/my-interviews/components/questions'
 import { TAB_ITEMS, EMPTY_FILTER } from '@/features/dashboard/my-interviews/constants/constants'
-import { FileSaveIcon } from '@/shared/assets'
-import TabBar from '@/shared/components/tab'
 import type { InterviewFilter } from '@/types/interview'
 
 export default function MyInterviewsPage() {
@@ -28,7 +28,10 @@ export default function MyInterviewsPage() {
       <div className="relative flex flex-1">
         <TabBar items={TAB_ITEMS} activeValue={activeTab} onChange={handleTabChange} />
         <div className="absolute top-0 right-0">
-          <SearchBar keyword={filter.keyword} onSearch={(keyword: string) => setFilter((prev) => ({ ...prev, keyword }))} />
+          <SearchBar
+            keyword={filter.keyword}
+            onSearch={(keyword: string) => setFilter((prev) => ({ ...prev, keyword }))}
+          />
         </div>
       </div>
       {activeTab === 'interviews' && (

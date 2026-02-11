@@ -1,4 +1,4 @@
-import { CheckIcon } from '@/shared/assets'
+import { CheckIcon } from '@/designs/assets'
 
 type CheckboxProps = {
   checked: boolean

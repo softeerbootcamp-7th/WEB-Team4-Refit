@@ -1,4 +1,4 @@
-import type { BadgeTheme } from '@/shared/components/badge'
+import type { BadgeTheme } from '@/designs/components/badge'
 import type { StarStatus } from '@/types/interview'
 
 export const KPT_SECTIONS = [

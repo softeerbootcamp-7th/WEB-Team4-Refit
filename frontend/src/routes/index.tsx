@@ -21,7 +21,7 @@ import {
   MyInterviewsPage,
   TrendQuestionsPage,
 } from '@/pages'
-import { ROUTES } from '@/shared/constants/routes'
+import { ROUTES } from '@/routes/routes'
 
 const getChildPath = (fullPath: string, rootPath: string): string => {
   return fullPath.replace(rootPath, '').replace(/^\//, '')

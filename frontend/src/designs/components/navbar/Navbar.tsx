@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router'
-import { Logo } from '@/shared/assets'
-import { ROUTES } from '@/shared/constants/routes'
+import { Logo } from '@/designs/assets'
+import { ROUTES } from '@/routes/routes'
 import UserProfile from './UserProfile'
 
 const navItems = [

@@ -1,5 +1,5 @@
-import { CaretUpIcon } from '@/shared/assets'
-import { Button } from '@/shared/components'
+import { CaretUpIcon } from '@/designs/assets'
+import { Button } from '@/designs/components'
 
 type PdfNavigationProps = {
   currentPage: number

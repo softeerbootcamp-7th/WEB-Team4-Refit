@@ -1,9 +1,9 @@
+import { MOCK_QNA_SET_LIST } from '@/constants/example'
+import { useSectionScroll } from '@/features/_common/hooks/useSectionScroll'
 import { PdfSection } from '@/features/record/link/components/pdf-section'
 import { QnaListSection } from '@/features/record/link/components/qna-section/QnaListSection'
 import { RecordLinkSidebar } from '@/features/record/link/components/sidebar/Sidebar'
 import { HighlightProvider } from '@/features/record/link/contexts'
-import { MOCK_QNA_SET_LIST } from '@/shared/constants/example'
-import { useSectionScroll } from '@/shared/hooks/useSectionScroll'
 
 export default function RecordLinkPage() {
   return (

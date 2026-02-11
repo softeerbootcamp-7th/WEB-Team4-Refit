@@ -1,6 +1,6 @@
 import { forwardRef, useRef, useState } from 'react'
-import { CaretDownIcon, CheckIcon, SearchIcon } from '@/shared/assets'
-import { useOnClickOutside } from '@/shared/hooks/useOnClickOutside'
+import { CaretDownIcon, CheckIcon, SearchIcon } from '@/designs/assets'
+import { useOnClickOutside } from '@/features/_common/hooks/useOnClickOutside'
 
 export interface SearchableComboboxProps {
   label?: string

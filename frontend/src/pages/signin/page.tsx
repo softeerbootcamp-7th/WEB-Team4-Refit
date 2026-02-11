@@ -1,8 +1,8 @@
 import { Link } from 'react-router'
+import { GoogleIcon, Logo } from '@/designs/assets'
+import { Button } from '@/designs/components'
 import { useGoogleOAuthLogin } from '@/features/signin/_index/hooks'
-import { GoogleIcon, Logo } from '@/shared/assets'
-import { Button } from '@/shared/components'
-import { ROUTES } from '@/shared/constants/routes'
+import { ROUTES } from '@/routes/routes'
 
 export default function SigninPage() {
   const { handleGoogleLogin, isFetching } = useGoogleOAuthLogin()

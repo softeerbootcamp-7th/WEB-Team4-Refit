@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
+import { FilePlusIcon } from '@/designs/assets'
+import { Button } from '@/designs/components'
+import { useInterviewNavigate } from '@/features/_common/hooks/useInterviewNavigation'
 import { useHighlightContext } from '@/features/record/link/contexts'
-import { FilePlusIcon } from '@/shared/assets'
-import { Button } from '@/shared/components'
-import { ROUTES } from '@/shared/constants/routes'
-import { useInterviewNavigate } from '@/shared/hooks/useInterviewNavigation'
+import { ROUTES } from '@/routes/routes'
 import { PdfViewer } from './PdfViewer'
 
 export function PdfSection() {

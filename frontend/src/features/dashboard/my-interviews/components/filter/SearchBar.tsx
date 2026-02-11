@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react'
-import { CloseIcon, SearchIcon } from '@/shared/assets'
-import { Button } from '@/shared/components'
+import { CloseIcon, SearchIcon } from '@/designs/assets'
+import { Button } from '@/designs/components'
 
 type SearchBarProps = {
   keyword: string

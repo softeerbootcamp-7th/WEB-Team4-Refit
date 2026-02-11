@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react'
+import { INDUSTRIES, JOB_CATEGORIES } from '@/constants/interviews'
 import type { FilterBadge, FilterType } from '@/features/dashboard/trend-questions/constants/constants'
-import { INDUSTRIES, JOB_CATEGORIES } from '@/shared/constants/interviews'
 
 const INDUSTRY_MAP = new Map(INDUSTRIES.map((item) => [item.id, item.label]))
 const JOB_CATEGORY_MAP = new Map(JOB_CATEGORIES.map((item) => [item.id, item.label]))

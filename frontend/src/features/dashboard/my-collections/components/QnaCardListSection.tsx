@@ -1,8 +1,8 @@
 import { useState } from 'react'
+import { CaretDownIcon } from '@/designs/assets'
+import { Button, PlainCombobox } from '@/designs/components'
 import { QnaCard } from '@/features/dashboard/my-interviews/components/questions'
 import type { InterviewResultStatus } from '@/features/dashboard/my-interviews/constants/constants'
-import { CaretDownIcon } from '@/shared/assets'
-import { Button, PlainCombobox } from '@/shared/components'
 
 export type QnaCardListItem = {
   id: number

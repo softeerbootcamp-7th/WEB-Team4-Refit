@@ -1,5 +1,5 @@
 import { Fragment, useState, type RefObject } from 'react'
-import { Border, FadeScrollArea } from '@/shared/components'
+import { Border, FadeScrollArea } from '@/designs/components'
 import type { QnaSetType } from '@/types/interview'
 import { KptDetailCard } from './KptDetailCard'
 import { QnaRetroCard } from './QnaRetroCard'
