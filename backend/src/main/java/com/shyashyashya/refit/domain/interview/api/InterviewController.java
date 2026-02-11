@@ -104,4 +104,12 @@ public class InterviewController {
         var response = ApiResponse.success(COMMON200);
         return ResponseEntity.ok(response);
     }
+
+    @Operation(summary = "특정 면접에 새로운 질답 세트를 생성합니다.")
+    @PostMapping("/{interviewId}/qna-set")
+    public ResponseEntity<ApiResponse<QnaSetCreateResposne>> createQnaSet(@PathVariable Long interviewId) {
+        var body = interviewService.createQnaSet(interviewId);
+        var response = ApiResponse.success(COMMON200);
+        return ResponseEntity.ok(response);
+    }
 }
