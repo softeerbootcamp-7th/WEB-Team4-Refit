@@ -49,10 +49,8 @@ public class StarAnalysisService {
 
     @Transactional
     public StarAnalysis createInProgressStarAnalysisTx(Long qnaSetId) {
-        // QnaSet qnaSet = getValidatedQnaSetForUser(qnaSetId);
-        QnaSet qnaSet = qnaSetRepository.findById(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
+        QnaSet qnaSet = getValidatedQnaSetForUser(qnaSetId);
 
-        // TODO Race Condition 방어용 unique 조건
         if (starAnalysisRepository.existsByQnaSet(qnaSet)) {
             throw new CustomException(STAR_ANALYSIS_CREATION_ALREADY_IN_PROGRESS);
         }
@@ -95,5 +93,8 @@ public class StarAnalysisService {
     }
 
     @Transactional
-    public void onRequestFail(Long starAnalysisId, Throwable err) {}
+    public void onRequestFail(Long starAnalysisId, Throwable e) {
+        log.error("스타 분석 생성 요청이 실패하였습니다. {}", e.getCause(), e);
+        starAnalysisRepository.deleteById(starAnalysisId);
+    }
 }
