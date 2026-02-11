@@ -9,7 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 public interface QnaSetScrapFolderRepository extends JpaRepository<QnaSetScrapFolder, Long> {
 
@@ -22,6 +21,7 @@ public interface QnaSetScrapFolderRepository extends JpaRepository<QnaSetScrapFo
     """)
     Page<QnaSet> findQnaSetsByScrapFolder(ScrapFolder scrapFolder, Pageable pageable);
 
+    // TODO: DTO 프로젝션을 QueryDSL로 변경하기 (추후 별도 이슈로 해결)
     @Query("""
     SELECT new com.shyashyashya.refit.domain.qnaset.dto.response.QnaSetScrapFolderResponse(
         sf.id,
@@ -37,8 +37,8 @@ public interface QnaSetScrapFolderRepository extends JpaRepository<QnaSetScrapFo
        AND qssf.qnaSet = :qnaSet
     WHERE sf.user = :user
 """)
-    Page<QnaSetScrapFolderResponse> findAllScrapFoldersWithContainsQnaSet(
-            User user, @Param("qnaSet") QnaSet qnaSet, Pageable pageable);
+    Page<QnaSetScrapFolderResponse> findAllScrapFoldersWithQnaSetContainingInfo(
+            User user, QnaSet qnaSet, Pageable pageable);
 
     void deleteAllByScrapFolder(ScrapFolder scrapFolder);
 }
