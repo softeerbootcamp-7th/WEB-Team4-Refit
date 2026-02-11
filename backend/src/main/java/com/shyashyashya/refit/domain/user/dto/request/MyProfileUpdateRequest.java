@@ -7,5 +7,6 @@ import jakarta.validation.constraints.Size;
 
 public record MyProfileUpdateRequest(
         @NotBlank @Size(max = UserConstant.USER_NICKNAME_MAX_LENGTH) String nickname,
+
         @NotNull Long industryId,
         @NotNull Long jobCategoryId) {}
