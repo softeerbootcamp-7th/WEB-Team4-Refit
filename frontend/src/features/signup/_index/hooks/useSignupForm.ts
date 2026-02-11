@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import { useSignUp } from '@/api'
+import { INDUSTRY_OPTIONS, JOB_OPTIONS } from '@/constants/signup'
 import { ROUTES } from '@/routes/routes'
-import { INDUSTRY_OPTIONS, JOB_OPTIONS } from '@/shared/constants/signup'
 
 type SignupLocationState = { nickname?: string; profileImageUrl?: string } | null
 

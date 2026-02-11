@@ -1,6 +1,6 @@
 import { useState } from 'react'
+import { INDUSTRIES, JOB_CATEGORIES } from '@/constants/interviews'
 import type { IndustryJobFilterState } from '@/features/dashboard/trend-questions/hooks/useIndustryJobFilter'
-import { INDUSTRIES, JOB_CATEGORIES } from '@/shared/constants/interviews'
 import FilterCard from './FilterCard'
 
 type IndustryJobFilterProps = {

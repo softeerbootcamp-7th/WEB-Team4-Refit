@@ -1,8 +1,8 @@
+import { MOCK_INTERVIEW_INFO_DATA, MOCK_QNA_SET_LIST } from '@/constants/example'
+import { useSectionScroll } from '@/features/_common/hooks/useSectionScroll'
 import { RecordSection } from '@/features/record/confirm/components/contents/RecordSection'
 import { RecordConfirmSidebar } from '@/features/record/confirm/components/sidebar/Sidebar'
 import { useQnaList } from '@/features/record/confirm/hooks'
-import { MOCK_INTERVIEW_INFO_DATA, MOCK_QNA_SET_LIST } from '@/shared/constants/example'
-import { useSectionScroll } from '@/shared/hooks/useSectionScroll'
 
 export default function RecordConfirmPage() {
   // TODO: API 연동 시 실제 데이터로 교체

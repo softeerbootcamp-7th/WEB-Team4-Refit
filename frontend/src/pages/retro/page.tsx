@@ -1,11 +1,11 @@
 import { useState } from 'react'
+import { MOCK_INTERVIEW_INFO_DATA, MOCK_QNA_SET_LIST, type RetroListItem } from '@/constants/example'
+import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
 import { RetroPdfPanel } from '@/features/retro/_index/components/pdf-panel/RetroPdfPanel'
 import { RetroSection } from '@/features/retro/_index/components/retro-section/RetroSection'
 import { RetroMinimizedSidebar, RetroSidebar } from '@/features/retro/_index/components/sidebar'
 import { FileIcon } from '@/shared/assets'
 import { Button } from '@/shared/components'
-import { MOCK_INTERVIEW_INFO_DATA, MOCK_QNA_SET_LIST, type RetroListItem } from '@/shared/constants/example'
-import { INTERVIEW_TYPE_LABEL } from '@/shared/constants/interviews'
 
 export default function RetroQuestionPage() {
   // TODO: API fetch로 교체

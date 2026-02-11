@@ -1,10 +1,10 @@
 import { useState } from 'react'
+import { MOCK_QNA_SET_LIST } from '@/constants/example'
+import type { RetroListItem } from '@/constants/example'
 import { QnaSetCard, StarAnalysisSection } from '@/features/_common/components/qna-set'
 import { KptWriteCard, RetroWriteCard } from '@/features/retro/_common/components'
 import { RetroActionBar } from '@/features/retro/_index/components/retro-section/RetroActionBar'
 import { Border, FadeScrollArea } from '@/shared/components'
-import { MOCK_QNA_SET_LIST } from '@/shared/constants/example'
-import type { RetroListItem } from '@/shared/constants/example'
 import type { StarAnalysisResult } from '@/types/interview'
 
 type RetroSectionProps = {

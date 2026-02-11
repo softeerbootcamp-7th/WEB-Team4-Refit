@@ -1,7 +1,7 @@
 import { useEffect, useRef, useId } from 'react'
 import { createPortal } from 'react-dom'
+import { useOnClickOutside } from '@/features/_common/hooks/useOnClickOutside'
 import { CloseIcon } from '@/shared/assets'
-import { useOnClickOutside } from '@/shared/hooks/useOnClickOutside'
 
 type ModalSize = 'sm' | 'md'
 

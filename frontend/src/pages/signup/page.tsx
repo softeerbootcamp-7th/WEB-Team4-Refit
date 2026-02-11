@@ -1,7 +1,7 @@
+import { INDUSTRY_OPTIONS, JOB_OPTIONS } from '@/constants/signup'
 import { useSignupForm } from '@/features/signup/_index/hooks'
 import { Logo } from '@/shared/assets'
 import { Button, Input, NativeCombobox } from '@/shared/components'
-import { INDUSTRY_OPTIONS, JOB_OPTIONS } from '@/shared/constants/signup'
 
 export default function SignupPage() {
   const { nickname, setNickname, industry, setIndustry, job, setJob, isFormValid, isPending, handleSubmit } =

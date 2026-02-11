@@ -1,7 +1,7 @@
+import { MOCK_INTERVIEW_DETAIL } from '@/constants/example'
 import { InterviewInfoSection, QuestionListSection } from '@/features/_common/components/sidebar'
 import { NoteIcon } from '@/shared/assets'
 import { SidebarLayout } from '@/shared/components'
-import { MOCK_INTERVIEW_DETAIL } from '@/shared/constants/example'
 import type { IdLabelType } from '@/types/global'
 import type { QnaSetType } from '@/types/interview'
 

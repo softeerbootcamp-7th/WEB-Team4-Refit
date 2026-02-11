@@ -1,6 +1,6 @@
 import { useState } from 'react'
+import { KPT_SECTIONS } from '@/constants/retro'
 import { Badge, Border } from '@/shared/components'
-import { KPT_SECTIONS } from '@/shared/constants/retro'
 import type { KptTextsType } from '@/types/interview'
 
 const KPT_MAX_LENGTH = 400
