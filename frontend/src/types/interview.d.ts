@@ -1,12 +1,19 @@
 import type { INTERVIEW_TYPE_LABEL } from '@/shared/constants/interviews'
 
+export type SimpleQnaType = {
+  qnaSetId: number
+  questionText: string
+  answerText: string
+  isMarkedDifficult?: boolean
+}
+
 export type QnaSetType = {
   qnaSetId: number
   interviewId: number
   questionText: string
   answerText: string
   qnaSetSelfReviewText: string
-  starAnalysis: StarAnalysisType
+  starAnalysis: StarAnalysisResult
   isMarkedDifficult: boolean
 }
 
@@ -19,6 +26,8 @@ export type StarAnalysisResult = {
   rInclusionLevel: StarStatus
   overallSummary: string
 }
+
+export type InterviewInfoType = Pick<InterviewFullType, 'company' | 'jobRole' | 'interviewType' | 'interviewStartAt'>
 
 type InterviewFullType = {
   interviewId: number
@@ -34,6 +43,7 @@ type InterviewFullType = {
   pdfUrl: string | null
   qnaSets: QnaSetType[]
   questions: string[]
+  interviewSelfReview: KptTextsType
 }
 
 export type InterviewFilter = {
@@ -48,7 +58,7 @@ export type InterviewFilter = {
 export type InterviewType = keyof typeof INTERVIEW_TYPE_LABEL
 
 type KptTextsType = {
-  keep_text: string
-  problem_text: string
-  try_text: string
+  keepText: string
+  problemText: string
+  tryText: string
 }
