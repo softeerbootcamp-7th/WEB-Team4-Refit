@@ -7,7 +7,10 @@ import jakarta.validation.constraints.Size;
 
 public record UserSignUpRequest(
         @NotBlank String origin,
+
         @NotBlank @Size(max = UserConstant.USER_NICKNAME_MAX_LENGTH) String nickname,
+
         @NotBlank @Size(max = UserConstant.USER_PROFILE_IMAGE_URL_MAX_LENGTH) String profileImageUrl,
+
         @NotNull Long industryId,
         @NotNull Long jobCategoryId) {}
