@@ -5,5 +5,5 @@ import java.util.Collection;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface IndustryRepository extends JpaRepository<Industry, Long> {
-    Long countByIdIn(Collection<Long> ids);
+    long countByIdIn(Collection<Long> ids);
 }
