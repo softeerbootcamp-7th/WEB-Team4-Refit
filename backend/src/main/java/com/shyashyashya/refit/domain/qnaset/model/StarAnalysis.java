@@ -94,12 +94,14 @@ public class StarAnalysis extends BaseEntity {
             StarInclusionLevel t,
             StarInclusionLevel a,
             StarInclusionLevel r,
-            String overallSummaryText) {
+            String overallSummaryText,
+            StarAnalysisStatus status) {
         this.sInclusionLevel = s;
         this.tInclusionLevel = t;
         this.aInclusionLevel = a;
         this.rInclusionLevel = r;
         this.overallSummaryText = overallSummaryText;
+        this.status = status;
     }
 
     @Builder(access = AccessLevel.PRIVATE)

@@ -12,6 +12,7 @@ import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.StarAnalysis;
+import com.shyashyashya.refit.domain.qnaset.model.StarAnalysisStatus;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.StarAnalysisRepository;
 import com.shyashyashya.refit.domain.user.model.User;
@@ -67,7 +68,6 @@ public class StarAnalysisService {
         try {
             geminiResponse = objectMapper.readValue(text, StarAnalysisGeminiResponse.class);
 
-            // TODO 임시 transaction template
             StarAnalysis updatedStar = starAnalysisRepository
                     .findById(starAnalysisId)
                     .orElseThrow(() -> new CustomException(STAR_ANALYSIS_NOT_FOUND));
@@ -77,7 +77,8 @@ public class StarAnalysisService {
                     geminiResponse.getT(),
                     geminiResponse.getA(),
                     geminiResponse.getR(),
-                    geminiResponse.getOverallSummary());
+                    geminiResponse.getOverallSummary(),
+                    StarAnalysisStatus.COMPLETED);
 
             return StarAnalysisDto.from(updatedStar);
         } catch (JsonProcessingException e) {
