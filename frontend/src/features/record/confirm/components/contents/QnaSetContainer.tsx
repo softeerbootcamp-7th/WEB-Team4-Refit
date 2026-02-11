@@ -1,51 +1,83 @@
-import { useState } from 'react'
-import { HardQuestionToggle, QnaSetDropdownMenu, QnaSetEditForm } from '@/features/record/confirm/components/contents'
-import type { QnAType } from '@/features/record/confirm/components/contents/QnaListSection'
-import { Badge, Border } from '@/shared/components'
+import { useState, type Ref } from 'react'
+import { QnaSetCard, QnaSetEditForm } from '@/features/_common/components/qnaSet'
+import { PencilIcon, TrashIcon } from '@/shared/assets'
+import type { SimpleQnaType } from '@/types/interview'
 
 type QnaSetContainerProps = {
-  qnaData: QnAType
+  ref?: Ref<HTMLDivElement>
+  qnaData: SimpleQnaType
   idx: number
+  isOtherEditing?: boolean
   onEdit?: (qnaSetId: number, question: string, answer: string) => void
   onDelete?: (qnaSetId: number) => void
+  onEditingIdChange?: (editingId: string | null) => void
 }
 
-export const QnaSetContainer = ({ qnaData, idx, onEdit, onDelete }: QnaSetContainerProps) => {
-  const [editMode, setEditMode] = useState(false)
+export function QnaSetContainer({
+  ref,
+  qnaData,
+  idx,
+  isOtherEditing,
+  onEdit,
+  onDelete,
+  onEditingIdChange,
+}: QnaSetContainerProps) {
+  const { qnaSetId, questionText, answerText } = qnaData
+  const [isEditing, setIsEditing] = useState(false)
+
+  const editingKey = `qna-${qnaSetId}`
+
+  const startEditing = () => {
+    setIsEditing(true)
+    onEditingIdChange?.(editingKey)
+  }
+
+  const stopEditing = () => {
+    setIsEditing(false)
+    onEditingIdChange?.(null)
+  }
 
   const handleSave = (question: string, answer: string) => {
-    setEditMode(false)
-    onEdit?.(qnaData.qnaSetId, question, answer)
-  }
-  const handleEdit = () => {
-    setEditMode(true)
-  }
-  const handleDelete = () => {
-    onDelete?.(qnaData.qnaSetId)
+    stopEditing()
+    onEdit?.(qnaSetId, question, answer)
   }
 
-  if (editMode) {
-    return (
-      <QnaSetEditForm
-        idx={idx}
-        initialQuestion={qnaData.questionText}
-        initialAnswer={qnaData.answerText}
-        onSave={handleSave}
-        onCancel={() => setEditMode(false)}
-      />
-    )
+  const handleDelete = () => {
+    onDelete?.(qnaSetId)
   }
+
+  const containerClassName = `transition-opacity ${isOtherEditing ? 'pointer-events-none opacity-30' : ''}`
+  const cardClassName = `relative rounded-lg transition-shadow ${isEditing ? 'border border-gray-300 shadow-md' : ''}`
 
   return (
-    <div className="bg-gray-white relative flex flex-col gap-4 rounded-lg p-5">
-      <div className="inline-flex flex-wrap items-center gap-2.5">
-        <Badge type="question-label" theme="orange-100" content={`${idx}번 질문`} />
-        <span className="title-m-semibold">{qnaData.questionText}</span>
-        <HardQuestionToggle id={qnaData.qnaSetId} />
-        <QnaSetDropdownMenu onEdit={handleEdit} onDelete={handleDelete} />
+    <div ref={ref} className={containerClassName}>
+      <div className={cardClassName}>
+        {isEditing ? (
+          <QnaSetEditForm
+            idx={idx}
+            initialQuestion={questionText}
+            initialAnswer={answerText}
+            onSave={handleSave}
+            onCancel={stopEditing}
+          />
+        ) : (
+          <QnaSetCard
+            idx={idx}
+            questionText={questionText}
+            answerText={answerText}
+            topRightComponent={
+              <div className="flex shrink-0 gap-4 pl-4">
+                <button onClick={startEditing}>
+                  <PencilIcon />
+                </button>
+                <button onClick={handleDelete}>
+                  <TrashIcon />
+                </button>
+              </div>
+            }
+          />
+        )}
       </div>
-      <Border />
-      <div>{qnaData.answerText}</div>
     </div>
   )
 }
