@@ -126,7 +126,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
             // given
             InterviewCreateRequest request = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            User user = createUser("other@example.com", "other", industry, jobCategory);
+            User user = createUser("other@example.com", "other", industry1, jobCategory1);
             Long otherInterviewId = createInterview(request, user).getId();
 
             // when & then
@@ -185,7 +185,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
             // given
             InterviewCreateRequest request = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            User user = createUser("other@example.com", "other", industry, jobCategory);
+            User user = createUser("other@example.com", "other", industry1, jobCategory1);
             Long otherInterviewId = createInterview(request, user).getId();
 
             // when & then
@@ -252,7 +252,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
             // given
             InterviewCreateRequest createRequest = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            User user = createUser("other@example.com", "other", industry, jobCategory);
+            User user = createUser("other@example.com", "other", industry1, jobCategory1);
             Long otherInterviewId = createInterview(createRequest, user).getId();
             InterviewResultStatusUpdateRequest updateRequest = new InterviewResultStatusUpdateRequest(InterviewResultStatus.PASS);
 
@@ -331,7 +331,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
             // given
             InterviewCreateRequest createRequest = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            User user = createUser("other@example.com", "other", industry, jobCategory);
+            User user = createUser("other@example.com", "other", industry1, jobCategory1);
             Long otherInterviewId = createInterview(createRequest, user).getId();
 
             // when & then
@@ -391,7 +391,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
             // given
             InterviewCreateRequest createRequest = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            User user = createUser("other@example.com", "other", industry, jobCategory);
+            User user = createUser("other@example.com", "other", industry1, jobCategory1);
             Long otherInterviewId = createInterview(createRequest, user).getId();
 
             // when & then
@@ -458,7 +458,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
             // given
             InterviewCreateRequest createRequest = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            User user = createUser("other@example.com", "other", industry, jobCategory);
+            User user = createUser("other@example.com", "other", industry1, jobCategory1);
             Long otherInterviewId = createInterview(createRequest, user).getId();
             RawTextUpdateRequest updateRequest = new RawTextUpdateRequest("Raw text for another user.");
 
@@ -527,7 +527,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
             // given
             InterviewCreateRequest createRequest = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            User user = createUser("other@example.com", "other", industry, jobCategory);
+            User user = createUser("other@example.com", "other", industry1, jobCategory1);
             Long otherInterviewId = createInterview(createRequest, user).getId();
             KptSelfReviewUpdateRequest updateRequest = new KptSelfReviewUpdateRequest("Other Keep", "Other Problem", "Other Try");
 

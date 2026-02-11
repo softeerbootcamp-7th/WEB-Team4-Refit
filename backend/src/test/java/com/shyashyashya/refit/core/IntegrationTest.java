@@ -30,12 +30,15 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 public abstract class IntegrationTest {
+
+    protected static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     @LocalServerPort
     private Integer port;
@@ -44,11 +47,15 @@ public abstract class IntegrationTest {
 
     protected User requestUser;
 
-    protected Company company;
-
-    protected Industry industry;
-
-    protected JobCategory jobCategory;
+    protected Industry industry1;
+    protected Industry industry2;
+    protected Industry industry3;
+    protected JobCategory jobCategory1;
+    protected JobCategory jobCategory2;
+    protected JobCategory jobCategory3;
+    protected Company company1;
+    protected Company company2;
+    protected Company company3;
 
     @PersistenceContext
     private EntityManager em;
@@ -76,11 +83,17 @@ public abstract class IntegrationTest {
         clearDatabase();
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
 
-        industry = industryRepository.save(Industry.create("제조업"));
-        jobCategory = jobCategoryRepository.save(JobCategory.create("BE Developer"));
-        company = companyRepository.save(Company.create("현대자동차", "logo", true));
+        industry1 = industryRepository.save(Industry.create("제조업"));
+        industry2 = industryRepository.save(Industry.create("IT"));
+        industry3 = industryRepository.save(Industry.create("유통"));
+        jobCategory1 = jobCategoryRepository.save(JobCategory.create("BE Developer"));
+        jobCategory2 = jobCategoryRepository.save(JobCategory.create("FE Developer"));
+        jobCategory3 = jobCategoryRepository.save(JobCategory.create("Designer"));
+        company1 = companyRepository.save(Company.create("현대자동차", "logo1", true));
+        company2 = companyRepository.save(Company.create("카카오", "logo2", true));
+        company3 = companyRepository.save(Company.create("네이버", "logo3", true));
 
-        requestUser = createUser("test@example.com", "default", industry, jobCategory);
+        requestUser = createUser("test@example.com", "default", industry1, jobCategory1);
         String accessToken = jwtUtil.createAccessToken(requestUser.getEmail(), requestUser.getId());
         spec = new RequestSpecBuilder()
                 .setPort(port)
