@@ -15,16 +15,6 @@ public class CookieUtil {
     private final AuthProperty authProperty;
     private final AuthJwtProperty authJwtProperty;
 
-    public ResponseCookie createCookie(String name, String value, Duration maxAge) {
-        return ResponseCookie.from(name, value)
-                .httpOnly(true)
-                .secure(authProperty.usingHttps())
-                .path("/")
-                .maxAge(maxAge)
-                .sameSite("Lax")
-                .build();
-    }
-
     public String createAccessTokenCookie(String accessToken) {
         return createCookie(
                         AuthConstant.ACCESS_TOKEN,
@@ -43,5 +33,15 @@ public class CookieUtil {
 
     public String deleteCookie(String name) {
         return ResponseCookie.from(name, "").maxAge(0).path("/").build().toString();
+    }
+
+    private ResponseCookie createCookie(String name, String value, Duration maxAge) {
+        return ResponseCookie.from(name, value)
+                .httpOnly(true)
+                .secure(authProperty.usingHttps())
+                .path("/")
+                .maxAge(maxAge)
+                .sameSite("Lax")
+                .build();
     }
 }
