@@ -33,7 +33,6 @@ public class StarAnalysisAsyncService {
         StarAnalysis starAnalysis = starAnalysisService.createInProgressStarAnalysisTx(qnaSet);
 
         String prompt = starAnalysisGeneratePrompt.buildPrompt(qnaSet);
-        // log.info("Prompt: \n" + prompt);
         GeminiGenerateRequest requestBody = GeminiGenerateRequest.ofText(prompt);
 
         CompletableFuture<GeminiGenerateResponse> reqFuture =
