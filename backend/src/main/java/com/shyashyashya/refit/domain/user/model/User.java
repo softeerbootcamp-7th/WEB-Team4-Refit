@@ -55,6 +55,12 @@ public class User extends BaseEntity {
         this.isAgreedToTerms = true;
     }
 
+    public void updateMyPage(String nickname, Industry industry, JobCategory jobCategory) {
+        this.nickname = nickname;
+        this.industry = industry;
+        this.jobCategory = jobCategory;
+    }
+
     /*
      Factory Method
     */
