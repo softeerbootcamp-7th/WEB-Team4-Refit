@@ -1,6 +1,6 @@
 package com.shyashyashya.refit.domain.qnaset.model;
 
-public enum StarAnalysisStatus {
+public enum StarAnalysisGenerationStatus {
     IN_PROGRESS,
     COMPLETED
 }

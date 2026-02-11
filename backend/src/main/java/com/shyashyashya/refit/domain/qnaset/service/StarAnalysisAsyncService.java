@@ -22,14 +22,14 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class StarAnalysisAsyncService {
 
+    private final QnaSetService qnaSetService;
     private final StarAnalysisService starAnalysisService;
     private final GeminiClient geminiClient;
     private final StarAnalysisPromptGenerator starAnalysisGeneratePrompt;
     private final Executor geminiPostProcessExecutor;
 
     public CompletableFuture<StarAnalysisDto> createStarAnalysis(Long qnaSetId) {
-
-        QnaSet qnaSet = starAnalysisService.getValidatedQnaSetForUser(qnaSetId);
+        QnaSet qnaSet = qnaSetService.getQnaSet(qnaSetId);
         StarAnalysis starAnalysis = starAnalysisService.createInProgressStarAnalysisTx(qnaSet);
 
         String prompt = starAnalysisGeneratePrompt.buildPrompt(qnaSet);

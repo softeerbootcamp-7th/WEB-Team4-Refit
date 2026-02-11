@@ -49,7 +49,7 @@ public class StarAnalysis extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "analysis_status", nullable = false)
-    private StarAnalysisStatus status;
+    private StarAnalysisGenerationStatus status;
 
     @JoinColumn(name = "qna_set_id", nullable = false, unique = true)
     @OneToOne(fetch = FetchType.LAZY)
@@ -64,7 +64,7 @@ public class StarAnalysis extends BaseEntity {
             StarInclusionLevel aInclusionLevel,
             StarInclusionLevel rInclusionLevel,
             String overallSummaryText,
-            StarAnalysisStatus status,
+            StarAnalysisGenerationStatus status,
             QnaSet qnaSet) {
         return StarAnalysis.builder()
                 .sInclusionLevel(sInclusionLevel)
@@ -84,7 +84,7 @@ public class StarAnalysis extends BaseEntity {
                 .aInclusionLevel(StarInclusionLevel.ABSENT)
                 .rInclusionLevel(StarInclusionLevel.ABSENT)
                 .overallSummaryText("")
-                .status(StarAnalysisStatus.IN_PROGRESS)
+                .status(StarAnalysisGenerationStatus.IN_PROGRESS)
                 .qnaSet(qnaSet)
                 .build();
     }
@@ -95,7 +95,7 @@ public class StarAnalysis extends BaseEntity {
             StarInclusionLevel a,
             StarInclusionLevel r,
             String overallSummaryText,
-            StarAnalysisStatus status) {
+            StarAnalysisGenerationStatus status) {
         this.sInclusionLevel = s;
         this.tInclusionLevel = t;
         this.aInclusionLevel = a;
@@ -111,7 +111,7 @@ public class StarAnalysis extends BaseEntity {
             StarInclusionLevel aInclusionLevel,
             StarInclusionLevel rInclusionLevel,
             String overallSummaryText,
-            StarAnalysisStatus status,
+            StarAnalysisGenerationStatus status,
             QnaSet qnaSet) {
         this.sInclusionLevel = sInclusionLevel;
         this.tInclusionLevel = tInclusionLevel;

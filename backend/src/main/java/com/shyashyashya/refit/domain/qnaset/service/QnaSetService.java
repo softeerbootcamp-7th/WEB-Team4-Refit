@@ -133,6 +133,17 @@ public class QnaSetService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public QnaSet getQnaSet(Long qnaSetId) {
+        QnaSet qnaSet = qnaSetRepository.findById(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
+
+        User requestUser = requestUserContext.getRequestUser();
+        Interview interview = qnaSet.getInterview();
+        interviewValidator.validateInterviewOwner(interview, requestUser);
+
+        return qnaSet;
+    }
+
     private void updateOrCreateSelfReview(QnaSet qnaSet, String reqSelfReviewText) {
         if (reqSelfReviewText != null) {
             qnaSetSelfReviewRepository

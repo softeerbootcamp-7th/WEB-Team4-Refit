@@ -12,7 +12,7 @@ import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.StarAnalysis;
-import com.shyashyashya.refit.domain.qnaset.model.StarAnalysisStatus;
+import com.shyashyashya.refit.domain.qnaset.model.StarAnalysisGenerationStatus;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.StarAnalysisRepository;
 import com.shyashyashya.refit.domain.user.model.User;
@@ -30,23 +30,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class StarAnalysisService {
 
-    private final QnaSetRepository qnaSetRepository;
     private final StarAnalysisRepository starAnalysisRepository;
 
-    private final RequestUserContext requestUserContext;
-    private final InterviewValidator interviewValidator;
     private final ObjectMapper objectMapper;
-
-    @Transactional(readOnly = true)
-    public QnaSet getValidatedQnaSetForUser(Long qnaSetId) {
-        QnaSet qnaSet = qnaSetRepository.findById(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
-
-        User requestUser = requestUserContext.getRequestUser();
-        Interview interview = qnaSet.getInterview();
-        interviewValidator.validateInterviewOwner(interview, requestUser);
-
-        return qnaSet;
-    }
 
     @Transactional
     public StarAnalysis createInProgressStarAnalysisTx(QnaSet qnaSet) {
@@ -78,7 +64,7 @@ public class StarAnalysisService {
                     geminiResponse.getA(),
                     geminiResponse.getR(),
                     geminiResponse.getOverallSummary(),
-                    StarAnalysisStatus.COMPLETED);
+                    StarAnalysisGenerationStatus.COMPLETED);
 
             return StarAnalysisDto.from(updatedStar);
         } catch (JsonProcessingException e) {
