@@ -37,8 +37,4 @@ public enum ClientOriginType {
         throw new IllegalArgumentException(
                 "Invalid origin value: " + origin + ". Allowed values are: " + allowedValues);
     }
-
-    public static String getClientOriginUrl(String origin) {
-        return fromOriginString(origin).getClientOriginUrl();
-    }
 }

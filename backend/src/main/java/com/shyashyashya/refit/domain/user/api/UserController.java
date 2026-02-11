@@ -49,7 +49,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.FOUND)
                 .header(HttpHeaders.SET_COOKIE, accessTokenCookie)
                 .header(HttpHeaders.SET_COOKIE, refreshTokenCookie)
-                .header(HttpHeaders.LOCATION, ClientOriginType.getClientOriginUrl(origin))
+                .header(HttpHeaders.LOCATION, originType.getClientOriginUrl())
                 .build();
     }
 

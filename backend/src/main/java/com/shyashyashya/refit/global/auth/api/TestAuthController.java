@@ -67,6 +67,7 @@ public class TestAuthController {
     public ResponseEntity<ApiResponse<Void>> deleteTokenCookies(
             @CookieValue(value = AuthConstant.REFRESH_TOKEN, required = false) String refreshToken,
             @RequestParam(required = false) String origin) {
+        ClientOriginType originType = ClientOriginType.fromOriginString(origin);
         String deleteAccessTokenCookie = cookieUtil.deleteCookie(AuthConstant.ACCESS_TOKEN);
         String deleteRefreshTokenCookie = cookieUtil.deleteCookie(AuthConstant.REFRESH_TOKEN);
 
@@ -76,9 +77,7 @@ public class TestAuthController {
 
         var response = ApiResponse.success(COMMON200);
         return ResponseEntity.status(HttpStatus.FOUND)
-                .header(
-                        HttpHeaders.LOCATION,
-                        ClientOriginType.getClientOriginUrl(origin) + UrlConstant.LOGIN_REDIRECT_PATH)
+                .header(HttpHeaders.LOCATION, originType.getClientOriginUrl() + UrlConstant.LOGIN_REDIRECT_PATH)
                 .header(HttpHeaders.SET_COOKIE, deleteAccessTokenCookie)
                 .header(HttpHeaders.SET_COOKIE, deleteRefreshTokenCookie)
                 .body(response);
