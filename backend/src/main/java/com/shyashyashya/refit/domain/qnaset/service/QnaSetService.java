@@ -167,7 +167,7 @@ public class QnaSetService {
     }
 
     @Transactional(readOnly = true)
-    public Page<QnaSetScrapFolderResponse> getScrapFoldersContainingQnaSet(Long qnaSetId, Pageable pageable) {
+    public Page<QnaSetScrapFolderResponse> getMyScrapFoldersWithQnaSetContainingInfo(Long qnaSetId, Pageable pageable) {
         QnaSet qnaSet = qnaSetRepository.findById(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
 
         User requestUser = requestUserContext.getRequestUser();

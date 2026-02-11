@@ -94,7 +94,7 @@ public class QnaSetController {
     @GetMapping("/{qnaSetId}/scrap-folder")
     public ResponseEntity<ApiResponse<Page<QnaSetScrapFolderResponse>>> getScrapFoldersContainingQnaSet(
             @PathVariable Long qnaSetId, Pageable pageable) {
-        var body = qnaSetService.getScrapFoldersContainingQnaSet(qnaSetId, pageable);
+        var body = qnaSetService.getMyScrapFoldersWithQnaSetContainingInfo(qnaSetId, pageable);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
