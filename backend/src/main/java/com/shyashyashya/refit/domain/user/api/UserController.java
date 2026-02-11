@@ -2,7 +2,7 @@ package com.shyashyashya.refit.domain.user.api;
 
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 
-import com.shyashyashya.refit.domain.user.dto.request.MyPageUpdateRequest;
+import com.shyashyashya.refit.domain.user.dto.request.MyProfileUpdateRequest;
 import com.shyashyashya.refit.domain.user.dto.request.UserSignUpRequest;
 import com.shyashyashya.refit.domain.user.dto.response.MyProfileResponse;
 import com.shyashyashya.refit.domain.user.service.UserService;
@@ -69,8 +69,8 @@ public class UserController {
     @Operation(summary = "사용자 프로필을 수정합니다.")
     @PutMapping("/my")
     public ResponseEntity<ApiResponse<Void>> updateMyProfile(
-            @Valid @RequestBody MyPageUpdateRequest myPageUpdateRequest) {
-        userService.updateMyProfile(myPageUpdateRequest);
+            @Valid @RequestBody MyProfileUpdateRequest myProfileUpdateRequest) {
+        userService.updateMyProfile(myProfileUpdateRequest);
         return ResponseEntity.ok(ApiResponse.success(COMMON200));
     }
 }
