@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { QnaSetCard, StarAnalysisSection } from '@/features/_common/components/qnaSet'
+import { QnaSetCard, StarAnalysisSection } from '@/features/_common/components/qna-set'
 import { KptWriteCard, RetroWriteCard } from '@/features/retro/_common/components'
 import { RetroActionBar } from '@/features/retro/_index/components/retro-section/RetroActionBar'
 import { Border, FadeScrollArea } from '@/shared/components'

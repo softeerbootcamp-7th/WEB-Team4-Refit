@@ -1,5 +1,5 @@
 import { useRef, useState, type Ref } from 'react'
-import { QnaSetCard, QnaSetEditForm, StarAnalysisSection } from '@/features/_common/components/qnaSet'
+import { QnaSetCard, QnaSetEditForm, StarAnalysisSection } from '@/features/_common/components/qna-set'
 import { RetroWriteCard } from '@/features/retro/_common/components/RetroWriteCard'
 import { BookmarkIcon, MoreIcon } from '@/shared/assets'
 import { Border, Button } from '@/shared/components'
