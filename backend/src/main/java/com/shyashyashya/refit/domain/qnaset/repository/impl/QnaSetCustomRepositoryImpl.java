@@ -29,6 +29,9 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
 
         List<QnaSet> qnaSets = queryFactory
                 .selectFrom(qnaSet)
+                .join(qnaSet.interview).fetchJoin()
+                .join(qnaSet.interview.industry).fetchJoin()
+                .join(qnaSet.interview.jobCategory).fetchJoin()
                 .where(searchConditions)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -36,6 +39,9 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
 
         Long totalCount = queryFactory
                 .select(qnaSet.count())
+                .join(qnaSet.interview).fetchJoin()
+                .join(qnaSet.interview.industry).fetchJoin()
+                .join(qnaSet.interview.jobCategory).fetchJoin()
                 .from(qnaSet)
                 .where(searchConditions)
                 .fetchOne();
