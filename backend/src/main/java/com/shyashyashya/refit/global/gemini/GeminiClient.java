@@ -18,7 +18,7 @@ public class GeminiClient {
     private static final String GEMINI_API_URL =
             "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent";
 
-    public CompletableFuture<GeminiGenerateResponse> createGeminiRequest(
+    public CompletableFuture<GeminiGenerateResponse> sendAsyncRequest(
             GeminiGenerateRequest requestBody, Long timeoutSec) {
         return webClient
                 .post()

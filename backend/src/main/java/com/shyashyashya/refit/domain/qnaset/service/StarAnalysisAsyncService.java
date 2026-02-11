@@ -36,11 +36,11 @@ public class StarAnalysisAsyncService {
         GeminiGenerateRequest requestBody = GeminiGenerateRequest.from(prompt);
 
         CompletableFuture<GeminiGenerateResponse> reqFuture =
-                geminiClient.createGeminiRequest(requestBody, STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC);
+                geminiClient.sendAsyncRequest(requestBody, STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC);
 
         return reqFuture
                 .thenApplyAsync(
-                        geminiRsp -> starAnalysisService.onRequestSuccess(starAnalysis.getId(), geminiRsp),
+                        geminiResponse -> starAnalysisService.onRequestSuccess(starAnalysis.getId(), geminiResponse),
                         geminiPostProcessExecutor)
                 .exceptionally(e -> {
                     starAnalysisService.onRequestFail(starAnalysis.getId(), e);

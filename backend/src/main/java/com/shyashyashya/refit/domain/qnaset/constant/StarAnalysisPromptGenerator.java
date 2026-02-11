@@ -1,5 +1,8 @@
 package com.shyashyashya.refit.domain.qnaset.constant;
 
+import static com.shyashyashya.refit.domain.qnaset.constant.StarAnalysisConstant.PROMPT_HEADER_FILE_NAME;
+import static com.shyashyashya.refit.domain.qnaset.constant.StarAnalysisConstant.PROMPT_TAIL_FILE_NAME;
+
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.global.property.GeminiProperty;
 import jakarta.annotation.PostConstruct;
@@ -10,9 +13,6 @@ import java.nio.file.Path;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import static com.shyashyashya.refit.domain.qnaset.constant.StarAnalysisConstant.PROMPT_HEADER_FILE_NAME;
-import static com.shyashyashya.refit.domain.qnaset.constant.StarAnalysisConstant.PROMPT_TAIL_FILE_NAME;
 
 @Component
 @RequiredArgsConstructor

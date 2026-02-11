@@ -1,6 +1,6 @@
 package com.shyashyashya.refit.domain.qnaset.service;
 
-import static com.shyashyashya.refit.global.exception.ErrorCode.STAR_ANALYSIS_CREATION_ALREADY_IN_PROGRESS;
+import static com.shyashyashya.refit.global.exception.ErrorCode.STAR_ANALYSIS_CREATION_FAILED_ALREADY_IN_PROGRESS;
 import static com.shyashyashya.refit.global.exception.ErrorCode.STAR_ANALYSIS_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.STAR_ANALYSIS_PARSING_FAILED;
 
@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shyashyashya.refit.domain.interview.dto.StarAnalysisDto;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.StarAnalysis;
-import com.shyashyashya.refit.domain.qnaset.model.StarAnalysisGenerationStatus;
 import com.shyashyashya.refit.domain.qnaset.repository.StarAnalysisRepository;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.gemini.GeminiGenerateResponse;
@@ -31,7 +30,7 @@ public class StarAnalysisService {
     @Transactional
     public StarAnalysis createInProgressStarAnalysis(QnaSet qnaSet) {
         if (starAnalysisRepository.existsByQnaSet(qnaSet)) {
-            throw new CustomException(STAR_ANALYSIS_CREATION_ALREADY_IN_PROGRESS);
+            throw new CustomException(STAR_ANALYSIS_CREATION_FAILED_ALREADY_IN_PROGRESS);
         }
 
         return starAnalysisRepository.save(StarAnalysis.createInProgressStarAnalysis(qnaSet));
@@ -44,31 +43,32 @@ public class StarAnalysisService {
         log.info("[Gemini Response text]\n" + text);
         log.info("start parse Gemini response");
 
-        StarAnalysisGeminiResponse geminiResponse;
-        try {
-            geminiResponse = objectMapper.readValue(text, StarAnalysisGeminiResponse.class);
+        StarAnalysisGeminiResponse geminiResponse = parseStarAnalysisGeminiResponse(text);
+        StarAnalysis starAnalysis = starAnalysisRepository
+                .findById(starAnalysisId)
+                .orElseThrow(() -> new CustomException(STAR_ANALYSIS_NOT_FOUND));
 
-            StarAnalysis updatedStar = starAnalysisRepository
-                    .findById(starAnalysisId)
-                    .orElseThrow(() -> new CustomException(STAR_ANALYSIS_NOT_FOUND));
+        starAnalysis.completeStarAnalysis(
+                geminiResponse.getS(),
+                geminiResponse.getT(),
+                geminiResponse.getA(),
+                geminiResponse.getR(),
+                geminiResponse.getOverallSummary());
 
-            updatedStar.update(
-                    geminiResponse.getS(),
-                    geminiResponse.getT(),
-                    geminiResponse.getA(),
-                    geminiResponse.getR(),
-                    geminiResponse.getOverallSummary(),
-                    StarAnalysisGenerationStatus.COMPLETED);
-
-            return StarAnalysisDto.from(updatedStar);
-        } catch (JsonProcessingException e) {
-            throw new CustomException(STAR_ANALYSIS_PARSING_FAILED);
-        }
+        return StarAnalysisDto.from(starAnalysis);
     }
 
     @Transactional
     public void onRequestFail(Long starAnalysisId, Throwable e) {
         log.error("스타 분석 생성 요청이 실패하였습니다. {}", e.getCause(), e);
         starAnalysisRepository.deleteById(starAnalysisId);
+    }
+
+    private StarAnalysisGeminiResponse parseStarAnalysisGeminiResponse(String text) {
+        try {
+            return objectMapper.readValue(text, StarAnalysisGeminiResponse.class);
+        } catch (JsonProcessingException e) {
+            throw new CustomException(STAR_ANALYSIS_PARSING_FAILED);
+        }
     }
 }

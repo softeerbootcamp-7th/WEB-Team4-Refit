@@ -1,5 +1,7 @@
 package com.shyashyashya.refit.domain.qnaset.model;
 
+import com.shyashyashya.refit.global.exception.CustomException;
+import com.shyashyashya.refit.global.exception.ErrorCode;
 import com.shyashyashya.refit.global.model.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -89,19 +91,22 @@ public class StarAnalysis extends BaseEntity {
                 .build();
     }
 
-    public void update(
+    public void completeStarAnalysis(
             StarInclusionLevel s,
             StarInclusionLevel t,
             StarInclusionLevel a,
             StarInclusionLevel r,
-            String overallSummaryText,
-            StarAnalysisGenerationStatus status) {
+            String overallSummaryText) {
+        if (this.status != StarAnalysisGenerationStatus.IN_PROGRESS) {
+            throw new CustomException(ErrorCode.STAR_ANALYSIS_COMPLETE_FAILED);
+        }
+
         this.sInclusionLevel = s;
         this.tInclusionLevel = t;
         this.aInclusionLevel = a;
         this.rInclusionLevel = r;
         this.overallSummaryText = overallSummaryText;
-        this.status = status;
+        this.status = StarAnalysisGenerationStatus.COMPLETED;
     }
 
     @Builder(access = AccessLevel.PRIVATE)
