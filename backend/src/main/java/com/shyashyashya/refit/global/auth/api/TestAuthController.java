@@ -95,7 +95,7 @@ public class TestAuthController {
                 jwtUtil.getValidatedJwtToken(refreshToken).getExpiration();
         refreshTokenRepository.save(RefreshToken.create(refreshToken, email, refreshTokenExpiration));
 
-        var response = TestPublishTokenResponse.of(userId != null, accessToken, refreshToken);
+        var response = TestPublishTokenResponse.of(userId == null, accessToken, refreshToken);
         var body = ApiResponse.success(COMMON200, response);
         return ResponseEntity.status(HttpStatus.FOUND)
                 .header(HttpHeaders.LOCATION, clientOriginType.getClientOriginUrl() + UrlConstant.LOGIN_REDIRECT_PATH)
