@@ -5,7 +5,6 @@ import static com.shyashyashya.refit.domain.qnaset.model.QStarAnalysis.starAnaly
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.shyashyashya.refit.domain.qnaset.model.QStarAnalysis;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.StarInclusionLevel;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetCustomRepository;
@@ -34,14 +33,14 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
         BooleanExpression[] searchConditions = {
             qnaSet.interview.user.eq(user),
             containsKeyword(keyword),
-            containsStarAnalysis(starAnalysis, hasStarAnalysis),
-            containsStarInclusionLevels(
-                    starAnalysis, sInclusionLevels, tInclusionLevels, aInclusionLevels, rInclusionLevels)
+            containsStarAnalysis(hasStarAnalysis),
+            containsStarInclusionLevels(sInclusionLevels, tInclusionLevels, aInclusionLevels, rInclusionLevels)
         };
 
         List<QnaSet> contents = queryFactory
                 .selectFrom(qnaSet)
                 .leftJoin(starAnalysis)
+                .fetchJoin()
                 .on(starAnalysis.qnaSet.eq(qnaSet))
                 .where(searchConditions)
                 .offset(pageable.getOffset())
@@ -62,7 +61,7 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
         return qnaSet.questionText.contains(keyword);
     }
 
-    private BooleanExpression containsStarAnalysis(QStarAnalysis starAnalysis, Boolean hasStarAnalysis) {
+    private BooleanExpression containsStarAnalysis(Boolean hasStarAnalysis) {
         if (hasStarAnalysis == null) {
             return null;
         }
@@ -73,7 +72,6 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
     }
 
     private BooleanExpression containsStarInclusionLevels(
-            QStarAnalysis s,
             List<StarInclusionLevel> sLevels,
             List<StarInclusionLevel> tLevels,
             List<StarInclusionLevel> aLevels,
@@ -82,22 +80,25 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
         BooleanExpression condition = null;
 
         if (sLevels != null && !sLevels.isEmpty()) {
-            condition = s.sInclusionLevel.in(sLevels);
+            condition = starAnalysis.sInclusionLevel.in(sLevels);
         }
 
         if (tLevels != null && !tLevels.isEmpty()) {
-            condition =
-                    condition == null ? s.tInclusionLevel.in(tLevels) : condition.and(s.tInclusionLevel.in(tLevels));
+            condition = condition == null
+                    ? starAnalysis.tInclusionLevel.in(tLevels)
+                    : condition.and(starAnalysis.tInclusionLevel.in(tLevels));
         }
 
         if (aLevels != null && !aLevels.isEmpty()) {
-            condition =
-                    condition == null ? s.aInclusionLevel.in(aLevels) : condition.and(s.aInclusionLevel.in(aLevels));
+            condition = condition == null
+                    ? starAnalysis.aInclusionLevel.in(aLevels)
+                    : condition.and(starAnalysis.aInclusionLevel.in(aLevels));
         }
 
         if (rLevels != null && !rLevels.isEmpty()) {
-            condition =
-                    condition == null ? s.rInclusionLevel.in(rLevels) : condition.and(s.rInclusionLevel.in(rLevels));
+            condition = condition == null
+                    ? starAnalysis.rInclusionLevel.in(rLevels)
+                    : condition.and(starAnalysis.rInclusionLevel.in(rLevels));
         }
 
         return starAnalysis.isNull().or(condition);
