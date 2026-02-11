@@ -22,23 +22,22 @@ public class AuthService {
     public TokenReissueResultDto reissue(@Nullable String encodedAccessJwt, @Nullable String encodedRefreshJwt) {
 
         // RT가 없거나, 서명이 불일치 하거나, 만료되었으면 재로그인 필요
-        jwtValidator.validateEncodedRefreshJwtNotBlank(encodedRefreshJwt);
         DecodedJwt refreshToken = jwtDecoder.decodeRefreshJwt(encodedRefreshJwt);
         jwtValidator.validateRefreshJwtNotExpired(refreshToken);
 
         String email = jwtDecoder.getEmail(refreshToken);
-        Long userId = jwtDecoder.getUserId(refreshToken).orElse(null);
+        Long userId = jwtDecoder.getUserId(refreshToken);
 
         try {
-            // RT, AT 모두 유효하면 재발급 불필요
-            jwtValidator.validateEncodedAccessJwtNotBlank(encodedAccessJwt);
+            // RT는 유효하나, AT가 없거나 만료되면 catch로 빠져서 reissue 수행: RTR 후 AT, RT 모두 재발급
             DecodedJwt accessToken = jwtDecoder.decodeAccessJwt(encodedAccessJwt);
             jwtValidator.validateAccessJwtNotExpired(accessToken);
+
+            // RT, AT 모두 유효하면 재발급 불필요
             return TokenReissueResultDto.createReissueNotProcessed(userId, encodedAccessJwt, encodedRefreshJwt);
 
         } catch (CustomException e) {
             if (e.getErrorCode() == TOKEN_REISSUE_REQUIRED) {
-                // RT가 유효하고 AT가 없거나 만료되었으므로 reissue 수행: RTR 후 AT, RT 모두 재발급
                 return jwtService.rotateRefreshToken(encodedRefreshJwt, email, userId);
             }
 
