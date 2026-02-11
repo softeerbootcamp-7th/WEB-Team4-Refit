@@ -43,7 +43,9 @@ public enum ErrorCode {
     STAR_ANALYSIS_CREATION_FAILED_ALREADY_IN_PROGRESS(CONFLICT, "이미 스타 분석 생성 요청이 진행 중입니다."),
     STAR_ANALYSIS_PARSING_FAILED(INTERNAL_SERVER_ERROR, "스타 분석을 파싱 중 오류가 발생하였습니다."),
     STAR_ANALYSIS_CREATE_FAILED(INTERNAL_SERVER_ERROR, "스타 분석 생성 중 오류가 발생하였습니다."),
-    STAR_ANALYSIS_COMPLETE_FAILED(INTERNAL_SERVER_ERROR, "스타 분석 업데이트 중 오류가 발생하였습니다.");
+    STAR_ANALYSIS_COMPLETE_FAILED(INTERNAL_SERVER_ERROR, "스타 분석 업데이트 중 오류가 발생하였습니다."),
+    STAR_ANALYSIS_DELETE_NOT_ALLOWED_STATUS(BAD_REQUEST, "진행 중(IN_PROGRESS)인 스타 분석만 삭제할 수 있습니다."),
+    ;
 
     private final HttpStatus httpStatus;
     private final String message;
