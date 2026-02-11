@@ -1,10 +1,10 @@
+import { CloseIcon } from '@/designs/assets'
 import {
   FILTER_COLORS,
   MAX_VISIBLE_BADGES,
   type FilterBadge,
   type FilterType,
 } from '@/features/dashboard/trend-questions/constants/constants'
-import { CloseIcon } from '@/shared/assets'
 
 type FilterBadgesProps = {
   badges: FilterBadge[]

@@ -9,6 +9,9 @@ import org.springframework.data.domain.Pageable;
 
 public interface QnaSetCustomRepository {
 
+    Page<QnaSet> searchByIndustriesAndJobCategories(
+            List<Long> industryIds, List<Long> jobCategoryIds, Pageable pageable);
+
     Page<QnaSet> searchMyQnaSet(
             User user,
             String keyword,

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { SmallLogoIcon } from '@/shared/assets'
+import { SmallLogoIcon } from '@/designs/assets'
 
 export interface DifficultQuestionCardData {
   id: number

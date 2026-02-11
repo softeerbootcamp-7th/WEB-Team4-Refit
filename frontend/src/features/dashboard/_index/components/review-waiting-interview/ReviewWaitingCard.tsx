@@ -1,6 +1,6 @@
-import { SmallLogoIcon } from '@/shared/assets'
-import { Badge } from '@/shared/components'
-import Button from '@/shared/components/button'
+import { SmallLogoIcon } from '@/designs/assets'
+import { Badge } from '@/designs/components'
+import Button from '@/designs/components/button'
 
 export interface ReviewWaitingData {
   id: number

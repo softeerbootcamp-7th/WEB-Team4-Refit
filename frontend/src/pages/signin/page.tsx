@@ -1,10 +1,11 @@
-import { Link, useNavigate } from 'react-router'
-import { GoogleIcon, Logo } from '@/shared/assets'
-import { Button } from '@/shared/components'
-import { ROUTES } from '@/shared/constants/routes'
+import { Link } from 'react-router'
+import { GoogleIcon, Logo } from '@/designs/assets'
+import { Button } from '@/designs/components'
+import { useGoogleOAuthLogin } from '@/features/signin/_index/hooks'
+import { ROUTES } from '@/routes/routes'
 
 export default function SigninPage() {
-  const navigate = useNavigate()
+  const { handleGoogleLogin, isFetching } = useGoogleOAuthLogin()
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100 px-4 py-6 sm:px-6 sm:py-8">
@@ -27,10 +28,11 @@ export default function SigninPage() {
             size="lg"
             radius="default"
             className="bg-gray-white flex w-full items-center justify-center gap-2.5 border border-gray-200 text-gray-900"
-            onClick={() => navigate(ROUTES.SIGNUP)}
+            onClick={handleGoogleLogin}
+            disabled={isFetching}
           >
             <GoogleIcon className="h-5 w-5 shrink-0" aria-hidden />
-            <span className="body-l-medium">Google 계정으로 로그인</span>
+            <span className="body-l-medium">{isFetching ? '로그인 중...' : 'Google 계정으로 로그인'}</span>
           </Button>
         </div>
       </div>

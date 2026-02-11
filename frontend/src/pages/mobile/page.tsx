@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
-import { SpeakingChickIcon } from '@/shared/assets'
-import { Button } from '@/shared/components'
-import { ROUTES } from '@/shared/constants/routes'
+import { SpeakingChickIcon } from '@/designs/assets'
+import { Button } from '@/designs/components'
+import { ROUTES } from '@/routes/routes'
 
 function fadeUpClass(isVisible: boolean, delay: string) {
   const motion = isVisible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'
@@ -20,7 +20,7 @@ export default function MobilePage() {
   }, [])
 
   return (
-    <div className="from-orange-050 via-gray-white flex flex-1 flex-col items-center justify-center bg-gradient-to-b to-gray-100 px-6">
+    <div className="from-orange-050 via-gray-white flex flex-1 flex-col items-center justify-center bg-linear-to-b to-gray-100 px-6">
       <div className="mx-auto flex w-full max-w-md flex-col items-center">
         <div className={`mb-8 flex justify-center ${fadeUpClass(isVisible, 'delay-0')}`} aria-hidden>
           <SpeakingChickIcon className="h-48 w-48 max-w-[240px]" />

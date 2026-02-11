@@ -1,11 +1,11 @@
 import { useState } from 'react'
+import { MOCK_INTERVIEW_DETAIL } from '@/constants/example'
+import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
+import { useSectionScroll } from '@/features/_common/hooks/useSectionScroll'
 import { DetailHeader } from '@/features/retro/details/components/contents/DetailHeader'
 import { RetroDetailSection } from '@/features/retro/details/components/contents/RetroDetailSection'
 import { DetailMinimizedSidebar } from '@/features/retro/details/components/sidebar/DetailMinimizedSidebar'
 import { DetailSidebar } from '@/features/retro/details/components/sidebar/DetailSidebar'
-import { MOCK_INTERVIEW_DETAIL } from '@/features/retro/details/example'
-import { INTERVIEW_TYPE_LABEL } from '@/shared/constants/interviews'
-import { useSectionScroll } from '@/shared/hooks/useSectionScroll'
 
 export default function RetroDetailPage() {
   const interviewDetail = MOCK_INTERVIEW_DETAIL

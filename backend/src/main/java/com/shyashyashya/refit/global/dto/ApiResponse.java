@@ -17,7 +17,7 @@ public record ApiResponse<T>(boolean isSuccess, String code, String message, T r
         return new ApiResponse<>(false, errorCode.name(), errorCode.getMessage(), null);
     }
 
-    public static ApiResponse<Void> unknownException(Exception e) {
+    public static ApiResponse<Void> exception(Exception e) {
         return new ApiResponse<>(false, e.getClass().getName(), e.getMessage(), null);
     }
 }

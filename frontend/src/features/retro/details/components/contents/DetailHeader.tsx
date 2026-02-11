@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router'
-import { ArrowLeftIcon, FileIcon } from '@/shared/assets'
-import { Button } from '@/shared/components'
+import { ArrowLeftIcon, FileIcon } from '@/designs/assets'
+import { Button } from '@/designs/components'
 
 type DetailHeaderProps = {
   title: string

@@ -1,5 +1,7 @@
-import { NoteIcon } from '@/shared/assets'
-import { Border, ListItemSmall, MinimizedSidebarLayout } from '@/shared/components'
+import { NoteIcon } from '@/designs/assets'
+import { Border, MinimizedSidebarLayout } from '@/designs/components'
+import { MinimizedQuestionList } from '@/features/_common/components/sidebar'
+import type { IdLabelType } from '@/types/global'
 import type { QnaSetType } from '@/types/interview'
 
 type DetailMinimizedSidebarProps = {
@@ -9,25 +11,19 @@ type DetailMinimizedSidebarProps = {
 }
 
 export function DetailMinimizedSidebar({ qnaSets, activeIndex, onItemClick }: DetailMinimizedSidebarProps) {
+  const items: IdLabelType[] = [
+    ...qnaSets.map(({ qnaSetId }, index) => ({
+      id: qnaSetId,
+      label: `${index + 1}번`,
+    })),
+    { id: -1, label: 'KPT' },
+  ]
+
   return (
     <MinimizedSidebarLayout>
       <NoteIcon width="24" height="24" className="shrink-0" />
       <Border />
-      <div className="flex w-full flex-col items-center gap-0.5">
-        {qnaSets.map(({ qnaSetId }, index) => (
-          <ListItemSmall
-            key={qnaSetId}
-            content={`${index + 1}번`}
-            active={activeIndex === index}
-            onClick={() => onItemClick(index)}
-          />
-        ))}
-        <ListItemSmall
-          content="KPT"
-          active={activeIndex === qnaSets.length}
-          onClick={() => onItemClick(qnaSets.length)}
-        />
-      </div>
+      <MinimizedQuestionList items={items} activeIndex={activeIndex} onItemClick={onItemClick} />
     </MinimizedSidebarLayout>
   )
 }
