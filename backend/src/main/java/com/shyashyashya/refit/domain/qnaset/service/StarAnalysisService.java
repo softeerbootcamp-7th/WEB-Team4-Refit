@@ -14,7 +14,7 @@ import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.StarAnalysis;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.StarAnalysisRepository;
-import com.shyashyashya.refit.domain.qnaset.service.temp.StarAnalysisGeminiResponse;
+import com.shyashyashya.refit.global.gemini.StarAnalysisGeminiResponse;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.gemini.GeminiGenerateResponse;

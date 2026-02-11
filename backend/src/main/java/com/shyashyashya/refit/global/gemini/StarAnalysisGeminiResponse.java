@@ -1,4 +1,4 @@
-package com.shyashyashya.refit.domain.qnaset.service.temp;
+package com.shyashyashya.refit.global.gemini;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.shyashyashya.refit.domain.qnaset.model.StarInclusionLevel;
