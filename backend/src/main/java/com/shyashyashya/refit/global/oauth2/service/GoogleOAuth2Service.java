@@ -15,7 +15,7 @@ import com.shyashyashya.refit.global.oauth2.dto.OAuth2LoginUrlResponse;
 import com.shyashyashya.refit.global.oauth2.dto.OAuth2ResultDto;
 import com.shyashyashya.refit.global.property.OAuth2Property;
 import com.shyashyashya.refit.global.util.ActiveProfileProperty;
-import com.shyashyashya.refit.global.util.RequestHostUrlUtil;
+import com.shyashyashya.refit.global.util.ClientOriginType;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,11 +40,10 @@ public class GoogleOAuth2Service implements OAuth2Service {
     private final OAuth2Property oauth2Property;
     private final ActiveProfileProperty activeProfileProperty;
     private final JwtUtil jwtUtil;
-    private final RequestHostUrlUtil requestHostUrlUtil;
     private final RestClient restClient;
 
     @Override
-    public OAuth2LoginUrlResponse buildOAuth2LoginUrl(String env) {
+    public OAuth2LoginUrlResponse buildOAuth2LoginUrl(String origin) {
         String googleClientId = oauth2Property.google().clientId();
         String scope = String.join(" ", oauth2Property.google().scope());
         String responseType = "code";
@@ -54,7 +53,7 @@ public class GoogleOAuth2Service implements OAuth2Service {
                 .queryParam("redirect_uri", getRedirectUri())
                 .queryParam("response_type", responseType)
                 .queryParam("scope", scope)
-                .queryParam("state", jwtUtil.createOAuth2StateToken(requestHostUrlUtil.getRequestHostUrl(env)))
+                .queryParam("state", jwtUtil.createOAuth2StateToken(ClientOriginType.getClientOriginUrl(origin)))
                 .toUriString();
         return OAuth2LoginUrlResponse.from(loginUrlResponseUrl);
     }

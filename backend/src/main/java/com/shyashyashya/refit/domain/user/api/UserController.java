@@ -9,7 +9,7 @@ import com.shyashyashya.refit.domain.user.service.UserService;
 import com.shyashyashya.refit.global.auth.dto.TokenPairDto;
 import com.shyashyashya.refit.global.auth.service.CookieUtil;
 import com.shyashyashya.refit.global.dto.ApiResponse;
-import com.shyashyashya.refit.global.util.RequestHostUrlUtil;
+import com.shyashyashya.refit.global.util.ClientOriginType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -32,7 +32,6 @@ public class UserController {
 
     private final UserService userService;
     private final CookieUtil cookieUtil;
-    private final RequestHostUrlUtil requestHostUrlUtil;
 
     @Operation(
             summary = "새롭게 회원가입 합니다.",
@@ -47,7 +46,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.FOUND)
                 .header(HttpHeaders.SET_COOKIE, accessTokenCookie)
                 .header(HttpHeaders.SET_COOKIE, refreshTokenCookie)
-                .header(HttpHeaders.LOCATION, requestHostUrlUtil.getRequestHostUrl(userSignUpRequest.env()))
+                .header(HttpHeaders.LOCATION, ClientOriginType.getClientOriginUrl(userSignUpRequest.origin()))
                 .build();
     }
 

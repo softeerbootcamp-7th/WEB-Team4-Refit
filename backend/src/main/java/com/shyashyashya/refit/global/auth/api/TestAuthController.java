@@ -14,7 +14,7 @@ import com.shyashyashya.refit.global.constant.AuthConstant;
 import com.shyashyashya.refit.global.constant.UrlConstant;
 import com.shyashyashya.refit.global.dto.ApiResponse;
 import com.shyashyashya.refit.global.exception.CustomException;
-import com.shyashyashya.refit.global.util.RequestHostUrlUtil;
+import com.shyashyashya.refit.global.util.ClientOriginType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Email;
@@ -40,7 +40,6 @@ public class TestAuthController {
     private final RefreshTokenRepository refreshTokenRepository;
     private final CookieUtil cookieUtil;
     private final JwtUtil jwtUtil;
-    private final RequestHostUrlUtil requestHostUrlUtil;
 
     @Operation(summary = "(테스트용) 게스트 회원 토큰을 발급합니다.", description = "발급된 토큰은 요청 주소에 쿠키로 세팅됩니다.")
     @GetMapping("/guest")
@@ -61,7 +60,7 @@ public class TestAuthController {
     @DeleteMapping("/cookies")
     public ResponseEntity<ApiResponse<Void>> deleteTokenCookies(
             @CookieValue(value = AuthConstant.REFRESH_TOKEN, required = false) String refreshToken,
-            @RequestParam(required = false) String env) {
+            @RequestParam(required = false) String origin) {
         String deleteAccessTokenCookie = cookieUtil.deleteCookie(AuthConstant.ACCESS_TOKEN);
         String deleteRefreshTokenCookie = cookieUtil.deleteCookie(AuthConstant.REFRESH_TOKEN);
 
@@ -73,13 +72,13 @@ public class TestAuthController {
         return ResponseEntity.status(HttpStatus.FOUND)
                 .header(
                         HttpHeaders.LOCATION,
-                        requestHostUrlUtil.getRequestHostUrl(env) + UrlConstant.LOGIN_REDIRECT_PATH)
+                        ClientOriginType.getClientOriginUrl(origin) + UrlConstant.LOGIN_REDIRECT_PATH)
                 .header(HttpHeaders.SET_COOKIE, deleteAccessTokenCookie)
                 .header(HttpHeaders.SET_COOKIE, deleteRefreshTokenCookie)
                 .body(response);
     }
 
-    private ResponseEntity<ApiResponse<TokenPairDto>> getTokenResponse(String email, Long userId, String env) {
+    private ResponseEntity<ApiResponse<TokenPairDto>> getTokenResponse(String email, Long userId, String origin) {
         String accessToken = jwtUtil.createAccessToken(email, userId);
         String refreshToken = jwtUtil.createRefreshToken(email, userId);
 
@@ -93,7 +92,7 @@ public class TestAuthController {
         return ResponseEntity.status(HttpStatus.FOUND)
                 .header(
                         HttpHeaders.LOCATION,
-                        requestHostUrlUtil.getRequestHostUrl(env) + UrlConstant.LOGIN_REDIRECT_PATH)
+                        ClientOriginType.getClientOriginUrl(origin) + UrlConstant.LOGIN_REDIRECT_PATH)
                 .header(HttpHeaders.SET_COOKIE, accessTokenCookie)
                 .header(HttpHeaders.SET_COOKIE, refreshTokenCookie)
                 .body(body);
