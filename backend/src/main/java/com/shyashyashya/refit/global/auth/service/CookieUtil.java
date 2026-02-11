@@ -3,7 +3,6 @@ package com.shyashyashya.refit.global.auth.service;
 import com.shyashyashya.refit.global.constant.AuthConstant;
 import com.shyashyashya.refit.global.constant.UrlConstant;
 import com.shyashyashya.refit.global.property.AuthJwtProperty;
-import com.shyashyashya.refit.global.property.AuthProperty;
 import com.shyashyashya.refit.global.util.ClientOriginType;
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CookieUtil {
 
-    private final AuthProperty authProperty;
     private final AuthJwtProperty authJwtProperty;
 
     public String createAccessTokenCookie(String accessToken, ClientOriginType originType) {

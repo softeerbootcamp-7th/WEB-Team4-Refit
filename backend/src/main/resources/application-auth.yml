@@ -1,6 +1,5 @@
 spring:
   auth:
-    using-https: ${AUTH_USING_HTTPS}
     url:
       sign-up: "/user/signup"
       whitelists:
