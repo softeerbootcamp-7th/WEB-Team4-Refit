@@ -28,21 +28,9 @@ public class JwtValidator {
         }
     }
 
-    public void validateEncodedAccessJwtNotBlank(String encodedAccessJwt) {
-        if (encodedAccessJwt == null || encodedAccessJwt.isBlank()) {
-            throw new CustomException(TOKEN_REISSUE_REQUIRED);
-        }
-    }
-
     public void validateAccessJwtNotExpired(DecodedJwt accessJwt) {
         if (accessJwt.isExpired()) {
             throw new CustomException(TOKEN_REISSUE_REQUIRED);
-        }
-    }
-
-    public void validateEncodedRefreshJwtNotBlank(String encodedRefreshJwt) {
-        if (encodedRefreshJwt == null || encodedRefreshJwt.isBlank()) {
-            throw new CustomException(LOGIN_REQUIRED);
         }
     }
 

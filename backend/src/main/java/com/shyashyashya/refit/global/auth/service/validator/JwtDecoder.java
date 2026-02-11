@@ -17,9 +17,8 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import jakarta.validation.constraints.NotNull;
+import jakarta.annotation.Nullable;
 import java.security.Key;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -36,15 +35,15 @@ public class JwtDecoder {
         this.jwtValidator = jwtValidator;
     }
 
-    public DecodedJwt decodeAccessJwt(@NotNull String encodedAccessJwt) {
+    public DecodedJwt decodeAccessJwt(String encodedAccessJwt) {
         return decode(encodedAccessJwt, DecodedJwtType.ACCESS_TOKEN, TOKEN_REISSUE_REQUIRED);
     }
 
-    public DecodedJwt decodeRefreshJwt(@NotNull String encodedRefreshJwt) {
-        return decode(encodedRefreshJwt, DecodedJwtType.ACCESS_TOKEN, LOGIN_REQUIRED);
+    public DecodedJwt decodeRefreshJwt(String encodedRefreshJwt) {
+        return decode(encodedRefreshJwt, DecodedJwtType.REFRESH_TOKEN, LOGIN_REQUIRED);
     }
 
-    public DecodedJwt decodeOAuth2StateJwt(@NotNull String encodedOAuth2StateJwt) {
+    public DecodedJwt decodeOAuth2StateJwt(String encodedOAuth2StateJwt) {
         return decode(encodedOAuth2StateJwt, DecodedJwtType.OAUTH2_STATE_TOKEN, OAUTH2_STATE_TOKEN_EXPIRED);
     }
 
@@ -58,13 +57,16 @@ public class JwtDecoder {
         return decodedJwt.claims().getSubject();
     }
 
-    public Optional<Long> getUserId(DecodedJwt decodedJwt) {
+    @Nullable public Long getUserId(DecodedJwt decodedJwt) {
         jwtValidator.validateJwtTypeEqualsAccessOrRefresh(decodedJwt);
-        return Optional.ofNullable(decodedJwt.claims().get(AuthConstant.CLAIM_KEY_USER_ID, Long.class));
+        return decodedJwt.claims().get(AuthConstant.CLAIM_KEY_USER_ID, Long.class);
     }
 
-    private DecodedJwt decode(@NotNull String encodedJwt, DecodedJwtType expectedType, ErrorCode toThrowErrorCode) {
+    private DecodedJwt decode(String encodedJwt, DecodedJwtType expectedType, ErrorCode toThrowErrorCode) {
         try {
+            if (encodedJwt == null || encodedJwt.isBlank()) {
+                throw new CustomException(toThrowErrorCode);
+            }
             Claims claims = jwtParser.parseClaimsJws(encodedJwt).getBody();
             DecodedJwt decodedJwt = DecodedJwt.createUnexpired(claims);
             jwtValidator.validateDecodedJwtTypeEquals(decodedJwt, expectedType);
