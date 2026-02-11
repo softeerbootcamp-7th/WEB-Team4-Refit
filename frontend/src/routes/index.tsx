@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router'
 import { DashboardLayout, MobileLayout, RootLayout } from '@/layouts'
 import {
+  AuthCallbackPage,
   DashboardPage,
   RecordConfirmPage,
   RecordLinkPage,
@@ -30,6 +31,7 @@ const router = createBrowserRouter([
   { path: ROUTES.HOME, Component: () => <Navigate to={ROUTES.DASHBOARD} replace /> },
   { path: ROUTES.SIGNUP, Component: SignupPage },
   { path: ROUTES.SIGNIN, Component: SigninPage },
+  { path: ROUTES.AUTH_CALLBACK, Component: AuthCallbackPage },
   {
     path: ROUTES.MOBILE,
     Component: MobileLayout,

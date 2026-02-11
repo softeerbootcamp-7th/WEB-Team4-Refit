@@ -20,7 +20,7 @@ export default function MobilePage() {
   }, [])
 
   return (
-    <div className="from-orange-050 via-gray-white flex flex-1 flex-col items-center justify-center bg-gradient-to-b to-gray-100 px-6">
+    <div className="from-orange-050 via-gray-white flex flex-1 flex-col items-center justify-center bg-linear-to-b to-gray-100 px-6">
       <div className="mx-auto flex w-full max-w-md flex-col items-center">
         <div className={`mb-8 flex justify-center ${fadeUpClass(isVisible, 'delay-0')}`} aria-hidden>
           <SpeakingChickIcon className="h-48 w-48 max-w-[240px]" />

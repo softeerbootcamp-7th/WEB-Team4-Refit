@@ -1,22 +1,11 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router'
+import { useSignupForm } from '@/features/signup/_index/hooks'
 import { Logo } from '@/shared/assets'
 import { Button, Input, NativeCombobox } from '@/shared/components'
-import { ROUTES } from '@/shared/constants/routes'
 import { INDUSTRY_OPTIONS, JOB_OPTIONS } from '@/shared/constants/signup'
 
 export default function SignupPage() {
-  const navigate = useNavigate()
-  const [nickname, setNickname] = useState('')
-  const [industry, setIndustry] = useState('')
-  const [job, setJob] = useState('')
-
-  const isFormValid = nickname.length > 0 && nickname.length <= 5 && industry !== '' && job !== ''
-
-  const handleSubmit = () => {
-    if (!isFormValid) return
-    navigate(ROUTES.DASHBOARD)
-  }
+  const { nickname, setNickname, industry, setIndustry, job, setJob, isFormValid, isPending, handleSubmit } =
+    useSignupForm()
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100 px-4 py-8 sm:px-6 sm:py-12">
@@ -61,7 +50,8 @@ export default function SignupPage() {
             variant="fill-orange-500"
             size="lg"
             className="mt-8 w-full"
-            disabled={!isFormValid}
+            disabled={!isFormValid || isPending}
+            isLoading={isPending}
             onClick={handleSubmit}
           >
             시작하기
