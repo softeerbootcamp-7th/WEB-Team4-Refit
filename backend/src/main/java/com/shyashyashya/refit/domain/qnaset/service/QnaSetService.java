@@ -47,8 +47,8 @@ public class QnaSetService {
     @Transactional(readOnly = true)
     public Page<FrequentQnaSetResponse> getFrequentQuestions(
             List<Long> industryIds, List<Long> jobCategoryIds, Pageable pageable) {
-        industryIds = industryIds.stream().distinct().toList();
-        jobCategoryIds = jobCategoryIds.stream().distinct().toList();
+        industryIds = removeDuplicatedIds(industryIds);
+        jobCategoryIds = removeDuplicatedIds(jobCategoryIds);
 
         industryValidator.validateIndustriesAllExist(industryIds);
         jobCategoryValidator.validateJobCategoriesAllExist(jobCategoryIds);
@@ -161,5 +161,12 @@ public class QnaSetService {
     private void deleteAllHighlightingsAndRects(QnaSet qnaSet) {
         pdfHighlightingRectRepository.deleteAllByQnaSet(qnaSet);
         pdfHighlightingRepository.deleteAllByQnaSet(qnaSet);
+    }
+
+    private List<Long> removeDuplicatedIds(List<Long> list) {
+        if (list == null) {
+            return null;
+        }
+        return list.stream().distinct().toList();
     }
 }

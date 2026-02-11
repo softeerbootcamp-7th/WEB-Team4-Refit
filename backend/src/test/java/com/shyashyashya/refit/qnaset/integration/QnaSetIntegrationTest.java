@@ -44,8 +44,8 @@ public class QnaSetIntegrationTest extends IntegrationTest {
         private QnaSet qnaSet2;
         private QnaSet qnaSet3;
         private QnaSet qnaSet4;
-        private QnaSet qnaSet5; // New
-        private QnaSet qnaSet6; // New
+        private QnaSet qnaSet5;
+        private QnaSet qnaSet6;
 
         @BeforeEach
         void setUp() {
@@ -167,6 +167,26 @@ public class QnaSetIntegrationTest extends IntegrationTest {
         }
 
         @Test
+        void 산업군_ID가_중복되어도_자주_묻는_질문_조회에_성공한다() {
+            // when & then
+            given(spec)
+                    .queryParam("industryIds", 1L, 1L, 1L)
+            .when()
+                    .get(path)
+            .then()
+                    .assertThat().statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result.content", hasSize(3))
+                    .body("result.totalElements", equalTo(3))
+                    .body("result.content*.question", containsInAnyOrder(
+                            qnaSet1.getQuestionText(),
+                            qnaSet2.getQuestionText(),
+                            qnaSet5.getQuestionText()
+                    ));
+        }
+
+        @Test
         void 직무만_지정했을_때_자주_묻는_질문_조회에_성공한다() {
             // when & then
             given(spec)
@@ -174,6 +194,26 @@ public class QnaSetIntegrationTest extends IntegrationTest {
             .when()
                     .get(path)
             .then()
+                    .assertThat().statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result.content", hasSize(3))
+                    .body("result.totalElements", equalTo(3))
+                    .body("result.content*.question", containsInAnyOrder(
+                            qnaSet1.getQuestionText(),
+                            qnaSet2.getQuestionText(),
+                            qnaSet6.getQuestionText())
+                    );
+        }
+
+        @Test
+        void 직무_ID가_중복되어도_자주_묻는_질문_조회에_성공한다() {
+            // when & then
+            given(spec)
+                    .queryParam("jobCategoryIds", 1L, 1L, 1L)
+                    .when()
+                    .get(path)
+                    .then()
                     .assertThat().statusCode(200)
                     .body("code", equalTo(COMMON200.name()))
                     .body("message", equalTo(COMMON200.getMessage()))
