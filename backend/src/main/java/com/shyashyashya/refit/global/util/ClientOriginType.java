@@ -1,19 +1,16 @@
 package com.shyashyashya.refit.global.util;
 
 import com.shyashyashya.refit.global.constant.UrlConstant;
-
 import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
 public enum ClientOriginType {
-
     LOCAL_SERVER("LOCAL_SERVER", UrlConstant.LOCAL_SERVER_URL),
     LOCAL_CLIENT("LOCAL", UrlConstant.LOCAL_CLIENT_URL),
     DEV_SERVER("DEV_SERVER", UrlConstant.DEV_SERVER_URL),
@@ -23,9 +20,8 @@ public enum ClientOriginType {
     private final String origin;
     private final String clientOriginUrl;
 
-    private static final Map<String, ClientOriginType> ORIGIN_MAP =
-            Arrays.stream(values())
-                    .collect(Collectors.toUnmodifiableMap(ClientOriginType::getOrigin, Function.identity()));
+    private static final Map<String, ClientOriginType> ORIGIN_MAP = Arrays.stream(values())
+            .collect(Collectors.toUnmodifiableMap(ClientOriginType::getOrigin, Function.identity()));
 
     public static ClientOriginType fromOriginString(String origin) {
         if (origin == null || origin.isBlank()) {
@@ -39,8 +35,7 @@ public enum ClientOriginType {
 
         String allowedValues = String.join(", ", ORIGIN_MAP.keySet());
         throw new IllegalArgumentException(
-                "Invalid origin value: " + origin + ". Allowed values are: " + allowedValues
-        );
+                "Invalid origin value: " + origin + ". Allowed values are: " + allowedValues);
     }
 
     public static String getClientOriginUrl(String origin) {

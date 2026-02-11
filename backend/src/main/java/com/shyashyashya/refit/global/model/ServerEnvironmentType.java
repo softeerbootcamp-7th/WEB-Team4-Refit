@@ -1,11 +1,10 @@
 package com.shyashyashya.refit.global.model;
 
 import com.shyashyashya.refit.global.constant.UrlConstant;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
@@ -21,8 +20,9 @@ public enum ServerEnvironmentType {
         try {
             return ServerEnvironmentType.valueOf(environmentType.toUpperCase());
         } catch (IllegalArgumentException e) {
-            String availableValues =
-                    Arrays.stream(ServerEnvironmentType.values()).map(Enum::name).collect(Collectors.joining(", "));
+            String availableValues = Arrays.stream(ServerEnvironmentType.values())
+                    .map(Enum::name)
+                    .collect(Collectors.joining(", "));
             throw new IllegalArgumentException("Invalid environment type: " + environmentType
                     + ". Available values are: [" + availableValues + "]");
         }
