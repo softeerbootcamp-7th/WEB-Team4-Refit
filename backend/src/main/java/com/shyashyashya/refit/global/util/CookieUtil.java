@@ -1,9 +1,9 @@
-package com.shyashyashya.refit.global.auth.service;
+package com.shyashyashya.refit.global.util;
 
 import com.shyashyashya.refit.global.constant.AuthConstant;
 import com.shyashyashya.refit.global.constant.UrlConstant;
+import com.shyashyashya.refit.global.model.ClientOriginType;
 import com.shyashyashya.refit.global.property.AuthJwtProperty;
-import com.shyashyashya.refit.global.util.ClientOriginType;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.Duration;

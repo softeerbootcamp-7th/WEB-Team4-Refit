@@ -2,9 +2,9 @@ package com.shyashyashya.refit.global.auth.service;
 
 import com.shyashyashya.refit.global.auth.model.DecodedJwtType;
 import com.shyashyashya.refit.global.constant.AuthConstant;
+import com.shyashyashya.refit.global.model.ClientOriginType;
 import com.shyashyashya.refit.global.property.AuthJwtProperty;
 import com.shyashyashya.refit.global.property.OAuth2Property;
-import com.shyashyashya.refit.global.util.ClientOriginType;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;

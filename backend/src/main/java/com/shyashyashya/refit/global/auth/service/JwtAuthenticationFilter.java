@@ -3,11 +3,11 @@ package com.shyashyashya.refit.global.auth.service;
 import static com.shyashyashya.refit.global.exception.ErrorCode.USER_SIGNUP_REQUIRED;
 
 import com.shyashyashya.refit.global.auth.model.DecodedJwt;
-import com.shyashyashya.refit.global.auth.service.validator.JwtDecoder;
 import com.shyashyashya.refit.global.auth.service.validator.JwtValidator;
 import com.shyashyashya.refit.global.constant.AuthConstant;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.property.AuthUrlProperty;
+import com.shyashyashya.refit.global.util.CookieUtil;
 import com.shyashyashya.refit.global.util.RequestUserContext;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;

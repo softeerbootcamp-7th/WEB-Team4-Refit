@@ -5,16 +5,16 @@ import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
-import com.shyashyashya.refit.global.auth.dto.TestPublishTokenResponse;
 import com.shyashyashya.refit.global.auth.dto.TokenPairDto;
+import com.shyashyashya.refit.global.auth.dto.response.TestPublishTokenResponse;
 import com.shyashyashya.refit.global.auth.repository.RefreshTokenRepository;
-import com.shyashyashya.refit.global.auth.service.CookieUtil;
 import com.shyashyashya.refit.global.auth.service.JwtService;
 import com.shyashyashya.refit.global.constant.AuthConstant;
 import com.shyashyashya.refit.global.dto.ApiResponse;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.oauth2.util.ClientOriginRedirectUriBuilder;
 import com.shyashyashya.refit.global.util.ClientOriginType;
+import com.shyashyashya.refit.global.util.CookieUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Email;

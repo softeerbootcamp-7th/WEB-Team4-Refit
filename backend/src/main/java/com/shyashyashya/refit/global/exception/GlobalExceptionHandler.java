@@ -2,9 +2,9 @@ package com.shyashyashya.refit.global.exception;
 
 import static com.shyashyashya.refit.global.exception.ErrorCode.LOGIN_REQUIRED;
 
-import com.shyashyashya.refit.global.auth.service.CookieUtil;
 import com.shyashyashya.refit.global.constant.AuthConstant;
 import com.shyashyashya.refit.global.dto.ApiResponse;
+import com.shyashyashya.refit.global.util.CookieUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;

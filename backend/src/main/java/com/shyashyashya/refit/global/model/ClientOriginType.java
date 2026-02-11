@@ -1,4 +1,4 @@
-package com.shyashyashya.refit.global.util;
+package com.shyashyashya.refit.global.model;
 
 import com.shyashyashya.refit.global.constant.UrlConstant;
 import java.util.Arrays;

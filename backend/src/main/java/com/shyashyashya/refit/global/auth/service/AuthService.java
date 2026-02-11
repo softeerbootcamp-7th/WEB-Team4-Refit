@@ -4,7 +4,6 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.TOKEN_REISSUE_RE
 
 import com.shyashyashya.refit.global.auth.dto.TokenReissueResultDto;
 import com.shyashyashya.refit.global.auth.model.DecodedJwt;
-import com.shyashyashya.refit.global.auth.service.validator.JwtDecoder;
 import com.shyashyashya.refit.global.auth.service.validator.JwtValidator;
 import com.shyashyashya.refit.global.exception.CustomException;
 import jakarta.annotation.Nullable;

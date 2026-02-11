@@ -1,5 +1,6 @@
-package com.shyashyashya.refit.global.auth.dto;
+package com.shyashyashya.refit.global.auth.dto.response;
 
+import com.shyashyashya.refit.global.auth.dto.TokenReissueResultDto;
 import lombok.Builder;
 
 @Builder(access = lombok.AccessLevel.PRIVATE)

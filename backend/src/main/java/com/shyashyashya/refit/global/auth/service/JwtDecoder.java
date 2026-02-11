@@ -1,4 +1,4 @@
-package com.shyashyashya.refit.global.auth.service.validator;
+package com.shyashyashya.refit.global.auth.service;
 
 import static com.shyashyashya.refit.global.exception.ErrorCode.LOGIN_REQUIRED;
 import static com.shyashyashya.refit.global.exception.ErrorCode.OAUTH2_STATE_TOKEN_EXPIRED;
@@ -6,11 +6,12 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.TOKEN_REISSUE_RE
 
 import com.shyashyashya.refit.global.auth.model.DecodedJwt;
 import com.shyashyashya.refit.global.auth.model.DecodedJwtType;
+import com.shyashyashya.refit.global.auth.service.validator.JwtValidator;
 import com.shyashyashya.refit.global.constant.AuthConstant;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.exception.ErrorCode;
+import com.shyashyashya.refit.global.model.ClientOriginType;
 import com.shyashyashya.refit.global.property.AuthJwtProperty;
-import com.shyashyashya.refit.global.util.ClientOriginType;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
