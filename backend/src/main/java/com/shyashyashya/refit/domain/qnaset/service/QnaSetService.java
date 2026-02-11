@@ -10,6 +10,7 @@ import com.shyashyashya.refit.domain.qnaset.dto.PdfHighlightingDto;
 import com.shyashyashya.refit.domain.qnaset.dto.request.PdfHighlightingUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetResponse;
+import com.shyashyashya.refit.domain.qnaset.dto.response.QnaSetScrapFolderResponse;
 import com.shyashyashya.refit.domain.qnaset.model.PdfHighlighting;
 import com.shyashyashya.refit.domain.qnaset.model.PdfHighlightingRect;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
@@ -18,6 +19,7 @@ import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRectReposi
 import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetSelfReviewRepository;
+import com.shyashyashya.refit.domain.scrapfolder.repository.QnaSetScrapFolderRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.util.RequestUserContext;
@@ -38,6 +40,7 @@ public class QnaSetService {
     private final QnaSetRepository qnaSetRepository;
     private final QnaSetSelfReviewRepository qnaSetSelfReviewRepository;
     private final PdfHighlightingRepository pdfHighlightingRepository;
+    private final QnaSetScrapFolderRepository qnaSetScrapFolderRepository;
     private final PdfHighlightingRectRepository pdfHighlightingRectRepository;
     private final RequestUserContext requestUserContext;
     private final InterviewValidator interviewValidator;
@@ -161,6 +164,17 @@ public class QnaSetService {
     private void deleteAllHighlightingsAndRects(QnaSet qnaSet) {
         pdfHighlightingRectRepository.deleteAllByQnaSet(qnaSet);
         pdfHighlightingRepository.deleteAllByQnaSet(qnaSet);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<QnaSetScrapFolderResponse> getScrapFoldersContainingQnaSet(Long qnaSetId, Pageable pageable) {
+        QnaSet qnaSet = qnaSetRepository.findById(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
+
+        User requestUser = requestUserContext.getRequestUser();
+        Interview interview = qnaSet.getInterview();
+        interviewValidator.validateInterviewOwner(interview, requestUser);
+
+        return qnaSetScrapFolderRepository.findAllScrapFoldersWithContainsQnaSet(qnaSet, pageable);
     }
 
     private List<Long> removeDuplicatedIds(List<Long> list) {
