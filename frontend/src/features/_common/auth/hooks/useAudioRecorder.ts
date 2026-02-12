@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react'
+import { useCallback, useEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react'
 import { useAudioVisualizer } from './useAudioVisualizer'
 import { useSpeechRecognition } from './useSpeechRecognition'
 
@@ -27,13 +27,13 @@ export function useAudioRecorder({ onCancel, onComplete, onRealtimeTranscript }:
   const secs = seconds % 60
   const timerText = `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`
 
-  const stopMediaStream = () => {
+  const stopMediaStream = useCallback(() => {
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((track) => track.stop())
       streamRef.current = null
       setStream(null)
     }
-  }
+  }, [])
 
   const startRecording = async () => {
     if (isRequestingPermission) return
@@ -79,7 +79,7 @@ export function useAudioRecorder({ onCancel, onComplete, onRealtimeTranscript }:
       stopMediaStream()
       stopRecognition()
     }
-  }, [stopRecognition])
+  }, [stopMediaStream, stopRecognition])
 
   return {
     canvasRef,
