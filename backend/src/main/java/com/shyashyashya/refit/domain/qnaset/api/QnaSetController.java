@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class QnaSetController {
 
     private final QnaSetService qnaSetService;
-    private final StarAnalysisAsyncService starAnalysisService;
+    private final StarAnalysisAsyncService starAnalysisAsyncService;
 
     @Operation(
             summary = "지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다.",
@@ -99,7 +99,7 @@ public class QnaSetController {
     @PostMapping("/{qnaSetId}/star-analysis")
     public CompletableFuture<ResponseEntity<ApiResponse<StarAnalysisDto>>> createStarAnalysis(
             @PathVariable Long qnaSetId) {
-        return starAnalysisService
+        return starAnalysisAsyncService
                 .createStarAnalysis(qnaSetId)
                 .thenApply(rsp -> ResponseEntity.ok(ApiResponse.success(COMMON200, rsp)));
     }
