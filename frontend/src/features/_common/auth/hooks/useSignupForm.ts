@@ -35,10 +35,8 @@ export function useSignupForm(options: UseSignupFormOptions) {
     const jobOption = JOB_OPTIONS.find((o) => o.value === job)
     if (!industryOption || !jobOption) return
     signUp({
+      params: { originType: import.meta.env.VITE_APP_ENV },
       data: {
-        // email 필드는 추후 백엔드에서 제거될 예정
-        email: '',
-        env: import.meta.env.VITE_APP_ENV ?? 'LOCAL',
         nickname,
         profileImageUrl: state?.profileImageUrl ?? '',
         industryId: industryOption.id,

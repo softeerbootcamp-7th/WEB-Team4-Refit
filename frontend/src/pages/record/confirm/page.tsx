@@ -1,7 +1,6 @@
 import { Suspense } from 'react'
-import { useSuspenseQuery } from '@tanstack/react-query'
 import { useParams } from 'react-router'
-import { getGetInterviewFullQueryKey, getInterviewFull } from '@/apis/generated/interview-api/interview-api'
+import { getInterviewFull, useGetInterviewFullSuspense } from '@/apis/generated/interview-api/interview-api'
 import { useSectionScroll } from '@/features/_common/hooks/useSectionScroll'
 import { RecordSection } from '@/features/record/confirm/components/contents/RecordSection'
 import { RecordConfirmSidebar } from '@/features/record/confirm/components/sidebar/Sidebar'
@@ -19,11 +18,7 @@ export default function RecordConfirmPage() {
 
 function RecordConfirmContent() {
   const { interviewId } = useParams()
-  const { data } = useSuspenseQuery({
-    queryKey: getGetInterviewFullQueryKey(Number(interviewId)),
-    queryFn: () => getInterviewFull(Number(interviewId)),
-    select: transformInterviewData,
-  })
+  const { data } = useGetInterviewFullSuspense(Number(interviewId), { query: { select: transformInterviewData } })
 
   const { qnaList, isAddMode, handleEdit, handleDelete, handleAddSave, startAddMode, cancelAddMode } = useQnaList(
     data.qnaList,

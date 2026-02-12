@@ -4,6 +4,23 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
+export interface MyProfileUpdateRequest {
+  /**
+   * @minLength 0
+   * @maxLength 30
+   */
+  nickname: string
+  industryId: number
+  jobCategoryId: number
+}
+
+export interface ApiResponseVoid {
+  isSuccess?: boolean
+  code?: string
+  message?: string
+  result?: unknown
+}
+
 export interface QnaSetUpdateRequest {
   /**
    * @minLength 0
@@ -16,13 +33,6 @@ export interface QnaSetUpdateRequest {
    * @maxLength 500
    */
   selfReviewText?: string
-}
-
-export interface ApiResponseVoid {
-  isSuccess?: boolean
-  code?: string
-  message?: string
-  result?: unknown
 }
 
 export interface PdfHighlightingRectDto {
@@ -71,13 +81,6 @@ export interface KptSelfReviewUpdateRequest {
 export interface UserSignUpRequest {
   /**
    * @minLength 0
-   * @maxLength 255
-   */
-  email: string
-  /** @minLength 1 */
-  env: string
-  /**
-   * @minLength 0
    * @maxLength 30
    */
   nickname: string
@@ -98,10 +101,66 @@ export interface ScrapFolderCreateRequest {
   scrapFolderName: string
 }
 
+export type StarAnalysisDtoSInclusionLevel =
+  (typeof StarAnalysisDtoSInclusionLevel)[keyof typeof StarAnalysisDtoSInclusionLevel]
+
+export const StarAnalysisDtoSInclusionLevel = {
+  NULL: 'NULL',
+  PRESENT: 'PRESENT',
+  INSUFFICIENT: 'INSUFFICIENT',
+  ABSENT: 'ABSENT',
+} as const
+
+export type StarAnalysisDtoTInclusionLevel =
+  (typeof StarAnalysisDtoTInclusionLevel)[keyof typeof StarAnalysisDtoTInclusionLevel]
+
+export const StarAnalysisDtoTInclusionLevel = {
+  NULL: 'NULL',
+  PRESENT: 'PRESENT',
+  INSUFFICIENT: 'INSUFFICIENT',
+  ABSENT: 'ABSENT',
+} as const
+
+export type StarAnalysisDtoAInclusionLevel =
+  (typeof StarAnalysisDtoAInclusionLevel)[keyof typeof StarAnalysisDtoAInclusionLevel]
+
+export const StarAnalysisDtoAInclusionLevel = {
+  NULL: 'NULL',
+  PRESENT: 'PRESENT',
+  INSUFFICIENT: 'INSUFFICIENT',
+  ABSENT: 'ABSENT',
+} as const
+
+export type StarAnalysisDtoRInclusionLevel =
+  (typeof StarAnalysisDtoRInclusionLevel)[keyof typeof StarAnalysisDtoRInclusionLevel]
+
+export const StarAnalysisDtoRInclusionLevel = {
+  NULL: 'NULL',
+  PRESENT: 'PRESENT',
+  INSUFFICIENT: 'INSUFFICIENT',
+  ABSENT: 'ABSENT',
+} as const
+
+export interface StarAnalysisDto {
+  sInclusionLevel?: StarAnalysisDtoSInclusionLevel
+  tInclusionLevel?: StarAnalysisDtoTInclusionLevel
+  aInclusionLevel?: StarAnalysisDtoAInclusionLevel
+  rInclusionLevel?: StarAnalysisDtoRInclusionLevel
+  overallSummary?: string
+}
+
+export interface ApiResponseStarAnalysisDto {
+  isSuccess?: boolean
+  code?: string
+  message?: string
+  result?: StarAnalysisDto
+}
+
 export type QnaSearchFilterSInclusionLevelsItem =
   (typeof QnaSearchFilterSInclusionLevelsItem)[keyof typeof QnaSearchFilterSInclusionLevelsItem]
 
 export const QnaSearchFilterSInclusionLevelsItem = {
+  NULL: 'NULL',
   PRESENT: 'PRESENT',
   INSUFFICIENT: 'INSUFFICIENT',
   ABSENT: 'ABSENT',
@@ -111,6 +170,7 @@ export type QnaSearchFilterTInclusionLevelsItem =
   (typeof QnaSearchFilterTInclusionLevelsItem)[keyof typeof QnaSearchFilterTInclusionLevelsItem]
 
 export const QnaSearchFilterTInclusionLevelsItem = {
+  NULL: 'NULL',
   PRESENT: 'PRESENT',
   INSUFFICIENT: 'INSUFFICIENT',
   ABSENT: 'ABSENT',
@@ -120,6 +180,7 @@ export type QnaSearchFilterAInclusionLevelsItem =
   (typeof QnaSearchFilterAInclusionLevelsItem)[keyof typeof QnaSearchFilterAInclusionLevelsItem]
 
 export const QnaSearchFilterAInclusionLevelsItem = {
+  NULL: 'NULL',
   PRESENT: 'PRESENT',
   INSUFFICIENT: 'INSUFFICIENT',
   ABSENT: 'ABSENT',
@@ -129,6 +190,7 @@ export type QnaSearchFilterRInclusionLevelsItem =
   (typeof QnaSearchFilterRInclusionLevelsItem)[keyof typeof QnaSearchFilterRInclusionLevelsItem]
 
 export const QnaSearchFilterRInclusionLevelsItem = {
+  NULL: 'NULL',
   PRESENT: 'PRESENT',
   INSUFFICIENT: 'INSUFFICIENT',
   ABSENT: 'ABSENT',
@@ -262,6 +324,27 @@ export interface InterviewCreateRequest {
   jobRole: string
 }
 
+export interface QnaSetCreateRequest {
+  /**
+   * @minLength 0
+   * @maxLength 200
+   */
+  questionText: string
+  /** @minLength 1 */
+  answerText: string
+}
+
+export interface QnaSetCreateResponse {
+  qnaSetId?: number
+}
+
+export interface ApiResponseQnaSetCreateResponse {
+  isSuccess?: boolean
+  code?: string
+  message?: string
+  result?: QnaSetCreateResponse
+}
+
 export type InterviewSearchFilterInterviewTypeItem =
   (typeof InterviewSearchFilterInterviewTypeItem)[keyof typeof InterviewSearchFilterInterviewTypeItem]
 
@@ -359,11 +442,16 @@ export interface TokenPairDto {
   refreshToken?: string
 }
 
-export interface ApiResponseTokenPairDto {
+export interface TestPublishTokenResponse {
+  isNeedSignUp?: boolean
+  tokens?: TokenPairDto
+}
+
+export interface ApiResponseTestPublishTokenResponse {
   isSuccess?: boolean
   code?: string
   message?: string
-  result?: TokenPairDto
+  result?: TestPublishTokenResponse
 }
 
 export interface ScrapFolderResponse {
@@ -417,6 +505,33 @@ export interface ApiResponsePageScrapFolderQnaSetResponse {
   code?: string
   message?: string
   result?: PageScrapFolderQnaSetResponse
+}
+
+export interface QnaSetScrapFolderResponse {
+  scrapFolderId?: number
+  scrapFolderName?: string
+  contains?: boolean
+}
+
+export interface PageQnaSetScrapFolderResponse {
+  totalElements?: number
+  totalPages?: number
+  size?: number
+  content?: QnaSetScrapFolderResponse[]
+  number?: number
+  sort?: SortObject
+  pageable?: PageableObject
+  first?: boolean
+  numberOfElements?: number
+  last?: boolean
+  empty?: boolean
+}
+
+export interface ApiResponsePageQnaSetScrapFolderResponse {
+  isSuccess?: boolean
+  code?: string
+  message?: string
+  result?: PageQnaSetScrapFolderResponse
 }
 
 export interface PdfHighlightingDto {
@@ -516,15 +631,48 @@ export interface ApiResponsePageFrequentQnaSetCategoryQuestionResponse {
   result?: PageFrequentQnaSetCategoryQuestionResponse
 }
 
+export type FrequentQnaSetResponseInterviewType =
+  (typeof FrequentQnaSetResponseInterviewType)[keyof typeof FrequentQnaSetResponseInterviewType]
+
+export const FrequentQnaSetResponseInterviewType = {
+  FIRST: 'FIRST',
+  SECOND: 'SECOND',
+  THIRD: 'THIRD',
+  BEHAVIORAL: 'BEHAVIORAL',
+  TECHNICAL: 'TECHNICAL',
+  EXECUTIVE: 'EXECUTIVE',
+  CULTURE_FIT: 'CULTURE_FIT',
+  COFFEE_CHAT: 'COFFEE_CHAT',
+  PSEUDO: 'PSEUDO',
+} as const
+
 export interface FrequentQnaSetResponse {
+  industryName?: string
+  jobCategoryName?: string
+  interviewType?: FrequentQnaSetResponseInterviewType
+  interviewStartAt?: string
   question?: string
 }
 
-export interface ApiResponseListFrequentQnaSetResponse {
+export interface PageFrequentQnaSetResponse {
+  totalElements?: number
+  totalPages?: number
+  size?: number
+  content?: FrequentQnaSetResponse[]
+  number?: number
+  sort?: SortObject
+  pageable?: PageableObject
+  first?: boolean
+  numberOfElements?: number
+  last?: boolean
+  empty?: boolean
+}
+
+export interface ApiResponsePageFrequentQnaSetResponse {
   isSuccess?: boolean
   code?: string
   message?: string
-  result?: FrequentQnaSetResponse[]
+  result?: PageFrequentQnaSetResponse
 }
 
 export interface JobCategoryResponse {
@@ -569,50 +717,6 @@ export const InterviewFullDtoInterviewResultStatus = {
   FAIL: 'FAIL',
   PASS: 'PASS',
 } as const
-
-export type StarAnalysisDtoSInclusionLevel =
-  (typeof StarAnalysisDtoSInclusionLevel)[keyof typeof StarAnalysisDtoSInclusionLevel]
-
-export const StarAnalysisDtoSInclusionLevel = {
-  PRESENT: 'PRESENT',
-  INSUFFICIENT: 'INSUFFICIENT',
-  ABSENT: 'ABSENT',
-} as const
-
-export type StarAnalysisDtoTInclusionLevel =
-  (typeof StarAnalysisDtoTInclusionLevel)[keyof typeof StarAnalysisDtoTInclusionLevel]
-
-export const StarAnalysisDtoTInclusionLevel = {
-  PRESENT: 'PRESENT',
-  INSUFFICIENT: 'INSUFFICIENT',
-  ABSENT: 'ABSENT',
-} as const
-
-export type StarAnalysisDtoAInclusionLevel =
-  (typeof StarAnalysisDtoAInclusionLevel)[keyof typeof StarAnalysisDtoAInclusionLevel]
-
-export const StarAnalysisDtoAInclusionLevel = {
-  PRESENT: 'PRESENT',
-  INSUFFICIENT: 'INSUFFICIENT',
-  ABSENT: 'ABSENT',
-} as const
-
-export type StarAnalysisDtoRInclusionLevel =
-  (typeof StarAnalysisDtoRInclusionLevel)[keyof typeof StarAnalysisDtoRInclusionLevel]
-
-export const StarAnalysisDtoRInclusionLevel = {
-  PRESENT: 'PRESENT',
-  INSUFFICIENT: 'INSUFFICIENT',
-  ABSENT: 'ABSENT',
-} as const
-
-export interface StarAnalysisDto {
-  sInclusionLevel?: StarAnalysisDtoSInclusionLevel
-  tInclusionLevel?: StarAnalysisDtoTInclusionLevel
-  aInclusionLevel?: StarAnalysisDtoAInclusionLevel
-  rInclusionLevel?: StarAnalysisDtoRInclusionLevel
-  overallSummary?: string
-}
 
 export interface QnaSetDto {
   qnaSetId?: number
@@ -822,6 +926,10 @@ export interface ApiResponseOAuth2LoginUrlResponse {
   result?: OAuth2LoginUrlResponse
 }
 
+export type SignUpParams = {
+  originType?: string
+}
+
 export type GetMyScrapFoldersParams = {
   pageable: Pageable
 }
@@ -834,17 +942,20 @@ export type SearchInterviewsParams = {
   pageable: Pageable
 }
 
-export type GetTokenParams = {
+export type PublishTokenParams = {
   email: string
-  env?: string
+  originType?: string
 }
 
-export type GetGuestTokenParams = {
-  email: string
-  env?: string
+export type PublishTokenByUserIdParams = {
+  originType?: string
 }
 
 export type GetQnaSetsInScrapFolderParams = {
+  pageable: Pageable
+}
+
+export type GetScrapFoldersContainingQnaSetParams = {
   pageable: Pageable
 }
 
@@ -857,8 +968,9 @@ export type GetMyFrequentQnaSetCategoryQuestionsParams = {
 }
 
 export type GetFrequentQuestionsParams = {
-  industryId: number
-  jobCategoryId: number
+  industryIds?: number[]
+  jobCategoryIds?: number[]
+  pageable: Pageable
 }
 
 export type GetMyInterviewDraftsParams = {
@@ -900,8 +1012,12 @@ export type GetDashboardCalendarInterviewsParams = {
   month: number
 }
 
+export type ReissueParams = {
+  originType?: string
+}
+
 export type BuildOAuth2LoginUrlParams = {
-  env?: string
+  originType?: string
 }
 
 export type HandleOAuth2CallbackParams = {
@@ -914,5 +1030,5 @@ export type DeleteUserByEmailParams = {
 }
 
 export type DeleteTokenCookiesParams = {
-  env?: string
+  originType?: string
 }

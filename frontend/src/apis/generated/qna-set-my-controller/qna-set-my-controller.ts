@@ -4,7 +4,7 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { customFetch } from '../../custom-fetch'
 import type {
   ApiResponsePageFrequentQnaSetCategoryQuestionResponse,
@@ -28,6 +28,8 @@ import type {
   UseMutationResult,
   UseQueryOptions,
   UseQueryResult,
+  UseSuspenseQueryOptions,
+  UseSuspenseQueryResult,
 } from '@tanstack/react-query'
 
 
@@ -260,6 +262,92 @@ export function useGetMyFrequentQnaSetCategories<
   return { ...query, queryKey: queryOptions.queryKey }
 }
 
+export const getGetMyFrequentQnaSetCategoriesSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>,
+  TError = unknown,
+>(
+  params: GetMyFrequentQnaSetCategoriesParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getGetMyFrequentQnaSetCategoriesQueryKey(params)
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>> = ({ signal }) =>
+    getMyFrequentQnaSetCategories(params, { signal, ...requestOptions })
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetMyFrequentQnaSetCategoriesSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>
+>
+export type GetMyFrequentQnaSetCategoriesSuspenseQueryError = unknown
+
+export function useGetMyFrequentQnaSetCategoriesSuspense<
+  TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>,
+  TError = unknown,
+>(
+  params: GetMyFrequentQnaSetCategoriesParams,
+  options: {
+    query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMyFrequentQnaSetCategoriesSuspense<
+  TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>,
+  TError = unknown,
+>(
+  params: GetMyFrequentQnaSetCategoriesParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMyFrequentQnaSetCategoriesSuspense<
+  TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>,
+  TError = unknown,
+>(
+  params: GetMyFrequentQnaSetCategoriesParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 나의 빈출 질문 카테고리 리스트와 각 카테고리 별 질문 개수를 조회합니다.
+ */
+
+export function useGetMyFrequentQnaSetCategoriesSuspense<
+  TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>,
+  TError = unknown,
+>(
+  params: GetMyFrequentQnaSetCategoriesParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetMyFrequentQnaSetCategoriesSuspenseQueryOptions(params, options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as UseSuspenseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  return { ...query, queryKey: queryOptions.queryKey }
+}
+
 /**
  * 나의 빈출 질문 중 특정 카테고리에 속한 질문들을 조회합니다.
  * @summary 나의 빈출 질문 중 특정 카테고리에 속한 질문들을 조회합니다.
@@ -405,6 +493,107 @@ export function useGetMyFrequentQnaSetCategoryQuestions<
   const queryOptions = getGetMyFrequentQnaSetCategoryQuestionsQueryOptions(categoryId, params, options)
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  return { ...query, queryKey: queryOptions.queryKey }
+}
+
+export const getGetMyFrequentQnaSetCategoryQuestionsSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>,
+  TError = unknown,
+>(
+  categoryId: number,
+  params: GetMyFrequentQnaSetCategoryQuestionsParams,
+  options?: {
+    query?: Partial<
+      UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>, TError, TData>
+    >
+    request?: SecondParameter<typeof customFetch>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getGetMyFrequentQnaSetCategoryQuestionsQueryKey(categoryId, params)
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>> = ({ signal }) =>
+    getMyFrequentQnaSetCategoryQuestions(categoryId, params, { signal, ...requestOptions })
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetMyFrequentQnaSetCategoryQuestionsSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>
+>
+export type GetMyFrequentQnaSetCategoryQuestionsSuspenseQueryError = unknown
+
+export function useGetMyFrequentQnaSetCategoryQuestionsSuspense<
+  TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>,
+  TError = unknown,
+>(
+  categoryId: number,
+  params: GetMyFrequentQnaSetCategoryQuestionsParams,
+  options: {
+    query: Partial<
+      UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>, TError, TData>
+    >
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMyFrequentQnaSetCategoryQuestionsSuspense<
+  TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>,
+  TError = unknown,
+>(
+  categoryId: number,
+  params: GetMyFrequentQnaSetCategoryQuestionsParams,
+  options?: {
+    query?: Partial<
+      UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>, TError, TData>
+    >
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMyFrequentQnaSetCategoryQuestionsSuspense<
+  TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>,
+  TError = unknown,
+>(
+  categoryId: number,
+  params: GetMyFrequentQnaSetCategoryQuestionsParams,
+  options?: {
+    query?: Partial<
+      UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>, TError, TData>
+    >
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 나의 빈출 질문 중 특정 카테고리에 속한 질문들을 조회합니다.
+ */
+
+export function useGetMyFrequentQnaSetCategoryQuestionsSuspense<
+  TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>,
+  TError = unknown,
+>(
+  categoryId: number,
+  params: GetMyFrequentQnaSetCategoryQuestionsParams,
+  options?: {
+    query?: Partial<
+      UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>, TError, TData>
+    >
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetMyFrequentQnaSetCategoryQuestionsSuspenseQueryOptions(categoryId, params, options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as UseSuspenseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>
   }
 

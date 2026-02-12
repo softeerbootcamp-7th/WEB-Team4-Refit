@@ -4,7 +4,7 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { customFetch } from '../../custom-fetch'
 import type { ApiResponseListIndustryResponse } from '../refit-api.schemas'
 import type {
@@ -17,6 +17,8 @@ import type {
   UndefinedInitialDataOptions,
   UseQueryOptions,
   UseQueryResult,
+  UseSuspenseQueryOptions,
+  UseSuspenseQueryResult,
 } from '@tanstack/react-query'
 
 
@@ -116,6 +118,71 @@ export function useGetIndustries<TData = Awaited<ReturnType<typeof getIndustries
   const queryOptions = getGetIndustriesQueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  return { ...query, queryKey: queryOptions.queryKey }
+}
+
+export const getGetIndustriesSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getIndustries>>,
+  TError = unknown,
+>(options?: {
+  query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getIndustries>>, TError, TData>>
+  request?: SecondParameter<typeof customFetch>
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getGetIndustriesQueryKey()
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getIndustries>>> = ({ signal }) =>
+    getIndustries({ signal, ...requestOptions })
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getIndustries>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetIndustriesSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof getIndustries>>>
+export type GetIndustriesSuspenseQueryError = unknown
+
+export function useGetIndustriesSuspense<TData = Awaited<ReturnType<typeof getIndustries>>, TError = unknown>(
+  options: {
+    query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getIndustries>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetIndustriesSuspense<TData = Awaited<ReturnType<typeof getIndustries>>, TError = unknown>(
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getIndustries>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetIndustriesSuspense<TData = Awaited<ReturnType<typeof getIndustries>>, TError = unknown>(
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getIndustries>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 산업군 리스트를 조회합니다.
+ */
+
+export function useGetIndustriesSuspense<TData = Awaited<ReturnType<typeof getIndustries>>, TError = unknown>(
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getIndustries>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetIndustriesSuspenseQueryOptions(options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as UseSuspenseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>
   }
 

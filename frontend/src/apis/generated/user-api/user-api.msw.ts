@@ -11,14 +11,6 @@ import type { ApiResponseMyProfileResponse, ApiResponseVoid } from '../refit-api
 import type { RequestHandlerOptions } from 'msw'
 
 
-export const getAgreeToTermsResponseMock = (overrideResponse: Partial<ApiResponseVoid> = {}): ApiResponseVoid => ({
-  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  result: faker.helpers.arrayElement([{}, undefined]),
-  ...overrideResponse,
-})
-
 export const getGetMyProfileInfoResponseMock = (
   overrideResponse: Partial<ApiResponseMyProfileResponse> = {},
 ): ApiResponseMyProfileResponse => ({
@@ -36,6 +28,72 @@ export const getGetMyProfileInfoResponseMock = (
   ]),
   ...overrideResponse,
 })
+
+export const getUpdateMyProfileResponseMock = (overrideResponse: Partial<ApiResponseVoid> = {}): ApiResponseVoid => ({
+  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
+  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
+  result: faker.helpers.arrayElement([{}, undefined]),
+  ...overrideResponse,
+})
+
+export const getAgreeToTermsResponseMock = (overrideResponse: Partial<ApiResponseVoid> = {}): ApiResponseVoid => ({
+  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
+  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
+  result: faker.helpers.arrayElement([{}, undefined]),
+  ...overrideResponse,
+})
+
+export const getGetMyProfileInfoMockHandler = (
+  overrideResponse?:
+    | ApiResponseMyProfileResponse
+    | ((
+        info: Parameters<Parameters<typeof http.get>[1]>[0],
+      ) => Promise<ApiResponseMyProfileResponse> | ApiResponseMyProfileResponse),
+  options?: RequestHandlerOptions,
+) => {
+  return http.get(
+    '*/user/my',
+    async (info) => {
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === 'function'
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getGetMyProfileInfoResponseMock(),
+        ),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      )
+    },
+    options,
+  )
+}
+
+export const getUpdateMyProfileMockHandler = (
+  overrideResponse?:
+    | ApiResponseVoid
+    | ((info: Parameters<Parameters<typeof http.put>[1]>[0]) => Promise<ApiResponseVoid> | ApiResponseVoid),
+  options?: RequestHandlerOptions,
+) => {
+  return http.put(
+    '*/user/my',
+    async (info) => {
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === 'function'
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getUpdateMyProfileResponseMock(),
+        ),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      )
+    },
+    options,
+  )
+}
 
 export const getSignUpMockHandler = (
   overrideResponse?: void | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void),
@@ -76,34 +134,9 @@ export const getAgreeToTermsMockHandler = (
     options,
   )
 }
-
-export const getGetMyProfileInfoMockHandler = (
-  overrideResponse?:
-    | ApiResponseMyProfileResponse
-    | ((
-        info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Promise<ApiResponseMyProfileResponse> | ApiResponseMyProfileResponse),
-  options?: RequestHandlerOptions,
-) => {
-  return http.get(
-    '*/user/my',
-    async (info) => {
-      return new HttpResponse(
-        JSON.stringify(
-          overrideResponse !== undefined
-            ? typeof overrideResponse === 'function'
-              ? await overrideResponse(info)
-              : overrideResponse
-            : getGetMyProfileInfoResponseMock(),
-        ),
-        { status: 200, headers: { 'Content-Type': 'application/json' } },
-      )
-    },
-    options,
-  )
-}
 export const getUserApiMock = () => [
+  getGetMyProfileInfoMockHandler(),
+  getUpdateMyProfileMockHandler(),
   getSignUpMockHandler(),
   getAgreeToTermsMockHandler(),
-  getGetMyProfileInfoMockHandler(),
 ]

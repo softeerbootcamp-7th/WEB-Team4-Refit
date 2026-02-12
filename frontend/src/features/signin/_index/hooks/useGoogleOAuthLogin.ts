@@ -14,7 +14,7 @@ export function useGoogleOAuthLogin(options: UseGoogleOAuthLoginOptions) {
   const navigate = useNavigate()
   const { signUp: signUpPath, success: successPath } = options.redirectTo
   const { refetch, isFetching } = useBuildOAuth2LoginUrl(
-    { env: import.meta.env.VITE_APP_ENV },
+    { originType: import.meta.env.VITE_APP_ENV },
     { query: { enabled: false } },
   )
 
