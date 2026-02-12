@@ -5,7 +5,7 @@ export type InterviewItemType = {
   date: string
   company: string
   jobRole: string
-  interviewType: string
+  interviewType: InterviewType
 }
 
 export type QuestionPreviewType = InterviewItemType & {
