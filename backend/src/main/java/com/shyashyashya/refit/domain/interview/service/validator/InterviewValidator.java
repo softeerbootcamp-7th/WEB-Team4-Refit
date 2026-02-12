@@ -19,7 +19,7 @@ public class InterviewValidator {
     }
 
     public void validateInterviewReviewStatusQnaSetDraft(Interview interview) {
-        if (interview.getReviewStatus().equals(InterviewReviewStatus.QNA_SET_DRAFT)) {
+        if (!interview.getReviewStatus().equals(InterviewReviewStatus.QNA_SET_DRAFT)) {
             throw new CustomException(INTERVIEW_REVIEW_STATUS_IS_NOT_QNA_SET_DRAFT);
         }
     }
