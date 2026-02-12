@@ -30,7 +30,7 @@ export default function MobileLayout() {
         open={showUnsupportedModal}
         onClose={handleUnsupportedModalOk}
         onOk={handleUnsupportedModalOk}
-        title="미지원 브라우저"
+        title="미지원 브라우저에요"
         description="Chrome 또는 Safari의 최신 버전을 사용해주세요."
         okButtonVariant="fill-gray-800"
         okText="확인"
