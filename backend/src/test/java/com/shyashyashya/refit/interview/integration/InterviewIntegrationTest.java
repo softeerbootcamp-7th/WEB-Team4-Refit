@@ -1,5 +1,6 @@
 package com.shyashyashya.refit.interview.integration;
 
+import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON201;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON204;
@@ -16,6 +17,7 @@ import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatus
 import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.KptSelfReviewUpdateRequest;
 import com.shyashyashya.refit.domain.interview.model.Interview;
+import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
 import com.shyashyashya.refit.domain.interview.model.InterviewResultStatus;
 import java.time.LocalDateTime;
@@ -29,6 +31,8 @@ import com.shyashyashya.refit.domain.user.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class InterviewIntegrationTest extends IntegrationTest {
@@ -356,7 +360,9 @@ public class InterviewIntegrationTest extends IntegrationTest {
         void setUp() {
             InterviewCreateRequest request = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            interviewId = createInterview(request).getId();
+            Interview interview = createInterview(request);
+            interview.startLogging();
+            interviewId = interview.getId();
         }
 
         @Test
@@ -402,6 +408,42 @@ public class InterviewIntegrationTest extends IntegrationTest {
                     .assertThat().statusCode(403)
                     .body("code", equalTo(INTERVIEW_NOT_ACCESSIBLE.name()))
                     .body("message", equalTo(INTERVIEW_NOT_ACCESSIBLE.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @ParameterizedTest
+        @EnumSource(value = InterviewReviewStatus.class, names = { "NOT_LOGGED", "QNA_SET_DRAFT", "SELF_REVIEW_DRAFT", "DEBRIEF_COMPLETED" })
+        void 면접_상태가_기록중이_아닐_때_가이드_질문을_조회하면_실패한다(InterviewReviewStatus status) {
+            // given
+            var createRequest = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview invalidInterview = createInterview(createRequest);
+            switch (status) {
+                case QNA_SET_DRAFT:
+                    invalidInterview.startLogging();
+                    invalidInterview.completeLogging();
+                    break;
+                case SELF_REVIEW_DRAFT:
+                    invalidInterview.startLogging();
+                    invalidInterview.completeLogging();
+                    invalidInterview.completeQnaSetDraft();
+                    break;
+                case DEBRIEF_COMPLETED:
+                    invalidInterview.startLogging();
+                    invalidInterview.completeLogging();
+                    invalidInterview.completeQnaSetDraft();
+                    invalidInterview.completeReview();
+                    break;
+            }
+
+            // when & then
+            given(spec)
+            .when()
+                    .get(path + "/" + invalidInterview.getId() + "/guide-question")
+            .then()
+                    .assertThat().statusCode(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.getHttpStatus().value())
+                    .body("code", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.name()))
+                    .body("message", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.getMessage()))
                     .body("result", nullValue());
         }
     }
