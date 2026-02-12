@@ -1,4 +1,4 @@
-package com.shyashyashya.refit.global.oauth2.dto;
+package com.shyashyashya.refit.global.oauth2.dto.response;
 
 import lombok.AccessLevel;
 import lombok.Builder;

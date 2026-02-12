@@ -1,7 +1,7 @@
 package com.shyashyashya.refit.global.oauth2.api;
 
 import com.shyashyashya.refit.global.dto.ApiResponse;
-import com.shyashyashya.refit.global.oauth2.dto.OAuth2LoginUrlResponse;
+import com.shyashyashya.refit.global.oauth2.dto.response.OAuth2LoginUrlResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestParam;
 

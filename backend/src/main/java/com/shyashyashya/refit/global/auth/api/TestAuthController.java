@@ -5,21 +5,20 @@ import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
-import com.shyashyashya.refit.global.auth.dto.TestPublishTokenResponse;
-import com.shyashyashya.refit.global.auth.model.RefreshToken;
+import com.shyashyashya.refit.global.auth.dto.TokenPairDto;
+import com.shyashyashya.refit.global.auth.dto.response.TestPublishTokenResponse;
 import com.shyashyashya.refit.global.auth.repository.RefreshTokenRepository;
-import com.shyashyashya.refit.global.auth.service.CookieUtil;
-import com.shyashyashya.refit.global.auth.service.JwtUtil;
+import com.shyashyashya.refit.global.auth.service.JwtService;
 import com.shyashyashya.refit.global.constant.AuthConstant;
 import com.shyashyashya.refit.global.dto.ApiResponse;
 import com.shyashyashya.refit.global.exception.CustomException;
+import com.shyashyashya.refit.global.model.ClientOriginType;
 import com.shyashyashya.refit.global.oauth2.util.ClientOriginRedirectUriBuilder;
-import com.shyashyashya.refit.global.util.ClientOriginType;
+import com.shyashyashya.refit.global.util.CookieUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -41,7 +40,7 @@ public class TestAuthController {
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final CookieUtil cookieUtil;
-    private final JwtUtil jwtUtil;
+    private final JwtService jwtService;
     private final ClientOriginRedirectUriBuilder clientOriginRedirectUriBuilder;
 
     @Operation(
@@ -89,17 +88,12 @@ public class TestAuthController {
 
     private ResponseEntity<ApiResponse<TestPublishTokenResponse>> getTokenResponse(
             String email, Long userId, ClientOriginType clientOriginType) {
-        String accessToken = jwtUtil.createAccessToken(email, userId);
-        String refreshToken = jwtUtil.createRefreshToken(email, userId);
 
-        String accessTokenCookie = cookieUtil.createAccessTokenCookie(accessToken, clientOriginType);
-        String refreshTokenCookie = cookieUtil.createResponseTokenCookie(refreshToken, clientOriginType);
+        TokenPairDto tokenPair = jwtService.publishTokenPair(email, userId);
+        String accessTokenCookie = cookieUtil.createAccessTokenCookie(tokenPair.accessToken(), clientOriginType);
+        String refreshTokenCookie = cookieUtil.createResponseTokenCookie(tokenPair.refreshToken(), clientOriginType);
 
-        Instant refreshTokenExpiration =
-                jwtUtil.getValidatedJwtToken(refreshToken).getExpiration();
-        refreshTokenRepository.save(RefreshToken.create(refreshToken, email, refreshTokenExpiration));
-
-        var response = TestPublishTokenResponse.of(userId == null, accessToken, refreshToken);
+        var response = TestPublishTokenResponse.of(userId == null, tokenPair);
         var body = ApiResponse.success(COMMON200, response);
         return ResponseEntity.status(HttpStatus.FOUND)
                 .header(HttpHeaders.LOCATION, clientOriginRedirectUriBuilder.build(clientOriginType))

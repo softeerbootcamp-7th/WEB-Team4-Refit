@@ -2,13 +2,13 @@ package com.shyashyashya.refit.global.oauth2.api;
 
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 
-import com.shyashyashya.refit.global.auth.service.CookieUtil;
 import com.shyashyashya.refit.global.dto.ApiResponse;
-import com.shyashyashya.refit.global.oauth2.dto.OAuth2LoginUrlResponse;
+import com.shyashyashya.refit.global.model.ClientOriginType;
 import com.shyashyashya.refit.global.oauth2.dto.OAuth2ResultDto;
+import com.shyashyashya.refit.global.oauth2.dto.response.OAuth2LoginUrlResponse;
 import com.shyashyashya.refit.global.oauth2.service.GoogleOAuth2Service;
 import com.shyashyashya.refit.global.oauth2.util.ClientOriginRedirectUriBuilder;
-import com.shyashyashya.refit.global.util.ClientOriginType;
+import com.shyashyashya.refit.global.util.CookieUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

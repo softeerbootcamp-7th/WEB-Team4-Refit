@@ -1,7 +1,7 @@
 package com.shyashyashya.refit.global.oauth2.util;
 
+import com.shyashyashya.refit.global.model.ClientOriginType;
 import com.shyashyashya.refit.global.property.AuthUrlProperty;
-import com.shyashyashya.refit.global.util.ClientOriginType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
