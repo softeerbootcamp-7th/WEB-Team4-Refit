@@ -5,6 +5,7 @@ const BAR_COUNT = 20
 const BAR_WIDTH = 2
 const BAR_COLOR = '#fe6f0f'
 const UPDATE_INTERVAL = 50
+const VOLUME_SCALING_FACTOR = 40
 
 function calculateRMS(dataArray: Uint8Array): number {
   const sum = dataArray.reduce((acc, value) => {
@@ -26,7 +27,7 @@ function drawVisualizerBars(
   const sliceWidth = canvas.width / barCount
 
   history.forEach((value, i) => {
-    const barHeight = Math.min((value / 40) * canvas.height, canvas.height)
+    const barHeight = Math.min((value / VOLUME_SCALING_FACTOR) * canvas.height, canvas.height)
     const x = i * sliceWidth + (sliceWidth - barWidth) / 2
     const y = (canvas.height - barHeight) / 2
     ctx.fillStyle = barColor
