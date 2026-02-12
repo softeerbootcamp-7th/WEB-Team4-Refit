@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router'
 import { SpeakingChickIcon } from '@/designs/assets'
 import { Button } from '@/designs/components'
+import { useGoogleOAuthLogin } from '@/features/signin/_index/hooks'
 import { ROUTES } from '@/routes/routes'
 
 function fadeUpClass(isVisible: boolean, delay: string) {
@@ -9,8 +9,13 @@ function fadeUpClass(isVisible: boolean, delay: string) {
   return `transform transition-all duration-1000 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] ${delay} ${motion}`
 }
 
+const MOBILE_OAUTH_REDIRECT = {
+  signUp: ROUTES.MOBILE_SIGNUP,
+  success: ROUTES.MOBILE_UNRECORDED,
+} as const
+
 export default function MobilePage() {
-  const navigate = useNavigate()
+  const { handleGoogleLogin, isFetching } = useGoogleOAuthLogin({ redirectTo: MOBILE_OAUTH_REDIRECT })
 
   const [isVisible, setIsVisible] = useState(false)
 
@@ -36,7 +41,9 @@ export default function MobilePage() {
             variant="fill-orange-500"
             size="md"
             className="w-full cursor-pointer"
-            onClick={() => navigate(ROUTES.MOBILE_SIGNUP)}
+            onClick={handleGoogleLogin}
+            disabled={isFetching}
+            isLoading={isFetching}
           >
             면접 기록 시작하기
           </Button>

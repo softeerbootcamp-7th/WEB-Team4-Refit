@@ -1,16 +1,11 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router'
 import { INDUSTRY_OPTIONS, JOB_OPTIONS } from '@/constants/signup'
 import { Button, Input, NativeCombobox } from '@/designs/components'
+import { useSignupForm } from '@/features/_common/auth'
 import { ROUTES } from '@/routes/routes'
 
 export default function MobileSignupPage() {
-  const navigate = useNavigate()
-  const [nickname, setNickname] = useState('')
-  const [industry, setIndustry] = useState('')
-  const [job, setJob] = useState('')
-
-  const isFormValid = nickname.length > 0 && nickname.length <= 5 && industry !== '' && job !== ''
+  const { nickname, setNickname, industry, setIndustry, job, setJob, isFormValid, isPending, handleSubmit } =
+    useSignupForm({ redirectTo: ROUTES.MOBILE_UNRECORDED })
 
   return (
     <div className="flex h-full flex-col px-5 pb-9">
@@ -50,8 +45,9 @@ export default function MobileSignupPage() {
           variant="fill-orange-500"
           size="md"
           className="w-full"
-          disabled={!isFormValid}
-          onClick={() => navigate(ROUTES.MOBILE_RECORD)}
+          disabled={!isFormValid || isPending}
+          isLoading={isPending}
+          onClick={handleSubmit}
         >
           시작하기
         </Button>

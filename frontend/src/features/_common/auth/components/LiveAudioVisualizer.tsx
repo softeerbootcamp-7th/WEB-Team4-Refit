@@ -1,12 +1,13 @@
+import type { Dispatch, SetStateAction } from 'react'
 import { MicIcon } from '@/designs/assets'
 import { Button } from '@/designs/components'
-import { useAudioRecorder } from '@/features/mobile/_common/hooks/useAudioRecorder'
+import { useAudioRecorder } from '@/features/_common/auth/hooks'
 
 type LiveAudioVisualizerProps = {
   onCancel?: () => void
   onComplete?: () => void
   /** STT 연동 시 실시간 인식 결과를 넘길 콜백 */
-  onRealtimeTranscript?: (text: string) => void
+  onRealtimeTranscript?: Dispatch<SetStateAction<string>>
 }
 
 export default function LiveAudioVisualizer({ onCancel, onComplete, onRealtimeTranscript }: LiveAudioVisualizerProps) {

@@ -1,14 +1,18 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import { useBuildOAuth2LoginUrl } from '@/apis'
-import { ROUTES } from '@/routes/routes'
 
 const POPUP_NAME = 'google-oauth-login'
 const POPUP_WIDTH = 500
 const POPUP_HEIGHT = 600
 
-export function useGoogleOAuthLogin() {
+type UseGoogleOAuthLoginOptions = {
+  redirectTo: { signUp: string; success: string }
+}
+
+export function useGoogleOAuthLogin(options: UseGoogleOAuthLoginOptions) {
   const navigate = useNavigate()
+  const { signUp: signUpPath, success: successPath } = options.redirectTo
   const { refetch, isFetching } = useBuildOAuth2LoginUrl(
     { env: import.meta.env.VITE_APP_ENV },
     { query: { enabled: false } },
@@ -19,15 +23,15 @@ export function useGoogleOAuthLogin() {
       if (event.origin !== window.location.origin || event.data?.type !== 'oauth-callback') return
       const { status, nickname, profileImageUrl } = event.data
       if (status === 'loginSuccess') {
-        navigate(ROUTES.DASHBOARD, { replace: true })
+        navigate(successPath, { replace: true })
       } else if (status === 'signUpRequired') {
-        navigate(ROUTES.SIGNUP, { state: { nickname, profileImageUrl }, replace: true })
+        navigate(signUpPath, { state: { nickname, profileImageUrl }, replace: true })
       }
     }
 
     window.addEventListener('message', handleMessage)
     return () => window.removeEventListener('message', handleMessage)
-  }, [navigate])
+  }, [navigate, signUpPath, successPath])
 
   const handleGoogleLogin = async () => {
     const left = window.screenX + (window.outerWidth - POPUP_WIDTH) / 2
