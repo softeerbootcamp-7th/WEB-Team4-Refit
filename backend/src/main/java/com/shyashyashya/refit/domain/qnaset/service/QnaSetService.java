@@ -190,7 +190,7 @@ public class QnaSetService {
         QnaSet qnaSet = qnaSetRepository.findById(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
         User requestUser = requestUserContext.getRequestUser();
         interviewValidator.validateInterviewOwner(qnaSet.getInterview(), requestUser);
-        interviewValidator.validateInterviewSReviewStatusQnaSetDraft(qnaSet.getInterview());
+        interviewValidator.validateInterviewReviewStatusQnaSetDraft(qnaSet.getInterview());
         qnaSetRepository.deleteById(qnaSetId);
     }
 }
