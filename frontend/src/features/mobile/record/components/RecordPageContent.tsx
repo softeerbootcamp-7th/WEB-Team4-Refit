@@ -1,3 +1,4 @@
+import type { Dispatch, SetStateAction } from 'react'
 import RecordStepContent from '@/features/mobile/record/components/RecordStepContent'
 import EditStepContent from './EditStepContent'
 
@@ -5,8 +6,8 @@ type RecordPageContentProps = {
   step: 'record' | 'edit'
   text: string
   realtimeText: string
-  onTextChange: (value: string) => void
-  onRealtimeTranscript: (value: string) => void
+  onTextChange: Dispatch<SetStateAction<string>>
+  onRealtimeTranscript: Dispatch<SetStateAction<string>>
   onRecordComplete: () => void
   onBackToRecord: () => void
   onSave: () => void

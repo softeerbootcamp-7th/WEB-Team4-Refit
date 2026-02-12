@@ -1,8 +1,9 @@
+import type { Dispatch, SetStateAction } from 'react'
 import { Button } from '@/designs/components'
 
 type EditStepContentProps = {
   text: string
-  onTextChange: (value: string) => void
+  onTextChange: Dispatch<SetStateAction<string>>
   onBackToRecord: () => void
   onSave: () => void
   isSavePending: boolean

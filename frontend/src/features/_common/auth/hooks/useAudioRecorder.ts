@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react'
 import { useAudioVisualizer } from './useAudioVisualizer'
 import { useSpeechRecognition } from './useSpeechRecognition'
 
@@ -6,14 +6,10 @@ type UseAudioRecorderOptions = {
   onCancel?: () => void
   onComplete?: () => void
   /** STT 연동 시 실시간 인식 결과를 넘길 콜백 */
-  onRealtimeTranscript?: (text: string) => void
+  onRealtimeTranscript?: Dispatch<SetStateAction<string>>
 }
 
-export function useAudioRecorder({
-  onCancel,
-  onComplete,
-  onRealtimeTranscript,
-}: UseAudioRecorderOptions = {}) {
+export function useAudioRecorder({ onCancel, onComplete, onRealtimeTranscript }: UseAudioRecorderOptions = {}) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
   const [isRecording, setIsRecording] = useState(false)

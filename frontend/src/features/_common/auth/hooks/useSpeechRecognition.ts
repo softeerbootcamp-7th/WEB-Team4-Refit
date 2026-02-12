@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, type Dispatch, type SetStateAction } from 'react'
 
 type SpeechRecognitionOptions = Pick<SpeechRecognition, 'continuous' | 'interimResults' | 'lang' | 'maxAlternatives'>
 type UseSpeechRecognitionProps = {
-  onRealtimeTranscript?: (text: string) => void
+  onRealtimeTranscript?: Dispatch<SetStateAction<string>>
 }
 
 export function useSpeechRecognition({ onRealtimeTranscript }: UseSpeechRecognitionProps = {}) {
