@@ -3,6 +3,7 @@ package com.shyashyashya.refit.domain.qnaset.repository.impl;
 import static com.shyashyashya.refit.domain.qnaset.model.QQnaSet.qnaSet;
 import static com.shyashyashya.refit.domain.qnaset.model.QStarAnalysis.starAnalysis;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -123,37 +124,37 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
             return starAnalysis.isNull();
         }
 
-        BooleanExpression starAnalysisLevelConditions = null;
+        BooleanBuilder levelConditions = buildStarAnalysisLevelContainsConditions(sLevels, tLevels, aLevels, rLevels);
 
+        if (hasStarInclusionLevels == null) {
+            return starAnalysis.isNull().or(starAnalysis.isNotNull().and(levelConditions));
+        }
+
+        return starAnalysis.isNotNull().and(levelConditions);
+    }
+
+    private BooleanBuilder buildStarAnalysisLevelContainsConditions(
+            List<StarInclusionLevel> sLevels,
+            List<StarInclusionLevel> tLevels,
+            List<StarInclusionLevel> aLevels,
+            List<StarInclusionLevel> rLevels) {
+        BooleanBuilder levelConditions = new BooleanBuilder();
         if (sLevels != null && !sLevels.isEmpty()) {
-            starAnalysisLevelConditions = starAnalysis.sInclusionLevel.in(sLevels);
+            levelConditions.and(starAnalysis.sInclusionLevel.in(sLevels));
         }
 
         if (tLevels != null && !tLevels.isEmpty()) {
-            starAnalysisLevelConditions = starAnalysisLevelConditions == null
-                    ? starAnalysis.tInclusionLevel.in(tLevels)
-                    : starAnalysisLevelConditions.and(starAnalysis.tInclusionLevel.in(tLevels));
+            levelConditions.and(starAnalysis.tInclusionLevel.in(tLevels));
         }
 
         if (aLevels != null && !aLevels.isEmpty()) {
-            starAnalysisLevelConditions = starAnalysisLevelConditions == null
-                    ? starAnalysis.aInclusionLevel.in(aLevels)
-                    : starAnalysisLevelConditions.and(starAnalysis.aInclusionLevel.in(aLevels));
+            levelConditions.and(starAnalysis.aInclusionLevel.in(aLevels));
         }
 
         if (rLevels != null && !rLevels.isEmpty()) {
-            starAnalysisLevelConditions = starAnalysisLevelConditions == null
-                    ? starAnalysis.rInclusionLevel.in(rLevels)
-                    : starAnalysisLevelConditions.and(starAnalysis.rInclusionLevel.in(rLevels));
+            levelConditions.and(starAnalysis.rInclusionLevel.in(rLevels));
         }
 
-        if (hasStarInclusionLevels == null) {
-            if (starAnalysisLevelConditions == null) {
-                return null;
-            }
-            return starAnalysis.isNull().or(starAnalysis.isNotNull().and(starAnalysisLevelConditions));
-        }
-
-        return starAnalysis.isNotNull().and(starAnalysisLevelConditions);
+        return levelConditions;
     }
 }
