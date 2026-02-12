@@ -13,16 +13,14 @@ import org.springframework.stereotype.Component;
 public class InterviewValidator {
 
     public void validateInterviewOwner(Interview interview, User user) {
-        if (interview.getUser().equals(user)) {
-            return;
+        if (!interview.getUser().equals(user)) {
+            throw new CustomException(INTERVIEW_NOT_ACCESSIBLE);
         }
-        throw new CustomException(INTERVIEW_NOT_ACCESSIBLE);
     }
 
     public void validateInterviewReviewStatusQnaSetDraft(Interview interview) {
-        if (interview.getReviewStatus().equals(InterviewReviewStatus.QNA_SET_DRAFT)) {
-            return;
+        if (!interview.getReviewStatus().equals(InterviewReviewStatus.QNA_SET_DRAFT)) {
+            throw new CustomException(INTERVIEW_REVIEW_STATUS_IS_NOT_QNA_SET_DRAFT);
         }
-        throw new CustomException(INTERVIEW_REVIEW_STATUS_IS_NOT_QNA_SET_DRAFT);
     }
 }
