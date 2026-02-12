@@ -95,10 +95,13 @@ public abstract class IntegrationTest {
         company3 = companyRepository.save(Company.create("네이버", "logo3", true));
 
         requestUser = createUser("test@example.com", "default", industry1, jobCategory1);
-        String accessToken = jwtEncoder.encodeAccessJwt(requestUser.getEmail(), requestUser.getId(), Instant.now());
+        Instant issuedAt = Instant.now();
+        String accessToken = jwtEncoder.encodeAccessJwt(requestUser.getEmail(), requestUser.getId(), issuedAt);
+        String refreshToken = jwtEncoder.encodeRefreshJwt(requestUser.getEmail(), requestUser.getId(), issuedAt);
         spec = new RequestSpecBuilder()
                 .setPort(port)
                 .addCookie(AuthConstant.ACCESS_TOKEN, accessToken)
+                .addCookie(AuthConstant.REFRESH_TOKEN, refreshToken)
                 .setContentType(ContentType.JSON)
                 .build();
     }
