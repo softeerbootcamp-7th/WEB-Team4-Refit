@@ -79,8 +79,8 @@ public class QnaSetController {
     @DeleteMapping("/{qnaSetId}")
     public ResponseEntity<ApiResponse<Void>> deleteQnaSet(@PathVariable Long qnaSetId) {
         qnaSetService.deleteQnaSet(qnaSetId);
-        var resposne = ApiResponse.success(COMMON204);
-        return ResponseEntity.ok(resposne);
+        var response = ApiResponse.success(COMMON204);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "지정한 질문 답변 세트에 대해 PDF 하이라이팅 정보를 등록/수정합니다.")
