@@ -9,8 +9,10 @@ import com.shyashyashya.refit.domain.interview.dto.InterviewFullDto;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatusUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.KptSelfReviewUpdateRequest;
+import com.shyashyashya.refit.domain.interview.dto.request.QnaSetCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.response.GuideQuestionResponse;
+import com.shyashyashya.refit.domain.interview.dto.response.QnaSetCreateResponse;
 import com.shyashyashya.refit.domain.interview.service.GuideQuestionService;
 import com.shyashyashya.refit.domain.interview.service.InterviewService;
 import com.shyashyashya.refit.global.dto.ApiResponse;
@@ -102,6 +104,15 @@ public class InterviewController {
             @PathVariable Long interviewId, @Valid @RequestBody KptSelfReviewUpdateRequest request) {
         interviewService.updateKptSelfReview(interviewId, request);
         var response = ApiResponse.success(COMMON200);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "특정 면접에 새로운 질답 세트를 생성합니다.")
+    @PostMapping("/{interviewId}/qna-set")
+    public ResponseEntity<ApiResponse<QnaSetCreateResponse>> createQnaSet(
+            @PathVariable Long interviewId, @Valid @RequestBody QnaSetCreateRequest request) {
+        var body = interviewService.createQnaSet(interviewId, request);
+        var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
 }
