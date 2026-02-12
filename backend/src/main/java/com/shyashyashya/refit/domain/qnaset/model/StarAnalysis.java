@@ -60,38 +60,19 @@ public class StarAnalysis extends BaseEntity {
     /*
      * Static Factory Method
      */
-    public static StarAnalysis create(
-            StarInclusionLevel sInclusionLevel,
-            StarInclusionLevel tInclusionLevel,
-            StarInclusionLevel aInclusionLevel,
-            StarInclusionLevel rInclusionLevel,
-            String overallSummaryText,
-            StarAnalysisGenerationStatus status,
-            QnaSet qnaSet) {
+    public static StarAnalysis create(QnaSet qnaSet) {
         return StarAnalysis.builder()
-                .sInclusionLevel(sInclusionLevel)
-                .tInclusionLevel(tInclusionLevel)
-                .aInclusionLevel(aInclusionLevel)
-                .rInclusionLevel(rInclusionLevel)
-                .overallSummaryText(overallSummaryText)
-                .status(status)
-                .qnaSet(qnaSet)
-                .build();
-    }
-
-    public static StarAnalysis createInProgressStarAnalysis(QnaSet qnaSet) {
-        return StarAnalysis.builder()
-                .sInclusionLevel(StarInclusionLevel.ABSENT)
-                .tInclusionLevel(StarInclusionLevel.ABSENT)
-                .aInclusionLevel(StarInclusionLevel.ABSENT)
-                .rInclusionLevel(StarInclusionLevel.ABSENT)
+                .sInclusionLevel(StarInclusionLevel.NULL)
+                .tInclusionLevel(StarInclusionLevel.NULL)
+                .aInclusionLevel(StarInclusionLevel.NULL)
+                .rInclusionLevel(StarInclusionLevel.NULL)
                 .overallSummaryText("")
                 .status(StarAnalysisGenerationStatus.IN_PROGRESS)
                 .qnaSet(qnaSet)
                 .build();
     }
 
-    public void completeStarAnalysis(
+    public void complete(
             StarInclusionLevel s,
             StarInclusionLevel t,
             StarInclusionLevel a,

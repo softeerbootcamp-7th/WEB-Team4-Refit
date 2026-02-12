@@ -28,7 +28,7 @@ public class StarAnalysisService {
             throw new CustomException(STAR_ANALYSIS_CREATION_FAILED_ALREADY_IN_PROGRESS);
         }
 
-        return starAnalysisRepository.save(StarAnalysis.createInProgressStarAnalysis(qnaSet));
+        return starAnalysisRepository.save(StarAnalysis.create(qnaSet));
     }
 
     @Transactional
@@ -37,7 +37,7 @@ public class StarAnalysisService {
                 .findById(starAnalysisId)
                 .orElseThrow(() -> new CustomException(STAR_ANALYSIS_NOT_FOUND));
 
-        starAnalysis.completeStarAnalysis(
+        starAnalysis.complete(
                 starAnalysisGeminiResponse.s(),
                 starAnalysisGeminiResponse.t(),
                 starAnalysisGeminiResponse.a(),
