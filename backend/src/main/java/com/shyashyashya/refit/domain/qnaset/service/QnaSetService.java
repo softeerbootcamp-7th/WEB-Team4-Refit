@@ -85,7 +85,7 @@ public class QnaSetService {
     public void deleteQnaSet(Long qnaSetId) {
         QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
         interviewValidator.validateInterviewReviewStatusQnaSetDraft(qnaSet.getInterview());
-        qnaSetRepository.deleteById(qnaSetId);
+        qnaSetRepository.delete(qnaSet);
     }
 
     @Transactional
