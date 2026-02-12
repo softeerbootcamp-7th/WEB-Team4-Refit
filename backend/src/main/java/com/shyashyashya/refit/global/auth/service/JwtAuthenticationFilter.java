@@ -14,6 +14,7 @@ import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -36,12 +37,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) {
-        try {
 
-            if (isWhitelisted(request)) {
-                filterChain.doFilter(request, response);
-                return;
-            }
+        try {
             String token = resolveToken(request);
             var validatedJwtToken = jwtUtil.getValidatedJwtToken(token);
             requestUserContext.setEmail(jwtUtil.getEmail(validatedJwtToken));
@@ -53,6 +50,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             handlerExceptionResolver.resolveException(request, response, null, e);
         }
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        if (HttpMethod.OPTIONS.matches(request.getMethod())) {
+            return true;
+        }
+
+        return isWhitelisted(request);
     }
 
     private boolean isWhitelisted(HttpServletRequest request) {
