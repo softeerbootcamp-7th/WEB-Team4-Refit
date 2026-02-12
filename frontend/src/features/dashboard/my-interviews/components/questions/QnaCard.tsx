@@ -1,11 +1,12 @@
 import InterviewCard from '@/features/dashboard/my-interviews/components/interviews/InterviewCard'
+import type { InterviewType } from '@/types/interview'
 
 type QnaCardProps = {
   resultStatus: 'wait' | 'pass' | 'fail'
   date: string
   company: string
   jobRole: string
-  interviewType: string
+  interviewType: InterviewType
   question: string
   answer: string
 }
