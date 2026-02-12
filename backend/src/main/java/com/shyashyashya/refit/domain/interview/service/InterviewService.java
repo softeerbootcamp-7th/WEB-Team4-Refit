@@ -192,9 +192,11 @@ public class InterviewService {
     @Transactional
     public void updateKptSelfReview(Long interviewId, KptSelfReviewUpdateRequest request) {
         User requestUser = requestUserContext.getRequestUser();
+
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
+        interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.SELF_REVIEW_DRAFT);
 
         interviewSelfReviewRepository
                 .findByInterview(interview)

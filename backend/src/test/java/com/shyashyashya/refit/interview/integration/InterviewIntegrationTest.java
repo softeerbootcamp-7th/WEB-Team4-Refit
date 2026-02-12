@@ -540,7 +540,8 @@ public class InterviewIntegrationTest extends IntegrationTest {
         void setUp() {
             InterviewCreateRequest request = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            interviewId = createInterview(request).getId();
+            Interview interview = createInterview(request, InterviewReviewStatus.SELF_REVIEW_DRAFT);
+            interviewId = interview.getId();
         }
 
         @Test
@@ -595,6 +596,27 @@ public class InterviewIntegrationTest extends IntegrationTest {
                     .assertThat().statusCode(403)
                     .body("code", equalTo(INTERVIEW_NOT_ACCESSIBLE.name()))
                     .body("message", equalTo(INTERVIEW_NOT_ACCESSIBLE.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @ParameterizedTest
+        @EnumSource(value = InterviewReviewStatus.class, names = { "NOT_LOGGED", "LOG_DRAFT", "QNA_SET_DRAFT", "DEBRIEF_COMPLETED" })
+        void 면접_상태가_회고중이_아닐_때_KPT회고를_업데이트하면_실패한다(InterviewReviewStatus status) {
+            // given
+            var createRequest = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview invalidInterview = createInterview(createRequest, status);
+            var request = new KptSelfReviewUpdateRequest("Keep text", "Problem text", "Try text");
+
+            // when & then
+            given(spec)
+                    .body(request)
+            .when()
+                    .put(path + "/" + invalidInterview.getId() + "/kpt-self-review")
+            .then()
+                    .assertThat().statusCode(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.getHttpStatus().value())
+                    .body("code", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.name()))
+                    .body("message", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.getMessage()))
                     .body("result", nullValue());
         }
     }

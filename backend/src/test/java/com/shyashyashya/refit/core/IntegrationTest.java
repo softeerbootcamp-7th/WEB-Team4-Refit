@@ -159,6 +159,7 @@ public abstract class IntegrationTest {
         switch (reviewStatus) {
             case LOG_DRAFT:
                 interview.startLogging();
+                break;
             case QNA_SET_DRAFT:
                 interview.startLogging();
                 interview.completeLogging();
