@@ -34,8 +34,8 @@ public class GoogleOAuth2Controller implements OAuth2Controller {
     @GetMapping
     @Override
     public ResponseEntity<ApiResponse<OAuth2LoginUrlResponse>> buildOAuth2LoginUrl(
-            @RequestParam(required = false) String origin) {
-        ClientOriginType clientOriginType = ClientOriginType.fromOriginString(origin);
+            @RequestParam(required = false) String originType) {
+        ClientOriginType clientOriginType = ClientOriginType.fromOriginTypeString(originType);
         var response = googleOAuth2Service.buildOAuth2LoginUrl(clientOriginType);
         var body = ApiResponse.success(COMMON200, response);
         return ResponseEntity.ok(body);

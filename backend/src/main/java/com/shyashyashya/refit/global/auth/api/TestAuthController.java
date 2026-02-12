@@ -48,8 +48,8 @@ public class TestAuthController {
             description = "발급된 토큰은 origin에 따라 세팅됩니다. response body에 회원가입 필요 여부 및 토큰 정보가 포함됩니다.")
     @GetMapping("/token")
     public ResponseEntity<ApiResponse<TestPublishTokenResponse>> publishToken(
-            @RequestParam("email") @NotNull @Email String email, @RequestParam(required = false) String origin) {
-        ClientOriginType clientOriginType = ClientOriginType.fromOriginString(origin);
+            @RequestParam("email") @NotNull @Email String email, @RequestParam(required = false) String originType) {
+        ClientOriginType clientOriginType = ClientOriginType.fromOriginTypeString(originType);
         Long userId = userRepository.findByEmail(email).map(User::getId).orElse(null);
         return getTokenResponse(email, userId, clientOriginType);
     }
@@ -59,8 +59,8 @@ public class TestAuthController {
             description = "발급된 토큰은 origin에 따라 세팅됩니다. response body에 회원가입 필요 여부 및 토큰 정보가 포함됩니다.")
     @GetMapping("/token/{userId}")
     public ResponseEntity<ApiResponse<TestPublishTokenResponse>> publishTokenByUserId(
-            @PathVariable @NotNull Long userId, @RequestParam(required = false) String origin) {
-        ClientOriginType clientOriginType = ClientOriginType.fromOriginString(origin);
+            @PathVariable @NotNull Long userId, @RequestParam(required = false) String originType) {
+        ClientOriginType clientOriginType = ClientOriginType.fromOriginTypeString(originType);
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         return getTokenResponse(user.getEmail(), userId, clientOriginType);
     }
@@ -69,8 +69,8 @@ public class TestAuthController {
     @DeleteMapping("/cookies")
     public ResponseEntity<ApiResponse<Void>> deleteTokenCookies(
             @CookieValue(value = AuthConstant.REFRESH_TOKEN, required = false) String refreshToken,
-            @RequestParam(required = false) String origin) {
-        ClientOriginType originType = ClientOriginType.fromOriginString(origin);
+            @RequestParam(required = false) String originType) {
+        ClientOriginType clientOriginType = ClientOriginType.fromOriginTypeString(originType);
         String deleteAccessTokenCookie = cookieUtil.deleteCookie(AuthConstant.ACCESS_TOKEN);
         String deleteRefreshTokenCookie = cookieUtil.deleteCookie(AuthConstant.REFRESH_TOKEN);
 
@@ -80,7 +80,7 @@ public class TestAuthController {
 
         var response = ApiResponse.success(COMMON200);
         return ResponseEntity.status(HttpStatus.FOUND)
-                .header(HttpHeaders.LOCATION, originType.getClientOriginUrl() + UrlConstant.LOGIN_REDIRECT_PATH)
+                .header(HttpHeaders.LOCATION, clientOriginType.getClientOriginUrl() + UrlConstant.LOGIN_REDIRECT_PATH)
                 .header(HttpHeaders.SET_COOKIE, deleteAccessTokenCookie)
                 .header(HttpHeaders.SET_COOKIE, deleteRefreshTokenCookie)
                 .body(response);

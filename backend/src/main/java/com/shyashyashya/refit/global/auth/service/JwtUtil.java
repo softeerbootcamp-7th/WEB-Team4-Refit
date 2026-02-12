@@ -61,7 +61,7 @@ public class JwtUtil {
         var expiration = now.plus(oAuth2StateTokenExpiration);
 
         return Jwts.builder()
-                .setSubject(clientOriginType.getOrigin())
+                .setSubject(clientOriginType.getOriginType())
                 .claim(CLAIM_KEY_JWT_TOKEN_TYPE, JwtTokenType.OAUTH2_STATE_TOKEN)
                 .setIssuedAt(Date.from(now))
                 .setExpiration(Date.from(expiration))
@@ -98,7 +98,7 @@ public class JwtUtil {
 
     public ClientOriginType getClientOriginType(ValidatedJwtToken validatedJwtToken) {
         validateOAuth2StateType(validatedJwtToken);
-        return ClientOriginType.fromOriginString(validatedJwtToken.claims().getSubject());
+        return ClientOriginType.fromOriginTypeString(validatedJwtToken.claims().getSubject());
     }
 
     public String getEmail(ValidatedJwtToken validatedJwtToken) {

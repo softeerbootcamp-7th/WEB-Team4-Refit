@@ -17,24 +17,24 @@ public enum ClientOriginType {
     DEV_CLIENT("DEV", UrlConstant.DEV_CLIENT_URL),
     MAIN_CLIENT("MAIN", UrlConstant.MAIN_CLIENT_URL);
 
-    private final String origin;
+    private final String originType;
     private final String clientOriginUrl;
 
     private static final Map<String, ClientOriginType> ORIGIN_MAP = Arrays.stream(values())
-            .collect(Collectors.toUnmodifiableMap(ClientOriginType::getOrigin, Function.identity()));
+            .collect(Collectors.toUnmodifiableMap(ClientOriginType::getOriginType, Function.identity()));
 
-    public static ClientOriginType fromOriginString(String origin) {
-        if (origin == null || origin.isBlank()) {
+    public static ClientOriginType fromOriginTypeString(String originType) {
+        if (originType == null || originType.isBlank()) {
             return LOCAL_SERVER;
         }
 
-        ClientOriginType clientOriginType = ORIGIN_MAP.get(origin.toUpperCase());
+        ClientOriginType clientOriginType = ORIGIN_MAP.get(originType.toUpperCase());
         if (clientOriginType != null) {
             return clientOriginType;
         }
 
         String allowedValues = String.join(", ", ORIGIN_MAP.keySet());
         throw new IllegalArgumentException(
-                "Invalid origin value: " + origin + ". Allowed values are: " + allowedValues);
+                "Invalid origin value: " + originType + ". Allowed values are: " + allowedValues);
     }
 }

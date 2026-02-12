@@ -32,9 +32,9 @@ public class AuthController {
     public ResponseEntity<ApiResponse<Void>> reissue(
             @CookieValue(value = AuthConstant.ACCESS_TOKEN) String accessToken,
             @CookieValue(value = AuthConstant.REFRESH_TOKEN) String refreshToken,
-            @RequestParam(required = false) String origin) {
+            @RequestParam(required = false) String originType) {
 
-        ClientOriginType clientOriginType = ClientOriginType.fromOriginString(origin);
+        ClientOriginType clientOriginType = ClientOriginType.fromOriginTypeString(originType);
         var response = ApiResponse.success(COMMON200);
         return authService
                 .reissue(accessToken, refreshToken)
