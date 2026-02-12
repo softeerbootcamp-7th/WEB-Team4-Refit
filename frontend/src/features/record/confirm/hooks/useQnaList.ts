@@ -17,7 +17,7 @@ export function useQnaList(initialList: SimpleQnaType[], options: UseQnaListOpti
     setQnaList((prev) =>
       prev.map((item) => (item.qnaSetId === qnaSetId ? { ...item, questionText: question, answerText: answer } : item)),
     )
-    updateQnaSet({ qnaSetId, data: { questionText: question, answerText: answer, selfReviewText: '' } })
+    updateQnaSet({ qnaSetId, data: { questionText: question, answerText: answer } })
     options.onEdit?.(qnaSetId, question, answer)
   }
 
