@@ -29,6 +29,10 @@ export default function MobileRecordPage() {
     setRealtimeText('')
   }
 
+  const handleRecordCancel = () => {
+    setRealtimeText('')
+  }
+
   const handleSave = () => {
     if (!interviewId) return
     updateRawText({
@@ -46,6 +50,7 @@ export default function MobileRecordPage() {
         onTextChange={setText}
         onRealtimeTranscript={setRealtimeText}
         onRecordComplete={handleRecordComplete}
+        onRecordCancel={handleRecordCancel}
         onBackToRecord={handleBackToRecord}
         onSave={handleSave}
         isSavePending={isPending}

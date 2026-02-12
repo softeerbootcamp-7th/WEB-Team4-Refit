@@ -5,12 +5,14 @@ type RecordStepContentProps = {
   realtimeText: string
   onRealtimeTranscript: Dispatch<SetStateAction<string>>
   onRecordComplete: () => void
+  onRecordCancel?: () => void
 }
 
 export default function RecordStepContent({
   realtimeText,
   onRealtimeTranscript,
   onRecordComplete,
+  onRecordCancel,
 }: RecordStepContentProps) {
   return (
     <>
@@ -24,7 +26,11 @@ export default function RecordStepContent({
         </div>
       </div>
       <div className="flex shrink-0 flex-col gap-3 px-5 pt-6">
-        <LiveAudioVisualizer onComplete={onRecordComplete} onRealtimeTranscript={onRealtimeTranscript} />
+        <LiveAudioVisualizer
+          onComplete={onRecordComplete}
+          onRealtimeTranscript={onRealtimeTranscript}
+          onCancel={onRecordCancel}
+        />
       </div>
     </>
   )

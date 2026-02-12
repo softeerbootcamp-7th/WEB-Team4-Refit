@@ -8,12 +8,15 @@ type UseSpeechRecognitionProps = {
 export function useSpeechRecognition({ onRealtimeTranscript }: UseSpeechRecognitionProps = {}) {
   const recognitionRef = useRef<SpeechRecognition | null>(null)
   const callbackRef = useRef(onRealtimeTranscript)
+  const isStoppedRef = useRef(false)
 
   useEffect(() => {
     callbackRef.current = onRealtimeTranscript
   }, [onRealtimeTranscript])
 
   const stopRecognition = useCallback(() => {
+    /* recognition.stop()은 동기적으로 작동하지만, 그 전에 큐에 들어간 onresult는 막지 못함 */
+    isStoppedRef.current = true
     if (recognitionRef.current) {
       recognitionRef.current.stop()
       recognitionRef.current = null
@@ -37,6 +40,8 @@ export function useSpeechRecognition({ onRealtimeTranscript }: UseSpeechRecognit
 
     /* 결과 나올 때마다 콜백 실행됨 */
     recognition.onresult = (event) => {
+      if (isStoppedRef.current) return
+
       /* continuous; true 이기 때문에 녹음 시작부터의 모든 event가 누적되어서 나옴 */
       const transcript = Array.from(event.results)
         .map((result) => result[0].transcript)
@@ -45,6 +50,7 @@ export function useSpeechRecognition({ onRealtimeTranscript }: UseSpeechRecognit
       callbackRef.current?.(transcript)
     }
 
+    isStoppedRef.current = false
     recognition.start()
     recognitionRef.current = recognition
   }, [])

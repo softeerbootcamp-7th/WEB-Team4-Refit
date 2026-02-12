@@ -9,6 +9,7 @@ type RecordPageContentProps = {
   onTextChange: Dispatch<SetStateAction<string>>
   onRealtimeTranscript: Dispatch<SetStateAction<string>>
   onRecordComplete: () => void
+  onRecordCancel?: () => void
   onBackToRecord: () => void
   onSave: () => void
   isSavePending: boolean
@@ -22,6 +23,7 @@ export default function RecordPageContent({
   onTextChange,
   onRealtimeTranscript,
   onRecordComplete,
+  onRecordCancel,
   onBackToRecord,
   onSave,
   isSavePending,
@@ -41,6 +43,7 @@ export default function RecordPageContent({
           realtimeText={realtimeText}
           onRealtimeTranscript={onRealtimeTranscript}
           onRecordComplete={onRecordComplete}
+          onRecordCancel={onRecordCancel}
         />
       ) : (
         <EditStepContent
