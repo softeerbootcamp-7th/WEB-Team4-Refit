@@ -1,0 +1,17 @@
+package com.shyashyashya.refit.global.oauth2.util;
+
+import com.shyashyashya.refit.global.model.ClientOriginType;
+import com.shyashyashya.refit.global.property.AuthUrlProperty;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
+@Component
+@RequiredArgsConstructor
+public class ClientOriginRedirectUriBuilder {
+
+    private final AuthUrlProperty authUrlProperty;
+
+    public String build(ClientOriginType clientOriginType) {
+        return clientOriginType.getClientOriginUrl() + authUrlProperty.frontendRedirectPath();
+    }
+}

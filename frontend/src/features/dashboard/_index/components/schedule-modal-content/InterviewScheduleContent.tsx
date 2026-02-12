@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
-import Button from '@/shared/components/button'
-import { INTERVIEW_TYPE_OPTIONS } from '@/shared/constants/interviews'
+import { INTERVIEW_TYPE_OPTIONS } from '@/constants/interviews'
+import Button from '@/designs/components/button'
 
 const getTodayDateString = () => {
   const now = new Date()

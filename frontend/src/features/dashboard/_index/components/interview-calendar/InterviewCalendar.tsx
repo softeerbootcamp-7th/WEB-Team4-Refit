@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Modal } from '@/designs/components'
 import { CalendarFooter } from '@/features/dashboard/_index/components/interview-calendar/CalendarFooter'
 import { CalendarGrid } from '@/features/dashboard/_index/components/interview-calendar/CalendarGrid'
 import { CalendarHeader } from '@/features/dashboard/_index/components/interview-calendar/CalendarHeader'
@@ -8,7 +9,6 @@ import {
   type ScheduleModalStep,
 } from '@/features/dashboard/_index/constants/interviewCalendar'
 import { useInterviewCalendar } from '@/features/dashboard/_index/hooks/useInterviewCalendar'
-import { Modal } from '@/shared/components'
 
 export default function InterviewCalendar() {
   const [isAddScheduleModalOpen, setIsAddScheduleModalOpen] = useState(false)

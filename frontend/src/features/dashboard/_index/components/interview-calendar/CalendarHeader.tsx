@@ -1,4 +1,4 @@
-import { CaretDownIcon, PlusIcon } from '@/shared/assets'
+import { CaretDownIcon, PlusIcon } from '@/designs/assets'
 
 interface CalendarHeaderProps {
   monthLabel: string

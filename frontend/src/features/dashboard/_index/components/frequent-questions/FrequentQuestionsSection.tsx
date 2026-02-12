@@ -1,4 +1,4 @@
-import { NoteIcon } from '@/shared/assets'
+import { NoteIcon } from '@/designs/assets'
 
 interface QuestionCategory {
   label: string

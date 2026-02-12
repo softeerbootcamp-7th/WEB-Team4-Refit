@@ -1,0 +1,1 @@
+export { useQnaList } from './useQnaList'

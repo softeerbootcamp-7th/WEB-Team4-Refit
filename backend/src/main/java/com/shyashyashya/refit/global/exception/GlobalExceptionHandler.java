@@ -2,13 +2,14 @@ package com.shyashyashya.refit.global.exception;
 
 import static com.shyashyashya.refit.global.exception.ErrorCode.LOGIN_REQUIRED;
 
-import com.shyashyashya.refit.global.auth.service.CookieUtil;
 import com.shyashyashya.refit.global.constant.AuthConstant;
 import com.shyashyashya.refit.global.dto.ApiResponse;
+import com.shyashyashya.refit.global.util.CookieUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -41,8 +42,15 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handlerException(Exception e) {
-        log.error("Exception: {}", e.getMessage());
-        var response = ApiResponse.unknownException(e);
+        log.error("Exception: {}", e.getMessage(), e);
+        var response = ApiResponse.exception(e);
         return ResponseEntity.internalServerError().body(response);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiResponse<Void>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        log.error("MethodArgumentNotValidException: {}", e.getMessage());
+        var response = ApiResponse.exception(e);
+        return ResponseEntity.badRequest().body(response);
     }
 }

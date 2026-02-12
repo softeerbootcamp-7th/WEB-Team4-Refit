@@ -13,7 +13,7 @@ import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
-import com.shyashyashya.refit.global.auth.service.JwtUtil;
+import com.shyashyashya.refit.global.auth.service.JwtEncoder;
 import com.shyashyashya.refit.global.constant.AuthConstant;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
@@ -30,12 +30,16 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.time.format.DateTimeFormatter;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 public abstract class IntegrationTest {
+
+    protected static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     @LocalServerPort
     private Integer port;
@@ -44,17 +48,21 @@ public abstract class IntegrationTest {
 
     protected User requestUser;
 
-    protected Company company;
-
-    protected Industry industry;
-
-    protected JobCategory jobCategory;
+    protected Industry industry1;
+    protected Industry industry2;
+    protected Industry industry3;
+    protected JobCategory jobCategory1;
+    protected JobCategory jobCategory2;
+    protected JobCategory jobCategory3;
+    protected Company company1;
+    protected Company company2;
+    protected Company company3;
 
     @PersistenceContext
     private EntityManager em;
 
     @Autowired
-    private JwtUtil jwtUtil;
+    private JwtEncoder jwtEncoder;
 
     @Autowired
     private UserRepository userRepository;
@@ -76,15 +84,24 @@ public abstract class IntegrationTest {
         clearDatabase();
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
 
-        industry = industryRepository.save(Industry.create("제조업"));
-        jobCategory = jobCategoryRepository.save(JobCategory.create("BE Developer"));
-        company = companyRepository.save(Company.create("현대자동차", "logo", true));
+        industry1 = industryRepository.save(Industry.create("제조업"));
+        industry2 = industryRepository.save(Industry.create("IT"));
+        industry3 = industryRepository.save(Industry.create("유통"));
+        jobCategory1 = jobCategoryRepository.save(JobCategory.create("BE Developer"));
+        jobCategory2 = jobCategoryRepository.save(JobCategory.create("FE Developer"));
+        jobCategory3 = jobCategoryRepository.save(JobCategory.create("Designer"));
+        company1 = companyRepository.save(Company.create("현대자동차", "logo1", true));
+        company2 = companyRepository.save(Company.create("카카오", "logo2", true));
+        company3 = companyRepository.save(Company.create("네이버", "logo3", true));
 
-        requestUser = createUser("test@example.com", "default", industry, jobCategory);
-        String accessToken = jwtUtil.createAccessToken(requestUser.getEmail(), requestUser.getId());
+        requestUser = createUser("test@example.com", "default", industry1, jobCategory1);
+        Instant issuedAt = Instant.now();
+        String accessToken = jwtEncoder.encodeAccessJwt(requestUser.getEmail(), requestUser.getId(), issuedAt);
+        String refreshToken = jwtEncoder.encodeRefreshJwt(requestUser.getEmail(), requestUser.getId(), issuedAt);
         spec = new RequestSpecBuilder()
                 .setPort(port)
                 .addCookie(AuthConstant.ACCESS_TOKEN, accessToken)
+                .addCookie(AuthConstant.REFRESH_TOKEN, refreshToken)
                 .setContentType(ContentType.JSON)
                 .build();
     }
@@ -138,5 +155,10 @@ public abstract class IntegrationTest {
                 industry,
                 jobCategory);
         return interviewRepository.save(interview);
+    }
+
+    protected Company createCompany(String companyName) {
+        Company company = Company.create(companyName, "logo.url", true);
+        return companyRepository.save(company);
     }
 }

@@ -1,6 +1,8 @@
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router'
-import { DashboardLayout, MobileLayout, RootLayout } from '@/layouts'
+import { DashboardLayout, MobileLayout } from '@/layouts'
+import MainLayout from '@/layouts/MainLayout'
 import {
+  AuthCallbackPage,
   DashboardPage,
   RecordConfirmPage,
   RecordLinkPage,
@@ -20,16 +22,22 @@ import {
   MyInterviewsPage,
   TrendQuestionsPage,
 } from '@/pages'
-import { ROUTES } from '@/shared/constants/routes'
+import { RedirectToMobileMiddleware } from '@/routes/redirectToMobileMiddleware'
+import { ROUTES } from '@/routes/routes'
 
 const getChildPath = (fullPath: string, rootPath: string): string => {
   return fullPath.replace(rootPath, '').replace(/^\//, '')
 }
 
 const router = createBrowserRouter([
-  { path: ROUTES.HOME, Component: () => <Navigate to={ROUTES.DASHBOARD} replace /> },
-  { path: ROUTES.SIGNUP, Component: SignupPage },
-  { path: ROUTES.SIGNIN, Component: SigninPage },
+  {
+    path: ROUTES.HOME,
+    middleware: [RedirectToMobileMiddleware],
+    Component: () => <Navigate to={ROUTES.DASHBOARD} replace />,
+  },
+  { path: ROUTES.SIGNUP, Component: SignupPage, middleware: [RedirectToMobileMiddleware] },
+  { path: ROUTES.SIGNIN, Component: SigninPage, middleware: [RedirectToMobileMiddleware] },
+  { path: ROUTES.AUTH_CALLBACK, Component: AuthCallbackPage },
   {
     path: ROUTES.MOBILE,
     Component: MobileLayout,
@@ -50,7 +58,8 @@ const router = createBrowserRouter([
     ],
   },
   {
-    Component: RootLayout,
+    Component: MainLayout,
+    middleware: [RedirectToMobileMiddleware],
     children: [
       {
         path: ROUTES.DASHBOARD,

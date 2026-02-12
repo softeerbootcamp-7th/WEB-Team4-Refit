@@ -1,0 +1,59 @@
+import { useState } from 'react'
+import { useLocation, useNavigate } from 'react-router'
+import { useSignUp } from '@/apis'
+import { INDUSTRY_OPTIONS, JOB_OPTIONS } from '@/constants/signup'
+
+type SignupLocationState = { nickname?: string; profileImageUrl?: string } | null
+
+type UseSignupFormOptions = {
+  redirectTo: string
+}
+
+export function useSignupForm(options: UseSignupFormOptions) {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const state = (location.state ?? null) as SignupLocationState
+  const { redirectTo } = options
+
+  const [nickname, setNickname] = useState(state?.nickname ?? '')
+  const [industry, setIndustry] = useState('')
+  const [job, setJob] = useState('')
+
+  const { mutate: signUp, isPending } = useSignUp({
+    mutation: {
+      onSuccess: () => {
+        navigate(redirectTo)
+      },
+    },
+  })
+
+  const isFormValid = nickname.length > 0 && nickname.length <= 5 && industry !== '' && job !== ''
+
+  const handleSubmit = () => {
+    if (!isFormValid) return
+    const industryOption = INDUSTRY_OPTIONS.find((o) => o.value === industry)
+    const jobOption = JOB_OPTIONS.find((o) => o.value === job)
+    if (!industryOption || !jobOption) return
+    signUp({
+      params: { originType: import.meta.env.VITE_APP_ENV },
+      data: {
+        nickname,
+        profileImageUrl: state?.profileImageUrl ?? '',
+        industryId: industryOption.id,
+        jobCategoryId: jobOption.id,
+      },
+    })
+  }
+
+  return {
+    nickname,
+    setNickname,
+    industry,
+    setIndustry,
+    job,
+    setJob,
+    isFormValid,
+    isPending,
+    handleSubmit,
+  }
+}

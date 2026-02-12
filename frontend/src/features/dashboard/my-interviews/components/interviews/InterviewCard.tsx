@@ -1,16 +1,18 @@
+import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
+import { Badge, Border } from '@/designs/components'
 import {
   RESULT_LABEL,
   RESULT_THEME,
   type InterviewResultStatus,
 } from '@/features/dashboard/my-interviews/constants/constants'
-import { Badge, Border } from '@/shared/components'
+import type { InterviewType } from '@/types/interview'
 
 type InterviewCardProps = {
   resultStatus: InterviewResultStatus
   date: string
   company: string
   jobRole: string
-  interviewType: string
+  interviewType: InterviewType
   infoDirection?: 'row' | 'column'
   children?: React.ReactNode
 }
@@ -37,7 +39,7 @@ export default function InterviewCard({
           <span>{company}</span>
         </div>
         <div className="body-m-medium text-gray-700">
-          {jobRole} <span className="mx-1 text-gray-200">|</span> {interviewType}
+          {jobRole} <span className="mx-1 text-gray-200">|</span> {INTERVIEW_TYPE_LABEL[interviewType]}
         </div>
       </div>
       {children}

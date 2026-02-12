@@ -2,11 +2,13 @@ package com.shyashyashya.refit.global.oauth2.api;
 
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 
-import com.shyashyashya.refit.global.auth.service.CookieUtil;
 import com.shyashyashya.refit.global.dto.ApiResponse;
-import com.shyashyashya.refit.global.oauth2.dto.OAuth2LoginUrlResponse;
+import com.shyashyashya.refit.global.model.ClientOriginType;
 import com.shyashyashya.refit.global.oauth2.dto.OAuth2ResultDto;
+import com.shyashyashya.refit.global.oauth2.dto.response.OAuth2LoginUrlResponse;
 import com.shyashyashya.refit.global.oauth2.service.GoogleOAuth2Service;
+import com.shyashyashya.refit.global.oauth2.util.ClientOriginRedirectUriBuilder;
+import com.shyashyashya.refit.global.util.CookieUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -27,13 +29,15 @@ public class GoogleOAuth2Controller implements OAuth2Controller {
 
     private final GoogleOAuth2Service googleOAuth2Service;
     private final CookieUtil cookieUtil;
+    private final ClientOriginRedirectUriBuilder clientOriginRedirectUriBuilder;
 
     @Operation(summary = "구글 로그인 화면으로 이동하는 url을 생성합니다.")
     @GetMapping
     @Override
     public ResponseEntity<ApiResponse<OAuth2LoginUrlResponse>> buildOAuth2LoginUrl(
-            @RequestParam(required = false) String env) {
-        var response = googleOAuth2Service.buildOAuth2LoginUrl(env);
+            @RequestParam(required = false) String originType) {
+        ClientOriginType clientOriginType = ClientOriginType.fromOriginTypeString(originType);
+        var response = googleOAuth2Service.buildOAuth2LoginUrl(clientOriginType);
         var body = ApiResponse.success(COMMON200, response);
         return ResponseEntity.ok(body);
     }
@@ -46,9 +50,9 @@ public class GoogleOAuth2Controller implements OAuth2Controller {
     public ResponseEntity<Void> handleOAuth2Callback(@RequestParam String code, @RequestParam String state) {
         OAuth2ResultDto result = googleOAuth2Service.handleOAuth2Callback(code, state);
         var accessTokenCookie =
-                cookieUtil.createAccessTokenCookie(result.tokenPair().accessToken());
+                cookieUtil.createAccessTokenCookie(result.tokenPair().accessToken(), result.clientOriginType());
         var refreshTokenCookie =
-                cookieUtil.createResponseTokenCookie(result.tokenPair().refreshToken());
+                cookieUtil.createResponseTokenCookie(result.tokenPair().refreshToken(), result.clientOriginType());
 
         String redirectUrl = buildRedirectUrl(result);
 
@@ -61,7 +65,8 @@ public class GoogleOAuth2Controller implements OAuth2Controller {
 
     private String buildRedirectUrl(OAuth2ResultDto oAuth2ResultDto) {
         boolean isNeedSignup = oAuth2ResultDto.isNeedSignup();
-        var builder = UriComponentsBuilder.fromUriString(oAuth2ResultDto.frontRedirectUri())
+        String clientOriginRedirectUri = clientOriginRedirectUriBuilder.build(oAuth2ResultDto.clientOriginType());
+        var builder = UriComponentsBuilder.fromUriString(clientOriginRedirectUri)
                 .queryParam("status", isNeedSignup ? "signUpRequired" : "loginSuccess");
 
         if (isNeedSignup) {

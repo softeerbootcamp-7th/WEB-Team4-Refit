@@ -1,48 +1,20 @@
-import { useState } from 'react'
-import { FadeScrollArea } from '@/shared/components'
+import type { RefObject } from 'react'
+import { FadeScrollArea } from '@/designs/components'
+import type { SimpleQnaType } from '@/types/interview'
 import { LinkQnaSetCard } from './LinkQnaSetCard'
 
-export type QnAType = {
-  qnaSetId: number
-  questionText: string
-  answerText: string
+type QnaListSectionProps = {
+  qnaList: SimpleQnaType[]
+  setRef: (index: number, el: HTMLDivElement | null) => void
+  scrollContainerRef: RefObject<HTMLDivElement | null>
 }
 
-export function QnaListSection() {
-  const [qnaList] = useState<QnAType[]>(initialQnaList)
-
+export function QnaListSection({ qnaList, setRef, scrollContainerRef }: QnaListSectionProps) {
   return (
-    <FadeScrollArea className="space-y-3 pr-2">
+    <FadeScrollArea ref={scrollContainerRef} className="space-y-3 pr-2">
       {qnaList.map((qnaData, idx) => (
-        <LinkQnaSetCard key={qnaData.qnaSetId} qnaData={qnaData} idx={idx + 1} />
+        <LinkQnaSetCard key={qnaData.qnaSetId} ref={(el) => setRef(idx, el)} qnaData={qnaData} idx={idx + 1} />
       ))}
     </FadeScrollArea>
   )
 }
-
-const initialQnaList: QnAType[] = [
-  {
-    qnaSetId: 1,
-    questionText: '짧은 질문입니다.',
-    answerText:
-      '답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. ',
-  },
-  {
-    qnaSetId: 2,
-    questionText: '질문의 길이가 길어 줄을 넘어 두 줄까지 내려가는 경우에는 다음과 같은 형태로 배열됩니다.',
-    answerText:
-      '답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다.',
-  },
-  {
-    qnaSetId: 3,
-    questionText: '질문의 길이가 길어 한 줄을 끝까지 채우는 경우에는 이렇게 배열됩니다.',
-    answerText:
-      '답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다.',
-  },
-  {
-    qnaSetId: 4,
-    questionText: '질문의 길이가 길어 한 줄을 끝까지 채우는 경우에는 이렇게 배열됩니다.',
-    answerText:
-      '답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다. 답변은 글자수 제한 없이 작성될 수 있습니다.',
-  },
-]

@@ -6,16 +6,18 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.INVALID_OAUTH2_C
 
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
-import com.shyashyashya.refit.global.auth.model.RefreshToken;
-import com.shyashyashya.refit.global.auth.repository.RefreshTokenRepository;
-import com.shyashyashya.refit.global.auth.service.JwtUtil;
-import com.shyashyashya.refit.global.constant.UrlConstant;
+import com.shyashyashya.refit.global.auth.dto.TokenPairDto;
+import com.shyashyashya.refit.global.auth.service.JwtDecoder;
+import com.shyashyashya.refit.global.auth.service.JwtEncoder;
+import com.shyashyashya.refit.global.auth.service.JwtService;
+import com.shyashyashya.refit.global.auth.service.validator.JwtValidator;
 import com.shyashyashya.refit.global.exception.CustomException;
-import com.shyashyashya.refit.global.oauth2.dto.OAuth2LoginUrlResponse;
+import com.shyashyashya.refit.global.model.ClientOriginType;
 import com.shyashyashya.refit.global.oauth2.dto.OAuth2ResultDto;
+import com.shyashyashya.refit.global.oauth2.dto.response.OAuth2LoginUrlResponse;
 import com.shyashyashya.refit.global.property.OAuth2Property;
-import com.shyashyashya.refit.global.util.CurrentProfileUtil;
-import com.shyashyashya.refit.global.util.RequestHostUrlUtil;
+import com.shyashyashya.refit.global.util.CurrentServerUrlUtil;
+import java.time.Instant;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,17 +36,18 @@ import org.springframework.web.util.UriComponentsBuilder;
 // TODO: RefreshToken을 redis 등에 저장하는 것 고려
 public class GoogleOAuth2Service implements OAuth2Service {
 
+    private final JwtService jwtService;
     private final UserRepository userRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
 
     private final OAuth2Property oauth2Property;
-    private final CurrentProfileUtil currentProfileUtil;
-    private final JwtUtil jwtUtil;
-    private final RequestHostUrlUtil requestHostUrlUtil;
+    private final CurrentServerUrlUtil currentServerUrlUtil;
+    private final JwtEncoder jwtEncoder;
+    private final JwtDecoder jwtDecoder;
+    private final JwtValidator jwtValidator;
     private final RestClient restClient;
 
     @Override
-    public OAuth2LoginUrlResponse buildOAuth2LoginUrl(String env) {
+    public OAuth2LoginUrlResponse buildOAuth2LoginUrl(ClientOriginType clientOriginType) {
         String googleClientId = oauth2Property.google().clientId();
         String scope = String.join(" ", oauth2Property.google().scope());
         String responseType = "code";
@@ -54,7 +57,7 @@ public class GoogleOAuth2Service implements OAuth2Service {
                 .queryParam("redirect_uri", getRedirectUri())
                 .queryParam("response_type", responseType)
                 .queryParam("scope", scope)
-                .queryParam("state", jwtUtil.createOAuth2StateToken(requestHostUrlUtil.getRequestHostUrl(env)))
+                .queryParam("state", jwtEncoder.encodeOAuth2StateJwt(clientOriginType, Instant.now()))
                 .toUriString();
         return OAuth2LoginUrlResponse.from(loginUrlResponseUrl);
     }
@@ -62,9 +65,9 @@ public class GoogleOAuth2Service implements OAuth2Service {
     @Transactional
     @Override
     public OAuth2ResultDto handleOAuth2Callback(String code, String state) {
-        var validatedOAuth2StateToken = jwtUtil.getValidatedJwtToken(state);
-        var requestHostUrl = jwtUtil.getRequestHostUrl(validatedOAuth2StateToken);
-        String frontendRedirectUrl = requestHostUrl + UrlConstant.LOGIN_REDIRECT_PATH;
+        var oAuth2StateJwt = jwtDecoder.decodeOAuth2StateJwt(state);
+        jwtValidator.validateOAuth2StateJwtNotExpired(oAuth2StateJwt);
+        ClientOriginType clientOriginType = jwtDecoder.getClientOriginType(oAuth2StateJwt);
 
         var tokenResponse = fetchAccessToken(code);
         var userInfo = fetchUserInfo(tokenResponse.access_token());
@@ -72,19 +75,16 @@ public class GoogleOAuth2Service implements OAuth2Service {
         Optional<User> userOptional = userRepository.findByEmail(userInfo.email());
         Long userId = userOptional.map(User::getId).orElse(null);
 
-        String accessToken = jwtUtil.createAccessToken(userInfo.email(), userId);
-        String refreshToken = jwtUtil.createRefreshToken(userInfo.email(), userId);
-
-        var refreshTokenExpiration = jwtUtil.getValidatedJwtToken(refreshToken).getExpiration();
-        refreshTokenRepository.save(RefreshToken.create(refreshToken, userInfo.email(), refreshTokenExpiration));
-
+        TokenPairDto tokenPair = jwtService.publishTokenPair(userInfo.email(), userId);
         return userOptional
-                .map(user -> OAuth2ResultDto.createUser(accessToken, refreshToken, user, frontendRedirectUrl))
-                .orElseGet(() -> OAuth2ResultDto.createGuest(accessToken, refreshToken, userInfo, frontendRedirectUrl));
+                .map(user -> OAuth2ResultDto.of(
+                        tokenPair, userId, user.getNickname(), user.getProfileImageUrl(), clientOriginType))
+                .orElseGet(() ->
+                        OAuth2ResultDto.of(tokenPair, userId, userInfo.name(), userInfo.picture(), clientOriginType));
     }
 
     private String getRedirectUri() {
-        return currentProfileUtil.getServerUrl() + oauth2Property.google().redirectPath();
+        return currentServerUrlUtil.getServerUrl() + oauth2Property.google().redirectPath();
     }
 
     private GoogleTokenResponse fetchAccessToken(String code) {
