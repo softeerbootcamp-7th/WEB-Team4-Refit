@@ -1,6 +1,7 @@
 package com.shyashyashya.refit.domain.qnaset.api;
 
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
+import static com.shyashyashya.refit.global.model.ResponseCode.COMMON204;
 
 import com.shyashyashya.refit.domain.interview.dto.StarAnalysisDto;
 import com.shyashyashya.refit.domain.qnaset.dto.PdfHighlightingDto;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -76,6 +78,14 @@ public class QnaSetController {
         qnaSetService.updateQnaSet(qnaSetId, request);
         var response = ApiResponse.success(COMMON200);
         return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "지정한 질문 답변 세트를 삭제합니다.")
+    @DeleteMapping("/{qnaSetId}")
+    public ResponseEntity<ApiResponse<Void>> deleteQnaSet(@PathVariable Long qnaSetId) {
+        qnaSetService.deleteQnaSet(qnaSetId);
+        var resposne = ApiResponse.success(COMMON204);
+        return ResponseEntity.ok(resposne);
     }
 
     @Operation(summary = "지정한 질문 답변 세트에 대해 PDF 하이라이팅 정보를 등록/수정합니다.")
