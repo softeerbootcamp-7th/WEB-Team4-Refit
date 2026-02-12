@@ -9,6 +9,7 @@ import com.shyashyashya.refit.global.auth.model.ValidatedJwtToken;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.property.AuthJwtProperty;
 import com.shyashyashya.refit.global.property.OAuth2Property;
+import com.shyashyashya.refit.global.util.ClientOriginType;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -55,12 +56,12 @@ public class JwtUtil {
         return createAccessOrRefreshJwtToken(email, userId, refreshTokenExpiration, JwtTokenType.REFRESH_TOKEN);
     }
 
-    public String createOAuth2StateToken(String requestHostUrl) {
+    public String createOAuth2StateToken(ClientOriginType clientOriginType) {
         var now = Instant.now();
         var expiration = now.plus(oAuth2StateTokenExpiration);
 
         return Jwts.builder()
-                .setSubject(requestHostUrl)
+                .setSubject(clientOriginType.getOriginType())
                 .claim(CLAIM_KEY_JWT_TOKEN_TYPE, JwtTokenType.OAUTH2_STATE_TOKEN)
                 .setIssuedAt(Date.from(now))
                 .setExpiration(Date.from(expiration))
@@ -95,9 +96,9 @@ public class JwtUtil {
         }
     }
 
-    public String getRequestHostUrl(ValidatedJwtToken validatedJwtToken) {
+    public ClientOriginType getClientOriginType(ValidatedJwtToken validatedJwtToken) {
         validateOAuth2StateType(validatedJwtToken);
-        return validatedJwtToken.claims().getSubject();
+        return ClientOriginType.fromOriginTypeString(validatedJwtToken.claims().getSubject());
     }
 
     public String getEmail(ValidatedJwtToken validatedJwtToken) {

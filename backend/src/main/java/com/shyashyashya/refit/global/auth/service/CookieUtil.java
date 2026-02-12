@@ -1,8 +1,9 @@
 package com.shyashyashya.refit.global.auth.service;
 
 import com.shyashyashya.refit.global.constant.AuthConstant;
+import com.shyashyashya.refit.global.constant.UrlConstant;
 import com.shyashyashya.refit.global.property.AuthJwtProperty;
-import com.shyashyashya.refit.global.property.AuthProperty;
+import com.shyashyashya.refit.global.util.ClientOriginType;
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
@@ -12,36 +13,37 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CookieUtil {
 
-    private final AuthProperty authProperty;
     private final AuthJwtProperty authJwtProperty;
 
-    public ResponseCookie createCookie(String name, String value, Duration maxAge) {
-        return ResponseCookie.from(name, value)
-                .httpOnly(true)
-                .secure(authProperty.usingHttps())
-                .path("/")
-                .maxAge(maxAge)
-                .sameSite("Lax")
-                .build();
-    }
-
-    public String createAccessTokenCookie(String accessToken) {
+    public String createAccessTokenCookie(String accessToken, ClientOriginType originType) {
         return createCookie(
                         AuthConstant.ACCESS_TOKEN,
                         accessToken,
-                        authJwtProperty.tokenExpiration().accessToken())
+                        authJwtProperty.tokenExpiration().accessToken(),
+                        originType)
                 .toString();
     }
 
-    public String createResponseTokenCookie(String refreshToken) {
+    public String createResponseTokenCookie(String refreshToken, ClientOriginType originType) {
         return createCookie(
                         AuthConstant.REFRESH_TOKEN,
                         refreshToken,
-                        authJwtProperty.tokenExpiration().refreshToken())
+                        authJwtProperty.tokenExpiration().refreshToken(),
+                        originType)
                 .toString();
     }
 
     public String deleteCookie(String name) {
         return ResponseCookie.from(name, "").maxAge(0).path("/").build().toString();
+    }
+
+    private ResponseCookie createCookie(String name, String value, Duration maxAge, ClientOriginType originType) {
+        var builder = ResponseCookie.from(name, value).httpOnly(true).path("/").maxAge(maxAge);
+
+        if (originType.getClientOriginUrl().contains(UrlConstant.APP_DOMAIN)) {
+            builder.domain(UrlConstant.APP_DOMAIN);
+        }
+
+        return builder.build();
     }
 }
