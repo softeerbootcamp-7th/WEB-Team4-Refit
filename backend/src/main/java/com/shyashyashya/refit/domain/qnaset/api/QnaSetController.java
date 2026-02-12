@@ -7,6 +7,7 @@ import com.shyashyashya.refit.domain.qnaset.dto.PdfHighlightingDto;
 import com.shyashyashya.refit.domain.qnaset.dto.request.PdfHighlightingUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetResponse;
+import com.shyashyashya.refit.domain.qnaset.dto.response.QnaSetScrapFolderResponse;
 import com.shyashyashya.refit.domain.qnaset.service.QnaSetService;
 import com.shyashyashya.refit.domain.qnaset.service.StarAnalysisAsyncService;
 import com.shyashyashya.refit.global.dto.ApiResponse;
@@ -101,5 +102,14 @@ public class QnaSetController {
         return starAnalysisService
                 .createStarAnalysis(qnaSetId)
                 .thenApply(rsp -> ResponseEntity.ok(ApiResponse.success(COMMON200, rsp)));
+    }
+
+    @Operation(summary = "지정한 질문 답변 세트가 스크랩 폴더에 포함되어 있는 지 여부가 포함된 스크랩 폴더 리스트를 조회합니다.")
+    @GetMapping("/{qnaSetId}/scrap-folder")
+    public ResponseEntity<ApiResponse<Page<QnaSetScrapFolderResponse>>> getScrapFoldersContainingQnaSet(
+            @PathVariable Long qnaSetId, Pageable pageable) {
+        var body = qnaSetService.getMyScrapFoldersWithQnaSetContainingInfo(qnaSetId, pageable);
+        var response = ApiResponse.success(COMMON200, body);
+        return ResponseEntity.ok(response);
     }
 }

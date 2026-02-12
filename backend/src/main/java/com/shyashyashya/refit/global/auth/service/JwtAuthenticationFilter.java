@@ -44,6 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
             String token = resolveToken(request);
             var validatedJwtToken = jwtUtil.getValidatedJwtToken(token);
+            requestUserContext.setEmail(jwtUtil.getEmail(validatedJwtToken));
             jwtUtil.getUserId(validatedJwtToken)
                     .ifPresentOrElse(this::setRequestUserContext, () -> validateIllegalGuestRequest(request));
 
