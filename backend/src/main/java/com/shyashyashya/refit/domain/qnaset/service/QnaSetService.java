@@ -151,13 +151,14 @@ public class QnaSetService {
     }
 
     private void updateOrCreateSelfReview(QnaSet qnaSet, String reqSelfReviewText) {
-        if (reqSelfReviewText != null) {
-            qnaSetSelfReviewRepository
-                    .findByQnaSet(qnaSet)
-                    .ifPresentOrElse(
-                            selfReview -> selfReview.updateSelfReviewText(reqSelfReviewText),
-                            () -> qnaSetSelfReviewRepository.save(QnaSetSelfReview.create(reqSelfReviewText, qnaSet)));
+        if (reqSelfReviewText == null) {
+            return;
         }
+        qnaSetSelfReviewRepository
+                .findByQnaSet(qnaSet)
+                .ifPresentOrElse(
+                        selfReview -> selfReview.updateSelfReviewText(reqSelfReviewText),
+                        () -> qnaSetSelfReviewRepository.save(QnaSetSelfReview.create(reqSelfReviewText, qnaSet)));
     }
 
     private void deleteAllHighlightingsAndRects(QnaSet qnaSet) {
@@ -170,17 +171,18 @@ public class QnaSetService {
             PdfHighlighting pdfHighlighting = PdfHighlighting.create(reqDto.highlightingText(), qnaSet);
             pdfHighlightingRepository.save(pdfHighlighting);
 
-            if (reqDto.rects() != null) {
-                reqDto.rects().stream()
-                        .map(rectDto -> PdfHighlightingRect.create(
-                                rectDto.x(),
-                                rectDto.y(),
-                                rectDto.width(),
-                                rectDto.height(),
-                                rectDto.pageNumber(),
-                                pdfHighlighting))
-                        .forEach(pdfHighlightingRectRepository::save);
+            if (reqDto.rects() == null) {
+                return;
             }
+            reqDto.rects().stream()
+                    .map(rectDto -> PdfHighlightingRect.create(
+                            rectDto.x(),
+                            rectDto.y(),
+                            rectDto.width(),
+                            rectDto.height(),
+                            rectDto.pageNumber(),
+                            pdfHighlighting))
+                    .forEach(pdfHighlightingRectRepository::save);
         });
     }
 }
