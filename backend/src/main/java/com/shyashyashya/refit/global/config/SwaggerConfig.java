@@ -1,6 +1,6 @@
 package com.shyashyashya.refit.global.config;
 
-import com.shyashyashya.refit.global.util.ActiveProfileProperty;
+import com.shyashyashya.refit.global.util.CurrentServerUrlUtil;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.servers.Server;
 import io.swagger.v3.oas.models.tags.Tag;
@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class SwaggerConfig {
 
-    private final ActiveProfileProperty activeProfileProperty;
+    private final CurrentServerUrlUtil currentServerUrlUtil;
 
     @Bean
     public OpenAPI customOpenAPI() {
@@ -47,7 +47,7 @@ public class SwaggerConfig {
     }
 
     private List<Server> getServers() {
-        String url = activeProfileProperty.getServerUrl();
+        String url = currentServerUrlUtil.getServerUrl();
         Server server = new Server().url(url);
         return List.of(server);
     }
