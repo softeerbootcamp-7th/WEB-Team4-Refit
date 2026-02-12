@@ -162,7 +162,7 @@ public class QnaSetMyIntegrationTest extends IntegrationTest {
         }
 
         @Test
-        void 스타_포함_레벨로_질답세트를_필터링하여_성공적으로_조회한다() {
+        void S스타_포함_레벨로_질답세트를_필터링하여_성공적으로_조회한다() {
             // given
             QnaSet qnaSet1 = createQnaSet("S-PRESENT T-INSUFFICIENT", "답변", false);
             createStarAnalysis(qnaSet1, StarInclusionLevel.PRESENT, StarInclusionLevel.INSUFFICIENT, StarInclusionLevel.ABSENT, StarInclusionLevel.ABSENT);
@@ -188,6 +188,93 @@ public class QnaSetMyIntegrationTest extends IntegrationTest {
                     .body("result.content", hasSize(2))
                     .body("result.content*.qnaSetInfo.questionText",
                             containsInAnyOrder("S-PRESENT T-INSUFFICIENT", "스타 분석이 없는 질문"));
+        }
+
+        @Test
+        void T스타_포함_레벨로_질답세트를_필터링하여_성공적으로_조회한다() {
+            // given
+            QnaSet qnaSet1 = createQnaSet("S-PRESENT T-INSUFFICIENT", "답변", false);
+            createStarAnalysis(qnaSet1, StarInclusionLevel.PRESENT, StarInclusionLevel.INSUFFICIENT, StarInclusionLevel.ABSENT, StarInclusionLevel.ABSENT);
+
+            QnaSet qnaSet2 = createQnaSet("S-INSUFFICIENT T-ABSENT", "답변", false);
+            createStarAnalysis(qnaSet2, StarInclusionLevel.INSUFFICIENT, StarInclusionLevel.ABSENT, StarInclusionLevel.ABSENT, StarInclusionLevel.ABSENT);
+
+            QnaSet qnaSet3 = createQnaSet("스타 분석이 없는 질문", "답변", false);
+
+            // when & then
+            var filter1 = new QnaSearchFilter(null, null, List.of(StarInclusionLevel.INSUFFICIENT), null, null);
+            var request1 = new QnaSetSearchRequest(null, filter1);
+
+            given(spec)
+                    .body(request1)
+            .when()
+                    .post(path)
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result", notNullValue())
+                    .body("result.content", hasSize(2))
+                    .body("result.content*.qnaSetInfo.questionText",
+                            containsInAnyOrder("S-PRESENT T-INSUFFICIENT", "스타 분석이 없는 질문"));
+        }
+
+        @Test
+        void A스타_포함_레벨로_질답세트를_필터링하여_성공적으로_조회한다() {
+            // given
+            QnaSet qnaSet1 = createQnaSet("A-PRESENT T-INSUFFICIENT", "답변", false);
+            createStarAnalysis(qnaSet1, StarInclusionLevel.ABSENT, StarInclusionLevel.INSUFFICIENT, StarInclusionLevel.PRESENT, StarInclusionLevel.ABSENT);
+
+            QnaSet qnaSet2 = createQnaSet("S-INSUFFICIENT T-ABSENT", "답변", false);
+            createStarAnalysis(qnaSet2, StarInclusionLevel.INSUFFICIENT, StarInclusionLevel.ABSENT, StarInclusionLevel.ABSENT, StarInclusionLevel.ABSENT);
+
+            QnaSet qnaSet3 = createQnaSet("스타 분석이 없는 질문", "답변", false);
+
+            // when & then
+            var filter1 = new QnaSearchFilter(null, null, null, List.of(StarInclusionLevel.PRESENT), null);
+            var request1 = new QnaSetSearchRequest(null, filter1);
+
+            given(spec)
+                    .body(request1)
+            .when()
+                    .post(path)
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result", notNullValue())
+                    .body("result.content", hasSize(2))
+                    .body("result.content*.qnaSetInfo.questionText",
+                            containsInAnyOrder("A-PRESENT T-INSUFFICIENT", "스타 분석이 없는 질문"));
+        }
+
+        @Test
+        void R스타_포함_레벨로_질답세트를_필터링하여_성공적으로_조회한다() {
+            // given
+            QnaSet qnaSet1 = createQnaSet("R-PRESENT T-INSUFFICIENT", "답변", false);
+            createStarAnalysis(qnaSet1, StarInclusionLevel.ABSENT, StarInclusionLevel.INSUFFICIENT, StarInclusionLevel.ABSENT, StarInclusionLevel.PRESENT);
+
+            QnaSet qnaSet2 = createQnaSet("S-INSUFFICIENT T-ABSENT", "답변", false);
+            createStarAnalysis(qnaSet2, StarInclusionLevel.INSUFFICIENT, StarInclusionLevel.ABSENT, StarInclusionLevel.ABSENT, StarInclusionLevel.ABSENT);
+
+            QnaSet qnaSet3 = createQnaSet("스타 분석이 없는 질문", "답변", false);
+
+            // when & then
+            var filter1 = new QnaSearchFilter(null, null, null, null, List.of(StarInclusionLevel.PRESENT));
+            var request1 = new QnaSetSearchRequest(null, filter1);
+
+            given(spec)
+                    .body(request1)
+            .when()
+                    .post(path)
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result", notNullValue())
+                    .body("result.content", hasSize(2))
+                    .body("result.content*.qnaSetInfo.questionText",
+                            containsInAnyOrder("R-PRESENT T-INSUFFICIENT", "스타 분석이 없는 질문"));
         }
 
         @Test
