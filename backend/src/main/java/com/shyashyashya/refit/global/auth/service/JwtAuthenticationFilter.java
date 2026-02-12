@@ -57,7 +57,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (userId != null) {
                 requestUserContext.setUserId(userId);
             } else {
-                validateIllegalGuestRequest(request);
+                validateGuestRequestNotIllegal(request);
             }
 
             filterChain.doFilter(request, response);
@@ -81,7 +81,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 .anyMatch(pattern -> pathMatcher.match(pattern, request.getRequestURI()));
     }
 
-    private void validateIllegalGuestRequest(HttpServletRequest request) {
+    private void validateGuestRequestNotIllegal(HttpServletRequest request) {
         if (!pathMatcher.match(authUrlProperty.signUp(), request.getRequestURI())) {
             throw new CustomException(USER_SIGNUP_REQUIRED);
         }
