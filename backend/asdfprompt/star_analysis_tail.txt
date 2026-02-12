@@ -1,0 +1,27 @@
+---
+
+반드시 아래 JSON 형식으로만 출력하라.
+JSON 외의 텍스트는 절대 출력하지 마라.
+
+{
+  "S": {
+    "level": "있음 | 부족 | 없음",
+    "evidence": "string 또는 null",
+  },
+  "T": {
+    "level": "있음 | 부족 | 없음",
+    "evidence": "string 또는 null",
+  },
+  "A": {
+    "level": "있음 | 부족 | 없음",
+    "evidence": "string 또는 null",
+  },
+  "R": {
+    "level": "있음 | 부족 | 없음",
+    "evidence": "string 또는 null",
+  },
+  "overall_summary": "string"
+}
+
+4.결과
+S:부족 / T:있음 / A:있음 / R:부족

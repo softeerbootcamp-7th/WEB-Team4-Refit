@@ -1,15 +1,15 @@
 import type { LabelValueType } from '@/types/global'
 
 export const INTERVIEW_TYPE_LABEL = {
-  first: '1차 면접',
-  second: '2차 면접',
-  third: '3차 면접',
-  personality: '인성 면접',
-  technical: '기술 면접',
-  executive: '임원 면접',
-  culture: '컬쳐핏 면접',
-  coffee: '커피챗',
-  mock: '모의 면접',
+  FIRST: '1차 면접',
+  SECOND: '2차 면접',
+  THIRD: '3차 면접',
+  BEHAVIORAL: '인성 면접',
+  TECHNICAL: '기술 면접',
+  EXECUTIVE: '임원 면접',
+  CULTURE_FIT: '컬쳐핏 면접',
+  COFFEE_CHAT: '커피챗',
+  PSEUDO: '모의 면접',
 } as const
 
 export const INTERVIEW_TYPE_OPTIONS: LabelValueType[] = Object.entries(INTERVIEW_TYPE_LABEL).map(([value, label]) => ({

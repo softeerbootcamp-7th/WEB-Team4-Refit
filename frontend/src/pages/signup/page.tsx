@@ -1,11 +1,12 @@
 import { INDUSTRY_OPTIONS, JOB_OPTIONS } from '@/constants/signup'
 import { Logo } from '@/designs/assets'
 import { Button, Input, NativeCombobox } from '@/designs/components'
-import { useSignupForm } from '@/features/signup/_index/hooks'
+import { useSignupForm } from '@/features/_common/auth'
+import { ROUTES } from '@/routes/routes'
 
 export default function SignupPage() {
   const { nickname, setNickname, industry, setIndustry, job, setJob, isFormValid, isPending, handleSubmit } =
-    useSignupForm()
+    useSignupForm({ redirectTo: ROUTES.DASHBOARD })
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100 px-4 py-8 sm:px-6 sm:py-12">

@@ -4,6 +4,7 @@ import static org.springframework.http.HttpStatus.BAD_GATEWAY;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
@@ -47,7 +48,15 @@ public enum ErrorCode {
 
     SCRAP_FOLDER_NOT_ACCESSIBLE(FORBIDDEN, "스크랩 폴더에 접근할 수 없습니다."),
     SCRAP_FOLDER_NOT_FOUND(NOT_FOUND, "스크랩 폴더가 존재하지 않습니다."),
-    SCRAP_FOLDER_NAME_DUPLICATED(CONFLICT, "이미 존재하는 스크랩 폴더 이름입니다.");
+    SCRAP_FOLDER_NAME_DUPLICATED(CONFLICT, "이미 존재하는 스크랩 폴더 이름입니다."),
+
+    STAR_ANALYSIS_NOT_FOUND(NOT_FOUND, "스타 분석이 존재하지 않습니다."),
+    STAR_ANALYSIS_CREATION_FAILED_ALREADY_IN_PROGRESS(CONFLICT, "이미 스타 분석 생성 요청이 진행 중입니다."),
+    STAR_ANALYSIS_PARSING_FAILED(INTERNAL_SERVER_ERROR, "스타 분석을 파싱 중 오류가 발생하였습니다."),
+    STAR_ANALYSIS_CREATE_FAILED(INTERNAL_SERVER_ERROR, "스타 분석 생성 중 오류가 발생하였습니다."),
+    STAR_ANALYSIS_COMPLETE_FAILED(INTERNAL_SERVER_ERROR, "스타 분석 업데이트 중 오류가 발생하였습니다."),
+    STAR_ANALYSIS_DELETE_NOT_ALLOWED_STATUS(BAD_REQUEST, "진행 중(IN_PROGRESS)인 스타 분석만 삭제할 수 있습니다."),
+    ;
 
     private final HttpStatus httpStatus;
     private final String message;

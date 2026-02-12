@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum StarInclusionLevel {
+    NULL,
     PRESENT,
     INSUFFICIENT,
     ABSENT

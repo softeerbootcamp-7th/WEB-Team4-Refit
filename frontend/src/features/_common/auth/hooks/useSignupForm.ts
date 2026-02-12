@@ -2,14 +2,18 @@ import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import { useSignUp } from '@/apis'
 import { INDUSTRY_OPTIONS, JOB_OPTIONS } from '@/constants/signup'
-import { ROUTES } from '@/routes/routes'
 
 type SignupLocationState = { nickname?: string; profileImageUrl?: string } | null
 
-export function useSignupForm() {
+type UseSignupFormOptions = {
+  redirectTo: string
+}
+
+export function useSignupForm(options: UseSignupFormOptions) {
   const navigate = useNavigate()
   const location = useLocation()
   const state = (location.state ?? null) as SignupLocationState
+  const { redirectTo } = options
 
   const [nickname, setNickname] = useState(state?.nickname ?? '')
   const [industry, setIndustry] = useState('')
@@ -18,7 +22,7 @@ export function useSignupForm() {
   const { mutate: signUp, isPending } = useSignUp({
     mutation: {
       onSuccess: () => {
-        navigate(ROUTES.DASHBOARD)
+        navigate(redirectTo)
       },
     },
   })

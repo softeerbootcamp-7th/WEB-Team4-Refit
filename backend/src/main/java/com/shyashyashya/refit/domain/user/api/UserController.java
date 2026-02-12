@@ -9,7 +9,7 @@ import com.shyashyashya.refit.domain.user.service.UserService;
 import com.shyashyashya.refit.global.auth.dto.TokenPairDto;
 import com.shyashyashya.refit.global.auth.service.CookieUtil;
 import com.shyashyashya.refit.global.dto.ApiResponse;
-import com.shyashyashya.refit.global.util.RequestHostUrlUtil;
+import com.shyashyashya.refit.global.util.ClientOriginType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "User API", description = "유저와 관련된 API 입니다.")
@@ -32,22 +33,24 @@ public class UserController {
 
     private final UserService userService;
     private final CookieUtil cookieUtil;
-    private final RequestHostUrlUtil requestHostUrlUtil;
 
     @Operation(
             summary = "새롭게 회원가입 합니다.",
             description = "현재 로그인한 계정이 아직 등록되지 않은 상태일 때만 회원가입 할 수 있습니다. 회원가입이 성공하면 토큰을 새로 발급합니다.")
     @PostMapping("/signup")
-    public ResponseEntity<Void> signUp(@Valid @RequestBody UserSignUpRequest userSignUpRequest) {
+    public ResponseEntity<Void> signUp(
+            @RequestParam(required = false) String originType,
+            @Valid @RequestBody UserSignUpRequest userSignUpRequest) {
+        ClientOriginType clientOriginType = ClientOriginType.fromOriginTypeString(originType);
         TokenPairDto tokenPairDto = userService.signUp(userSignUpRequest);
 
-        String accessTokenCookie = cookieUtil.createAccessTokenCookie(tokenPairDto.accessToken());
-        String refreshTokenCookie = cookieUtil.createResponseTokenCookie(tokenPairDto.refreshToken());
+        String accessTokenCookie = cookieUtil.createAccessTokenCookie(tokenPairDto.accessToken(), clientOriginType);
+        String refreshTokenCookie = cookieUtil.createResponseTokenCookie(tokenPairDto.refreshToken(), clientOriginType);
 
         return ResponseEntity.status(HttpStatus.FOUND)
                 .header(HttpHeaders.SET_COOKIE, accessTokenCookie)
                 .header(HttpHeaders.SET_COOKIE, refreshTokenCookie)
-                .header(HttpHeaders.LOCATION, requestHostUrlUtil.getRequestHostUrl(userSignUpRequest.env()))
+                .header(HttpHeaders.LOCATION, clientOriginType.getClientOriginUrl())
                 .build();
     }
 
