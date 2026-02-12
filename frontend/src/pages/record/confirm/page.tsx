@@ -59,19 +59,19 @@ function RecordConfirmContent() {
 }
 
 function transformInterviewData(res: Awaited<ReturnType<typeof getInterviewFull>>) {
-  const data = res.result
+  const interviewFull = res.result
   // TODO: 에러 처리
-  if (!data) throw new Error('인터뷰 데이터가 존재하지 않습니다.')
+  if (!interviewFull) throw new Error('인터뷰 데이터가 존재하지 않습니다.')
 
   const interviewInfo: InterviewInfoType = {
-    company: data.company ?? '',
-    jobRole: data.jobRole ?? '',
-    interviewType: data.interviewType as InterviewType,
-    interviewStartAt: data.interviewStartAt ?? '',
+    company: interviewFull.company ?? '',
+    jobRole: interviewFull.jobRole ?? '',
+    interviewType: interviewFull.interviewType as InterviewType,
+    interviewStartAt: interviewFull.interviewStartAt ?? '',
   }
 
-  const qnaList: SimpleQnaType[] = (data.qnaSets ?? []).map((qnaSet) => ({
-    qnaSetId: qnaSet.qnaSetId ?? 0,
+  const qnaList: SimpleQnaType[] = (interviewFull.qnaSets ?? []).map((qnaSet) => ({
+    qnaSetId: qnaSet.qnaSetId!,
     questionText: qnaSet.questionText ?? '',
     answerText: qnaSet.answerText ?? '',
   }))
