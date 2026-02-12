@@ -194,4 +194,13 @@ public class QnaSetService {
         }
         return list.stream().distinct().toList();
     }
+
+    public void deleteQnaSet(Long qnaSetId) {
+        // TODO qnaSet 소유권 검증 공통 로직 메소드 분리
+        QnaSet qnaSet = qnaSetRepository.findById(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
+        User requestUser = requestUserContext.getRequestUser();
+        interviewValidator.validateInterviewOwner(qnaSet.getInterview(), requestUser);
+        interviewValidator.validateInterviewSReviewStatusQnaSetDraft(qnaSet.getInterview());
+        qnaSetRepository.deleteById(qnaSetId);
+    }
 }
