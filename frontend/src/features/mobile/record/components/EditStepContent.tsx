@@ -24,7 +24,7 @@ export default function EditStepContent({
         <textarea
           value={text}
           onChange={(e) => onTextChange(e.target.value)}
-          className="body-m-regular focus:ring-opacity-30 min-h-70 w-full resize-none rounded-xl border border-gray-200 bg-white px-4 py-4 text-gray-800 placeholder:text-gray-400 focus:border-orange-500 focus:ring-2 focus:ring-orange-500 focus:outline-none"
+          className="body-m-regular focus:ring-opacity-30 focus:ring-0.5 min-h-70 w-full resize-none rounded-xl border border-gray-200 bg-white px-4 py-4 text-gray-800 placeholder:text-gray-400 focus:border-orange-500 focus:ring-orange-500 focus:outline-none"
           rows={8}
         />
         <button
