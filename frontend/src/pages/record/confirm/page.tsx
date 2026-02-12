@@ -2,22 +2,16 @@ import { Suspense } from 'react'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { useParams } from 'react-router'
 import { getGetInterviewFullQueryKey, getInterviewFull } from '@/apis/generated/interview-api/interview-api'
-import { LoadingSpinner } from '@/designs/assets'
 import { useSectionScroll } from '@/features/_common/hooks/useSectionScroll'
 import { RecordSection } from '@/features/record/confirm/components/contents/RecordSection'
 import { RecordConfirmSidebar } from '@/features/record/confirm/components/sidebar/Sidebar'
+import SidebarLayoutSkeleton from '@/features/record/confirm/components/SidebarLayoutSkeleton'
 import { useQnaList } from '@/features/record/confirm/hooks/useQnaList'
 import type { InterviewInfoType, InterviewType, SimpleQnaType } from '@/types/interview'
 
 export default function RecordConfirmPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="flex h-full items-center justify-center">
-          <LoadingSpinner className="h-10 w-10 animate-spin text-orange-500" />
-        </div>
-      }
-    >
+    <Suspense fallback={<SidebarLayoutSkeleton />}>
       <RecordConfirmContent />
     </Suspense>
   )
@@ -25,32 +19,16 @@ export default function RecordConfirmPage() {
 
 function RecordConfirmContent() {
   const { interviewId } = useParams()
-  const id = Number(interviewId)
   const { data } = useSuspenseQuery({
-    queryKey: getGetInterviewFullQueryKey(id),
-    queryFn: () => getInterviewFull(id),
+    queryKey: getGetInterviewFullQueryKey(Number(interviewId)),
+    queryFn: () => getInterviewFull(Number(interviewId)),
+    select: transformInterviewData,
   })
-  const interviewFull = data.result!
 
-  const interviewInfoItems: InterviewInfoType = {
-    company: interviewFull.company ?? '',
-    jobRole: interviewFull.jobRole ?? '',
-    interviewType: interviewFull.interviewType as InterviewType,
-    interviewStartAt: interviewFull.interviewStartAt ?? '',
-  }
-
-  const initialQnaList: SimpleQnaType[] = (interviewFull.qnaSets ?? []).map((q) => ({
-    qnaSetId: q.qnaSetId ?? 0,
-    questionText: q.questionText ?? '',
-    answerText: q.answerText ?? '',
-  }))
-
-  const { qnaList, isAddMode, handleEdit, handleDelete, handleAddSave, startAddMode, cancelAddMode } =
-    useQnaList(initialQnaList)
-
-  const { activeIndex, setRef, scrollContainerRef, handleItemClick } = useSectionScroll({
-    idPrefix: 'record-confirm',
-  })
+  const { qnaList, isAddMode, handleEdit, handleDelete, handleAddSave, startAddMode, cancelAddMode } = useQnaList(
+    data.qnaList,
+  )
+  const sectionScroll = useSectionScroll({ idPrefix: 'record-confirm' })
 
   const questionItems = qnaList.map(({ qnaSetId, questionText }, index) => ({
     id: qnaSetId,
@@ -60,10 +38,10 @@ function RecordConfirmContent() {
   return (
     <div className="mx-auto grid h-full w-7xl grid-cols-[320px_1fr]">
       <RecordConfirmSidebar
-        infoItems={interviewInfoItems}
+        infoItems={data.interviewInfo}
         questionItems={questionItems}
-        activeIndex={activeIndex}
-        onItemClick={handleItemClick}
+        activeIndex={sectionScroll.activeIndex}
+        onItemClick={sectionScroll.handleItemClick}
       />
       <RecordSection
         qnaList={qnaList}
@@ -73,9 +51,30 @@ function RecordConfirmContent() {
         onAddSave={handleAddSave}
         onStartAdd={startAddMode}
         onCancelAdd={cancelAddMode}
-        setRef={setRef}
-        scrollContainerRef={scrollContainerRef}
+        setRef={sectionScroll.setRef}
+        scrollContainerRef={sectionScroll.scrollContainerRef}
       />
     </div>
   )
+}
+
+function transformInterviewData(res: Awaited<ReturnType<typeof getInterviewFull>>) {
+  const data = res.result
+  // TODO: 에러 처리
+  if (!data) throw new Error('인터뷰 데이터가 존재하지 않습니다.')
+
+  const interviewInfo: InterviewInfoType = {
+    company: data.company ?? '',
+    jobRole: data.jobRole ?? '',
+    interviewType: data.interviewType as InterviewType,
+    interviewStartAt: data.interviewStartAt ?? '',
+  }
+
+  const qnaList: SimpleQnaType[] = (data.qnaSets ?? []).map((qnaSet) => ({
+    qnaSetId: qnaSet.qnaSetId ?? 0,
+    questionText: qnaSet.questionText ?? '',
+    answerText: qnaSet.answerText ?? '',
+  }))
+
+  return { interviewInfo, qnaList }
 }
