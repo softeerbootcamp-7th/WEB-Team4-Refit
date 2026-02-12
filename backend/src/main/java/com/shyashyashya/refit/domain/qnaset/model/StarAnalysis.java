@@ -1,5 +1,7 @@
 package com.shyashyashya.refit.domain.qnaset.model;
 
+import com.shyashyashya.refit.global.exception.CustomException;
+import com.shyashyashya.refit.global.exception.ErrorCode;
 import com.shyashyashya.refit.global.model.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,7 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -47,28 +49,45 @@ public class StarAnalysis extends BaseEntity {
     @Column(name = "overall_summary_text", nullable = false, columnDefinition = "varchar(500)")
     private String overallSummaryText;
 
-    @JoinColumn(name = "qna_set_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "analysis_status", nullable = false)
+    private StarAnalysisGenerationStatus status;
+
+    @JoinColumn(name = "qna_set_id", nullable = false, unique = true)
+    @OneToOne(fetch = FetchType.LAZY)
     private QnaSet qnaSet;
 
     /*
      * Static Factory Method
      */
-    public static StarAnalysis create(
-            StarInclusionLevel sInclusionLevel,
-            StarInclusionLevel tInclusionLevel,
-            StarInclusionLevel aInclusionLevel,
-            StarInclusionLevel rInclusionLevel,
-            String overallSummaryText,
-            QnaSet qnaSet) {
+    public static StarAnalysis create(QnaSet qnaSet) {
         return StarAnalysis.builder()
-                .sInclusionLevel(sInclusionLevel)
-                .tInclusionLevel(tInclusionLevel)
-                .aInclusionLevel(aInclusionLevel)
-                .rInclusionLevel(rInclusionLevel)
-                .overallSummaryText(overallSummaryText)
+                .sInclusionLevel(StarInclusionLevel.NULL)
+                .tInclusionLevel(StarInclusionLevel.NULL)
+                .aInclusionLevel(StarInclusionLevel.NULL)
+                .rInclusionLevel(StarInclusionLevel.NULL)
+                .overallSummaryText("")
+                .status(StarAnalysisGenerationStatus.IN_PROGRESS)
                 .qnaSet(qnaSet)
                 .build();
+    }
+
+    public void complete(
+            StarInclusionLevel s,
+            StarInclusionLevel t,
+            StarInclusionLevel a,
+            StarInclusionLevel r,
+            String overallSummaryText) {
+        if (this.status != StarAnalysisGenerationStatus.IN_PROGRESS) {
+            throw new CustomException(ErrorCode.STAR_ANALYSIS_COMPLETE_FAILED);
+        }
+
+        this.sInclusionLevel = s;
+        this.tInclusionLevel = t;
+        this.aInclusionLevel = a;
+        this.rInclusionLevel = r;
+        this.overallSummaryText = overallSummaryText;
+        this.status = StarAnalysisGenerationStatus.COMPLETED;
     }
 
     @Builder(access = AccessLevel.PRIVATE)
@@ -78,12 +97,14 @@ public class StarAnalysis extends BaseEntity {
             StarInclusionLevel aInclusionLevel,
             StarInclusionLevel rInclusionLevel,
             String overallSummaryText,
+            StarAnalysisGenerationStatus status,
             QnaSet qnaSet) {
         this.sInclusionLevel = sInclusionLevel;
         this.tInclusionLevel = tInclusionLevel;
         this.aInclusionLevel = aInclusionLevel;
         this.rInclusionLevel = rInclusionLevel;
         this.overallSummaryText = overallSummaryText;
+        this.status = status;
         this.qnaSet = qnaSet;
     }
 }
