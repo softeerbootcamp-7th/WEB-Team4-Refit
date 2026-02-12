@@ -228,6 +228,7 @@ public class InterviewService {
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
+
         QnaSet createdQnaSet = qnaSetRepository.save(
                 QnaSet.create(request.questionText(), request.answerText(), false, interview, null));
         return new QnaSetCreateResponse(createdQnaSet.getId());
