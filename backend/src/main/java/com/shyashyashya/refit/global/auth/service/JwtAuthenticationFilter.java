@@ -2,15 +2,16 @@ package com.shyashyashya.refit.global.auth.service;
 
 import static com.shyashyashya.refit.global.exception.ErrorCode.USER_SIGNUP_REQUIRED;
 
+import com.shyashyashya.refit.global.auth.model.DecodedJwt;
+import com.shyashyashya.refit.global.auth.service.validator.JwtDecoder;
+import com.shyashyashya.refit.global.auth.service.validator.JwtValidator;
 import com.shyashyashya.refit.global.constant.AuthConstant;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.property.AuthUrlProperty;
 import com.shyashyashya.refit.global.util.RequestUserContext;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.core.annotation.Order;
@@ -28,7 +29,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final AuthUrlProperty authUrlProperty;
     private final RequestUserContext requestUserContext;
     private final HandlerExceptionResolver handlerExceptionResolver;
-    private final JwtUtil jwtUtil;
+    private final JwtDecoder jwtDecoder;
+    private final JwtValidator jwtValidator;
+    private final CookieUtil cookieUtil;
 
     private static final AntPathMatcher pathMatcher = new AntPathMatcher();
 
@@ -39,11 +42,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain) {
 
         try {
-            String token = resolveToken(request);
-            var validatedJwtToken = jwtUtil.getValidatedJwtToken(token);
-            requestUserContext.setEmail(jwtUtil.getEmail(validatedJwtToken));
-            jwtUtil.getUserId(validatedJwtToken)
-                    .ifPresentOrElse(this::setRequestUserContext, () -> validateIllegalGuestRequest(request));
+            String encodedAccessJwt = cookieUtil.extractCookieValue(request, AuthConstant.ACCESS_TOKEN);
+            String encodedRefreshJwt = cookieUtil.extractCookieValue(request, AuthConstant.REFRESH_TOKEN);
+
+            // RT가 없거나, 서명이 불일치 하거나, 만료되었으면 로그인 필요
+            DecodedJwt refreshToken = jwtDecoder.decodeRefreshJwt(encodedRefreshJwt);
+            jwtValidator.validateRefreshJwtNotExpired(refreshToken);
+
+            // RT는 유효하나 AT가 만료되었으면 reissue 필요
+            DecodedJwt accessToken = jwtDecoder.decodeAccessJwt(encodedAccessJwt);
+            jwtValidator.validateAccessJwtNotExpired(accessToken);
+
+            Long userId = jwtDecoder.getUserId(accessToken);
+            if (userId != null) {
+                requestUserContext.setUserId(userId);
+            } else {
+                validateIllegalGuestRequest(request);
+            }
 
             filterChain.doFilter(request, response);
 
@@ -70,23 +85,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (!pathMatcher.match(authUrlProperty.signUp(), request.getRequestURI())) {
             throw new CustomException(USER_SIGNUP_REQUIRED);
         }
-    }
-
-    private void setRequestUserContext(Long userId) {
-        requestUserContext.setUserId(userId);
-    }
-
-    // 쿠키에서 토큰 추출
-    private String resolveToken(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
-            return null;
-        }
-
-        return Arrays.stream(cookies)
-                .filter(cookie -> AuthConstant.ACCESS_TOKEN.equals(cookie.getName()))
-                .findFirst()
-                .map(Cookie::getValue)
-                .orElse(null);
     }
 }
