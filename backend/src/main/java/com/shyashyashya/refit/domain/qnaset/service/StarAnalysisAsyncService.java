@@ -47,13 +47,7 @@ public class StarAnalysisAsyncService {
 
         return reqFuture
                 .thenApplyAsync(
-                        response -> {
-                            log.info(
-                                    "Receive star analysis generate response from gemini. qnaSetId: {} \n{}",
-                                    qnaSetId,
-                                    response);
-                            return processSuccessRequest(starAnalysisId, response);
-                        },
+                        response -> processSuccessRequest(starAnalysisId, qnaSetId, response),
                         geminiPostProcessExecutor)
                 .exceptionally(e -> {
                     log.error("스타 분석 생성 요청이 실패하였습니다. {}", e.getCause(), e);
@@ -66,7 +60,9 @@ public class StarAnalysisAsyncService {
                 });
     }
 
-    private StarAnalysisDto processSuccessRequest(Long starAnalysisId, GeminiGenerateResponse geminiResponse) {
+    private StarAnalysisDto processSuccessRequest(
+            Long starAnalysisId, Long qnaSetId, GeminiGenerateResponse geminiResponse) {
+        log.info("Receive star analysis generate response from gemini. qnaSetId: {} \n{}", qnaSetId, geminiResponse);
         String jsonText =
                 geminiResponse.firstText().orElseThrow(() -> new CustomException(STAR_ANALYSIS_PARSING_FAILED));
         StarAnalysisGeminiResponse starAnalysisGeminiResponse = parseStarAnalysisGeminiResponse(jsonText);
