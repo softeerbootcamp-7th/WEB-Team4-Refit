@@ -1,4 +1,4 @@
-import LiveAudioVisualizer from '@/features/mobile/_common/components/LiveAudioVisualizer'
+import LiveAudioVisualizer from '@/features/_common/auth/components/LiveAudioVisualizer'
 
 type RecordStepContentProps = {
   realtimeText: string
