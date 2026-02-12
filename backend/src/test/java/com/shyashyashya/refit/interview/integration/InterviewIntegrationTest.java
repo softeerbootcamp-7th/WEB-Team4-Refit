@@ -14,6 +14,7 @@ import static org.hamcrest.Matchers.nullValue;
 import com.shyashyashya.refit.core.IntegrationTest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatusUpdateRequest;
+import com.shyashyashya.refit.domain.interview.dto.request.QnaSetCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.KptSelfReviewUpdateRequest;
 import com.shyashyashya.refit.domain.interview.model.Interview;
@@ -613,6 +614,97 @@ public class InterviewIntegrationTest extends IntegrationTest {
                     .body(request)
             .when()
                     .put(path + "/" + invalidInterview.getId() + "/kpt-self-review")
+            .then()
+                    .assertThat().statusCode(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.getHttpStatus().value())
+                    .body("code", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.name()))
+                    .body("message", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.getMessage()))
+                    .body("result", nullValue());
+        }
+    }
+
+    @Nested
+    class 면접에_QnaSet_추가_시 {
+
+        private static final String path = "/interview";
+        private Long interviewId;
+
+        @BeforeEach
+        void setUp() {
+            InterviewCreateRequest request = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview interview = createInterview(request, InterviewReviewStatus.QNA_SET_DRAFT);
+            interviewId = interview.getId();
+        }
+
+        @Test
+        void QnaSet_추가에_성공한다() {
+            // given
+            var request = new QnaSetCreateRequest("Question text", "Answer text");
+
+            // when & then
+            given(spec)
+                    .body(request)
+            .when()
+                    .post(path + "/" + interviewId + "/qna-set")
+            .then()
+                    .assertThat().statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result.qnaSetId", notNullValue());
+        }
+
+        @Test
+        void 존재하지_않는_면접에_QnaSet을_추가하면_실패한다() {
+            // given
+            var request = new QnaSetCreateRequest("Question text", "Answer text");
+
+            // when & then
+            given(spec)
+                    .body(request)
+            .when()
+                    .post(path + "/" + (interviewId+1) + "/qna-set")
+            .then()
+                    .assertThat().statusCode(404)
+                    .body("code", equalTo(INTERVIEW_NOT_FOUND.name()))
+                    .body("message", equalTo(INTERVIEW_NOT_FOUND.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @Test
+        void 로그인한_사용자가_아닌_다른_사람의_면접에_QnaSet을_추가하면_실패한다() {
+            // given
+            InterviewCreateRequest createRequest = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            User user = createUser("other@example.com", "other", industry1, jobCategory1);
+            Long otherInterviewId = createInterview(createRequest, InterviewReviewStatus.NOT_LOGGED, user).getId();
+            var request = new QnaSetCreateRequest("Question text", "Answer text");
+
+            // when & then
+            given(spec)
+                    .body(request)
+            .when()
+                    .post(path + "/" + otherInterviewId + "/qna-set")
+            .then()
+                    .assertThat().statusCode(403)
+                    .body("code", equalTo(INTERVIEW_NOT_ACCESSIBLE.name()))
+                    .body("message", equalTo(INTERVIEW_NOT_ACCESSIBLE.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @ParameterizedTest
+        @EnumSource(value = InterviewReviewStatus.class, names = { "NOT_LOGGED", "LOG_DRAFT", "SELF_REVIEW_DRAFT", "DEBRIEF_COMPLETED" })
+        void 면접_상태가_기록완료가_아닐_때_면접에_QnaSet을_추가하면_실패한다(InterviewReviewStatus status) {
+            // given
+            var createRequest = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview invalidInterview = createInterview(createRequest, status);
+            var request = new QnaSetCreateRequest("Question text", "Answer text");
+
+            // when & then
+            given(spec)
+                    .body(request)
+            .when()
+                    .post(path + "/" + invalidInterview.getId() + "/qna-set")
             .then()
                     .assertThat().statusCode(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.getHttpStatus().value())
                     .body("code", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.name()))
