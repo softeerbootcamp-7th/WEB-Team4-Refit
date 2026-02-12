@@ -93,7 +93,7 @@ public class TestAuthController {
         String accessTokenCookie = cookieUtil.createAccessTokenCookie(tokenPair.accessToken(), clientOriginType);
         String refreshTokenCookie = cookieUtil.createResponseTokenCookie(tokenPair.refreshToken(), clientOriginType);
 
-        var response = TestPublishTokenResponse.of(userId != null, tokenPair);
+        var response = TestPublishTokenResponse.of(userId == null, tokenPair);
         var body = ApiResponse.success(COMMON200, response);
         return ResponseEntity.status(HttpStatus.FOUND)
                 .header(HttpHeaders.LOCATION, clientOriginRedirectUriBuilder.build(clientOriginType))
