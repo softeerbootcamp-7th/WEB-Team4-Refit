@@ -64,9 +64,10 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
             List<StarInclusionLevel> rInclusionLevels,
             Pageable pageable) {
         BooleanExpression[] searchConditions = {
-                qnaSet.interview.user.eq(user),
-                containsKeyword(keyword),
-                starInclusionLevelsConditions(hasStarAnalysis, sInclusionLevels, tInclusionLevels, aInclusionLevels, rInclusionLevels)
+            qnaSet.interview.user.eq(user),
+            containsKeyword(keyword),
+            starInclusionLevelsConditions(
+                    hasStarAnalysis, sInclusionLevels, tInclusionLevels, aInclusionLevels, rInclusionLevels)
         };
 
         List<QnaSet> contents = queryFactory
