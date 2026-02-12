@@ -23,6 +23,7 @@ import com.shyashyashya.refit.domain.interview.model.InterviewResultStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetCategory;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
@@ -42,6 +43,9 @@ public class InterviewIntegrationTest extends IntegrationTest {
 
     @Autowired
     private QnaSetCategoryRepository qnaSetCategoryRepository;
+
+    @Autowired
+    private InterviewRepository interviewRepository;
 
     @Nested
     class 면접_생성_시 {
@@ -362,7 +366,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
             Interview interview = createInterview(request);
             interview.startLogging();
-            interviewId = interview.getId();
+            interviewId = interviewRepository.save(interview).getId();
         }
 
         @Test
