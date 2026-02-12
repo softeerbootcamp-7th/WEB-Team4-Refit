@@ -5,7 +5,7 @@ import ConfirmModal from '@/designs/components/modal/ConfirmModal'
 
 const isSpeechRecognitionSupported = () => {
   if (typeof window === 'undefined') return false
-  return !(window.SpeechRecognition || window.webkitSpeechRecognition)
+  return !!(window.SpeechRecognition || window.webkitSpeechRecognition)
 }
 
 export default function MobileLayout() {
