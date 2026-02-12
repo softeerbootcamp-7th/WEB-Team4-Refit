@@ -63,59 +63,41 @@ public class QnaSetService {
 
     @Transactional
     public void markDifficultQuestion(Long qnaSetId) {
-        QnaSet qnaSet = qnaSetRepository.findById(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
-
-        User requesetUser = requestUserContext.getRequestUser();
-        Interview interview = qnaSet.getInterview();
-        interviewValidator.validateInterviewOwner(interview, requesetUser);
-
+        QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
         qnaSet.markDifficult();
     }
 
     @Transactional
     public void unmarkDifficultQuestion(Long qnaSetId) {
-        QnaSet qnaSet = qnaSetRepository.findById(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
-
-        User requesetUser = requestUserContext.getRequestUser();
-        Interview interview = qnaSet.getInterview();
-        interviewValidator.validateInterviewOwner(interview, requesetUser);
-
+        QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
         qnaSet.unmarkDifficult();
     }
 
     @Transactional
     public void updateQnaSet(Long qnaSetId, QnaSetUpdateRequest request) {
-        QnaSet qnaSet = qnaSetRepository.findById(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
-
-        User requestUser = requestUserContext.getRequestUser();
-        Interview interview = qnaSet.getInterview();
-        interviewValidator.validateInterviewOwner(interview, requestUser);
-
+        QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
         qnaSet.updateQuestionText(request.questionText());
         qnaSet.updateAnswerText(request.answerText());
         updateOrCreateSelfReview(qnaSet, request.selfReviewText());
     }
 
     @Transactional
+    public void deleteQnaSet(Long qnaSetId) {
+        QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
+        interviewValidator.validateInterviewReviewStatusQnaSetDraft(qnaSet.getInterview());
+        qnaSetRepository.delete(qnaSet);
+    }
+
+    @Transactional
     public void updatePdfHighlighting(Long qnaSetId, List<PdfHighlightingUpdateRequest> request) {
-        QnaSet qnaSet = qnaSetRepository.findById(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
-
-        User requestUser = requestUserContext.getRequestUser();
-        Interview interview = qnaSet.getInterview();
-        interviewValidator.validateInterviewOwner(interview, requestUser);
-
+        QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
         deleteAllHighlightingsAndRects(qnaSet);
         saveAllHighlightings(qnaSet, request);
     }
 
     @Transactional(readOnly = true)
     public List<PdfHighlightingDto> getPdfHighlightings(Long qnaSetId) {
-        QnaSet qnaSet = qnaSetRepository.findById(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
-
-        User requestUser = requestUserContext.getRequestUser();
-        Interview interview = qnaSet.getInterview();
-        interviewValidator.validateInterviewOwner(interview, requestUser);
-
+        QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
         List<PdfHighlighting> pdfHighlightings = pdfHighlightingRepository.findAllByQnaSet(qnaSet);
         if (pdfHighlightings.isEmpty()) {
             return Collections.emptyList();
@@ -143,40 +125,6 @@ public class QnaSetService {
         return qnaSet;
     }
 
-    private void updateOrCreateSelfReview(QnaSet qnaSet, String reqSelfReviewText) {
-        if (reqSelfReviewText != null) {
-            qnaSetSelfReviewRepository
-                    .findByQnaSet(qnaSet)
-                    .ifPresentOrElse(
-                            selfReview -> selfReview.updateSelfReviewText(reqSelfReviewText),
-                            () -> qnaSetSelfReviewRepository.save(QnaSetSelfReview.create(reqSelfReviewText, qnaSet)));
-        }
-    }
-
-    private void saveAllHighlightings(QnaSet qnaSet, List<PdfHighlightingUpdateRequest> request) {
-        request.forEach(reqDto -> {
-            PdfHighlighting pdfHighlighting = PdfHighlighting.create(reqDto.highlightingText(), qnaSet);
-            pdfHighlightingRepository.save(pdfHighlighting);
-
-            if (reqDto.rects() != null) {
-                reqDto.rects().stream()
-                        .map(rectDto -> PdfHighlightingRect.create(
-                                rectDto.x(),
-                                rectDto.y(),
-                                rectDto.width(),
-                                rectDto.height(),
-                                rectDto.pageNumber(),
-                                pdfHighlighting))
-                        .forEach(pdfHighlightingRectRepository::save);
-            }
-        });
-    }
-
-    private void deleteAllHighlightingsAndRects(QnaSet qnaSet) {
-        pdfHighlightingRectRepository.deleteAllByQnaSet(qnaSet);
-        pdfHighlightingRepository.deleteAllByQnaSet(qnaSet);
-    }
-
     @Transactional(readOnly = true)
     public Page<QnaSetScrapFolderResponse> getMyScrapFoldersWithQnaSetContainingInfo(Long qnaSetId, Pageable pageable) {
         QnaSet qnaSet = qnaSetRepository.findById(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
@@ -193,5 +141,48 @@ public class QnaSetService {
             return null;
         }
         return list.stream().distinct().toList();
+    }
+
+    private QnaSet getValidatedQnaSet(Long qnaSetId) {
+        QnaSet qnaSet = qnaSetRepository.findById(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
+        User requestUser = requestUserContext.getRequestUser();
+        interviewValidator.validateInterviewOwner(qnaSet.getInterview(), requestUser);
+        return qnaSet;
+    }
+
+    private void updateOrCreateSelfReview(QnaSet qnaSet, String reqSelfReviewText) {
+        if (reqSelfReviewText == null) {
+            return;
+        }
+        qnaSetSelfReviewRepository
+                .findByQnaSet(qnaSet)
+                .ifPresentOrElse(
+                        selfReview -> selfReview.updateSelfReviewText(reqSelfReviewText),
+                        () -> qnaSetSelfReviewRepository.save(QnaSetSelfReview.create(reqSelfReviewText, qnaSet)));
+    }
+
+    private void deleteAllHighlightingsAndRects(QnaSet qnaSet) {
+        pdfHighlightingRectRepository.deleteAllByQnaSet(qnaSet);
+        pdfHighlightingRepository.deleteAllByQnaSet(qnaSet);
+    }
+
+    private void saveAllHighlightings(QnaSet qnaSet, List<PdfHighlightingUpdateRequest> request) {
+        request.forEach(reqDto -> {
+            PdfHighlighting pdfHighlighting = PdfHighlighting.create(reqDto.highlightingText(), qnaSet);
+            pdfHighlightingRepository.save(pdfHighlighting);
+
+            if (reqDto.rects() == null) {
+                return;
+            }
+            reqDto.rects().stream()
+                    .map(rectDto -> PdfHighlightingRect.create(
+                            rectDto.x(),
+                            rectDto.y(),
+                            rectDto.width(),
+                            rectDto.height(),
+                            rectDto.pageNumber(),
+                            pdfHighlighting))
+                    .forEach(pdfHighlightingRectRepository::save);
+        });
     }
 }

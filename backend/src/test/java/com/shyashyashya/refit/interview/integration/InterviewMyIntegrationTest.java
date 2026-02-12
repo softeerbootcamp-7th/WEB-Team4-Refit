@@ -59,6 +59,7 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
                 ));
             interview1.startLogging();
             interview1.completeLogging();
+            interview1.completeQnaSetDraft();
             interview1.completeReview();
 
             Interview interview2 = createInterview(
@@ -67,6 +68,7 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
                 ));
             interview2.startLogging();
             interview2.completeLogging();
+            interview2.completeQnaSetDraft();
             interview2.completeReview();
             interview2.updateResultStatus(InterviewResultStatus.PASS);
 
@@ -76,6 +78,7 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
                 ));
             interview3.startLogging();
             interview3.completeLogging();
+            interview3.completeQnaSetDraft();
             interview3.completeReview();
             interview3.updateResultStatus(InterviewResultStatus.FAIL);
 
@@ -85,6 +88,7 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
                 ));
             interview4.startLogging();
             interview4.completeLogging();
+            interview4.completeQnaSetDraft();
             interview4.completeReview();
             interview4.updateResultStatus(InterviewResultStatus.PASS);
 
@@ -233,6 +237,7 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
                     ), otherUser);
             otherInterview.startLogging();
             otherInterview.completeLogging();
+            otherInterview.completeQnaSetDraft();
             otherInterview.completeReview();
 
             InterviewSearchRequest request = new InterviewSearchRequest("현대", new InterviewSearchRequest.InterviewSearchFilter(null, null, null, null));
