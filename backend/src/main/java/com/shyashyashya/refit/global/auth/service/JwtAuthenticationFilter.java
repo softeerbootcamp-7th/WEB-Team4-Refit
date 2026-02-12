@@ -106,6 +106,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private boolean isGuestRequest(Long userId) {
         return userId == null;
-
     }
 }
