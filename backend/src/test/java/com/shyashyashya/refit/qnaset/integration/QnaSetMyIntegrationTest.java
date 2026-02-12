@@ -373,8 +373,9 @@ public class QnaSetMyIntegrationTest extends IntegrationTest {
                 StarInclusionLevel aLevel,
                 StarInclusionLevel rLevel
         ) {
-            return starAnalysisRepository.save(
-                    StarAnalysis.create(sLevel, tLevel, aLevel, rLevel, "", qnaSet));
+            var starAnalysis = StarAnalysis.create(qnaSet);
+            starAnalysis.complete(sLevel, tLevel, aLevel, rLevel, "");
+            return starAnalysisRepository.save(starAnalysis);
         }
     }
 }
