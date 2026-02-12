@@ -4,12 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "tsc -b && vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "get-api-docs": "curl https://api.refit.my/v3/api-docs -o api-docs.json",
-    "orval": "pnpm run get-api-docs && orval && eslint . --fix"
+    "orval": "pnpm get-api-docs && orval && eslint . --fix"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
