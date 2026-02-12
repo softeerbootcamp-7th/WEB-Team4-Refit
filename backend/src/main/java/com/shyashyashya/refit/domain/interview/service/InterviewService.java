@@ -216,13 +216,16 @@ public class InterviewService {
     @Transactional
     public QnaSetCreateResponse createQnaSet(Long interviewId, QnaSetCreateRequest request) {
         User requestUser = requestUserContext.getRequestUser();
+
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
+        interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.QNA_SET_DRAFT);
 
         QnaSet createdQnaSet = qnaSetRepository.save(
                 QnaSet.create(request.questionText(), request.answerText(), false, interview, null));
-        return new QnaSetCreateResponse(createdQnaSet.getId());
+
+        return QnaSetCreateResponse.from(createdQnaSet);
     }
 
     private Company findOrSaveCompany(InterviewCreateRequest request) {
