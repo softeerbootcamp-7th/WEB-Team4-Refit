@@ -17,6 +17,7 @@ import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateReques
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewSearchRequest;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewResultStatus;
+import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
 import com.shyashyashya.refit.domain.company.model.Company;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
@@ -234,7 +235,7 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
             Interview otherInterview = createInterview(
                     new InterviewCreateRequest(
                             LocalDateTime.of(2024, 4, 25, 13, 0, 0), InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
-                    ), otherUser);
+                    ), InterviewReviewStatus.NOT_LOGGED, otherUser);
             otherInterview.startLogging();
             otherInterview.completeLogging();
             otherInterview.completeQnaSetDraft();

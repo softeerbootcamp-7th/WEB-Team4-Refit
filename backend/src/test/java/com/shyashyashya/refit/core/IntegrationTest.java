@@ -135,10 +135,14 @@ public abstract class IntegrationTest {
     }
 
     protected Interview createInterview(InterviewCreateRequest request) {
-        return createInterview(request, requestUser);
+        return createInterview(request, InterviewReviewStatus.NOT_LOGGED, requestUser);
     }
 
-    protected Interview createInterview(InterviewCreateRequest request, User user) {
+    protected Interview createInterview(InterviewCreateRequest request, InterviewReviewStatus reviewStatus) {
+        return createInterview(request, reviewStatus, requestUser);
+    }
+
+    protected Interview createInterview(InterviewCreateRequest request, InterviewReviewStatus reviewStatus, User user) {
         Company company = companyRepository.findByName(request.companyName()).get();
         Industry industry = industryRepository.findById(request.industryId()).get();
         JobCategory jobCategory = jobCategoryRepository.findById(request.jobCategoryId()).get();
@@ -151,6 +155,27 @@ public abstract class IntegrationTest {
                 company,
                 industry,
                 jobCategory);
+
+        switch (reviewStatus) {
+            case LOG_DRAFT:
+                interview.startLogging();
+            case QNA_SET_DRAFT:
+                interview.startLogging();
+                interview.completeLogging();
+                break;
+            case SELF_REVIEW_DRAFT:
+                interview.startLogging();
+                interview.completeLogging();
+                interview.completeQnaSetDraft();
+                break;
+            case DEBRIEF_COMPLETED:
+                interview.startLogging();
+                interview.completeLogging();
+                interview.completeQnaSetDraft();
+                interview.completeReview();
+                break;
+        }
+
         return interviewRepository.save(interview);
     }
 
