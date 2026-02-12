@@ -11,6 +11,7 @@ import type {
   ApiResponseGuideQuestionResponse,
   ApiResponseInterviewDto,
   ApiResponseInterviewFullDto,
+  ApiResponseQnaSetCreateResponse,
   ApiResponseVoid,
 } from '../refit-api.schemas'
 import type { RequestHandlerOptions } from 'msw'
@@ -39,6 +40,19 @@ export const getCreateInterviewResponseMock = (overrideResponse: Partial<ApiResp
   code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
   message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
   result: faker.helpers.arrayElement([{}, undefined]),
+  ...overrideResponse,
+})
+
+export const getCreateQnaSetResponseMock = (
+  overrideResponse: Partial<ApiResponseQnaSetCreateResponse> = {},
+): ApiResponseQnaSetCreateResponse => ({
+  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
+  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
+  result: faker.helpers.arrayElement([
+    { qnaSetId: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]) },
+    undefined,
+  ]),
   ...overrideResponse,
 })
 
@@ -147,19 +161,19 @@ export const getGetInterviewFullResponseMock = (
           starAnalysis: faker.helpers.arrayElement([
             {
               sInclusionLevel: faker.helpers.arrayElement([
-                faker.helpers.arrayElement(['PRESENT', 'INSUFFICIENT', 'ABSENT'] as const),
+                faker.helpers.arrayElement(['NULL', 'PRESENT', 'INSUFFICIENT', 'ABSENT'] as const),
                 undefined,
               ]),
               tInclusionLevel: faker.helpers.arrayElement([
-                faker.helpers.arrayElement(['PRESENT', 'INSUFFICIENT', 'ABSENT'] as const),
+                faker.helpers.arrayElement(['NULL', 'PRESENT', 'INSUFFICIENT', 'ABSENT'] as const),
                 undefined,
               ]),
               aInclusionLevel: faker.helpers.arrayElement([
-                faker.helpers.arrayElement(['PRESENT', 'INSUFFICIENT', 'ABSENT'] as const),
+                faker.helpers.arrayElement(['NULL', 'PRESENT', 'INSUFFICIENT', 'ABSENT'] as const),
                 undefined,
               ]),
               rInclusionLevel: faker.helpers.arrayElement([
-                faker.helpers.arrayElement(['PRESENT', 'INSUFFICIENT', 'ABSENT'] as const),
+                faker.helpers.arrayElement(['NULL', 'PRESENT', 'INSUFFICIENT', 'ABSENT'] as const),
                 undefined,
               ]),
               overallSummary: faker.helpers.arrayElement([
@@ -264,6 +278,32 @@ export const getCreateInterviewMockHandler = (
               ? await overrideResponse(info)
               : overrideResponse
             : getCreateInterviewResponseMock(),
+        ),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      )
+    },
+    options,
+  )
+}
+
+export const getCreateQnaSetMockHandler = (
+  overrideResponse?:
+    | ApiResponseQnaSetCreateResponse
+    | ((
+        info: Parameters<Parameters<typeof http.post>[1]>[0],
+      ) => Promise<ApiResponseQnaSetCreateResponse> | ApiResponseQnaSetCreateResponse),
+  options?: RequestHandlerOptions,
+) => {
+  return http.post(
+    '*/interview/:interviewId/qna-set',
+    async (info) => {
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === 'function'
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getCreateQnaSetResponseMock(),
         ),
         { status: 200, headers: { 'Content-Type': 'application/json' } },
       )
@@ -401,6 +441,7 @@ export const getInterviewApiMock = () => [
   getUpdateRawTextMockHandler(),
   getUpdateKptSelfReviewMockHandler(),
   getCreateInterviewMockHandler(),
+  getCreateQnaSetMockHandler(),
   getUpdateInterviewResultStatusMockHandler(),
   getGetInterviewMockHandler(),
   getDeleteInterviewMockHandler(),

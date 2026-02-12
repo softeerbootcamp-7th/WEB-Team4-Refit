@@ -4,7 +4,7 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { customFetch } from '../../custom-fetch'
 import type {
   ApiResponseOAuth2LoginUrlResponse,
@@ -21,6 +21,8 @@ import type {
   UndefinedInitialDataOptions,
   UseQueryOptions,
   UseQueryResult,
+  UseSuspenseQueryOptions,
+  UseSuspenseQueryResult,
 } from '@tanstack/react-query'
 
 
@@ -146,6 +148,90 @@ export function useBuildOAuth2LoginUrl<TData = Awaited<ReturnType<typeof buildOA
   return { ...query, queryKey: queryOptions.queryKey }
 }
 
+export const getBuildOAuth2LoginUrlSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof buildOAuth2LoginUrl>>,
+  TError = unknown,
+>(
+  params?: BuildOAuth2LoginUrlParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof buildOAuth2LoginUrl>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getBuildOAuth2LoginUrlQueryKey(params)
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof buildOAuth2LoginUrl>>> = ({ signal }) =>
+    buildOAuth2LoginUrl(params, { signal, ...requestOptions })
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof buildOAuth2LoginUrl>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type BuildOAuth2LoginUrlSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof buildOAuth2LoginUrl>>>
+export type BuildOAuth2LoginUrlSuspenseQueryError = unknown
+
+export function useBuildOAuth2LoginUrlSuspense<
+  TData = Awaited<ReturnType<typeof buildOAuth2LoginUrl>>,
+  TError = unknown,
+>(
+  params: undefined | BuildOAuth2LoginUrlParams,
+  options: {
+    query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof buildOAuth2LoginUrl>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useBuildOAuth2LoginUrlSuspense<
+  TData = Awaited<ReturnType<typeof buildOAuth2LoginUrl>>,
+  TError = unknown,
+>(
+  params?: BuildOAuth2LoginUrlParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof buildOAuth2LoginUrl>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useBuildOAuth2LoginUrlSuspense<
+  TData = Awaited<ReturnType<typeof buildOAuth2LoginUrl>>,
+  TError = unknown,
+>(
+  params?: BuildOAuth2LoginUrlParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof buildOAuth2LoginUrl>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 구글 로그인 화면으로 이동하는 url을 생성합니다.
+ */
+
+export function useBuildOAuth2LoginUrlSuspense<
+  TData = Awaited<ReturnType<typeof buildOAuth2LoginUrl>>,
+  TError = unknown,
+>(
+  params?: BuildOAuth2LoginUrlParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof buildOAuth2LoginUrl>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getBuildOAuth2LoginUrlSuspenseQueryOptions(params, options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as UseSuspenseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  return { ...query, queryKey: queryOptions.queryKey }
+}
+
 /**
  * 인가 코드를 활용하여 refit 서비스의 토큰을 발급하여 클라이언트에게 쿠키로 설정합니다.
  * @summary 구글 로그인에 성공했을 때 호출되는 콜백 API 입니다.
@@ -262,6 +348,90 @@ export function useHandleOAuth2Callback<TData = Awaited<ReturnType<typeof handle
   const queryOptions = getHandleOAuth2CallbackQueryOptions(params, options)
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  return { ...query, queryKey: queryOptions.queryKey }
+}
+
+export const getHandleOAuth2CallbackSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof handleOAuth2Callback>>,
+  TError = unknown,
+>(
+  params: HandleOAuth2CallbackParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof handleOAuth2Callback>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getHandleOAuth2CallbackQueryKey(params)
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof handleOAuth2Callback>>> = ({ signal }) =>
+    handleOAuth2Callback(params, { signal, ...requestOptions })
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof handleOAuth2Callback>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type HandleOAuth2CallbackSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof handleOAuth2Callback>>>
+export type HandleOAuth2CallbackSuspenseQueryError = unknown
+
+export function useHandleOAuth2CallbackSuspense<
+  TData = Awaited<ReturnType<typeof handleOAuth2Callback>>,
+  TError = unknown,
+>(
+  params: HandleOAuth2CallbackParams,
+  options: {
+    query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof handleOAuth2Callback>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useHandleOAuth2CallbackSuspense<
+  TData = Awaited<ReturnType<typeof handleOAuth2Callback>>,
+  TError = unknown,
+>(
+  params: HandleOAuth2CallbackParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof handleOAuth2Callback>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useHandleOAuth2CallbackSuspense<
+  TData = Awaited<ReturnType<typeof handleOAuth2Callback>>,
+  TError = unknown,
+>(
+  params: HandleOAuth2CallbackParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof handleOAuth2Callback>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 구글 로그인에 성공했을 때 호출되는 콜백 API 입니다.
+ */
+
+export function useHandleOAuth2CallbackSuspense<
+  TData = Awaited<ReturnType<typeof handleOAuth2Callback>>,
+  TError = unknown,
+>(
+  params: HandleOAuth2CallbackParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof handleOAuth2Callback>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getHandleOAuth2CallbackSuspenseQueryOptions(params, options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as UseSuspenseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>
   }
 

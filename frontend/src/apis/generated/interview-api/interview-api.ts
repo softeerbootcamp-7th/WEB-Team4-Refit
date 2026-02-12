@@ -4,16 +4,18 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { customFetch } from '../../custom-fetch'
 import type {
   ApiResponseGuideQuestionResponse,
   ApiResponseInterviewDto,
   ApiResponseInterviewFullDto,
+  ApiResponseQnaSetCreateResponse,
   ApiResponseVoid,
   InterviewCreateRequest,
   InterviewResultStatusUpdateRequest,
   KptSelfReviewUpdateRequest,
+  QnaSetCreateRequest,
   RawTextUpdateRequest,
 } from '../refit-api.schemas'
 import type {
@@ -29,6 +31,8 @@ import type {
   UseMutationResult,
   UseQueryOptions,
   UseQueryResult,
+  UseSuspenseQueryOptions,
+  UseSuspenseQueryResult,
 } from '@tanstack/react-query'
 
 
@@ -272,6 +276,85 @@ export const useCreateInterview = <TError = unknown, TContext = unknown>(
   return useMutation(getCreateInterviewMutationOptions(options), queryClient)
 }
 /**
+ * @summary 특정 면접에 새로운 질답 세트를 생성합니다.
+ */
+export const getCreateQnaSetUrl = (interviewId: number) => {
+  return `/interview/${interviewId}/qna-set`
+}
+
+export const createQnaSet = async (
+  interviewId: number,
+  qnaSetCreateRequest: QnaSetCreateRequest,
+  options?: RequestInit,
+): Promise<ApiResponseQnaSetCreateResponse> => {
+  return customFetch<ApiResponseQnaSetCreateResponse>(getCreateQnaSetUrl(interviewId), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(qnaSetCreateRequest),
+  })
+}
+
+export const getCreateQnaSetMutationOptions = <TError = unknown, TContext = unknown>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createQnaSet>>,
+    TError,
+    { interviewId: number; data: QnaSetCreateRequest },
+    TContext
+  >
+  request?: SecondParameter<typeof customFetch>
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createQnaSet>>,
+  TError,
+  { interviewId: number; data: QnaSetCreateRequest },
+  TContext
+> => {
+  const mutationKey = ['createQnaSet']
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createQnaSet>>,
+    { interviewId: number; data: QnaSetCreateRequest }
+  > = (props) => {
+    const { interviewId, data } = props ?? {}
+
+    return createQnaSet(interviewId, data, requestOptions)
+  }
+
+  return { mutationFn, ...mutationOptions }
+}
+
+export type CreateQnaSetMutationResult = NonNullable<Awaited<ReturnType<typeof createQnaSet>>>
+export type CreateQnaSetMutationBody = QnaSetCreateRequest
+export type CreateQnaSetMutationError = unknown
+
+/**
+ * @summary 특정 면접에 새로운 질답 세트를 생성합니다.
+ */
+export const useCreateQnaSet = <TError = unknown, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof createQnaSet>>,
+      TError,
+      { interviewId: number; data: QnaSetCreateRequest },
+      TContext
+    >
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof createQnaSet>>,
+  TError,
+  { interviewId: number; data: QnaSetCreateRequest },
+  TContext
+> => {
+  return useMutation(getCreateQnaSetMutationOptions(options), queryClient)
+}
+/**
  * @summary 면접 결과를 수정합니다.
  */
 export const getUpdateInterviewResultStatusUrl = (interviewId: number) => {
@@ -456,6 +539,75 @@ export function useGetInterview<TData = Awaited<ReturnType<typeof getInterview>>
   return { ...query, queryKey: queryOptions.queryKey }
 }
 
+export const getGetInterviewSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof getInterview>>, TError = unknown>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getInterview>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getGetInterviewQueryKey(interviewId)
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getInterview>>> = ({ signal }) =>
+    getInterview(interviewId, { signal, ...requestOptions })
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getInterview>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetInterviewSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof getInterview>>>
+export type GetInterviewSuspenseQueryError = unknown
+
+export function useGetInterviewSuspense<TData = Awaited<ReturnType<typeof getInterview>>, TError = unknown>(
+  interviewId: number,
+  options: {
+    query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getInterview>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetInterviewSuspense<TData = Awaited<ReturnType<typeof getInterview>>, TError = unknown>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getInterview>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetInterviewSuspense<TData = Awaited<ReturnType<typeof getInterview>>, TError = unknown>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getInterview>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 특정 면접 정보를 조회합니다.
+ */
+
+export function useGetInterviewSuspense<TData = Awaited<ReturnType<typeof getInterview>>, TError = unknown>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getInterview>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetInterviewSuspenseQueryOptions(interviewId, options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as UseSuspenseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  return { ...query, queryKey: queryOptions.queryKey }
+}
+
 /**
  * 면접 삭제시 해당 면접에 기록된 질문, 회고 데이터도 함께 삭제됩니다.
  * @summary 면접을 삭제합니다.
@@ -620,6 +772,78 @@ export function useGetInterviewFull<TData = Awaited<ReturnType<typeof getIntervi
   return { ...query, queryKey: queryOptions.queryKey }
 }
 
+export const getGetInterviewFullSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getInterviewFull>>,
+  TError = unknown,
+>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getInterviewFull>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getGetInterviewFullQueryKey(interviewId)
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getInterviewFull>>> = ({ signal }) =>
+    getInterviewFull(interviewId, { signal, ...requestOptions })
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getInterviewFull>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetInterviewFullSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof getInterviewFull>>>
+export type GetInterviewFullSuspenseQueryError = unknown
+
+export function useGetInterviewFullSuspense<TData = Awaited<ReturnType<typeof getInterviewFull>>, TError = unknown>(
+  interviewId: number,
+  options: {
+    query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getInterviewFull>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetInterviewFullSuspense<TData = Awaited<ReturnType<typeof getInterviewFull>>, TError = unknown>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getInterviewFull>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetInterviewFullSuspense<TData = Awaited<ReturnType<typeof getInterviewFull>>, TError = unknown>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getInterviewFull>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 면접 및 면접에 관련된 질문, 회고 데이터를 모두 조회합니다.
+ */
+
+export function useGetInterviewFullSuspense<TData = Awaited<ReturnType<typeof getInterviewFull>>, TError = unknown>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getInterviewFull>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetInterviewFullSuspenseQueryOptions(interviewId, options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as UseSuspenseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  return { ...query, queryKey: queryOptions.queryKey }
+}
+
 /**
  * @summary 면접 기록 중, 가이드 질문을 조회합니다.
  */
@@ -720,6 +944,78 @@ export function useGetGuideQuestion<TData = Awaited<ReturnType<typeof getGuideQu
   const queryOptions = getGetGuideQuestionQueryOptions(interviewId, options)
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  return { ...query, queryKey: queryOptions.queryKey }
+}
+
+export const getGetGuideQuestionSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getGuideQuestion>>,
+  TError = unknown,
+>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getGuideQuestion>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getGetGuideQuestionQueryKey(interviewId)
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getGuideQuestion>>> = ({ signal }) =>
+    getGuideQuestion(interviewId, { signal, ...requestOptions })
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getGuideQuestion>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetGuideQuestionSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof getGuideQuestion>>>
+export type GetGuideQuestionSuspenseQueryError = unknown
+
+export function useGetGuideQuestionSuspense<TData = Awaited<ReturnType<typeof getGuideQuestion>>, TError = unknown>(
+  interviewId: number,
+  options: {
+    query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getGuideQuestion>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetGuideQuestionSuspense<TData = Awaited<ReturnType<typeof getGuideQuestion>>, TError = unknown>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getGuideQuestion>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetGuideQuestionSuspense<TData = Awaited<ReturnType<typeof getGuideQuestion>>, TError = unknown>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getGuideQuestion>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 면접 기록 중, 가이드 질문을 조회합니다.
+ */
+
+export function useGetGuideQuestionSuspense<TData = Awaited<ReturnType<typeof getGuideQuestion>>, TError = unknown>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getGuideQuestion>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetGuideQuestionSuspenseQueryOptions(interviewId, options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as UseSuspenseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>
   }
 

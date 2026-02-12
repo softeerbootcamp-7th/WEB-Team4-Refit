@@ -7,36 +7,48 @@
 import { faker } from '@faker-js/faker'
 
 import { HttpResponse, http } from 'msw'
-import type { ApiResponseTokenPairDto, ApiResponseVoid } from '../refit-api.schemas'
+import type { ApiResponseTestPublishTokenResponse, ApiResponseVoid } from '../refit-api.schemas'
 import type { RequestHandlerOptions } from 'msw'
 
 
-export const getGetTokenResponseMock = (
-  overrideResponse: Partial<ApiResponseTokenPairDto> = {},
-): ApiResponseTokenPairDto => ({
+export const getPublishTokenResponseMock = (
+  overrideResponse: Partial<ApiResponseTestPublishTokenResponse> = {},
+): ApiResponseTestPublishTokenResponse => ({
   isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
   code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
   message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
   result: faker.helpers.arrayElement([
     {
-      accessToken: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-      refreshToken: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
+      isNeedSignUp: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+      tokens: faker.helpers.arrayElement([
+        {
+          accessToken: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
+          refreshToken: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
+        },
+        undefined,
+      ]),
     },
     undefined,
   ]),
   ...overrideResponse,
 })
 
-export const getGetGuestTokenResponseMock = (
-  overrideResponse: Partial<ApiResponseTokenPairDto> = {},
-): ApiResponseTokenPairDto => ({
+export const getPublishTokenByUserIdResponseMock = (
+  overrideResponse: Partial<ApiResponseTestPublishTokenResponse> = {},
+): ApiResponseTestPublishTokenResponse => ({
   isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
   code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
   message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
   result: faker.helpers.arrayElement([
     {
-      accessToken: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-      refreshToken: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
+      isNeedSignUp: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+      tokens: faker.helpers.arrayElement([
+        {
+          accessToken: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
+          refreshToken: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
+        },
+        undefined,
+      ]),
     },
     undefined,
   ]),
@@ -69,12 +81,12 @@ export const getDeleteTokenCookiesResponseMock = (
   ...overrideResponse,
 })
 
-export const getGetTokenMockHandler = (
+export const getPublishTokenMockHandler = (
   overrideResponse?:
-    | ApiResponseTokenPairDto
+    | ApiResponseTestPublishTokenResponse
     | ((
         info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Promise<ApiResponseTokenPairDto> | ApiResponseTokenPairDto),
+      ) => Promise<ApiResponseTestPublishTokenResponse> | ApiResponseTestPublishTokenResponse),
   options?: RequestHandlerOptions,
 ) => {
   return http.get(
@@ -86,7 +98,7 @@ export const getGetTokenMockHandler = (
             ? typeof overrideResponse === 'function'
               ? await overrideResponse(info)
               : overrideResponse
-            : getGetTokenResponseMock(),
+            : getPublishTokenResponseMock(),
         ),
         { status: 200, headers: { 'Content-Type': 'application/json' } },
       )
@@ -95,16 +107,16 @@ export const getGetTokenMockHandler = (
   )
 }
 
-export const getGetGuestTokenMockHandler = (
+export const getPublishTokenByUserIdMockHandler = (
   overrideResponse?:
-    | ApiResponseTokenPairDto
+    | ApiResponseTestPublishTokenResponse
     | ((
         info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Promise<ApiResponseTokenPairDto> | ApiResponseTokenPairDto),
+      ) => Promise<ApiResponseTestPublishTokenResponse> | ApiResponseTestPublishTokenResponse),
   options?: RequestHandlerOptions,
 ) => {
   return http.get(
-    '*/test/auth/token/guest',
+    '*/test/auth/token/:userId',
     async (info) => {
       return new HttpResponse(
         JSON.stringify(
@@ -112,7 +124,7 @@ export const getGetGuestTokenMockHandler = (
             ? typeof overrideResponse === 'function'
               ? await overrideResponse(info)
               : overrideResponse
-            : getGetGuestTokenResponseMock(),
+            : getPublishTokenByUserIdResponseMock(),
         ),
         { status: 200, headers: { 'Content-Type': 'application/json' } },
       )
@@ -176,7 +188,7 @@ export const getDeleteTokenCookiesMockHandler = (
   options?: RequestHandlerOptions,
 ) => {
   return http.delete(
-    '*/test/auth/token/cookies',
+    '*/test/auth/cookies',
     async (info) => {
       return new HttpResponse(
         JSON.stringify(
@@ -193,8 +205,8 @@ export const getDeleteTokenCookiesMockHandler = (
   )
 }
 export const getTestAuthUserApiMock = () => [
-  getGetTokenMockHandler(),
-  getGetGuestTokenMockHandler(),
+  getPublishTokenMockHandler(),
+  getPublishTokenByUserIdMockHandler(),
   getDeleteUserByEmailMockHandler(),
   getDeleteUserByIdMockHandler(),
   getDeleteTokenCookiesMockHandler(),

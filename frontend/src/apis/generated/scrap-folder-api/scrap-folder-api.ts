@@ -4,7 +4,7 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { customFetch } from '../../custom-fetch'
 import type {
   ApiResponsePageScrapFolderQnaSetResponse,
@@ -28,6 +28,8 @@ import type {
   UseMutationResult,
   UseQueryOptions,
   UseQueryResult,
+  UseSuspenseQueryOptions,
+  UseSuspenseQueryResult,
 } from '@tanstack/react-query'
 
 
@@ -148,6 +150,78 @@ export function useGetMyScrapFolders<TData = Awaited<ReturnType<typeof getMyScra
   const queryOptions = getGetMyScrapFoldersQueryOptions(params, options)
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  return { ...query, queryKey: queryOptions.queryKey }
+}
+
+export const getGetMyScrapFoldersSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMyScrapFolders>>,
+  TError = unknown,
+>(
+  params: GetMyScrapFoldersParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyScrapFolders>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getGetMyScrapFoldersQueryKey(params)
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyScrapFolders>>> = ({ signal }) =>
+    getMyScrapFolders(params, { signal, ...requestOptions })
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getMyScrapFolders>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetMyScrapFoldersSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof getMyScrapFolders>>>
+export type GetMyScrapFoldersSuspenseQueryError = unknown
+
+export function useGetMyScrapFoldersSuspense<TData = Awaited<ReturnType<typeof getMyScrapFolders>>, TError = unknown>(
+  params: GetMyScrapFoldersParams,
+  options: {
+    query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyScrapFolders>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMyScrapFoldersSuspense<TData = Awaited<ReturnType<typeof getMyScrapFolders>>, TError = unknown>(
+  params: GetMyScrapFoldersParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyScrapFolders>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMyScrapFoldersSuspense<TData = Awaited<ReturnType<typeof getMyScrapFolders>>, TError = unknown>(
+  params: GetMyScrapFoldersParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyScrapFolders>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 나의 스크랩 폴더 리스트를 조회합니다.
+ */
+
+export function useGetMyScrapFoldersSuspense<TData = Awaited<ReturnType<typeof getMyScrapFolders>>, TError = unknown>(
+  params: GetMyScrapFoldersParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyScrapFolders>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetMyScrapFoldersSuspenseQueryOptions(params, options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as UseSuspenseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>
   }
 
@@ -445,6 +519,97 @@ export function useGetQnaSetsInScrapFolder<
   const queryOptions = getGetQnaSetsInScrapFolderQueryOptions(scrapFolderId, params, options)
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  return { ...query, queryKey: queryOptions.queryKey }
+}
+
+export const getGetQnaSetsInScrapFolderSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>,
+  TError = unknown,
+>(
+  scrapFolderId: number,
+  params: GetQnaSetsInScrapFolderParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getGetQnaSetsInScrapFolderQueryKey(scrapFolderId, params)
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>> = ({ signal }) =>
+    getQnaSetsInScrapFolder(scrapFolderId, params, { signal, ...requestOptions })
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetQnaSetsInScrapFolderSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>
+>
+export type GetQnaSetsInScrapFolderSuspenseQueryError = unknown
+
+export function useGetQnaSetsInScrapFolderSuspense<
+  TData = Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>,
+  TError = unknown,
+>(
+  scrapFolderId: number,
+  params: GetQnaSetsInScrapFolderParams,
+  options: {
+    query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetQnaSetsInScrapFolderSuspense<
+  TData = Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>,
+  TError = unknown,
+>(
+  scrapFolderId: number,
+  params: GetQnaSetsInScrapFolderParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetQnaSetsInScrapFolderSuspense<
+  TData = Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>,
+  TError = unknown,
+>(
+  scrapFolderId: number,
+  params: GetQnaSetsInScrapFolderParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 나의 스크랩 폴더 내 질문 답변 세트 리스트를 조회합니다.
+ */
+
+export function useGetQnaSetsInScrapFolderSuspense<
+  TData = Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>,
+  TError = unknown,
+>(
+  scrapFolderId: number,
+  params: GetQnaSetsInScrapFolderParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetQnaSetsInScrapFolderSuspenseQueryOptions(scrapFolderId, params, options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as UseSuspenseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>
   }
 

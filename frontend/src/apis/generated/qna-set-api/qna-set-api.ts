@@ -4,13 +4,16 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { customFetch } from '../../custom-fetch'
 import type {
-  ApiResponseListFrequentQnaSetResponse,
   ApiResponseListPdfHighlightingDto,
+  ApiResponsePageFrequentQnaSetResponse,
+  ApiResponsePageQnaSetScrapFolderResponse,
+  ApiResponseStarAnalysisDto,
   ApiResponseVoid,
   GetFrequentQuestionsParams,
+  GetScrapFoldersContainingQnaSetParams,
   PdfHighlightingUpdateRequest,
   QnaSetUpdateRequest,
 } from '../refit-api.schemas'
@@ -27,6 +30,8 @@ import type {
   UseMutationResult,
   UseQueryOptions,
   UseQueryResult,
+  UseSuspenseQueryOptions,
+  UseSuspenseQueryResult,
 } from '@tanstack/react-query'
 
 
@@ -222,6 +227,90 @@ export function useGetPdfHighlightings<TData = Awaited<ReturnType<typeof getPdfH
   return { ...query, queryKey: queryOptions.queryKey }
 }
 
+export const getGetPdfHighlightingsSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getPdfHighlightings>>,
+  TError = unknown,
+>(
+  qnaSetId: number,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getPdfHighlightings>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getGetPdfHighlightingsQueryKey(qnaSetId)
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getPdfHighlightings>>> = ({ signal }) =>
+    getPdfHighlightings(qnaSetId, { signal, ...requestOptions })
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getPdfHighlightings>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetPdfHighlightingsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof getPdfHighlightings>>>
+export type GetPdfHighlightingsSuspenseQueryError = unknown
+
+export function useGetPdfHighlightingsSuspense<
+  TData = Awaited<ReturnType<typeof getPdfHighlightings>>,
+  TError = unknown,
+>(
+  qnaSetId: number,
+  options: {
+    query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getPdfHighlightings>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetPdfHighlightingsSuspense<
+  TData = Awaited<ReturnType<typeof getPdfHighlightings>>,
+  TError = unknown,
+>(
+  qnaSetId: number,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getPdfHighlightings>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetPdfHighlightingsSuspense<
+  TData = Awaited<ReturnType<typeof getPdfHighlightings>>,
+  TError = unknown,
+>(
+  qnaSetId: number,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getPdfHighlightings>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 지정한 질문 답변 세트에 대해 등록된 PDF 하이라이팅 정보를 조회합니다.
+ */
+
+export function useGetPdfHighlightingsSuspense<
+  TData = Awaited<ReturnType<typeof getPdfHighlightings>>,
+  TError = unknown,
+>(
+  qnaSetId: number,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getPdfHighlightings>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetPdfHighlightingsSuspenseQueryOptions(qnaSetId, options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as UseSuspenseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  return { ...query, queryKey: queryOptions.queryKey }
+}
+
 /**
  * @summary 지정한 질문 답변 세트에 대해 PDF 하이라이팅 정보를 등록/수정합니다.
  */
@@ -300,6 +389,67 @@ export const useUpdatePdfHighlighting = <TError = unknown, TContext = unknown>(
   TContext
 > => {
   return useMutation(getUpdatePdfHighlightingMutationOptions(options), queryClient)
+}
+/**
+ * Gemini 요청을 수행하고 10~20초 뒤에 응답이 반환됩니다.
+ * @summary 지정한 질문 답변 세트에 대해 스타 분석 생성을 요청합니다.
+ */
+export const getCreateStarAnalysisUrl = (qnaSetId: number) => {
+  return `/qna-set/${qnaSetId}/star-analysis`
+}
+
+export const createStarAnalysis = async (
+  qnaSetId: number,
+  options?: RequestInit,
+): Promise<ApiResponseStarAnalysisDto> => {
+  return customFetch<ApiResponseStarAnalysisDto>(getCreateStarAnalysisUrl(qnaSetId), {
+    ...options,
+    method: 'POST',
+  })
+}
+
+export const getCreateStarAnalysisMutationOptions = <TError = unknown, TContext = unknown>(options?: {
+  mutation?: UseMutationOptions<Awaited<ReturnType<typeof createStarAnalysis>>, TError, { qnaSetId: number }, TContext>
+  request?: SecondParameter<typeof customFetch>
+}): UseMutationOptions<Awaited<ReturnType<typeof createStarAnalysis>>, TError, { qnaSetId: number }, TContext> => {
+  const mutationKey = ['createStarAnalysis']
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
+
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof createStarAnalysis>>, { qnaSetId: number }> = (
+    props,
+  ) => {
+    const { qnaSetId } = props ?? {}
+
+    return createStarAnalysis(qnaSetId, requestOptions)
+  }
+
+  return { mutationFn, ...mutationOptions }
+}
+
+export type CreateStarAnalysisMutationResult = NonNullable<Awaited<ReturnType<typeof createStarAnalysis>>>
+
+export type CreateStarAnalysisMutationError = unknown
+
+/**
+ * @summary 지정한 질문 답변 세트에 대해 스타 분석 생성을 요청합니다.
+ */
+export const useCreateStarAnalysis = <TError = unknown, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof createStarAnalysis>>,
+      TError,
+      { qnaSetId: number },
+      TContext
+    >
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<Awaited<ReturnType<typeof createStarAnalysis>>, TError, { qnaSetId: number }, TContext> => {
+  return useMutation(getCreateStarAnalysisMutationOptions(options), queryClient)
 }
 /**
  * @summary 지정한 질문에 대해 어려웠던 질문 마킹을 등록 해제 합니다.
@@ -426,6 +576,247 @@ export const useMarkDifficultQuestion = <TError = unknown, TContext = unknown>(
   return useMutation(getMarkDifficultQuestionMutationOptions(options), queryClient)
 }
 /**
+ * @summary 지정한 질문 답변 세트가 스크랩 폴더에 포함되어 있는 지 여부가 포함된 스크랩 폴더 리스트를 조회합니다.
+ */
+export const getGetScrapFoldersContainingQnaSetUrl = (
+  qnaSetId: number,
+  params: GetScrapFoldersContainingQnaSetParams,
+) => {
+  const normalizedParams = new URLSearchParams()
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  })
+
+  const stringifiedParams = normalizedParams.toString()
+
+  return stringifiedParams.length > 0
+    ? `/qna-set/${qnaSetId}/scrap-folder?${stringifiedParams}`
+    : `/qna-set/${qnaSetId}/scrap-folder`
+}
+
+export const getScrapFoldersContainingQnaSet = async (
+  qnaSetId: number,
+  params: GetScrapFoldersContainingQnaSetParams,
+  options?: RequestInit,
+): Promise<ApiResponsePageQnaSetScrapFolderResponse> => {
+  return customFetch<ApiResponsePageQnaSetScrapFolderResponse>(
+    getGetScrapFoldersContainingQnaSetUrl(qnaSetId, params),
+    {
+      ...options,
+      method: 'GET',
+    },
+  )
+}
+
+export const getGetScrapFoldersContainingQnaSetQueryKey = (
+  qnaSetId: number,
+  params?: GetScrapFoldersContainingQnaSetParams,
+) => {
+  return [`/qna-set/${qnaSetId}/scrap-folder`, ...(params ? [params] : [])] as const
+}
+
+export const getGetScrapFoldersContainingQnaSetQueryOptions = <
+  TData = Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>,
+  TError = unknown,
+>(
+  qnaSetId: number,
+  params: GetScrapFoldersContainingQnaSetParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getGetScrapFoldersContainingQnaSetQueryKey(qnaSetId, params)
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>> = ({ signal }) =>
+    getScrapFoldersContainingQnaSet(qnaSetId, params, { signal, ...requestOptions })
+
+  return { queryKey, queryFn, enabled: !!qnaSetId, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetScrapFoldersContainingQnaSetQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>
+>
+export type GetScrapFoldersContainingQnaSetQueryError = unknown
+
+export function useGetScrapFoldersContainingQnaSet<
+  TData = Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>,
+  TError = unknown,
+>(
+  qnaSetId: number,
+  params: GetScrapFoldersContainingQnaSetParams,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>,
+          TError,
+          Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetScrapFoldersContainingQnaSet<
+  TData = Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>,
+  TError = unknown,
+>(
+  qnaSetId: number,
+  params: GetScrapFoldersContainingQnaSetParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>,
+          TError,
+          Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetScrapFoldersContainingQnaSet<
+  TData = Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>,
+  TError = unknown,
+>(
+  qnaSetId: number,
+  params: GetScrapFoldersContainingQnaSetParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 지정한 질문 답변 세트가 스크랩 폴더에 포함되어 있는 지 여부가 포함된 스크랩 폴더 리스트를 조회합니다.
+ */
+
+export function useGetScrapFoldersContainingQnaSet<
+  TData = Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>,
+  TError = unknown,
+>(
+  qnaSetId: number,
+  params: GetScrapFoldersContainingQnaSetParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetScrapFoldersContainingQnaSetQueryOptions(qnaSetId, params, options)
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  return { ...query, queryKey: queryOptions.queryKey }
+}
+
+export const getGetScrapFoldersContainingQnaSetSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>,
+  TError = unknown,
+>(
+  qnaSetId: number,
+  params: GetScrapFoldersContainingQnaSetParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getGetScrapFoldersContainingQnaSetQueryKey(qnaSetId, params)
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>> = ({ signal }) =>
+    getScrapFoldersContainingQnaSet(qnaSetId, params, { signal, ...requestOptions })
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetScrapFoldersContainingQnaSetSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>
+>
+export type GetScrapFoldersContainingQnaSetSuspenseQueryError = unknown
+
+export function useGetScrapFoldersContainingQnaSetSuspense<
+  TData = Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>,
+  TError = unknown,
+>(
+  qnaSetId: number,
+  params: GetScrapFoldersContainingQnaSetParams,
+  options: {
+    query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetScrapFoldersContainingQnaSetSuspense<
+  TData = Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>,
+  TError = unknown,
+>(
+  qnaSetId: number,
+  params: GetScrapFoldersContainingQnaSetParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetScrapFoldersContainingQnaSetSuspense<
+  TData = Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>,
+  TError = unknown,
+>(
+  qnaSetId: number,
+  params: GetScrapFoldersContainingQnaSetParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 지정한 질문 답변 세트가 스크랩 폴더에 포함되어 있는 지 여부가 포함된 스크랩 폴더 리스트를 조회합니다.
+ */
+
+export function useGetScrapFoldersContainingQnaSetSuspense<
+  TData = Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>,
+  TError = unknown,
+>(
+  qnaSetId: number,
+  params: GetScrapFoldersContainingQnaSetParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetScrapFoldersContainingQnaSetSuspenseQueryOptions(qnaSetId, params, options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as UseSuspenseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  return { ...query, queryKey: queryOptions.queryKey }
+}
+
+/**
  * 지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다. 지정하지 않은 필드에 대해서는 전체를 대상으로 조회합니다.
  * @summary 지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다.
  */
@@ -446,8 +837,8 @@ export const getGetFrequentQuestionsUrl = (params: GetFrequentQuestionsParams) =
 export const getFrequentQuestions = async (
   params: GetFrequentQuestionsParams,
   options?: RequestInit,
-): Promise<ApiResponseListFrequentQnaSetResponse> => {
-  return customFetch<ApiResponseListFrequentQnaSetResponse>(getGetFrequentQuestionsUrl(params), {
+): Promise<ApiResponsePageFrequentQnaSetResponse> => {
+  return customFetch<ApiResponsePageFrequentQnaSetResponse>(getGetFrequentQuestionsUrl(params), {
     ...options,
     method: 'GET',
   })
@@ -539,6 +930,90 @@ export function useGetFrequentQuestions<TData = Awaited<ReturnType<typeof getFre
   const queryOptions = getGetFrequentQuestionsQueryOptions(params, options)
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  return { ...query, queryKey: queryOptions.queryKey }
+}
+
+export const getGetFrequentQuestionsSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getFrequentQuestions>>,
+  TError = unknown,
+>(
+  params: GetFrequentQuestionsParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getFrequentQuestions>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getGetFrequentQuestionsQueryKey(params)
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getFrequentQuestions>>> = ({ signal }) =>
+    getFrequentQuestions(params, { signal, ...requestOptions })
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getFrequentQuestions>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetFrequentQuestionsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof getFrequentQuestions>>>
+export type GetFrequentQuestionsSuspenseQueryError = unknown
+
+export function useGetFrequentQuestionsSuspense<
+  TData = Awaited<ReturnType<typeof getFrequentQuestions>>,
+  TError = unknown,
+>(
+  params: GetFrequentQuestionsParams,
+  options: {
+    query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getFrequentQuestions>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetFrequentQuestionsSuspense<
+  TData = Awaited<ReturnType<typeof getFrequentQuestions>>,
+  TError = unknown,
+>(
+  params: GetFrequentQuestionsParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getFrequentQuestions>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetFrequentQuestionsSuspense<
+  TData = Awaited<ReturnType<typeof getFrequentQuestions>>,
+  TError = unknown,
+>(
+  params: GetFrequentQuestionsParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getFrequentQuestions>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다.
+ */
+
+export function useGetFrequentQuestionsSuspense<
+  TData = Awaited<ReturnType<typeof getFrequentQuestions>>,
+  TError = unknown,
+>(
+  params: GetFrequentQuestionsParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getFrequentQuestions>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetFrequentQuestionsSuspenseQueryOptions(params, options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as UseSuspenseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>
   }
 

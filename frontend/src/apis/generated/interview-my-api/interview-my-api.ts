@@ -4,7 +4,7 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { customFetch } from '../../custom-fetch'
 import type {
   ApiResponsePageInterviewDto,
@@ -26,6 +26,8 @@ import type {
   UseMutationResult,
   UseQueryOptions,
   UseQueryResult,
+  UseSuspenseQueryOptions,
+  UseSuspenseQueryResult,
 } from '@tanstack/react-query'
 
 
@@ -239,6 +241,90 @@ export function useGetMyInterviewDrafts<TData = Awaited<ReturnType<typeof getMyI
   const queryOptions = getGetMyInterviewDraftsQueryOptions(params, options)
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  return { ...query, queryKey: queryOptions.queryKey }
+}
+
+export const getGetMyInterviewDraftsSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMyInterviewDrafts>>,
+  TError = unknown,
+>(
+  params: GetMyInterviewDraftsParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyInterviewDrafts>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getGetMyInterviewDraftsQueryKey(params)
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyInterviewDrafts>>> = ({ signal }) =>
+    getMyInterviewDrafts(params, { signal, ...requestOptions })
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getMyInterviewDrafts>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetMyInterviewDraftsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof getMyInterviewDrafts>>>
+export type GetMyInterviewDraftsSuspenseQueryError = unknown
+
+export function useGetMyInterviewDraftsSuspense<
+  TData = Awaited<ReturnType<typeof getMyInterviewDrafts>>,
+  TError = unknown,
+>(
+  params: GetMyInterviewDraftsParams,
+  options: {
+    query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyInterviewDrafts>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMyInterviewDraftsSuspense<
+  TData = Awaited<ReturnType<typeof getMyInterviewDrafts>>,
+  TError = unknown,
+>(
+  params: GetMyInterviewDraftsParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyInterviewDrafts>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMyInterviewDraftsSuspense<
+  TData = Awaited<ReturnType<typeof getMyInterviewDrafts>>,
+  TError = unknown,
+>(
+  params: GetMyInterviewDraftsParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyInterviewDrafts>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 내가 작성중인 (임시저장) 복기 데이터를 조회합니다.
+ */
+
+export function useGetMyInterviewDraftsSuspense<
+  TData = Awaited<ReturnType<typeof getMyInterviewDrafts>>,
+  TError = unknown,
+>(
+  params: GetMyInterviewDraftsParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyInterviewDrafts>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetMyInterviewDraftsSuspenseQueryOptions(params, options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as UseSuspenseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>
   }
 

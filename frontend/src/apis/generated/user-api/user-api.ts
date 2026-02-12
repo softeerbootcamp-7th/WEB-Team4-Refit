@@ -4,9 +4,15 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { customFetch } from '../../custom-fetch'
-import type { ApiResponseMyProfileResponse, ApiResponseVoid, UserSignUpRequest } from '../refit-api.schemas'
+import type {
+  ApiResponseMyProfileResponse,
+  ApiResponseVoid,
+  MyProfileUpdateRequest,
+  SignUpParams,
+  UserSignUpRequest,
+} from '../refit-api.schemas'
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -20,113 +26,14 @@ import type {
   UseMutationResult,
   UseQueryOptions,
   UseQueryResult,
+  UseSuspenseQueryOptions,
+  UseSuspenseQueryResult,
 } from '@tanstack/react-query'
 
 
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
 
-/**
- * 현재 로그인한 계정이 아직 등록되지 않은 상태일 때만 회원가입 할 수 있습니다. 회원가입이 성공하면 토큰을 새로 발급합니다.
- * @summary 새롭게 회원가입 합니다.
- */
-export const getSignUpUrl = () => {
-  return `/user/signup`
-}
-
-export const signUp = async (userSignUpRequest: UserSignUpRequest, options?: RequestInit): Promise<void> => {
-  return customFetch<void>(getSignUpUrl(), {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(userSignUpRequest),
-  })
-}
-
-export const getSignUpMutationOptions = <TError = unknown, TContext = unknown>(options?: {
-  mutation?: UseMutationOptions<Awaited<ReturnType<typeof signUp>>, TError, { data: UserSignUpRequest }, TContext>
-  request?: SecondParameter<typeof customFetch>
-}): UseMutationOptions<Awaited<ReturnType<typeof signUp>>, TError, { data: UserSignUpRequest }, TContext> => {
-  const mutationKey = ['signUp']
-  const { mutation: mutationOptions, request: requestOptions } = options
-    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, request: undefined }
-
-  const mutationFn: MutationFunction<Awaited<ReturnType<typeof signUp>>, { data: UserSignUpRequest }> = (props) => {
-    const { data } = props ?? {}
-
-    return signUp(data, requestOptions)
-  }
-
-  return { mutationFn, ...mutationOptions }
-}
-
-export type SignUpMutationResult = NonNullable<Awaited<ReturnType<typeof signUp>>>
-export type SignUpMutationBody = UserSignUpRequest
-export type SignUpMutationError = unknown
-
-/**
- * @summary 새롭게 회원가입 합니다.
- */
-export const useSignUp = <TError = unknown, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<Awaited<ReturnType<typeof signUp>>, TError, { data: UserSignUpRequest }, TContext>
-    request?: SecondParameter<typeof customFetch>
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<Awaited<ReturnType<typeof signUp>>, TError, { data: UserSignUpRequest }, TContext> => {
-  return useMutation(getSignUpMutationOptions(options), queryClient)
-}
-/**
- * @summary 이용 약관에 동의합니다.
- */
-export const getAgreeToTermsUrl = () => {
-  return `/user/my/terms/agree`
-}
-
-export const agreeToTerms = async (options?: RequestInit): Promise<ApiResponseVoid> => {
-  return customFetch<ApiResponseVoid>(getAgreeToTermsUrl(), {
-    ...options,
-    method: 'POST',
-  })
-}
-
-export const getAgreeToTermsMutationOptions = <TError = unknown, TContext = unknown>(options?: {
-  mutation?: UseMutationOptions<Awaited<ReturnType<typeof agreeToTerms>>, TError, void, TContext>
-  request?: SecondParameter<typeof customFetch>
-}): UseMutationOptions<Awaited<ReturnType<typeof agreeToTerms>>, TError, void, TContext> => {
-  const mutationKey = ['agreeToTerms']
-  const { mutation: mutationOptions, request: requestOptions } = options
-    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, request: undefined }
-
-  const mutationFn: MutationFunction<Awaited<ReturnType<typeof agreeToTerms>>, void> = () => {
-    return agreeToTerms(requestOptions)
-  }
-
-  return { mutationFn, ...mutationOptions }
-}
-
-export type AgreeToTermsMutationResult = NonNullable<Awaited<ReturnType<typeof agreeToTerms>>>
-
-export type AgreeToTermsMutationError = unknown
-
-/**
- * @summary 이용 약관에 동의합니다.
- */
-export const useAgreeToTerms = <TError = unknown, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<Awaited<ReturnType<typeof agreeToTerms>>, TError, void, TContext>
-    request?: SecondParameter<typeof customFetch>
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<Awaited<ReturnType<typeof agreeToTerms>>, TError, void, TContext> => {
-  return useMutation(getAgreeToTermsMutationOptions(options), queryClient)
-}
 /**
  * @summary 현재 로그인한 유저의 기본 정보를 조회합니다.
  */
@@ -224,4 +131,285 @@ export function useGetMyProfileInfo<TData = Awaited<ReturnType<typeof getMyProfi
   }
 
   return { ...query, queryKey: queryOptions.queryKey }
+}
+
+export const getGetMyProfileInfoSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMyProfileInfo>>,
+  TError = unknown,
+>(options?: {
+  query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyProfileInfo>>, TError, TData>>
+  request?: SecondParameter<typeof customFetch>
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getGetMyProfileInfoQueryKey()
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyProfileInfo>>> = ({ signal }) =>
+    getMyProfileInfo({ signal, ...requestOptions })
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getMyProfileInfo>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetMyProfileInfoSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof getMyProfileInfo>>>
+export type GetMyProfileInfoSuspenseQueryError = unknown
+
+export function useGetMyProfileInfoSuspense<TData = Awaited<ReturnType<typeof getMyProfileInfo>>, TError = unknown>(
+  options: {
+    query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyProfileInfo>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMyProfileInfoSuspense<TData = Awaited<ReturnType<typeof getMyProfileInfo>>, TError = unknown>(
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyProfileInfo>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMyProfileInfoSuspense<TData = Awaited<ReturnType<typeof getMyProfileInfo>>, TError = unknown>(
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyProfileInfo>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 현재 로그인한 유저의 기본 정보를 조회합니다.
+ */
+
+export function useGetMyProfileInfoSuspense<TData = Awaited<ReturnType<typeof getMyProfileInfo>>, TError = unknown>(
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyProfileInfo>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetMyProfileInfoSuspenseQueryOptions(options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as UseSuspenseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  return { ...query, queryKey: queryOptions.queryKey }
+}
+
+/**
+ * @summary 사용자 프로필을 수정합니다.
+ */
+export const getUpdateMyProfileUrl = () => {
+  return `/user/my`
+}
+
+export const updateMyProfile = async (
+  myProfileUpdateRequest: MyProfileUpdateRequest,
+  options?: RequestInit,
+): Promise<ApiResponseVoid> => {
+  return customFetch<ApiResponseVoid>(getUpdateMyProfileUrl(), {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(myProfileUpdateRequest),
+  })
+}
+
+export const getUpdateMyProfileMutationOptions = <TError = unknown, TContext = unknown>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateMyProfile>>,
+    TError,
+    { data: MyProfileUpdateRequest },
+    TContext
+  >
+  request?: SecondParameter<typeof customFetch>
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateMyProfile>>,
+  TError,
+  { data: MyProfileUpdateRequest },
+  TContext
+> => {
+  const mutationKey = ['updateMyProfile']
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
+
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateMyProfile>>, { data: MyProfileUpdateRequest }> = (
+    props,
+  ) => {
+    const { data } = props ?? {}
+
+    return updateMyProfile(data, requestOptions)
+  }
+
+  return { mutationFn, ...mutationOptions }
+}
+
+export type UpdateMyProfileMutationResult = NonNullable<Awaited<ReturnType<typeof updateMyProfile>>>
+export type UpdateMyProfileMutationBody = MyProfileUpdateRequest
+export type UpdateMyProfileMutationError = unknown
+
+/**
+ * @summary 사용자 프로필을 수정합니다.
+ */
+export const useUpdateMyProfile = <TError = unknown, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateMyProfile>>,
+      TError,
+      { data: MyProfileUpdateRequest },
+      TContext
+    >
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateMyProfile>>,
+  TError,
+  { data: MyProfileUpdateRequest },
+  TContext
+> => {
+  return useMutation(getUpdateMyProfileMutationOptions(options), queryClient)
+}
+/**
+ * 현재 로그인한 계정이 아직 등록되지 않은 상태일 때만 회원가입 할 수 있습니다. 회원가입이 성공하면 토큰을 새로 발급합니다.
+ * @summary 새롭게 회원가입 합니다.
+ */
+export const getSignUpUrl = (params?: SignUpParams) => {
+  const normalizedParams = new URLSearchParams()
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  })
+
+  const stringifiedParams = normalizedParams.toString()
+
+  return stringifiedParams.length > 0 ? `/user/signup?${stringifiedParams}` : `/user/signup`
+}
+
+export const signUp = async (
+  userSignUpRequest: UserSignUpRequest,
+  params?: SignUpParams,
+  options?: RequestInit,
+): Promise<void> => {
+  return customFetch<void>(getSignUpUrl(params), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(userSignUpRequest),
+  })
+}
+
+export const getSignUpMutationOptions = <TError = unknown, TContext = unknown>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof signUp>>,
+    TError,
+    { data: UserSignUpRequest; params?: SignUpParams },
+    TContext
+  >
+  request?: SecondParameter<typeof customFetch>
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof signUp>>,
+  TError,
+  { data: UserSignUpRequest; params?: SignUpParams },
+  TContext
+> => {
+  const mutationKey = ['signUp']
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof signUp>>,
+    { data: UserSignUpRequest; params?: SignUpParams }
+  > = (props) => {
+    const { data, params } = props ?? {}
+
+    return signUp(data, params, requestOptions)
+  }
+
+  return { mutationFn, ...mutationOptions }
+}
+
+export type SignUpMutationResult = NonNullable<Awaited<ReturnType<typeof signUp>>>
+export type SignUpMutationBody = UserSignUpRequest
+export type SignUpMutationError = unknown
+
+/**
+ * @summary 새롭게 회원가입 합니다.
+ */
+export const useSignUp = <TError = unknown, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof signUp>>,
+      TError,
+      { data: UserSignUpRequest; params?: SignUpParams },
+      TContext
+    >
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof signUp>>,
+  TError,
+  { data: UserSignUpRequest; params?: SignUpParams },
+  TContext
+> => {
+  return useMutation(getSignUpMutationOptions(options), queryClient)
+}
+/**
+ * @summary 이용 약관에 동의합니다.
+ */
+export const getAgreeToTermsUrl = () => {
+  return `/user/my/terms/agree`
+}
+
+export const agreeToTerms = async (options?: RequestInit): Promise<ApiResponseVoid> => {
+  return customFetch<ApiResponseVoid>(getAgreeToTermsUrl(), {
+    ...options,
+    method: 'POST',
+  })
+}
+
+export const getAgreeToTermsMutationOptions = <TError = unknown, TContext = unknown>(options?: {
+  mutation?: UseMutationOptions<Awaited<ReturnType<typeof agreeToTerms>>, TError, void, TContext>
+  request?: SecondParameter<typeof customFetch>
+}): UseMutationOptions<Awaited<ReturnType<typeof agreeToTerms>>, TError, void, TContext> => {
+  const mutationKey = ['agreeToTerms']
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
+
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof agreeToTerms>>, void> = () => {
+    return agreeToTerms(requestOptions)
+  }
+
+  return { mutationFn, ...mutationOptions }
+}
+
+export type AgreeToTermsMutationResult = NonNullable<Awaited<ReturnType<typeof agreeToTerms>>>
+
+export type AgreeToTermsMutationError = unknown
+
+/**
+ * @summary 이용 약관에 동의합니다.
+ */
+export const useAgreeToTerms = <TError = unknown, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<Awaited<ReturnType<typeof agreeToTerms>>, TError, void, TContext>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<Awaited<ReturnType<typeof agreeToTerms>>, TError, void, TContext> => {
+  return useMutation(getAgreeToTermsMutationOptions(options), queryClient)
 }

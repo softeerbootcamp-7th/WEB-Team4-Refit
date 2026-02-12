@@ -4,15 +4,15 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { customFetch } from '../../custom-fetch'
 import type {
-  ApiResponseTokenPairDto,
+  ApiResponseTestPublishTokenResponse,
   ApiResponseVoid,
   DeleteTokenCookiesParams,
   DeleteUserByEmailParams,
-  GetGuestTokenParams,
-  GetTokenParams,
+  PublishTokenByUserIdParams,
+  PublishTokenParams,
 } from '../refit-api.schemas'
 import type {
   DataTag,
@@ -27,6 +27,8 @@ import type {
   UseMutationResult,
   UseQueryOptions,
   UseQueryResult,
+  UseSuspenseQueryOptions,
+  UseSuspenseQueryResult,
 } from '@tanstack/react-query'
 
 
@@ -34,10 +36,10 @@ import type {
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
 
 /**
- * 발급된 토큰은 요청 주소에 쿠키로 세팅됩니다.
- * @summary (테스트용) 회원 토큰을 발급합니다.
+ * 발급된 토큰은 origin에 따라 세팅됩니다. response body에 회원가입 필요 여부 및 토큰 정보가 포함됩니다.
+ * @summary (테스트용) Access&Refresh Token을 이메일을 통해 발급합니다.
  */
-export const getGetTokenUrl = (params: GetTokenParams) => {
+export const getPublishTokenUrl = (params: PublishTokenParams) => {
   const normalizedParams = new URLSearchParams()
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -51,86 +53,97 @@ export const getGetTokenUrl = (params: GetTokenParams) => {
   return stringifiedParams.length > 0 ? `/test/auth/token?${stringifiedParams}` : `/test/auth/token`
 }
 
-export const getToken = async (params: GetTokenParams, options?: RequestInit): Promise<ApiResponseTokenPairDto> => {
-  return customFetch<ApiResponseTokenPairDto>(getGetTokenUrl(params), {
+export const publishToken = async (
+  params: PublishTokenParams,
+  options?: RequestInit,
+): Promise<ApiResponseTestPublishTokenResponse> => {
+  return customFetch<ApiResponseTestPublishTokenResponse>(getPublishTokenUrl(params), {
     ...options,
     method: 'GET',
   })
 }
 
-export const getGetTokenQueryKey = (params?: GetTokenParams) => {
+export const getPublishTokenQueryKey = (params?: PublishTokenParams) => {
   return [`/test/auth/token`, ...(params ? [params] : [])] as const
 }
 
-export const getGetTokenQueryOptions = <TData = Awaited<ReturnType<typeof getToken>>, TError = unknown>(
-  params: GetTokenParams,
+export const getPublishTokenQueryOptions = <TData = Awaited<ReturnType<typeof publishToken>>, TError = unknown>(
+  params: PublishTokenParams,
   options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getToken>>, TError, TData>>
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof publishToken>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
   },
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {}
 
-  const queryKey = queryOptions?.queryKey ?? getGetTokenQueryKey(params)
+  const queryKey = queryOptions?.queryKey ?? getPublishTokenQueryKey(params)
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getToken>>> = ({ signal }) =>
-    getToken(params, { signal, ...requestOptions })
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof publishToken>>> = ({ signal }) =>
+    publishToken(params, { signal, ...requestOptions })
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getToken>>,
+    Awaited<ReturnType<typeof publishToken>>,
     TError,
     TData
   > & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type GetTokenQueryResult = NonNullable<Awaited<ReturnType<typeof getToken>>>
-export type GetTokenQueryError = unknown
+export type PublishTokenQueryResult = NonNullable<Awaited<ReturnType<typeof publishToken>>>
+export type PublishTokenQueryError = unknown
 
-export function useGetToken<TData = Awaited<ReturnType<typeof getToken>>, TError = unknown>(
-  params: GetTokenParams,
+export function usePublishToken<TData = Awaited<ReturnType<typeof publishToken>>, TError = unknown>(
+  params: PublishTokenParams,
   options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getToken>>, TError, TData>> &
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof publishToken>>, TError, TData>> &
       Pick<
-        DefinedInitialDataOptions<Awaited<ReturnType<typeof getToken>>, TError, Awaited<ReturnType<typeof getToken>>>,
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof publishToken>>,
+          TError,
+          Awaited<ReturnType<typeof publishToken>>
+        >,
         'initialData'
       >
     request?: SecondParameter<typeof customFetch>
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetToken<TData = Awaited<ReturnType<typeof getToken>>, TError = unknown>(
-  params: GetTokenParams,
+export function usePublishToken<TData = Awaited<ReturnType<typeof publishToken>>, TError = unknown>(
+  params: PublishTokenParams,
   options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getToken>>, TError, TData>> &
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof publishToken>>, TError, TData>> &
       Pick<
-        UndefinedInitialDataOptions<Awaited<ReturnType<typeof getToken>>, TError, Awaited<ReturnType<typeof getToken>>>,
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof publishToken>>,
+          TError,
+          Awaited<ReturnType<typeof publishToken>>
+        >,
         'initialData'
       >
     request?: SecondParameter<typeof customFetch>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetToken<TData = Awaited<ReturnType<typeof getToken>>, TError = unknown>(
-  params: GetTokenParams,
+export function usePublishToken<TData = Awaited<ReturnType<typeof publishToken>>, TError = unknown>(
+  params: PublishTokenParams,
   options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getToken>>, TError, TData>>
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof publishToken>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary (테스트용) 회원 토큰을 발급합니다.
+ * @summary (테스트용) Access&Refresh Token을 이메일을 통해 발급합니다.
  */
 
-export function useGetToken<TData = Awaited<ReturnType<typeof getToken>>, TError = unknown>(
-  params: GetTokenParams,
+export function usePublishToken<TData = Awaited<ReturnType<typeof publishToken>>, TError = unknown>(
+  params: PublishTokenParams,
   options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getToken>>, TError, TData>>
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof publishToken>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetTokenQueryOptions(params, options)
+  const queryOptions = getPublishTokenQueryOptions(params, options)
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>
@@ -139,11 +152,80 @@ export function useGetToken<TData = Awaited<ReturnType<typeof getToken>>, TError
   return { ...query, queryKey: queryOptions.queryKey }
 }
 
+export const getPublishTokenSuspenseQueryOptions = <TData = Awaited<ReturnType<typeof publishToken>>, TError = unknown>(
+  params: PublishTokenParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof publishToken>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getPublishTokenQueryKey(params)
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof publishToken>>> = ({ signal }) =>
+    publishToken(params, { signal, ...requestOptions })
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof publishToken>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type PublishTokenSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof publishToken>>>
+export type PublishTokenSuspenseQueryError = unknown
+
+export function usePublishTokenSuspense<TData = Awaited<ReturnType<typeof publishToken>>, TError = unknown>(
+  params: PublishTokenParams,
+  options: {
+    query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof publishToken>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function usePublishTokenSuspense<TData = Awaited<ReturnType<typeof publishToken>>, TError = unknown>(
+  params: PublishTokenParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof publishToken>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function usePublishTokenSuspense<TData = Awaited<ReturnType<typeof publishToken>>, TError = unknown>(
+  params: PublishTokenParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof publishToken>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * 발급된 토큰은 요청 주소에 쿠키로 세팅됩니다.
- * @summary (테스트용) 게스트 회원 토큰을 발급합니다.
+ * @summary (테스트용) Access&Refresh Token을 이메일을 통해 발급합니다.
  */
-export const getGetGuestTokenUrl = (params: GetGuestTokenParams) => {
+
+export function usePublishTokenSuspense<TData = Awaited<ReturnType<typeof publishToken>>, TError = unknown>(
+  params: PublishTokenParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof publishToken>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getPublishTokenSuspenseQueryOptions(params, options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as UseSuspenseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  return { ...query, queryKey: queryOptions.queryKey }
+}
+
+/**
+ * 발급된 토큰은 origin에 따라 세팅됩니다. response body에 회원가입 필요 여부 및 토큰 정보가 포함됩니다.
+ * @summary (테스트용) Access&Refresh Token을 사용자 아이디를 통해 발급합니다.
+ */
+export const getPublishTokenByUserIdUrl = (userId: number, params?: PublishTokenByUserIdParams) => {
   const normalizedParams = new URLSearchParams()
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -154,56 +236,62 @@ export const getGetGuestTokenUrl = (params: GetGuestTokenParams) => {
 
   const stringifiedParams = normalizedParams.toString()
 
-  return stringifiedParams.length > 0 ? `/test/auth/token/guest?${stringifiedParams}` : `/test/auth/token/guest`
+  return stringifiedParams.length > 0 ? `/test/auth/token/${userId}?${stringifiedParams}` : `/test/auth/token/${userId}`
 }
 
-export const getGuestToken = async (
-  params: GetGuestTokenParams,
+export const publishTokenByUserId = async (
+  userId: number,
+  params?: PublishTokenByUserIdParams,
   options?: RequestInit,
-): Promise<ApiResponseTokenPairDto> => {
-  return customFetch<ApiResponseTokenPairDto>(getGetGuestTokenUrl(params), {
+): Promise<ApiResponseTestPublishTokenResponse> => {
+  return customFetch<ApiResponseTestPublishTokenResponse>(getPublishTokenByUserIdUrl(userId, params), {
     ...options,
     method: 'GET',
   })
 }
 
-export const getGetGuestTokenQueryKey = (params?: GetGuestTokenParams) => {
-  return [`/test/auth/token/guest`, ...(params ? [params] : [])] as const
+export const getPublishTokenByUserIdQueryKey = (userId: number, params?: PublishTokenByUserIdParams) => {
+  return [`/test/auth/token/${userId}`, ...(params ? [params] : [])] as const
 }
 
-export const getGetGuestTokenQueryOptions = <TData = Awaited<ReturnType<typeof getGuestToken>>, TError = unknown>(
-  params: GetGuestTokenParams,
+export const getPublishTokenByUserIdQueryOptions = <
+  TData = Awaited<ReturnType<typeof publishTokenByUserId>>,
+  TError = unknown,
+>(
+  userId: number,
+  params?: PublishTokenByUserIdParams,
   options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getGuestToken>>, TError, TData>>
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof publishTokenByUserId>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
   },
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {}
 
-  const queryKey = queryOptions?.queryKey ?? getGetGuestTokenQueryKey(params)
+  const queryKey = queryOptions?.queryKey ?? getPublishTokenByUserIdQueryKey(userId, params)
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getGuestToken>>> = ({ signal }) =>
-    getGuestToken(params, { signal, ...requestOptions })
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof publishTokenByUserId>>> = ({ signal }) =>
+    publishTokenByUserId(userId, params, { signal, ...requestOptions })
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getGuestToken>>,
+  return { queryKey, queryFn, enabled: !!userId, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof publishTokenByUserId>>,
     TError,
     TData
   > & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type GetGuestTokenQueryResult = NonNullable<Awaited<ReturnType<typeof getGuestToken>>>
-export type GetGuestTokenQueryError = unknown
+export type PublishTokenByUserIdQueryResult = NonNullable<Awaited<ReturnType<typeof publishTokenByUserId>>>
+export type PublishTokenByUserIdQueryError = unknown
 
-export function useGetGuestToken<TData = Awaited<ReturnType<typeof getGuestToken>>, TError = unknown>(
-  params: GetGuestTokenParams,
+export function usePublishTokenByUserId<TData = Awaited<ReturnType<typeof publishTokenByUserId>>, TError = unknown>(
+  userId: number,
+  params: undefined | PublishTokenByUserIdParams,
   options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getGuestToken>>, TError, TData>> &
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof publishTokenByUserId>>, TError, TData>> &
       Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getGuestToken>>,
+          Awaited<ReturnType<typeof publishTokenByUserId>>,
           TError,
-          Awaited<ReturnType<typeof getGuestToken>>
+          Awaited<ReturnType<typeof publishTokenByUserId>>
         >,
         'initialData'
       >
@@ -211,15 +299,16 @@ export function useGetGuestToken<TData = Awaited<ReturnType<typeof getGuestToken
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetGuestToken<TData = Awaited<ReturnType<typeof getGuestToken>>, TError = unknown>(
-  params: GetGuestTokenParams,
+export function usePublishTokenByUserId<TData = Awaited<ReturnType<typeof publishTokenByUserId>>, TError = unknown>(
+  userId: number,
+  params?: PublishTokenByUserIdParams,
   options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getGuestToken>>, TError, TData>> &
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof publishTokenByUserId>>, TError, TData>> &
       Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getGuestToken>>,
+          Awaited<ReturnType<typeof publishTokenByUserId>>,
           TError,
-          Awaited<ReturnType<typeof getGuestToken>>
+          Awaited<ReturnType<typeof publishTokenByUserId>>
         >,
         'initialData'
       >
@@ -227,29 +316,120 @@ export function useGetGuestToken<TData = Awaited<ReturnType<typeof getGuestToken
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetGuestToken<TData = Awaited<ReturnType<typeof getGuestToken>>, TError = unknown>(
-  params: GetGuestTokenParams,
+export function usePublishTokenByUserId<TData = Awaited<ReturnType<typeof publishTokenByUserId>>, TError = unknown>(
+  userId: number,
+  params?: PublishTokenByUserIdParams,
   options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getGuestToken>>, TError, TData>>
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof publishTokenByUserId>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary (테스트용) 게스트 회원 토큰을 발급합니다.
+ * @summary (테스트용) Access&Refresh Token을 사용자 아이디를 통해 발급합니다.
  */
 
-export function useGetGuestToken<TData = Awaited<ReturnType<typeof getGuestToken>>, TError = unknown>(
-  params: GetGuestTokenParams,
+export function usePublishTokenByUserId<TData = Awaited<ReturnType<typeof publishTokenByUserId>>, TError = unknown>(
+  userId: number,
+  params?: PublishTokenByUserIdParams,
   options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getGuestToken>>, TError, TData>>
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof publishTokenByUserId>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetGuestTokenQueryOptions(params, options)
+  const queryOptions = getPublishTokenByUserIdQueryOptions(userId, params, options)
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  return { ...query, queryKey: queryOptions.queryKey }
+}
+
+export const getPublishTokenByUserIdSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof publishTokenByUserId>>,
+  TError = unknown,
+>(
+  userId: number,
+  params?: PublishTokenByUserIdParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof publishTokenByUserId>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getPublishTokenByUserIdQueryKey(userId, params)
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof publishTokenByUserId>>> = ({ signal }) =>
+    publishTokenByUserId(userId, params, { signal, ...requestOptions })
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof publishTokenByUserId>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type PublishTokenByUserIdSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof publishTokenByUserId>>>
+export type PublishTokenByUserIdSuspenseQueryError = unknown
+
+export function usePublishTokenByUserIdSuspense<
+  TData = Awaited<ReturnType<typeof publishTokenByUserId>>,
+  TError = unknown,
+>(
+  userId: number,
+  params: undefined | PublishTokenByUserIdParams,
+  options: {
+    query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof publishTokenByUserId>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function usePublishTokenByUserIdSuspense<
+  TData = Awaited<ReturnType<typeof publishTokenByUserId>>,
+  TError = unknown,
+>(
+  userId: number,
+  params?: PublishTokenByUserIdParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof publishTokenByUserId>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function usePublishTokenByUserIdSuspense<
+  TData = Awaited<ReturnType<typeof publishTokenByUserId>>,
+  TError = unknown,
+>(
+  userId: number,
+  params?: PublishTokenByUserIdParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof publishTokenByUserId>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary (테스트용) Access&Refresh Token을 사용자 아이디를 통해 발급합니다.
+ */
+
+export function usePublishTokenByUserIdSuspense<
+  TData = Awaited<ReturnType<typeof publishTokenByUserId>>,
+  TError = unknown,
+>(
+  userId: number,
+  params?: PublishTokenByUserIdParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof publishTokenByUserId>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getPublishTokenByUserIdSuspenseQueryOptions(userId, params, options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as UseSuspenseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>
   }
 
@@ -406,7 +586,7 @@ export const getDeleteTokenCookiesUrl = (params?: DeleteTokenCookiesParams) => {
 
   const stringifiedParams = normalizedParams.toString()
 
-  return stringifiedParams.length > 0 ? `/test/auth/token/cookies?${stringifiedParams}` : `/test/auth/token/cookies`
+  return stringifiedParams.length > 0 ? `/test/auth/cookies?${stringifiedParams}` : `/test/auth/cookies`
 }
 
 export const deleteTokenCookies = async (

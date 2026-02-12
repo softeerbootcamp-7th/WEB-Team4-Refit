@@ -8,8 +8,10 @@ import { faker } from '@faker-js/faker'
 
 import { HttpResponse, http } from 'msw'
 import type {
-  ApiResponseListFrequentQnaSetResponse,
   ApiResponseListPdfHighlightingDto,
+  ApiResponsePageFrequentQnaSetResponse,
+  ApiResponsePageQnaSetScrapFolderResponse,
+  ApiResponseStarAnalysisDto,
   ApiResponseVoid,
 } from '../refit-api.schemas'
 import type { RequestHandlerOptions } from 'msw'
@@ -71,6 +73,37 @@ export const getUpdatePdfHighlightingResponseMock = (
   ...overrideResponse,
 })
 
+export const getCreateStarAnalysisResponseMock = (
+  overrideResponse: Partial<ApiResponseStarAnalysisDto> = {},
+): ApiResponseStarAnalysisDto => ({
+  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
+  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
+  result: faker.helpers.arrayElement([
+    {
+      sInclusionLevel: faker.helpers.arrayElement([
+        faker.helpers.arrayElement(['NULL', 'PRESENT', 'INSUFFICIENT', 'ABSENT'] as const),
+        undefined,
+      ]),
+      tInclusionLevel: faker.helpers.arrayElement([
+        faker.helpers.arrayElement(['NULL', 'PRESENT', 'INSUFFICIENT', 'ABSENT'] as const),
+        undefined,
+      ]),
+      aInclusionLevel: faker.helpers.arrayElement([
+        faker.helpers.arrayElement(['NULL', 'PRESENT', 'INSUFFICIENT', 'ABSENT'] as const),
+        undefined,
+      ]),
+      rInclusionLevel: faker.helpers.arrayElement([
+        faker.helpers.arrayElement(['NULL', 'PRESENT', 'INSUFFICIENT', 'ABSENT'] as const),
+        undefined,
+      ]),
+      overallSummary: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
+    },
+    undefined,
+  ]),
+  ...overrideResponse,
+})
+
 export const getUnmarkDifficultQuestionResponseMock = (
   overrideResponse: Partial<ApiResponseVoid> = {},
 ): ApiResponseVoid => ({
@@ -91,16 +124,134 @@ export const getMarkDifficultQuestionResponseMock = (
   ...overrideResponse,
 })
 
-export const getGetFrequentQuestionsResponseMock = (
-  overrideResponse: Partial<ApiResponseListFrequentQnaSetResponse> = {},
-): ApiResponseListFrequentQnaSetResponse => ({
+export const getGetScrapFoldersContainingQnaSetResponseMock = (
+  overrideResponse: Partial<ApiResponsePageQnaSetScrapFolderResponse> = {},
+): ApiResponsePageQnaSetScrapFolderResponse => ({
   isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
   code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
   message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
   result: faker.helpers.arrayElement([
-    Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({
-      question: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-    })),
+    {
+      totalElements: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
+      totalPages: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
+      size: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
+      content: faker.helpers.arrayElement([
+        Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({
+          scrapFolderId: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
+          scrapFolderName: faker.helpers.arrayElement([
+            faker.string.alpha({ length: { min: 10, max: 20 } }),
+            undefined,
+          ]),
+          contains: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+        })),
+        undefined,
+      ]),
+      number: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
+      sort: faker.helpers.arrayElement([
+        {
+          empty: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+          sorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+          unsorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+        },
+        undefined,
+      ]),
+      pageable: faker.helpers.arrayElement([
+        {
+          offset: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
+          sort: faker.helpers.arrayElement([
+            {
+              empty: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+              sorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+              unsorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+            },
+            undefined,
+          ]),
+          paged: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+          pageNumber: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
+          pageSize: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
+          unpaged: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+        },
+        undefined,
+      ]),
+      first: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+      numberOfElements: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
+      last: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+      empty: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+    },
+    undefined,
+  ]),
+  ...overrideResponse,
+})
+
+export const getGetFrequentQuestionsResponseMock = (
+  overrideResponse: Partial<ApiResponsePageFrequentQnaSetResponse> = {},
+): ApiResponsePageFrequentQnaSetResponse => ({
+  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
+  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
+  result: faker.helpers.arrayElement([
+    {
+      totalElements: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
+      totalPages: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
+      size: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
+      content: faker.helpers.arrayElement([
+        Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({
+          industryName: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
+          jobCategoryName: faker.helpers.arrayElement([
+            faker.string.alpha({ length: { min: 10, max: 20 } }),
+            undefined,
+          ]),
+          interviewType: faker.helpers.arrayElement([
+            faker.helpers.arrayElement([
+              'FIRST',
+              'SECOND',
+              'THIRD',
+              'BEHAVIORAL',
+              'TECHNICAL',
+              'EXECUTIVE',
+              'CULTURE_FIT',
+              'COFFEE_CHAT',
+              'PSEUDO',
+            ] as const),
+            undefined,
+          ]),
+          interviewStartAt: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]),
+          question: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
+        })),
+        undefined,
+      ]),
+      number: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
+      sort: faker.helpers.arrayElement([
+        {
+          empty: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+          sorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+          unsorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+        },
+        undefined,
+      ]),
+      pageable: faker.helpers.arrayElement([
+        {
+          offset: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
+          sort: faker.helpers.arrayElement([
+            {
+              empty: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+              sorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+              unsorted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+            },
+            undefined,
+          ]),
+          paged: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+          pageNumber: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
+          pageSize: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
+          unpaged: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+        },
+        undefined,
+      ]),
+      first: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+      numberOfElements: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
+      last: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+      empty: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+    },
     undefined,
   ]),
   ...overrideResponse,
@@ -180,6 +331,32 @@ export const getUpdatePdfHighlightingMockHandler = (
   )
 }
 
+export const getCreateStarAnalysisMockHandler = (
+  overrideResponse?:
+    | ApiResponseStarAnalysisDto
+    | ((
+        info: Parameters<Parameters<typeof http.post>[1]>[0],
+      ) => Promise<ApiResponseStarAnalysisDto> | ApiResponseStarAnalysisDto),
+  options?: RequestHandlerOptions,
+) => {
+  return http.post(
+    '*/qna-set/:qnaSetId/star-analysis',
+    async (info) => {
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === 'function'
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getCreateStarAnalysisResponseMock(),
+        ),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      )
+    },
+    options,
+  )
+}
+
 export const getUnmarkDifficultQuestionMockHandler = (
   overrideResponse?:
     | ApiResponseVoid
@@ -228,12 +405,38 @@ export const getMarkDifficultQuestionMockHandler = (
   )
 }
 
-export const getGetFrequentQuestionsMockHandler = (
+export const getGetScrapFoldersContainingQnaSetMockHandler = (
   overrideResponse?:
-    | ApiResponseListFrequentQnaSetResponse
+    | ApiResponsePageQnaSetScrapFolderResponse
     | ((
         info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Promise<ApiResponseListFrequentQnaSetResponse> | ApiResponseListFrequentQnaSetResponse),
+      ) => Promise<ApiResponsePageQnaSetScrapFolderResponse> | ApiResponsePageQnaSetScrapFolderResponse),
+  options?: RequestHandlerOptions,
+) => {
+  return http.get(
+    '*/qna-set/:qnaSetId/scrap-folder',
+    async (info) => {
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === 'function'
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getGetScrapFoldersContainingQnaSetResponseMock(),
+        ),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      )
+    },
+    options,
+  )
+}
+
+export const getGetFrequentQuestionsMockHandler = (
+  overrideResponse?:
+    | ApiResponsePageFrequentQnaSetResponse
+    | ((
+        info: Parameters<Parameters<typeof http.get>[1]>[0],
+      ) => Promise<ApiResponsePageFrequentQnaSetResponse> | ApiResponsePageFrequentQnaSetResponse),
   options?: RequestHandlerOptions,
 ) => {
   return http.get(
@@ -257,7 +460,9 @@ export const getQnaSetApiMock = () => [
   getUpdateQnaSetMockHandler(),
   getGetPdfHighlightingsMockHandler(),
   getUpdatePdfHighlightingMockHandler(),
+  getCreateStarAnalysisMockHandler(),
   getUnmarkDifficultQuestionMockHandler(),
   getMarkDifficultQuestionMockHandler(),
+  getGetScrapFoldersContainingQnaSetMockHandler(),
   getGetFrequentQuestionsMockHandler(),
 ]

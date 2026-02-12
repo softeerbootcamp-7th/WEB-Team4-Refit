@@ -15,6 +15,9 @@ export default defineConfig({
         fetch: {
           includeHttpResponseReturnType: false,
         },
+        query: {
+          useSuspenseQuery: true,
+        },
         mutator: {
           path: './custom-fetch.ts',
           name: 'customFetch',
