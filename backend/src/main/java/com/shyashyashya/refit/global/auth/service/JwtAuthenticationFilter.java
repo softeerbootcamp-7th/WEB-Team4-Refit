@@ -1,5 +1,6 @@
 package com.shyashyashya.refit.global.auth.service;
 
+import static com.shyashyashya.refit.global.exception.ErrorCode.USER_ALREADY_SIGNED_UP;
 import static com.shyashyashya.refit.global.exception.ErrorCode.USER_SIGNUP_REQUIRED;
 
 import com.shyashyashya.refit.global.auth.model.DecodedJwt;
@@ -54,12 +55,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             jwtValidator.validateAccessJwtNotExpired(accessToken);
 
             Long userId = jwtDecoder.getUserId(accessToken);
-            if (userId != null) {
-                requestUserContext.setUserId(userId);
-            } else {
+            String email = jwtDecoder.getEmail(accessToken);
+
+            requestUserContext.setEmail(email);
+            requestUserContext.setUserId(userId);
+
+            if (isGuestRequest(userId)) {
                 validateGuestRequestNotIllegal(request);
+                filterChain.doFilter(request, response);
+                return;
             }
 
+            validateUserRequestNotIllegal(request);
             filterChain.doFilter(request, response);
 
         } catch (Exception e) {
@@ -82,8 +89,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void validateGuestRequestNotIllegal(HttpServletRequest request) {
-        if (!pathMatcher.match(authUrlProperty.signUp(), request.getRequestURI())) {
+        if (!isSignUpRequest(request)) {
             throw new CustomException(USER_SIGNUP_REQUIRED);
         }
+    }
+
+    private void validateUserRequestNotIllegal(HttpServletRequest request) {
+        if (isSignUpRequest(request)) {
+            throw new CustomException(USER_ALREADY_SIGNED_UP);
+        }
+    }
+
+    private boolean isSignUpRequest(HttpServletRequest request) {
+        return pathMatcher.match(authUrlProperty.signUp(), request.getRequestURI());
+    }
+
+    private boolean isGuestRequest(Long userId) {
+        return userId == null;
+
     }
 }
