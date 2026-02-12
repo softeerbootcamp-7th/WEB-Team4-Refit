@@ -36,7 +36,7 @@ public class AuthController {
             @CookieValue(value = AuthConstant.REFRESH_TOKEN, required = false) String refreshTokenFromHeader,
             @RequestParam(required = false) String originType) {
 
-        ClientOriginType clientOriginType = ClientOriginType.fromOriginString(origin);
+        ClientOriginType clientOriginType = ClientOriginType.fromOriginTypeString(originType);
         TokenReissueResultDto result = authService.reissue(accessTokenFromHeader, refreshTokenFromHeader);
 
         var response = ApiResponse.success(COMMON200, TokenReissueResponse.from(result));

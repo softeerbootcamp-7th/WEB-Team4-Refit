@@ -50,7 +50,7 @@ public class JwtDecoder {
 
     public ClientOriginType getClientOriginType(DecodedJwt decodedJwt) {
         jwtValidator.validateDecodedJwtTypeEquals(decodedJwt, DecodedJwtType.OAUTH2_STATE_TOKEN);
-        return ClientOriginType.fromOriginString(decodedJwt.claims().getSubject());
+        return ClientOriginType.fromOriginTypeString(decodedJwt.claims().getSubject());
     }
 
     public String getEmail(DecodedJwt decodedJwt) {

@@ -16,8 +16,8 @@ import com.shyashyashya.refit.global.model.ClientOriginType;
 import com.shyashyashya.refit.global.oauth2.dto.OAuth2ResultDto;
 import com.shyashyashya.refit.global.oauth2.dto.response.OAuth2LoginUrlResponse;
 import com.shyashyashya.refit.global.property.OAuth2Property;
-import java.time.Instant;
 import com.shyashyashya.refit.global.util.CurrentServerUrlUtil;
+import java.time.Instant;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -75,9 +75,7 @@ public class GoogleOAuth2Service implements OAuth2Service {
         Optional<User> userOptional = userRepository.findByEmail(userInfo.email());
         Long userId = userOptional.map(User::getId).orElse(null);
 
-        TokenPairDto tokenPairDto = jwtService.publishTokenPair(userInfo.email(), userId);
-
-        TokenPairDto tokenPair = TokenPairDto.of(accessToken, refreshToken);
+        TokenPairDto tokenPair = jwtService.publishTokenPair(userInfo.email(), userId);
         return userOptional
                 .map(user -> OAuth2ResultDto.of(
                         tokenPair, userId, user.getNickname(), user.getProfileImageUrl(), clientOriginType))

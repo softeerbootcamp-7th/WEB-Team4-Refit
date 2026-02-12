@@ -43,7 +43,7 @@ public class JwtEncoder {
 
     public String encodeOAuth2StateJwt(ClientOriginType clientOriginType, Instant issuedAt) {
         return Jwts.builder()
-                .setSubject(clientOriginType.getOrigin())
+                .setSubject(clientOriginType.getOriginType())
                 .claim(AuthConstant.CLAIM_KEY_JWT_TOKEN_TYPE, DecodedJwtType.OAUTH2_STATE_TOKEN)
                 .setIssuedAt(Date.from(issuedAt))
                 .setExpiration(Date.from(issuedAt.plus(oAuth2StateTokenExpiration)))

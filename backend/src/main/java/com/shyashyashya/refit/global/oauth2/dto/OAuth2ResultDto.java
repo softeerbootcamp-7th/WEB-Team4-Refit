@@ -1,7 +1,7 @@
 package com.shyashyashya.refit.global.oauth2.dto;
 
 import com.shyashyashya.refit.global.auth.dto.TokenPairDto;
-import com.shyashyashya.refit.global.util.ClientOriginType;
+import com.shyashyashya.refit.global.model.ClientOriginType;
 import lombok.Builder;
 
 @Builder
