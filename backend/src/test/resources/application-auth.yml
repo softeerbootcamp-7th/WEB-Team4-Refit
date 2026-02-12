@@ -1,6 +1,7 @@
 spring:
   auth:
     url:
+      frontend-redirect-path: "/auth/callback"
       sign-up: "/user/signup"
       whitelists:
         # TODO: public한 API 경로가 더 있는지 검토 필요
