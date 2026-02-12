@@ -1,0 +1,4 @@
+spring:
+  gemini:
+    api-key: "///"
+    prompt-path: "src/test/resources/dummyprompt/"

@@ -1,37 +1,29 @@
 package com.shyashyashya.refit.global.oauth2.dto;
 
-import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.auth.dto.TokenPairDto;
-import com.shyashyashya.refit.global.oauth2.service.GoogleOAuth2Service.GoogleUserInfo;
+import com.shyashyashya.refit.global.util.ClientOriginType;
 import lombok.Builder;
 
 @Builder
 public record OAuth2ResultDto(
         TokenPairDto tokenPair,
-        String frontRedirectUri,
+        ClientOriginType clientOriginType,
         boolean isNeedSignup,
         String nickname,
         String profileImageUrl) {
 
-    public static OAuth2ResultDto createUser(
-            String accessToken, String refreshToken, User user, String frontRedirectUri) {
+    public static OAuth2ResultDto of(
+            TokenPairDto tokenPairDto,
+            Long userId,
+            String nickname,
+            String profileImageUrl,
+            ClientOriginType clientOriginType) {
         return OAuth2ResultDto.builder()
-                .tokenPair(TokenPairDto.of(accessToken, refreshToken))
-                .frontRedirectUri(frontRedirectUri)
-                .isNeedSignup(false)
-                .nickname(user.getNickname())
-                .profileImageUrl(user.getProfileImageUrl())
-                .build();
-    }
-
-    public static OAuth2ResultDto createGuest(
-            String accessToken, String refreshToken, GoogleUserInfo userInfo, String frontRedirectUri) {
-        return OAuth2ResultDto.builder()
-                .tokenPair(TokenPairDto.of(accessToken, refreshToken))
-                .frontRedirectUri(frontRedirectUri)
-                .isNeedSignup(true)
-                .nickname(userInfo.name())
-                .profileImageUrl(userInfo.picture())
+                .tokenPair(tokenPairDto)
+                .clientOriginType(clientOriginType)
+                .isNeedSignup(userId == null)
+                .nickname(nickname)
+                .profileImageUrl(profileImageUrl)
                 .build();
     }
 }

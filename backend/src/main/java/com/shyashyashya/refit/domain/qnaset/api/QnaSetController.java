@@ -2,16 +2,20 @@ package com.shyashyashya.refit.domain.qnaset.api;
 
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 
+import com.shyashyashya.refit.domain.interview.dto.StarAnalysisDto;
 import com.shyashyashya.refit.domain.qnaset.dto.PdfHighlightingDto;
 import com.shyashyashya.refit.domain.qnaset.dto.request.PdfHighlightingUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetResponse;
+import com.shyashyashya.refit.domain.qnaset.dto.response.QnaSetScrapFolderResponse;
 import com.shyashyashya.refit.domain.qnaset.service.QnaSetService;
+import com.shyashyashya.refit.domain.qnaset.service.StarAnalysisAsyncService;
 import com.shyashyashya.refit.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class QnaSetController {
 
     private final QnaSetService qnaSetService;
+    private final StarAnalysisAsyncService starAnalysisAsyncService;
 
     @Operation(
             summary = "지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다.",
@@ -85,6 +91,24 @@ public class QnaSetController {
     @GetMapping("/{qnaSetId}/pdf-highlightings")
     public ResponseEntity<ApiResponse<List<PdfHighlightingDto>>> getPdfHighlightings(@PathVariable Long qnaSetId) {
         var body = qnaSetService.getPdfHighlightings(qnaSetId);
+        var response = ApiResponse.success(COMMON200, body);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "지정한 질문 답변 세트에 대해 스타 분석 생성을 요청합니다.", description = "Gemini 요청을 수행하고 10~20초 뒤에 응답이 반환됩니다.")
+    @PostMapping("/{qnaSetId}/star-analysis")
+    public CompletableFuture<ResponseEntity<ApiResponse<StarAnalysisDto>>> createStarAnalysis(
+            @PathVariable Long qnaSetId) {
+        return starAnalysisAsyncService
+                .createStarAnalysis(qnaSetId)
+                .thenApply(rsp -> ResponseEntity.ok(ApiResponse.success(COMMON200, rsp)));
+    }
+
+    @Operation(summary = "지정한 질문 답변 세트가 스크랩 폴더에 포함되어 있는 지 여부가 포함된 스크랩 폴더 리스트를 조회합니다.")
+    @GetMapping("/{qnaSetId}/scrap-folder")
+    public ResponseEntity<ApiResponse<Page<QnaSetScrapFolderResponse>>> getScrapFoldersContainingQnaSet(
+            @PathVariable Long qnaSetId, Pageable pageable) {
+        var body = qnaSetService.getMyScrapFoldersWithQnaSetContainingInfo(qnaSetId, pageable);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
