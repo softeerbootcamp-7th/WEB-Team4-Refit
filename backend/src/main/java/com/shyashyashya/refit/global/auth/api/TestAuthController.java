@@ -11,9 +11,9 @@ import com.shyashyashya.refit.global.auth.repository.RefreshTokenRepository;
 import com.shyashyashya.refit.global.auth.service.CookieUtil;
 import com.shyashyashya.refit.global.auth.service.JwtUtil;
 import com.shyashyashya.refit.global.constant.AuthConstant;
-import com.shyashyashya.refit.global.constant.UrlConstant;
 import com.shyashyashya.refit.global.dto.ApiResponse;
 import com.shyashyashya.refit.global.exception.CustomException;
+import com.shyashyashya.refit.global.oauth2.util.ClientOriginRedirectUriBuilder;
 import com.shyashyashya.refit.global.util.ClientOriginType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -42,6 +42,7 @@ public class TestAuthController {
     private final RefreshTokenRepository refreshTokenRepository;
     private final CookieUtil cookieUtil;
     private final JwtUtil jwtUtil;
+    private final ClientOriginRedirectUriBuilder clientOriginRedirectUriBuilder;
 
     @Operation(
             summary = "(테스트용) Access&Refresh Token을 이메일을 통해 발급합니다.",
@@ -80,7 +81,7 @@ public class TestAuthController {
 
         var response = ApiResponse.success(COMMON200);
         return ResponseEntity.status(HttpStatus.FOUND)
-                .header(HttpHeaders.LOCATION, clientOriginType.getClientOriginUrl() + UrlConstant.LOGIN_REDIRECT_PATH)
+                .header(HttpHeaders.LOCATION, clientOriginRedirectUriBuilder.build(clientOriginType))
                 .header(HttpHeaders.SET_COOKIE, deleteAccessTokenCookie)
                 .header(HttpHeaders.SET_COOKIE, deleteRefreshTokenCookie)
                 .body(response);
@@ -101,7 +102,7 @@ public class TestAuthController {
         var response = TestPublishTokenResponse.of(userId == null, accessToken, refreshToken);
         var body = ApiResponse.success(COMMON200, response);
         return ResponseEntity.status(HttpStatus.FOUND)
-                .header(HttpHeaders.LOCATION, clientOriginType.getClientOriginUrl() + UrlConstant.LOGIN_REDIRECT_PATH)
+                .header(HttpHeaders.LOCATION, clientOriginRedirectUriBuilder.build(clientOriginType))
                 .header(HttpHeaders.SET_COOKIE, accessTokenCookie)
                 .header(HttpHeaders.SET_COOKIE, refreshTokenCookie)
                 .body(body);

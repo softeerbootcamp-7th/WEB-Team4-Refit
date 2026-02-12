@@ -3,11 +3,11 @@ package com.shyashyashya.refit.global.oauth2.api;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 
 import com.shyashyashya.refit.global.auth.service.CookieUtil;
-import com.shyashyashya.refit.global.constant.UrlConstant;
 import com.shyashyashya.refit.global.dto.ApiResponse;
 import com.shyashyashya.refit.global.oauth2.dto.OAuth2LoginUrlResponse;
 import com.shyashyashya.refit.global.oauth2.dto.OAuth2ResultDto;
 import com.shyashyashya.refit.global.oauth2.service.GoogleOAuth2Service;
+import com.shyashyashya.refit.global.oauth2.util.ClientOriginRedirectUriBuilder;
 import com.shyashyashya.refit.global.util.ClientOriginType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,6 +29,7 @@ public class GoogleOAuth2Controller implements OAuth2Controller {
 
     private final GoogleOAuth2Service googleOAuth2Service;
     private final CookieUtil cookieUtil;
+    private final ClientOriginRedirectUriBuilder clientOriginRedirectUriBuilder;
 
     @Operation(summary = "구글 로그인 화면으로 이동하는 url을 생성합니다.")
     @GetMapping
@@ -64,8 +65,7 @@ public class GoogleOAuth2Controller implements OAuth2Controller {
 
     private String buildRedirectUrl(OAuth2ResultDto oAuth2ResultDto) {
         boolean isNeedSignup = oAuth2ResultDto.isNeedSignup();
-        String clientOriginRedirectUri =
-                oAuth2ResultDto.clientOriginType().getClientOriginUrl() + UrlConstant.LOGIN_REDIRECT_PATH;
+        String clientOriginRedirectUri = clientOriginRedirectUriBuilder.build(oAuth2ResultDto.clientOriginType());
         var builder = UriComponentsBuilder.fromUriString(clientOriginRedirectUri)
                 .queryParam("status", isNeedSignup ? "signUpRequired" : "loginSuccess");
 
