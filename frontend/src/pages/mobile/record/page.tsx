@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useParams } from 'react-router'
 import { useUpdateRawText } from '@/apis'
-import RecordPageContent from '@/features/mobile/record/components/RecordPageContent'
+import { RecordPageContent } from '@/features/mobile/record/components'
 
 export default function MobileRecordPage() {
   const { interviewId } = useParams<{ interviewId: string }>()
