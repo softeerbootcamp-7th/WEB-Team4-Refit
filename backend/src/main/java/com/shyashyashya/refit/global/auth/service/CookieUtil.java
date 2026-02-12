@@ -40,8 +40,8 @@ public class CookieUtil {
     private ResponseCookie createCookie(String name, String value, Duration maxAge, ClientOriginType originType) {
         var builder = ResponseCookie.from(name, value).httpOnly(true).path("/").maxAge(maxAge);
 
-        if (originType.getClientOriginUrl().contains(UrlConstant.DOMAIN_URL)) {
-            builder.domain(UrlConstant.DOMAIN_URL);
+        if (originType.getClientOriginUrl().contains(UrlConstant.APP_DOMAIN)) {
+            builder.domain(UrlConstant.APP_DOMAIN);
         }
 
         return builder.build();
