@@ -38,4 +38,4 @@ out/
 
 ### Project Security ###
 .env
-prompt/
+/prompt/**
