@@ -41,14 +41,14 @@ public class StarAnalysisAsyncService {
         String prompt = starAnalysisGeneratePrompt.buildPrompt(qnaSet);
         GeminiGenerateRequest requestBody = GeminiGenerateRequest.from(prompt);
 
-        log.info("SEND REQUEST");
+        log.info("Send star analysis generate request to gemini. qnaSetId: {}", qnaSetId);
         CompletableFuture<GeminiGenerateResponse> reqFuture =
                 geminiClient.sendAsyncRequest(requestBody, STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC);
 
         return reqFuture
                 .thenApplyAsync(
                         response -> {
-                            log.info(String.valueOf(response));
+                            log.info("Receive star analysis generate response from gemini. qnaSetId: {} \n{}", qnaSetId, response);
                             return processSuccessRequest(starAnalysisId, response);
                         },
                         geminiPostProcessExecutor)
