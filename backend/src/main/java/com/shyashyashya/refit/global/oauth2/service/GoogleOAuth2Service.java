@@ -6,16 +6,16 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.INVALID_OAUTH2_C
 
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
+import com.shyashyashya.refit.global.auth.dto.TokenPairDto;
 import com.shyashyashya.refit.global.auth.model.RefreshToken;
 import com.shyashyashya.refit.global.auth.repository.RefreshTokenRepository;
 import com.shyashyashya.refit.global.auth.service.JwtUtil;
-import com.shyashyashya.refit.global.constant.UrlConstant;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.oauth2.dto.OAuth2LoginUrlResponse;
 import com.shyashyashya.refit.global.oauth2.dto.OAuth2ResultDto;
 import com.shyashyashya.refit.global.property.OAuth2Property;
-import com.shyashyashya.refit.global.util.CurrentProfileUtil;
-import com.shyashyashya.refit.global.util.RequestHostUrlUtil;
+import com.shyashyashya.refit.global.util.ClientOriginType;
+import com.shyashyashya.refit.global.util.CurrentServerUrlUtil;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,13 +38,12 @@ public class GoogleOAuth2Service implements OAuth2Service {
     private final RefreshTokenRepository refreshTokenRepository;
 
     private final OAuth2Property oauth2Property;
-    private final CurrentProfileUtil currentProfileUtil;
+    private final CurrentServerUrlUtil currentServerUrlUtil;
     private final JwtUtil jwtUtil;
-    private final RequestHostUrlUtil requestHostUrlUtil;
     private final RestClient restClient;
 
     @Override
-    public OAuth2LoginUrlResponse buildOAuth2LoginUrl(String env) {
+    public OAuth2LoginUrlResponse buildOAuth2LoginUrl(ClientOriginType clientOriginType) {
         String googleClientId = oauth2Property.google().clientId();
         String scope = String.join(" ", oauth2Property.google().scope());
         String responseType = "code";
@@ -54,7 +53,7 @@ public class GoogleOAuth2Service implements OAuth2Service {
                 .queryParam("redirect_uri", getRedirectUri())
                 .queryParam("response_type", responseType)
                 .queryParam("scope", scope)
-                .queryParam("state", jwtUtil.createOAuth2StateToken(requestHostUrlUtil.getRequestHostUrl(env)))
+                .queryParam("state", jwtUtil.createOAuth2StateToken(clientOriginType))
                 .toUriString();
         return OAuth2LoginUrlResponse.from(loginUrlResponseUrl);
     }
@@ -63,8 +62,7 @@ public class GoogleOAuth2Service implements OAuth2Service {
     @Override
     public OAuth2ResultDto handleOAuth2Callback(String code, String state) {
         var validatedOAuth2StateToken = jwtUtil.getValidatedJwtToken(state);
-        var requestHostUrl = jwtUtil.getRequestHostUrl(validatedOAuth2StateToken);
-        String frontendRedirectUrl = requestHostUrl + UrlConstant.LOGIN_REDIRECT_PATH;
+        ClientOriginType clientOriginType = jwtUtil.getClientOriginType(validatedOAuth2StateToken);
 
         var tokenResponse = fetchAccessToken(code);
         var userInfo = fetchUserInfo(tokenResponse.access_token());
@@ -78,13 +76,16 @@ public class GoogleOAuth2Service implements OAuth2Service {
         var refreshTokenExpiration = jwtUtil.getValidatedJwtToken(refreshToken).getExpiration();
         refreshTokenRepository.save(RefreshToken.create(refreshToken, userInfo.email(), refreshTokenExpiration));
 
+        TokenPairDto tokenPair = TokenPairDto.of(accessToken, refreshToken);
         return userOptional
-                .map(user -> OAuth2ResultDto.createUser(accessToken, refreshToken, user, frontendRedirectUrl))
-                .orElseGet(() -> OAuth2ResultDto.createGuest(accessToken, refreshToken, userInfo, frontendRedirectUrl));
+                .map(user -> OAuth2ResultDto.of(
+                        tokenPair, userId, user.getNickname(), user.getProfileImageUrl(), clientOriginType))
+                .orElseGet(() ->
+                        OAuth2ResultDto.of(tokenPair, userId, userInfo.name(), userInfo.picture(), clientOriginType));
     }
 
     private String getRedirectUri() {
-        return currentProfileUtil.getServerUrl() + oauth2Property.google().redirectPath();
+        return currentServerUrlUtil.getServerUrl() + oauth2Property.google().redirectPath();
     }
 
     private GoogleTokenResponse fetchAccessToken(String code) {

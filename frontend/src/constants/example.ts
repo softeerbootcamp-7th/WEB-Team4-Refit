@@ -83,7 +83,7 @@ export const MOCK_QNA_SET_LIST: QnaSetType[] = [
 export const MOCK_INTERVIEW_INFO_DATA: InterviewInfoType = {
   company: '현대자동차 소프티어',
   jobRole: '디자인 UI Designer',
-  interviewType: 'second',
+  interviewType: 'SECOND',
   interviewStartAt: '2026-03-01T11:00:00',
 }
 
@@ -91,7 +91,7 @@ export type RetroListItem = Pick<QnaSetType, 'qnaSetId' | 'questionText' | 'answ
 
 export const MOCK_INTERVIEW_DETAIL = {
   interviewId: 1,
-  interviewType: 'second',
+  interviewType: 'SECOND',
   interviewStartAt: '2026-03-01T11:00:00',
   interviewReviewStatus: 'logged',
   interviewResultStatus: 'wait',

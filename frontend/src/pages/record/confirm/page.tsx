@@ -1,19 +1,34 @@
-import { MOCK_INTERVIEW_INFO_DATA, MOCK_QNA_SET_LIST } from '@/constants/example'
+import { Suspense } from 'react'
+import { useSuspenseQuery } from '@tanstack/react-query'
+import { useParams } from 'react-router'
+import { getGetInterviewFullQueryKey, getInterviewFull } from '@/apis/generated/interview-api/interview-api'
 import { useSectionScroll } from '@/features/_common/hooks/useSectionScroll'
 import { RecordSection } from '@/features/record/confirm/components/contents/RecordSection'
 import { RecordConfirmSidebar } from '@/features/record/confirm/components/sidebar/Sidebar'
-import { useQnaList } from '@/features/record/confirm/hooks'
+import SidebarLayoutSkeleton from '@/features/record/confirm/components/SidebarLayoutSkeleton'
+import { useQnaList } from '@/features/record/confirm/hooks/useQnaList'
+import type { InterviewInfoType, InterviewType, SimpleQnaType } from '@/types/interview'
 
 export default function RecordConfirmPage() {
-  // TODO: API 연동 시 실제 데이터로 교체
-  const interviewInfoItems = MOCK_INTERVIEW_INFO_DATA
+  return (
+    <Suspense fallback={<SidebarLayoutSkeleton />}>
+      <RecordConfirmContent />
+    </Suspense>
+  )
+}
 
-  const { qnaList, isAddMode, handleEdit, handleDelete, handleAddSave, startAddMode, cancelAddMode } =
-    useQnaList(MOCK_QNA_SET_LIST)
-
-  const { activeIndex, setRef, scrollContainerRef, handleItemClick } = useSectionScroll({
-    idPrefix: 'record-confirm',
+function RecordConfirmContent() {
+  const { interviewId } = useParams()
+  const { data } = useSuspenseQuery({
+    queryKey: getGetInterviewFullQueryKey(Number(interviewId)),
+    queryFn: () => getInterviewFull(Number(interviewId)),
+    select: transformInterviewData,
   })
+
+  const { qnaList, isAddMode, handleEdit, handleDelete, handleAddSave, startAddMode, cancelAddMode } = useQnaList(
+    data.qnaList,
+  )
+  const sectionScroll = useSectionScroll({ idPrefix: 'record-confirm' })
 
   const questionItems = qnaList.map(({ qnaSetId, questionText }, index) => ({
     id: qnaSetId,
@@ -23,10 +38,10 @@ export default function RecordConfirmPage() {
   return (
     <div className="mx-auto grid h-full w-7xl grid-cols-[320px_1fr]">
       <RecordConfirmSidebar
-        infoItems={interviewInfoItems}
+        infoItems={data.interviewInfo}
         questionItems={questionItems}
-        activeIndex={activeIndex}
-        onItemClick={handleItemClick}
+        activeIndex={sectionScroll.activeIndex}
+        onItemClick={sectionScroll.handleItemClick}
       />
       <RecordSection
         qnaList={qnaList}
@@ -36,9 +51,30 @@ export default function RecordConfirmPage() {
         onAddSave={handleAddSave}
         onStartAdd={startAddMode}
         onCancelAdd={cancelAddMode}
-        setRef={setRef}
-        scrollContainerRef={scrollContainerRef}
+        setRef={sectionScroll.setRef}
+        scrollContainerRef={sectionScroll.scrollContainerRef}
       />
     </div>
   )
+}
+
+function transformInterviewData(res: Awaited<ReturnType<typeof getInterviewFull>>) {
+  const interviewFull = res.result
+  // TODO: 에러 처리
+  if (!interviewFull) throw new Error('인터뷰 데이터가 존재하지 않습니다.')
+
+  const interviewInfo: InterviewInfoType = {
+    company: interviewFull.company ?? '',
+    jobRole: interviewFull.jobRole ?? '',
+    interviewType: interviewFull.interviewType as InterviewType,
+    interviewStartAt: interviewFull.interviewStartAt ?? '',
+  }
+
+  const qnaList: SimpleQnaType[] = (interviewFull.qnaSets ?? []).map((qnaSet) => ({
+    qnaSetId: qnaSet.qnaSetId!,
+    questionText: qnaSet.questionText ?? '',
+    answerText: qnaSet.answerText ?? '',
+  }))
+
+  return { interviewInfo, qnaList }
 }

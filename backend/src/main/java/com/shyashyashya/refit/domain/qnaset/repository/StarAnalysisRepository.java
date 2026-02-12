@@ -11,6 +11,8 @@ import org.springframework.data.repository.query.Param;
 public interface StarAnalysisRepository extends JpaRepository<StarAnalysis, Long> {
     Optional<StarAnalysis> findByQnaSet(QnaSet qnaSet);
 
+    boolean existsByQnaSet(QnaSet qnaSet);
+
     @Query("select s from StarAnalysis s where s.qnaSet.id in :qnaSetIds")
     List<StarAnalysis> findAllByQnaSetIdIn(@Param("qnaSetIds") List<Long> qnaSetIds);
 }

@@ -6,9 +6,11 @@ import {
   getGetMyDifficultQnaSetsMockHandler,
   getGetUpcomingInterviewsMockHandler,
 } from '@/apis/generated/dashboard-api/dashboard-api.msw'
-import { getUpdateRawTextMockHandler } from '@/apis/generated/interview-api/interview-api.msw'
+import { getUpdateRawTextMockHandler, getGetInterviewFullMockHandler } from '@/apis/generated/interview-api/interview-api.msw'
+import { getUpdateQnaSetMockHandler } from '@/apis/generated/qna-set-api/qna-set-api.msw'
 import { debriefIncompletedMock } from '@/mocks/data/debrief-incompleted'
 import { updateRawTextMock } from '@/mocks/data/update-raw-text'
+import { mockInterviewFull } from '@/mocks/data/interview-full'
 
 export const worker = setupWorker(
   getGetMyDifficultQnaSetsMockHandler(),
@@ -17,4 +19,6 @@ export const worker = setupWorker(
   getGetDashboardHeadlineMockHandler(),
   getGetDashboardCalendarInterviewsMockHandler(),
   getUpdateRawTextMockHandler(updateRawTextMock),
+  getGetInterviewFullMockHandler(mockInterviewFull),
+  getUpdateQnaSetMockHandler({ isSuccess: true, code: 'SUCCESS', message: 'mock update qna set' }),
 )
