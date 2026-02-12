@@ -6,6 +6,7 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.INVALID_OAUTH2_C
 
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
+import com.shyashyashya.refit.global.auth.dto.TokenPairDto;
 import com.shyashyashya.refit.global.auth.model.RefreshToken;
 import com.shyashyashya.refit.global.auth.repository.RefreshTokenRepository;
 import com.shyashyashya.refit.global.auth.service.JwtUtil;
@@ -75,9 +76,12 @@ public class GoogleOAuth2Service implements OAuth2Service {
         var refreshTokenExpiration = jwtUtil.getValidatedJwtToken(refreshToken).getExpiration();
         refreshTokenRepository.save(RefreshToken.create(refreshToken, userInfo.email(), refreshTokenExpiration));
 
+        TokenPairDto tokenPair = TokenPairDto.of(accessToken, refreshToken);
         return userOptional
-                .map(user -> OAuth2ResultDto.createUser(accessToken, refreshToken, user, clientOriginType))
-                .orElseGet(() -> OAuth2ResultDto.createGuest(accessToken, refreshToken, userInfo, clientOriginType));
+                .map(user -> OAuth2ResultDto.of(
+                        tokenPair, userId, user.getNickname(), user.getProfileImageUrl(), clientOriginType))
+                .orElseGet(() ->
+                        OAuth2ResultDto.of(tokenPair, userId, userInfo.name(), userInfo.picture(), clientOriginType));
     }
 
     private String getRedirectUri() {
