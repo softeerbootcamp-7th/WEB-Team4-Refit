@@ -5,7 +5,9 @@ import { useGoogleOAuthLogin } from '@/features/signin/_index/hooks'
 import { ROUTES } from '@/routes/routes'
 
 export default function SigninPage() {
-  const { handleGoogleLogin, isFetching } = useGoogleOAuthLogin()
+  const { handleGoogleLogin, isFetching } = useGoogleOAuthLogin({
+    redirectTo: { signUp: ROUTES.SIGNUP, success: ROUTES.DASHBOARD },
+  })
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100 px-4 py-6 sm:px-6 sm:py-8">
