@@ -1,4 +1,5 @@
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router'
+import { mobileRedirectMiddleware } from '@/features/_common/middleware'
 import { DashboardLayout, MobileLayout, RootLayout } from '@/layouts'
 import {
   AuthCallbackPage,
@@ -53,6 +54,7 @@ const router = createBrowserRouter([
   },
   {
     Component: RootLayout,
+    middleware: [mobileRedirectMiddleware],
     children: [
       {
         path: ROUTES.DASHBOARD,
