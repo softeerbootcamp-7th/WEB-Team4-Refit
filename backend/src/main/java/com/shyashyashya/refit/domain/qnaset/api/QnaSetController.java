@@ -75,7 +75,7 @@ public class QnaSetController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "지정한 질문 답변 세트를 삭제합니다.")
+    @Operation(summary = "지정한 질문 답변 세트를 삭제합니다.", description = "질문 답변 세트 삭제는 'QnaSetDraft' 상태에서만 가능합니다.")
     @DeleteMapping("/{qnaSetId}")
     public ResponseEntity<ApiResponse<Void>> deleteQnaSet(@PathVariable Long qnaSetId) {
         qnaSetService.deleteQnaSet(qnaSetId);

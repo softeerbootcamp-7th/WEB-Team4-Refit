@@ -18,6 +18,7 @@ public enum ErrorCode {
     INTERVIEW_REVIEW_STATUS_NOT_UPDATABLE_TO_LOG_DRAFT(BAD_REQUEST, "인터뷰 상태가 기록전 상태일 때만 기록중으로 바뀔 수 있습니다"),
     INTERVIEW_REVIEW_STATUS_NOT_UPDATABLE_TO_SELF_REVIEW_DRAFT(BAD_REQUEST, "인터뷰 상태가 기록중 상태일 때만 회고중으로 바뀔 수 있습니다"),
     INTERVIEW_REVIEW_STATUS_NOT_UPDATABLE_TO_DEBRIEF_COMPLETED(BAD_REQUEST, "인터뷰 상태가 회고중 상태일 때만 회고완료로 바뀔 수 있습니다"),
+    INTERVIEW_REVIEW_STATUS_IS_NOT_QNA_SET_DRAFT(BAD_REQUEST, "인터뷰 상태가 QnaSetDraft가 아닙니다."),
 
     QNA_SET_CATEGORY_NOT_FOUND(NOT_FOUND, "질문 카테고리가 존재하지 않습니다."),
 
