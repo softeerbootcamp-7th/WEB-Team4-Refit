@@ -19,7 +19,7 @@ public class InterviewValidator {
         throw new CustomException(INTERVIEW_NOT_ACCESSIBLE);
     }
 
-    public void validateInterviewSReviewStatusQnaSetDraft(Interview interview) {
+    public void validateInterviewReviewStatusQnaSetDraft(Interview interview) {
         if (interview.getReviewStatus().equals(InterviewReviewStatus.QNA_SET_DRAFT)) {
             return;
         }

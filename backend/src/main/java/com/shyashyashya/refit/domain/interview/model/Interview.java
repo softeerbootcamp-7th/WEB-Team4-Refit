@@ -2,6 +2,7 @@ package com.shyashyashya.refit.domain.interview.model;
 
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_REVIEW_STATUS_NOT_UPDATABLE_TO_DEBRIEF_COMPLETED;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_REVIEW_STATUS_NOT_UPDATABLE_TO_LOG_DRAFT;
+import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_REVIEW_STATUS_NOT_UPDATABLE_TO_QNA_SET_DRAFT;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_REVIEW_STATUS_NOT_UPDATABLE_TO_SELF_REVIEW_DRAFT;
 
 import com.shyashyashya.refit.domain.company.model.Company;
@@ -144,6 +145,14 @@ public class Interview extends BaseEntity {
 
     public void completeLogging() {
         if (reviewStatus == InterviewReviewStatus.LOG_DRAFT) {
+            reviewStatus = InterviewReviewStatus.QNA_SET_DRAFT;
+            return;
+        }
+        throw new CustomException(INTERVIEW_REVIEW_STATUS_NOT_UPDATABLE_TO_QNA_SET_DRAFT);
+    }
+
+    public void completeQnaSetDraft() {
+        if (reviewStatus == InterviewReviewStatus.QNA_SET_DRAFT) {
             reviewStatus = InterviewReviewStatus.SELF_REVIEW_DRAFT;
             return;
         }
