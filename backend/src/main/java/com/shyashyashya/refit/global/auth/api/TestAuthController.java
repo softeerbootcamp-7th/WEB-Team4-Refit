@@ -44,8 +44,8 @@ public class TestAuthController {
     private final JwtUtil jwtUtil;
 
     @Operation(
-            summary = "(테스트용) Access&Refresh Token을 발급합니다.",
-            description = "발급된 토큰은 origin에 따라 세팅됩니다. response body에 회원가입 필요 여부가 포함됩니다.")
+            summary = "(테스트용) Access&Refresh Token을 이메일을 통해 발급합니다.",
+            description = "발급된 토큰은 origin에 따라 세팅됩니다. response body에 회원가입 필요 여부 및 토큰 정보가 포함됩니다.")
     @GetMapping("/token")
     public ResponseEntity<ApiResponse<TestPublishTokenResponse>> publishToken(
             @RequestParam("email") @NotNull @Email String email, @RequestParam(required = false) String origin) {
@@ -54,6 +54,9 @@ public class TestAuthController {
         return getTokenResponse(email, userId, clientOriginType);
     }
 
+    @Operation(
+            summary = "(테스트용) Access&Refresh Token을 사용자 아이디를 통해 발급합니다.",
+            description = "발급된 토큰은 origin에 따라 세팅됩니다. response body에 회원가입 필요 여부 및 토큰 정보가 포함됩니다.")
     @GetMapping("/token/{userId}")
     public ResponseEntity<ApiResponse<TestPublishTokenResponse>> publishTokenByUserId(
             @PathVariable @NotNull Long userId, @RequestParam(required = false) String origin) {
