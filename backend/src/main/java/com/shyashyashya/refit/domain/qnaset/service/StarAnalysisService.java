@@ -51,10 +51,9 @@ public class StarAnalysisService {
         StarAnalysis starAnalysis = starAnalysisRepository
                 .findById(starAnalysisId)
                 .orElseThrow(() -> new CustomException(STAR_ANALYSIS_NOT_FOUND));
-        if (starAnalysis.getStatus() == StarAnalysisGenerationStatus.IN_PROGRESS) {
-            starAnalysisRepository.deleteById(starAnalysisId);
-        } else {
+        if (starAnalysis.getStatus() != StarAnalysisGenerationStatus.IN_PROGRESS) {
             throw new CustomException(STAR_ANALYSIS_DELETE_NOT_ALLOWED_STATUS);
         }
+        starAnalysisRepository.deleteById(starAnalysisId);
     }
 }
