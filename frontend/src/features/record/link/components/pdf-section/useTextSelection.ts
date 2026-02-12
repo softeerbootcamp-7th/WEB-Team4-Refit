@@ -3,7 +3,7 @@ import type { HighlightData, HighlightRect } from '@/features/record/link/contex
 
 type UseTextSelectionParams = {
   containerRef: React.RefObject<HTMLElement | null>
-  pageNum: number
+  pageNumber: number
   isLinkingMode: boolean
   pendingSelection: HighlightData | null
   setPendingSelection: (data: HighlightData | null) => void
@@ -11,7 +11,7 @@ type UseTextSelectionParams = {
 
 export function useTextSelection({
   containerRef,
-  pageNum,
+  pageNumber,
   isLinkingMode,
   pendingSelection,
   setPendingSelection,
@@ -34,7 +34,7 @@ export function useTextSelection({
       y: (rect.y - containerRect.y) / containerRect.height,
       width: rect.width / containerRect.width,
       height: rect.height / containerRect.height,
-      pageNum,
+      pageNumber,
     }))
 
     const merged: HighlightData = pendingSelection
@@ -43,7 +43,7 @@ export function useTextSelection({
 
     setPendingSelection(merged)
     selection.removeAllRanges()
-  }, [isLinkingMode, pageNum, setPendingSelection, pendingSelection, containerRef])
+  }, [isLinkingMode, pageNumber, setPendingSelection, pendingSelection, containerRef])
 
   return { handleMouseUp }
 }
