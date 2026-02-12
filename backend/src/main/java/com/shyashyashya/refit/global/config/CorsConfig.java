@@ -1,6 +1,7 @@
 package com.shyashyashya.refit.global.config;
 
 import com.shyashyashya.refit.global.constant.UrlConstant;
+import io.netty.handler.codec.http.HttpMethod;
 import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +24,13 @@ public class CorsConfig {
                 UrlConstant.DEV_SERVER_URL));
 
         config.setAllowedHeaders(List.of("*"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        config.setAllowedMethods(List.of(
+                HttpMethod.GET.name(),
+                HttpMethod.POST.name(),
+                HttpMethod.PUT.name(),
+                HttpMethod.PATCH.name(),
+                HttpMethod.DELETE.name(),
+                HttpMethod.OPTIONS.name()));
 
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);
