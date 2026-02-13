@@ -1,8 +1,8 @@
 import { Suspense } from 'react'
 import { useParams } from 'react-router'
 import { getInterviewFull, useGetInterviewFullSuspense } from '@/apis/generated/interview-api/interview-api'
+import MinimizedSidebarLayoutSkeleton from '@/features/_common/components/sidebar/MinimizedSidebarLayoutSkeleton'
 import { useSectionScroll } from '@/features/_common/hooks/useSectionScroll'
-import SidebarLayoutSkeleton from '@/features/record/confirm/components/SidebarLayoutSkeleton'
 import { PdfSection } from '@/features/record/link/components/pdf-section'
 import { QnaListSection } from '@/features/record/link/components/qna-section/QnaListSection'
 import { RecordLinkSidebar } from '@/features/record/link/components/sidebar/Sidebar'
@@ -11,7 +11,7 @@ import type { SimpleQnaType } from '@/types/interview'
 
 export default function RecordLinkPage() {
   return (
-    <Suspense fallback={<SidebarLayoutSkeleton />}>
+    <Suspense fallback={<MinimizedSidebarLayoutSkeleton />}>
       <RecordLinkContent />
     </Suspense>
   )
