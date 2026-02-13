@@ -1,6 +1,8 @@
+import { useNavigate } from 'react-router'
 import { SmallLogoIcon } from '@/designs/assets'
 import { Badge } from '@/designs/components'
 import Button from '@/designs/components/button'
+import { ROUTES } from '@/routes/routes'
 
 export interface ReviewWaitingData {
   id: number
@@ -17,6 +19,12 @@ interface ReviewWaitingCardProps {
 }
 
 export default function ReviewWaitingCard({ data }: ReviewWaitingCardProps) {
+  const navigate = useNavigate()
+
+  const handleNavigate = () => {
+    navigate(ROUTES.RECORD.replace(':interviewId', String(data.id)))
+  }
+
   return (
     <div className="flex w-full flex-col rounded-2xl bg-white p-6">
       <div className="mb-4 flex items-center gap-2">
@@ -39,8 +47,13 @@ export default function ReviewWaitingCard({ data }: ReviewWaitingCardProps) {
         </div>
       </div>
 
-      <Button variant="fill-orange-100" size="sm" className="w-full font-semibold">
-        면접 복기 시작하기
+      <Button
+        variant="fill-orange-100"
+        size="sm"
+        className="w-full font-semibold"
+        onClick={handleNavigate}
+      >
+        해당 면접으로 이동하기
       </Button>
     </div>
   )
