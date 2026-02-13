@@ -1,16 +1,30 @@
-import { useState } from 'react'
-import { MOCK_INTERVIEW_INFO_DATA, MOCK_QNA_SET_LIST, type RetroListItem } from '@/constants/example'
+import { Suspense, useState } from 'react'
+import { useParams } from 'react-router'
+import { getInterviewFull, useGetInterviewFullSuspense } from '@/apis/generated/interview-api/interview-api'
+import type { RetroListItem } from '@/constants/example'
 import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
 import { FileIcon } from '@/designs/assets'
 import { Button } from '@/designs/components'
+import SidebarLayoutSkeleton from '@/features/record/confirm/components/SidebarLayoutSkeleton'
 import { RetroPdfPanel } from '@/features/retro/_index/components/pdf-panel/RetroPdfPanel'
 import { RetroSection } from '@/features/retro/_index/components/retro-section/RetroSection'
 import { RetroMinimizedSidebar, RetroSidebar } from '@/features/retro/_index/components/sidebar'
+import type { InterviewInfoType, InterviewType } from '@/types/interview'
 
 export default function RetroQuestionPage() {
-  // TODO: API fetch로 교체
-  const retroList = MOCK_QNA_SET_LIST
-  const interviewInfo = MOCK_INTERVIEW_INFO_DATA
+  return (
+    <Suspense fallback={<SidebarLayoutSkeleton />}>
+      <RetroQuestionContent />
+    </Suspense>
+  )
+}
+
+function RetroQuestionContent() {
+  const { interviewId } = useParams()
+  const id = Number(interviewId)
+  const { data } = useGetInterviewFullSuspense(id, { query: { select: transformInterviewData } })
+
+  const { interviewInfo, retroList } = data
   const { company, interviewType } = interviewInfo
 
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -87,4 +101,24 @@ export default function RetroQuestionPage() {
       <RetroPdfPanel />
     </div>
   )
+}
+
+function transformInterviewData(res: Awaited<ReturnType<typeof getInterviewFull>>) {
+  const interviewFull = res.result
+  if (!interviewFull) throw new Error('인터뷰 데이터가 존재하지 않습니다.')
+
+  const interviewInfo: InterviewInfoType = {
+    company: interviewFull.company ?? '',
+    jobRole: interviewFull.jobRole ?? '',
+    interviewType: interviewFull.interviewType as InterviewType,
+    interviewStartAt: interviewFull.interviewStartAt ?? '',
+  }
+
+  const retroList = (interviewFull.qnaSets ?? []).map((q) => ({
+    qnaSetId: q.qnaSetId ?? 0,
+    questionText: q.questionText ?? '',
+    answerText: q.answerText ?? '',
+  }))
+
+  return { interviewInfo, retroList }
 }
