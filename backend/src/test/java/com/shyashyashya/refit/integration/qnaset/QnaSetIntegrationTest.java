@@ -14,6 +14,7 @@ import com.shyashyashya.refit.domain.interview.dto.request.QnaSetCreateRequest;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
+import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -83,10 +84,10 @@ public class QnaSetIntegrationTest extends IntegrationTest {
 
         @BeforeEach
         void setUp() {
-            InterviewCreateRequest interviewCreateRequest = new InterviewCreateRequest(
-                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            interview = createInterview(interviewCreateRequest);
-
+            interview = createInterview(
+                    new InterviewCreateRequest(
+                            LocalDateTime.of(2023, 1, 10, 10, 0, 0), InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+                    ));
             QnaSetCreateRequest qnaSetCreateRequest = new QnaSetCreateRequest ("test qqq text", "test aaa text");
             QnaSet qnaSet = createQnaSet(qnaSetCreateRequest, interview, false);
             qnaSetId = qnaSet.getId();
@@ -120,6 +121,74 @@ public class QnaSetIntegrationTest extends IntegrationTest {
                     body("code", equalTo(COMMON200.name())).
                     body("message", equalTo(COMMON200.getMessage())).
                     body("result", nullValue());
+        }
+    }
+
+    @Nested
+    class 질답_세트_수정_시 {
+
+        private Interview qnaSetDraftInterview;
+        private Interview debriefCompletedInterview;
+        private QnaSet qnaSetDraftQnaSet;
+        private QnaSet debriefCompletedQnaSet;
+
+        @BeforeEach
+        void setUp() {
+            InterviewCreateRequest interviewCreateRequest1 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            qnaSetDraftInterview = createInterview(interviewCreateRequest1);
+            qnaSetDraftInterview.startLogging();
+            qnaSetDraftInterview.completeLogging();
+            interviewRepository.save(qnaSetDraftInterview);
+
+            InterviewCreateRequest interviewCreateRequest2 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            debriefCompletedInterview = createInterview(interviewCreateRequest2);
+            debriefCompletedInterview.startLogging();
+            debriefCompletedInterview.completeLogging();
+            debriefCompletedInterview.completeQnaSetDraft();
+            debriefCompletedInterview.completeReview();
+            interviewRepository.save(debriefCompletedInterview);
+
+            QnaSetCreateRequest qnaSetCreateRequest1 = new QnaSetCreateRequest("test question text", "test answer text");
+            qnaSetDraftQnaSet = createQnaSet(qnaSetCreateRequest1, qnaSetDraftInterview, true);
+
+            QnaSetCreateRequest qnaSetCreateRequest2 = new QnaSetCreateRequest("test question text", "test answer text");
+            debriefCompletedQnaSet = createQnaSet(qnaSetCreateRequest2, debriefCompletedInterview, true);
+        }
+
+        @Test
+        void 인터뷰가_QNA_SET_DRAFT_상태이면_질답_세트_수정에_성공한다() {
+            // given
+            QnaSetUpdateRequest qnaSetUpdateRequest = new QnaSetUpdateRequest("update question", "update answer", null);
+
+            // when & then
+            given(spec)
+                    .body(qnaSetUpdateRequest)
+            .when()
+                    .put("/qna-set/" + qnaSetDraftQnaSet.getId())
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @Test
+        void 인터뷰가_QNA_SET_DRAFT_상태가_아니라면_질답_세트_수정에_실패한다() {
+            // given
+            QnaSetUpdateRequest qnaSetUpdateRequest = new QnaSetUpdateRequest("update question", "update answer", null);
+
+            // when & then
+            given(spec)
+                    .body(qnaSetUpdateRequest)
+            .when()
+                    .put("/qna-set/" + debriefCompletedQnaSet.getId())
+            .then()
+                    .statusCode(400)
+                    .body("code", equalTo(INTERVIEW_REVIEW_STATUS_IS_NOT_QNA_SET_DRAFT.name()))
+                    .body("message", equalTo(INTERVIEW_REVIEW_STATUS_IS_NOT_QNA_SET_DRAFT.getMessage()))
+                    .body("result", nullValue());
         }
     }
 }
