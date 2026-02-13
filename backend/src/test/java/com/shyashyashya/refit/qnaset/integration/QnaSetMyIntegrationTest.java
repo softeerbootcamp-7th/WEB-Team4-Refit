@@ -28,6 +28,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.time.LocalDateTime;
 
@@ -358,7 +359,7 @@ public class QnaSetMyIntegrationTest extends IntegrationTest {
                     .post(path)
             .then()
                     .assertThat().statusCode(400)
-                    .body("code", equalTo("org.springframework.web.bind.MethodArgumentNotValidException"))
+                    .body("code", equalTo(MethodArgumentNotValidException.class.getName()))
                     .body("result", nullValue());
         }
 
