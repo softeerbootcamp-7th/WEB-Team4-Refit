@@ -1,6 +1,7 @@
 package com.shyashyashya.refit.integration.qnaset;
 
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED;
+import static com.shyashyashya.refit.global.exception.ErrorCode.QNA_SET_NOT_FOUND;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -124,8 +125,8 @@ public class QnaSetIntegrationTest extends IntegrationTest {
     @Nested
     class 질답_세트_수정_시 {
 
-        private QnaSet qnaSetDraftQnaSet;
-        private QnaSet debriefCompletedQnaSet;
+        private Long qnaSetDraftQnaSetId;
+        private Long debriefCompletedQnaSetId;
 
         @BeforeEach
         void setUp() {
@@ -138,22 +139,24 @@ public class QnaSetIntegrationTest extends IntegrationTest {
             Interview debriefCompletedInterview = createAndSaveInterview(interviewCreateRequest2, InterviewReviewStatus.DEBRIEF_COMPLETED);
 
             QnaSetCreateRequest qnaSetCreateRequest1 = new QnaSetCreateRequest("test question text", "test answer text");
-            qnaSetDraftQnaSet = createQnaSet(qnaSetCreateRequest1, qnaSetDraftInterview, true);
+            QnaSet qnaSetDraftQnaSet = createQnaSet(qnaSetCreateRequest1, qnaSetDraftInterview, true);
+            qnaSetDraftQnaSetId = qnaSetDraftQnaSet.getId();
 
             QnaSetCreateRequest qnaSetCreateRequest2 = new QnaSetCreateRequest("test question text", "test answer text");
-            debriefCompletedQnaSet = createQnaSet(qnaSetCreateRequest2, debriefCompletedInterview, true);
+            QnaSet debriefCompletedQnaSet = createQnaSet(qnaSetCreateRequest2, debriefCompletedInterview, true);
+            debriefCompletedQnaSetId = debriefCompletedQnaSet.getId();
         }
 
         @Test
         void 인터뷰가_QNA_SET_DRAFT_상태이면_질답_세트_수정에_성공한다() {
             // given
-            QnaSetUpdateRequest qnaSetUpdateRequest = new QnaSetUpdateRequest("update question", "update answer", null);
+            QnaSetUpdateRequest qnaSetUpdateRequest = new QnaSetUpdateRequest("update question", "update answer", "self review self review");
 
             // when & then
             given(spec)
                     .body(qnaSetUpdateRequest)
             .when()
-                    .put("/qna-set/" + qnaSetDraftQnaSet.getId())
+                    .put("/qna-set/" + qnaSetDraftQnaSetId)
             .then()
                     .statusCode(200)
                     .body("code", equalTo(COMMON200.name()))
@@ -162,7 +165,7 @@ public class QnaSetIntegrationTest extends IntegrationTest {
         }
 
         @Test
-        void 수정_요청에_필드가_하나여도_질답_세트_수정에_성공한다() {
+        void 수정_요청에_필드가_하나일_때_질답_세트_수정에_성공한다() {
             // given
             QnaSetUpdateRequest qnaSetUpdateRequest = new QnaSetUpdateRequest("only question text update", null, null);
 
@@ -170,8 +173,25 @@ public class QnaSetIntegrationTest extends IntegrationTest {
             given(spec)
                     .body(qnaSetUpdateRequest)
             .when()
-                    .put("/qna-set/" + qnaSetDraftQnaSet.getId())
+                    .put("/qna-set/" + qnaSetDraftQnaSetId)
             .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @Test
+        void 수정_요청이_빈_문자열일_때_질답_세트_수정에_성공한다() {
+            // given
+            QnaSetUpdateRequest qnaSetUpdateRequest = new QnaSetUpdateRequest("", null, "");
+
+            // when & then
+            given(spec)
+                    .body(qnaSetUpdateRequest)
+                    .when()
+                    .put("/qna-set/" + qnaSetDraftQnaSetId)
+                    .then()
                     .statusCode(200)
                     .body("code", equalTo(COMMON200.name()))
                     .body("message", equalTo(COMMON200.getMessage()))
@@ -187,11 +207,28 @@ public class QnaSetIntegrationTest extends IntegrationTest {
             given(spec)
                     .body(qnaSetUpdateRequest)
             .when()
-                    .put("/qna-set/" + debriefCompletedQnaSet.getId())
+                    .put("/qna-set/" + debriefCompletedQnaSetId)
             .then()
                     .statusCode(400)
                     .body("code", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.name()))
                     .body("message", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @Test
+        void QNA_SET_이_존재하지_않으면_질답_세트_수정에_실패한다() {
+            // given
+            QnaSetUpdateRequest qnaSetUpdateRequest = new QnaSetUpdateRequest("update question", "update answer", null);
+
+            // when & then
+            given(spec)
+                    .body(qnaSetUpdateRequest)
+                    .when()
+                    .put("/qna-set/" + Long.MAX_VALUE)
+                    .then()
+                    .statusCode(404)
+                    .body("code", equalTo(QNA_SET_NOT_FOUND.name()))
+                    .body("message", equalTo(QNA_SET_NOT_FOUND.getMessage()))
                     .body("result", nullValue());
         }
     }
