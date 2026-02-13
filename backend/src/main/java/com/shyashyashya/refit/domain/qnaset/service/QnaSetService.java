@@ -76,6 +76,7 @@ public class QnaSetService {
     @Transactional
     public void updateQnaSet(Long qnaSetId, QnaSetUpdateRequest request) {
         QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
+        interviewValidator.validateInterviewReviewStatusQnaSetDraft(qnaSet.getInterview());
         qnaSet.updateQuestionText(request.questionText());
         qnaSet.updateAnswerText(request.answerText());
         updateOrCreateSelfReview(qnaSet, request.selfReviewText());

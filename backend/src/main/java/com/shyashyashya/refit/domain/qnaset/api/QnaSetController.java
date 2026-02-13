@@ -74,7 +74,6 @@ public class QnaSetController {
     @PutMapping("/{qnaSetId}")
     public ResponseEntity<ApiResponse<Void>> updateQnaSet(
             @PathVariable Long qnaSetId, @Valid @RequestBody QnaSetUpdateRequest request) {
-        // TODO : 질문 답변 내용 수정이 '기록중' 상태에서만 가능하도록 검증 추가
         qnaSetService.updateQnaSet(qnaSetId, request);
         var response = ApiResponse.success(COMMON200);
         return ResponseEntity.ok(response);
