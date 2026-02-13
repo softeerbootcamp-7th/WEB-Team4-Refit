@@ -371,9 +371,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
         void setUp() {
             InterviewCreateRequest request = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            Interview interview = createInterview(request);
-            interview.startLogging();
-            interviewId = interviewRepository.save(interview).getId();
+            interviewId = createInterview(request, InterviewReviewStatus.LOG_DRAFT).getId();
         }
 
         @Test
@@ -452,11 +450,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
         void setUp() {
             InterviewCreateRequest request = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-
-            Interview interview = createInterview(request);
-            interview.startLogging();
-            interviewRepository.save(interview);
-            interviewId = interview.getId();
+            interviewId = createInterview(request, InterviewReviewStatus.LOG_DRAFT).getId();
         }
 
         @Test
