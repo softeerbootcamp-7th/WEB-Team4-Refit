@@ -64,7 +64,7 @@ public class QnaSetIntegrationTest extends IntegrationTest {
         }
 
         @Test
-        void 인터뷰가_QNA_SET_DRAFT_상태가_아니라면_질답_세트_생성에_성공한다() {
+        void 인터뷰가_QNA_SET_DRAFT_상태가_아니라면_질답_세트_생성에_실패한다() {
             // given
             InterviewCreateRequest interviewCreateRequest = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
