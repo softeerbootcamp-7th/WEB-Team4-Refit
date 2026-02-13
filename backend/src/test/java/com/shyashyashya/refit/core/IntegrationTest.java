@@ -95,7 +95,7 @@ public abstract class IntegrationTest {
         company2 = companyRepository.save(Company.create("카카오", "logo2", true));
         company3 = companyRepository.save(Company.create("네이버", "logo3", true));
 
-        requestUser = createUser("test@example.com", "default", industry1, jobCategory1);
+        requestUser = createAndSaveUser("test@example.com", "default", industry1, jobCategory1);
         Instant issuedAt = Instant.now();
         String accessToken = jwtEncoder.encodeAccessJwt(requestUser.getEmail(), requestUser.getId(), issuedAt);
         String refreshToken = jwtEncoder.encodeRefreshJwt(requestUser.getEmail(), requestUser.getId(), issuedAt);
@@ -134,19 +134,19 @@ public abstract class IntegrationTest {
         });
     }
 
-    protected User createUser(String email, String nickname, Industry industry, JobCategory jobCategory) {
+    protected User createAndSaveUser(String email, String nickname, Industry industry, JobCategory jobCategory) {
         return userRepository.save(User.create(email, nickname, "imageUrl", false, industry, jobCategory));
     }
 
-    protected Interview createInterview(InterviewCreateRequest request) {
-        return createInterview(request, InterviewReviewStatus.NOT_LOGGED, requestUser);
+    protected Interview createAndSaveInterview(InterviewCreateRequest request) {
+        return createAndSaveInterview(request, InterviewReviewStatus.NOT_LOGGED, requestUser);
     }
 
-    protected Interview createInterview(InterviewCreateRequest request, InterviewReviewStatus reviewStatus) {
-        return createInterview(request, reviewStatus, requestUser);
+    protected Interview createAndSaveInterview(InterviewCreateRequest request, InterviewReviewStatus reviewStatus) {
+        return createAndSaveInterview(request, reviewStatus, requestUser);
     }
 
-    protected Interview createInterview(InterviewCreateRequest request, InterviewReviewStatus reviewStatus, User user) {
+    protected Interview createAndSaveInterview(InterviewCreateRequest request, InterviewReviewStatus reviewStatus, User user) {
         Company company = companyRepository.findByName(request.companyName()).get();
         Industry industry = industryRepository.findById(request.industryId()).get();
         JobCategory jobCategory = jobCategoryRepository.findById(request.jobCategoryId()).get();
@@ -184,7 +184,7 @@ public abstract class IntegrationTest {
         return interviewRepository.save(interview);
     }
 
-    protected Company createCompany(String companyName) {
+    protected Company createAndSaveCompany(String companyName) {
         Company company = Company.create(companyName, "logo.url", true);
         return companyRepository.save(company);
     }

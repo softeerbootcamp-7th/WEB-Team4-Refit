@@ -106,7 +106,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
         void setUp() {
             InterviewCreateRequest request = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            interviewId = createInterview(request).getId();
+            interviewId = createAndSaveInterview(request).getId();
         }
 
         @Test
@@ -141,8 +141,8 @@ public class InterviewIntegrationTest extends IntegrationTest {
             // given
             InterviewCreateRequest request = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            User user = createUser("other@example.com", "other", industry1, jobCategory1);
-            Long otherInterviewId = createInterview(request, InterviewReviewStatus.NOT_LOGGED, user).getId();
+            User user = createAndSaveUser("other@example.com", "other", industry1, jobCategory1);
+            Long otherInterviewId = createAndSaveInterview(request, InterviewReviewStatus.NOT_LOGGED, user).getId();
 
             // when & then
             given(spec).
@@ -166,7 +166,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
         void setUp() {
             InterviewCreateRequest request = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            interviewId = createInterview(request).getId();
+            interviewId = createAndSaveInterview(request).getId();
         }
 
         @Test
@@ -200,8 +200,8 @@ public class InterviewIntegrationTest extends IntegrationTest {
             // given
             InterviewCreateRequest request = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            User user = createUser("other@example.com", "other", industry1, jobCategory1);
-            Long otherInterviewId = createInterview(request, InterviewReviewStatus.NOT_LOGGED, user).getId();
+            User user = createAndSaveUser("other@example.com", "other", industry1, jobCategory1);
+            Long otherInterviewId = createAndSaveInterview(request, InterviewReviewStatus.NOT_LOGGED, user).getId();
 
             // when & then
             given(spec)
@@ -225,7 +225,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
         void setUp() {
             InterviewCreateRequest request = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            interviewId = createInterview(request).getId();
+            interviewId = createAndSaveInterview(request).getId();
         }
 
         @Test
@@ -267,8 +267,8 @@ public class InterviewIntegrationTest extends IntegrationTest {
             // given
             InterviewCreateRequest createRequest = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            User user = createUser("other@example.com", "other", industry1, jobCategory1);
-            Long otherInterviewId = createInterview(createRequest, InterviewReviewStatus.NOT_LOGGED, user).getId();
+            User user = createAndSaveUser("other@example.com", "other", industry1, jobCategory1);
+            Long otherInterviewId = createAndSaveInterview(createRequest, InterviewReviewStatus.NOT_LOGGED, user).getId();
             InterviewResultStatusUpdateRequest updateRequest = new InterviewResultStatusUpdateRequest(InterviewResultStatus.PASS);
 
             // when & then
@@ -296,7 +296,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
         void setUp() {
             InterviewCreateRequest request = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            Interview interview = createInterview(request);
+            Interview interview = createAndSaveInterview(request);
             interviewId = interview.getId();
 
             // Create QnaSetCategory
@@ -346,8 +346,8 @@ public class InterviewIntegrationTest extends IntegrationTest {
             // given
             InterviewCreateRequest createRequest = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            User user = createUser("other@example.com", "other", industry1, jobCategory1);
-            Long otherInterviewId = createInterview(createRequest, InterviewReviewStatus.NOT_LOGGED, user).getId();
+            User user = createAndSaveUser("other@example.com", "other", industry1, jobCategory1);
+            Long otherInterviewId = createAndSaveInterview(createRequest, InterviewReviewStatus.NOT_LOGGED, user).getId();
 
             // when & then
             given(spec).
@@ -371,7 +371,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
         void setUp() {
             InterviewCreateRequest request = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            interviewId = createInterview(request, InterviewReviewStatus.LOG_DRAFT).getId();
+            interviewId = createAndSaveInterview(request, InterviewReviewStatus.LOG_DRAFT).getId();
         }
 
         @Test
@@ -406,8 +406,8 @@ public class InterviewIntegrationTest extends IntegrationTest {
             // given
             InterviewCreateRequest createRequest = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            User user = createUser("other@example.com", "other", industry1, jobCategory1);
-            Long otherInterviewId = createInterview(createRequest, InterviewReviewStatus.NOT_LOGGED, user).getId();
+            User user = createAndSaveUser("other@example.com", "other", industry1, jobCategory1);
+            Long otherInterviewId = createAndSaveInterview(createRequest, InterviewReviewStatus.NOT_LOGGED, user).getId();
 
             // when & then
             given(spec)
@@ -426,7 +426,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
             // given
             var createRequest = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            Interview invalidInterview = createInterview(createRequest, status);
+            Interview invalidInterview = createAndSaveInterview(createRequest, status);
 
             // when & then
             given(spec)
@@ -450,7 +450,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
         void setUp() {
             InterviewCreateRequest request = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            interviewId = createInterview(request, InterviewReviewStatus.LOG_DRAFT).getId();
+            interviewId = createAndSaveInterview(request, InterviewReviewStatus.LOG_DRAFT).getId();
         }
 
         @Test
@@ -492,8 +492,8 @@ public class InterviewIntegrationTest extends IntegrationTest {
             // given
             InterviewCreateRequest createRequest = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            User user = createUser("other@example.com", "other", industry1, jobCategory1);
-            Long otherInterviewId = createInterview(createRequest, InterviewReviewStatus.NOT_LOGGED, user).getId();
+            User user = createAndSaveUser("other@example.com", "other", industry1, jobCategory1);
+            Long otherInterviewId = createAndSaveInterview(createRequest, InterviewReviewStatus.NOT_LOGGED, user).getId();
             RawTextUpdateRequest updateRequest = new RawTextUpdateRequest("Raw text for another user.");
 
             // when & then
@@ -514,7 +514,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
             // given
             var createRequest = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            Interview invalidInterview = createInterview(createRequest, status);
+            Interview invalidInterview = createAndSaveInterview(createRequest, status);
 
             RawTextUpdateRequest request = new RawTextUpdateRequest("Updated raw text content.");
 
@@ -541,7 +541,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
         void setUp() {
             InterviewCreateRequest request = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            Interview interview = createInterview(request, InterviewReviewStatus.SELF_REVIEW_DRAFT);
+            Interview interview = createAndSaveInterview(request, InterviewReviewStatus.SELF_REVIEW_DRAFT);
             interviewId = interview.getId();
         }
 
@@ -611,8 +611,8 @@ public class InterviewIntegrationTest extends IntegrationTest {
             // given
             InterviewCreateRequest createRequest = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            User user = createUser("other@example.com", "other", industry1, jobCategory1);
-            Long otherInterviewId = createInterview(createRequest, InterviewReviewStatus.NOT_LOGGED, user).getId();
+            User user = createAndSaveUser("other@example.com", "other", industry1, jobCategory1);
+            Long otherInterviewId = createAndSaveInterview(createRequest, InterviewReviewStatus.NOT_LOGGED, user).getId();
             KptSelfReviewUpdateRequest updateRequest = new KptSelfReviewUpdateRequest("Other Keep", "Other Problem", "Other Try");
 
             // when & then
@@ -633,7 +633,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
             // given
             var createRequest = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            Interview invalidInterview = createInterview(createRequest, status);
+            Interview invalidInterview = createAndSaveInterview(createRequest, status);
             var request = new KptSelfReviewUpdateRequest("Keep text", "Problem text", "Try text");
 
             // when & then
@@ -659,7 +659,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
         void setUp() {
             InterviewCreateRequest request = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            Interview interview = createInterview(request, InterviewReviewStatus.QNA_SET_DRAFT);
+            Interview interview = createAndSaveInterview(request, InterviewReviewStatus.QNA_SET_DRAFT);
             interviewId = interview.getId();
         }
 
@@ -702,8 +702,8 @@ public class InterviewIntegrationTest extends IntegrationTest {
             // given
             InterviewCreateRequest createRequest = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            User user = createUser("other@example.com", "other", industry1, jobCategory1);
-            Long otherInterviewId = createInterview(createRequest, InterviewReviewStatus.NOT_LOGGED, user).getId();
+            User user = createAndSaveUser("other@example.com", "other", industry1, jobCategory1);
+            Long otherInterviewId = createAndSaveInterview(createRequest, InterviewReviewStatus.NOT_LOGGED, user).getId();
             var request = new QnaSetCreateRequest("Question text", "Answer text");
 
             // when & then
@@ -724,7 +724,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
             // given
             var createRequest = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            Interview invalidInterview = createInterview(createRequest, status);
+            Interview invalidInterview = createAndSaveInterview(createRequest, status);
             var request = new QnaSetCreateRequest("Question text", "Answer text");
 
             // when & then
