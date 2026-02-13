@@ -79,7 +79,7 @@ public class QnaSet extends BaseEntity {
     }
 
     public void unmarkDifficult() {
-        this.isMarkedDifficult = true;
+        this.isMarkedDifficult = false;
     }
 
     @Builder(access = AccessLevel.PRIVATE)
