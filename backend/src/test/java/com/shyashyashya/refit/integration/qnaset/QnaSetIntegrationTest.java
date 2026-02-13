@@ -16,6 +16,8 @@ import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
+import com.shyashyashya.refit.domain.qnaset.dto.PdfHighlightingRectDto;
+import com.shyashyashya.refit.domain.qnaset.dto.request.PdfHighlightingUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class QnaSetIntegrationTest extends IntegrationTest {
 
@@ -284,6 +287,133 @@ public class QnaSetIntegrationTest extends IntegrationTest {
             .when()
                     .delete("/qna-set/" + debriefCompletedQnaSetId)
             .then()
+                    .statusCode(400)
+                    .body("code", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.name()))
+                    .body("message", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.getMessage()))
+                    .body("result", nullValue());
+        }
+    }
+
+    @Nested
+    class PDF_하이라이팅_등록_수정_시 {
+
+        private Long qnaSetDraftQnaSetId;
+        private Long debriefCompletedQnaSetId;
+
+        @BeforeEach
+        void setUp() {
+            InterviewCreateRequest interviewCreateRequest1 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview qnaSetDraftInterview = createAndSaveInterview(interviewCreateRequest1, InterviewReviewStatus.QNA_SET_DRAFT);
+
+            InterviewCreateRequest interviewCreateRequest2 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview debriefCompletedInterview = createAndSaveInterview(interviewCreateRequest2, InterviewReviewStatus.DEBRIEF_COMPLETED);
+
+            QnaSetCreateRequest qnaSetCreateRequest1 = new QnaSetCreateRequest("test question text", "test answer text");
+            QnaSet qnaSetDraftQnaSet = createQnaSet(qnaSetCreateRequest1, qnaSetDraftInterview, true);
+            qnaSetDraftQnaSetId = qnaSetDraftQnaSet.getId();
+
+            QnaSetCreateRequest qnaSetCreateRequest2 = new QnaSetCreateRequest("test question text", "test answer text");
+            QnaSet debriefCompletedQnaSet = createQnaSet(qnaSetCreateRequest2, debriefCompletedInterview, true);
+            debriefCompletedQnaSetId = debriefCompletedQnaSet.getId();
+        }
+
+        @Test
+        void 인터뷰가_QNA_SET_DRAFT_상태이면_PDF_하이라이팅_등록에_성공한다() {
+            // given
+            List<PdfHighlightingUpdateRequest> request = List.of(
+                    new PdfHighlightingUpdateRequest(
+                            "highlighting1 text",
+                            List.of(
+                                    new PdfHighlightingRectDto(3.14, 1.592, 30.12, 4123.432, 10),
+                                    new PdfHighlightingRectDto(0.0, 1.592, 34.0, 4123.432, 10),
+                                    new PdfHighlightingRectDto(3.14, 1.592, 30.12, 4123.432, 10),
+                                    new PdfHighlightingRectDto(3.14, 123123.1, 30.12, 4123.432, 1)
+                    )),
+                    new PdfHighlightingUpdateRequest(
+                            "highlighting2 text",
+                            List.of(
+                                    new PdfHighlightingRectDto(3.14, 1.592, 30.12, 4123.432, 1),
+                                    new PdfHighlightingRectDto(0.0, 1.592, 34.0, 4123.432, 2),
+                                    new PdfHighlightingRectDto(3.14, 1.592, 30.12, 4123.432, 3),
+                                    new PdfHighlightingRectDto(3.14, 123123.1, 30.12, 4123.432, 4)
+                            )),
+                    new PdfHighlightingUpdateRequest(
+                            "highlighting3 text",
+                            List.of(
+                                    new PdfHighlightingRectDto(3.14, 1.592, 30.12, 20201483.2, 13),
+                                    new PdfHighlightingRectDto(0.0, 1.592, 34.0, 4123.432, 13),
+                                    new PdfHighlightingRectDto(0.04, 1.592, 30.12, 4123.432, 13),
+                                    new PdfHighlightingRectDto(452.1, 123123.1, 30.12, 4123.432, 13)
+                            ))
+            );
+
+            // when & then
+            given(spec)
+                    .body(request)
+            .when()
+                    .put("/qna-set/" + qnaSetDraftQnaSetId + "/pdf-highlightings")
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @Test
+        void 인터뷰가_QNA_SET_DRAFT_상태이면_비어있는_PDF_하이라이팅_등록에_성공한다() {
+            // given
+            List<PdfHighlightingUpdateRequest> request = List.of();
+
+            // when & then
+            given(spec)
+                    .body(request)
+                    .when()
+                    .put("/qna-set/" + qnaSetDraftQnaSetId + "/pdf-highlightings")
+                    .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @Test
+        void 인터뷰가_QNA_SET_DRAFT_상태가_아니면_PDF_하이라이팅_등록에_실패한다() {
+            // given
+            List<PdfHighlightingUpdateRequest> request = List.of(
+                    new PdfHighlightingUpdateRequest(
+                            "highlighting1 text",
+                            List.of(
+                                    new PdfHighlightingRectDto(3.14, 1.592, 30.12, 4123.432, 10),
+                                    new PdfHighlightingRectDto(0.0, 1.592, 34.0, 4123.432, 10),
+                                    new PdfHighlightingRectDto(3.14, 1.592, 30.12, 4123.432, 10),
+                                    new PdfHighlightingRectDto(3.14, 123123.1, 30.12, 4123.432, 1)
+                            )),
+                    new PdfHighlightingUpdateRequest(
+                            "highlighting2 text",
+                            List.of(
+                                    new PdfHighlightingRectDto(3.14, 1.592, 30.12, 4123.432, 1),
+                                    new PdfHighlightingRectDto(0.0, 1.592, 34.0, 4123.432, 2),
+                                    new PdfHighlightingRectDto(3.14, 1.592, 30.12, 4123.432, 3),
+                                    new PdfHighlightingRectDto(3.14, 123123.1, 30.12, 4123.432, 4)
+                            )),
+                    new PdfHighlightingUpdateRequest(
+                            "highlighting3 text",
+                            List.of(
+                                    new PdfHighlightingRectDto(3.14, 1.592, 30.12, 20201483.2, 13),
+                                    new PdfHighlightingRectDto(0.0, 1.592, 34.0, 4123.432, 13),
+                                    new PdfHighlightingRectDto(0.04, 1.592, 30.12, 4123.432, 13),
+                                    new PdfHighlightingRectDto(452.1, 123123.1, 30.12, 4123.432, 13)
+                            ))
+            );
+
+            // when & then
+            given(spec)
+                    .body(request)
+                    .when()
+                    .put("/qna-set/" + debriefCompletedQnaSetId + "/pdf-highlightings")
+                    .then()
                     .statusCode(400)
                     .body("code", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.name()))
                     .body("message", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.getMessage()))
