@@ -8,31 +8,52 @@ type LiveAudioVisualizerProps = {
   onComplete?: () => void
   /** STT 연동 시 실시간 인식 결과를 넘길 콜백 */
   onRealtimeTranscript?: Dispatch<SetStateAction<string>>
+  uiType: 'mobile' | 'desktop'
 }
 
-export default function LiveAudioVisualizer({ onCancel, onComplete, onRealtimeTranscript }: LiveAudioVisualizerProps) {
+export default function LiveAudioVisualizer({
+  onCancel,
+  onComplete,
+  onRealtimeTranscript,
+  uiType,
+}: LiveAudioVisualizerProps) {
   const { canvasRef, isRecording, timerText, isRequestingPermission, startRecording, cancel, complete } =
     useAudioRecorder({ onCancel, onComplete, onRealtimeTranscript })
 
+  const isMobile = uiType === 'mobile'
+
   return (
-    <div className="relative h-14 w-full">
+    <div className={`relative ${isMobile ? 'h-14 w-full' : 'mx-auto w-fit'}`}>
       {!isRecording ? (
-        <Button
-          onClick={startRecording}
-          disabled={isRequestingPermission}
-          variant="fill-orange-050"
-          radius="full"
-          size="md"
-          className="w-full"
-        >
-          <MicIcon className="h-5 w-5 shrink-0" aria-hidden />
-          {isRequestingPermission ? '마이크 권한 요청 중…' : '음성으로 기록하기'}
-        </Button>
+        isMobile ? (
+          <Button
+            onClick={startRecording}
+            disabled={isRequestingPermission}
+            variant="fill-orange-050"
+            radius="full"
+            size="md"
+            className="w-full"
+          >
+            <MicIcon className="h-5 w-5 shrink-0" aria-hidden />
+            {isRequestingPermission ? '마이크 권한 요청 중…' : '음성으로 기록하기'}
+          </Button>
+        ) : (
+          <button
+            onClick={startRecording}
+            disabled={isRequestingPermission}
+            className="title-s-semibold flex w-full cursor-pointer items-center gap-2 rounded-full bg-orange-100 px-8 py-3 text-orange-500 hover:bg-orange-200 transition-colors"
+          >
+            <MicIcon className="h-5 w-5 shrink-0" aria-hidden />
+            {isRequestingPermission ? '마이크 권한 요청 중…' : '음성으로 기록하기'}
+          </button>
+        )
       ) : (
         <div
           role="region"
           aria-label="녹음 중"
-          className="flex h-full w-full items-center justify-between gap-3 rounded-[100px] bg-gray-900 px-4 py-3"
+          className={`flex w-full items-center justify-between gap-3 rounded-[100px] bg-gray-900 ${
+            isMobile ? 'h-full px-4 py-3' : 'px-8 py-2'
+          }`}
         >
           <span className="body-m-semibold shrink-0 text-orange-500 tabular-nums">{timerText}</span>
           <div className="flex min-w-0 flex-1 items-center overflow-hidden px-2">

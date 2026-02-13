@@ -30,6 +30,7 @@ export default function RecordStepContent({
           onComplete={onRecordComplete}
           onRealtimeTranscript={onRealtimeTranscript}
           onCancel={onRecordCancel}
+          uiType="mobile"
         />
       </div>
     </>
