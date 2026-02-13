@@ -13,7 +13,12 @@ import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
+import com.shyashyashya.refit.domain.qnaset.dto.request.PdfHighlightingUpdateRequest;
+import com.shyashyashya.refit.domain.qnaset.model.PdfHighlighting;
+import com.shyashyashya.refit.domain.qnaset.model.PdfHighlightingRect;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
+import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRectRepository;
+import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
@@ -82,8 +87,15 @@ public abstract class IntegrationTest {
 
     @Autowired
     private CompanyRepository companyRepository;
+
     @Autowired
     private QnaSetRepository qnaSetRepository;
+
+    @Autowired
+    private PdfHighlightingRepository pdfHighlightingRepository;
+
+    @Autowired
+    private PdfHighlightingRectRepository pdfHighlightingRectRepository;
 
     @BeforeEach
     void restAssuredSetUp() {
@@ -204,5 +216,30 @@ public abstract class IntegrationTest {
         );
 
         return qnaSetRepository.save(qnaSet);
+    }
+
+    protected List<PdfHighlighting> createAndSavePdfHighlighting(List<PdfHighlightingUpdateRequest> requests, QnaSet qnaSet) {
+        List<PdfHighlighting> result = new ArrayList<>();
+
+        requests.forEach(request -> {
+            PdfHighlighting pdfHighlighting = PdfHighlighting.create(request.highlightingText(), qnaSet);
+            result.add(pdfHighlightingRepository.save(pdfHighlighting));
+
+            request.rects().forEach(
+                    rectDto -> {
+                        PdfHighlightingRect rect = PdfHighlightingRect.create(
+                                rectDto.x(),
+                                rectDto.y(),
+                                rectDto.width(),
+                                rectDto.height(),
+                                rectDto.pageNumber(),
+                                pdfHighlighting);
+
+                        pdfHighlightingRectRepository.save(rect);
+                    }
+            );
+        });
+
+        return result;
     }
 }
