@@ -7,6 +7,7 @@ import static com.shyashyashya.refit.global.model.ResponseCode.COMMON204;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_ACCESSIBLE;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_FOUND;
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
@@ -21,6 +22,8 @@ import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
 import com.shyashyashya.refit.domain.interview.model.InterviewResultStatus;
+import com.shyashyashya.refit.domain.interview.model.InterviewSelfReview;
+import com.shyashyashya.refit.domain.interview.repository.InterviewSelfReviewRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -47,6 +50,9 @@ public class InterviewIntegrationTest extends IntegrationTest {
 
     @Autowired
     private InterviewRepository interviewRepository;
+
+    @Autowired
+    private InterviewSelfReviewRepository interviewSelfReviewRepository;
 
     @Nested
     class 면접_생성_시 {
@@ -560,6 +566,33 @@ public class InterviewIntegrationTest extends IntegrationTest {
                     .body("code", equalTo(COMMON200.name()))
                     .body("message", equalTo(COMMON200.getMessage()))
                     .body("result", nullValue());
+        }
+
+        @Test
+        void 이미_KPT_회고가_존재할_때_수정에_성공한다() {
+            // given
+            Interview interview = interviewRepository.findById(interviewId).get();
+            interviewSelfReviewRepository.save(
+                    InterviewSelfReview.create("Initial Keep", "Initial Problem", "Initial Try", interview)
+            );
+
+            KptSelfReviewUpdateRequest request = new KptSelfReviewUpdateRequest("Updated Keep", "Updated Problem", "Updated Try");
+
+            // when & then
+            given(spec)
+                    .body(request)
+            .when()
+                    .put(path + "/" + interviewId + "/kpt-self-review")
+            .then()
+                    .assertThat().statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result", nullValue());
+
+            InterviewSelfReview updatedSelfReview = interviewSelfReviewRepository.findByInterview(interview).get();
+            assertThat(updatedSelfReview.getKeepText()).isEqualTo("Updated Keep");
+            assertThat(updatedSelfReview.getProblemText()).isEqualTo("Updated Problem");
+            assertThat(updatedSelfReview.getTryText()).isEqualTo("Updated Try");
         }
 
         @Test
