@@ -4,7 +4,7 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.INDUSTRY_PARTIAL
 
 import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
 import com.shyashyashya.refit.global.exception.CustomException;
-import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +14,7 @@ public class IndustryValidator {
 
     private final IndustryRepository industryRepository;
 
-    public void validateIndustriesAllExist(List<Long> industryIds) {
+    public void validateIndustriesAllExist(Set<Long> industryIds) {
         if (industryIds == null || industryIds.isEmpty()) {
             return;
         }

@@ -65,7 +65,7 @@ public class QnaSetMyService {
         User requestUser = requestUserContext.getRequestUser();
 
         return qnaSetRepository
-                .searchQnaSet(
+                .searchMyQnaSet(
                         requestUser,
                         request.keyword(),
                         request.searchFilter().hasStarAnalysis(),

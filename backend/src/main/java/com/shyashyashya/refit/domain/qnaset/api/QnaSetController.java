@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -46,8 +47,8 @@ public class QnaSetController {
             description = "지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다. 지정하지 않은 필드에 대해서는 전체를 대상으로 조회합니다.")
     @GetMapping("/frequent")
     public ResponseEntity<ApiResponse<Page<FrequentQnaSetResponse>>> getFrequentQuestions(
-            @RequestParam(required = false) List<Long> industryIds,
-            @RequestParam(required = false) List<Long> jobCategoryIds,
+            @RequestParam(required = false) Set<Long> industryIds,
+            @RequestParam(required = false) Set<Long> jobCategoryIds,
             Pageable pageable) {
         var body = qnaSetService.getFrequentQuestions(industryIds, jobCategoryIds, pageable);
         var response = ApiResponse.success(COMMON200, body);
