@@ -23,7 +23,7 @@ import {
   MyInterviewsPage,
   TrendQuestionsPage,
 } from '@/pages'
-import { RedirectToMobileMiddleware } from '@/routes/redirectToMobileMiddleware'
+import { HandleMobileRouting } from '@/routes/redirectToMobileMiddleware'
 import { ROUTES } from '@/routes/routes'
 
 const getChildPath = (fullPath: string, rootPath: string): string => {
@@ -33,11 +33,11 @@ const getChildPath = (fullPath: string, rootPath: string): string => {
 const router = createBrowserRouter([
   {
     path: ROUTES.HOME,
-    middleware: [RedirectToMobileMiddleware],
+    middleware: [HandleMobileRouting],
     Component: () => <Navigate to={ROUTES.DASHBOARD} replace />,
   },
-  { path: ROUTES.SIGNUP, Component: SignupPage, middleware: [RedirectToMobileMiddleware] },
-  { path: ROUTES.SIGNIN, Component: SigninPage, middleware: [RedirectToMobileMiddleware] },
+  { path: ROUTES.SIGNUP, Component: SignupPage, middleware: [HandleMobileRouting] },
+  { path: ROUTES.SIGNIN, Component: SigninPage, middleware: [HandleMobileRouting] },
   { path: ROUTES.AUTH_CALLBACK, Component: AuthCallbackPage },
   {
     path: ROUTES.MOBILE,
@@ -60,7 +60,7 @@ const router = createBrowserRouter([
   },
   {
     Component: MainLayout,
-    middleware: [RedirectToMobileMiddleware],
+    middleware: [HandleMobileRouting],
     children: [
       {
         path: ROUTES.DASHBOARD,
