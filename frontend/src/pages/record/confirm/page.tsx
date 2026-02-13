@@ -18,7 +18,8 @@ export default function RecordConfirmPage() {
 
 function RecordConfirmContent() {
   const { interviewId } = useParams()
-  const { data } = useGetInterviewFullSuspense(Number(interviewId), { query: { select: transformInterviewData } })
+  const id = Number(interviewId)
+  const { data } = useGetInterviewFullSuspense(id, { query: { select: transformInterviewData } })
 
   const { qnaList, isAddMode, handleEdit, handleDelete, handleAddSave, startAddMode, cancelAddMode } = useQnaList(
     data.qnaList,
