@@ -1,41 +1,36 @@
-import { useState } from 'react'
+import { useGetDebriefIncompletedInterviews } from '@/apis/generated/dashboard-api/dashboard-api'
+import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
 import type { ReviewWaitingData } from '../components/review-waiting-interview/ReviewWaitingCard'
 
-const MOCK_REVIEW_WAITING_DATA: ReviewWaitingData[] = [
-  {
-    id: 1,
-    status: '기록 전',
-    elapsedText: '면접 끝난지 3일 지남',
-    companyName: '현대자동차',
-    industry: '제조업',
-    jobCategory: '데이터 사이언티스트',
-    interviewType: '컬쳐핏 면접',
-  },
-  {
-    id: 2,
-    status: '기록 전',
-    elapsedText: '면접 끝난지 3일 지남',
-    companyName: '현대자동차',
-    industry: '제조업',
-    jobCategory: '데이터 사이언티스트',
-    interviewType: '컬쳐핏 면접',
-  },
-  {
-    id: 3,
-    status: '기록 전',
-    elapsedText: '면접 끝난지 3일 지남',
-    companyName: '현대자동차',
-    industry: '제조업',
-    jobCategory: '데이터 사이언티스트',
-    interviewType: '컬쳐핏 면접',
-  },
-]
-
 export const useReviewWaitingInterviews = () => {
-  const [data] = useState<ReviewWaitingData[]>(MOCK_REVIEW_WAITING_DATA)
+  const { data: response } = useGetDebriefIncompletedInterviews({
+    pageable: {
+      page: 0,
+      size: 10,
+    },
+  })
+
+  // API 데이터가 없으면 빈 배열 반환
+  const content = response?.result?.content ?? []
+
+  const data: ReviewWaitingData[] = content.map((item) => {
+    const interview = item.interview
+    const interviewTypeKey = interview?.interviewType as keyof typeof INTERVIEW_TYPE_LABEL | undefined
+    return {
+      id: interview?.interviewId ?? 0,
+      status: '기록 전',
+      // passedDays가 0일 때 처리 (오늘 완료됨 등) 로직은 기획에 따라 다를 수 있음
+      elapsedText: `면접 끝난지 ${item.passedDays ?? 0}일 지남`,
+      companyName: interview?.companyName ?? '',
+      // Industry 정보가 API에 없으므로 임시 하드코딩 또는 빈 문자열
+      industry: interview?.companyName === '현대자동차' ? '제조업' : 'IT/플랫폼',
+      jobCategory: interview?.jobCategoryName ?? '',
+      interviewType: interviewTypeKey ? INTERVIEW_TYPE_LABEL[interviewTypeKey] : interview?.interviewType ?? '',
+    }
+  })
 
   return {
     data,
-    count: data.length,
+    count: response?.result?.totalElements ?? 0,
   }
 }

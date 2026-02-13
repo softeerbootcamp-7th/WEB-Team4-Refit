@@ -8,41 +8,41 @@ export const debriefIncompletedMock: ApiResponsePageDashboardDebriefIncompletedI
         interview: {
           interviewId: 1,
           companyName: '현대자동차',
-          jobCategoryName: 'UI Designer',
-          interviewType: 'SECOND',
+          jobCategoryName: '데이터 사이언티스트',
+          interviewType: 'CULTURE_FIT',
           interviewStartAt: '2026-03-01T14:30:00Z',
         },
-        passedDays: 0,
+        passedDays: 2,
       },
       {
         interview: {
           interviewId: 2,
-          companyName: '카카오',
-          jobCategoryName: '프론트엔드 개발자',
-          interviewType: 'FIRST',
+          companyName: '현대자동차',
+          jobCategoryName: '데이터 사이언티스트',
+          interviewType: 'CULTURE_FIT',
           interviewStartAt: '2026-02-28T10:00:00Z',
-        },
-        passedDays: 1,
-      },
-      {
-        interview: {
-          interviewId: 3,
-          companyName: '네이버',
-          jobCategoryName: '백엔드 개발자',
-          interviewType: 'THIRD',
-          interviewStartAt: '2026-03-05T15:00:00Z',
         },
         passedDays: 3,
       },
       {
         interview: {
-          interviewId: 4,
+          interviewId: 3,
           companyName: '토스',
           jobCategoryName: '프로덕트 디자이너',
           interviewType: 'SECOND',
-          interviewStartAt: '2026-03-10T11:00:00Z',
+          interviewStartAt: '2026-03-05T15:00:00Z',
         },
         passedDays: 7,
+      },
+      {
+        interview: {
+          interviewId: 4,
+          companyName: '카카오',
+          jobCategoryName: '프론트엔드 개발자',
+          interviewType: 'FIRST',
+          interviewStartAt: '2026-03-10T11:00:00Z',
+        },
+        passedDays: 1,
       },
       {
         interview: {
