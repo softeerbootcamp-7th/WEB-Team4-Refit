@@ -14,6 +14,7 @@ import java.util.List;
 import com.shyashyashya.refit.core.IntegrationTest;
 import com.shyashyashya.refit.domain.company.repository.CompanyRepository;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
+import com.shyashyashya.refit.domain.interview.dto.request.InterviewDraftType;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewSearchRequest;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewResultStatus;
@@ -57,40 +58,24 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
             Interview interview1 = createInterview(
                 new InterviewCreateRequest(
                     LocalDateTime.of(2023, 1, 10, 10, 0, 0), InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
-                ));
-            interview1.startLogging();
-            interview1.completeLogging();
-            interview1.completeQnaSetDraft();
-            interview1.completeReview();
+                ), InterviewReviewStatus.DEBRIEF_COMPLETED);
 
             Interview interview2 = createInterview(
                 new InterviewCreateRequest(
                     LocalDateTime.of(2023, 2, 15, 11, 0, 0), InterviewType.SECOND, company2.getName(), industry1.getId(), jobCategory1.getId(), "Engineer"
-                ));
-            interview2.startLogging();
-            interview2.completeLogging();
-            interview2.completeQnaSetDraft();
-            interview2.completeReview();
+                ), InterviewReviewStatus.DEBRIEF_COMPLETED);
             interview2.updateResultStatus(InterviewResultStatus.PASS);
 
             Interview interview3 = createInterview(
                 new InterviewCreateRequest(
                     LocalDateTime.of(2024, 3, 20, 12, 0, 0), InterviewType.THIRD, company3.getName(), industry1.getId(), jobCategory1.getId(), "Manager"
-                ));
-            interview3.startLogging();
-            interview3.completeLogging();
-            interview3.completeQnaSetDraft();
-            interview3.completeReview();
+                ), InterviewReviewStatus.DEBRIEF_COMPLETED);
             interview3.updateResultStatus(InterviewResultStatus.FAIL);
 
             Interview interview4 = createInterview(
                 new InterviewCreateRequest(
                     LocalDateTime.of(2024, 4, 25, 13, 0, 0), InterviewType.FIRST, company4.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
-                ));
-            interview4.startLogging();
-            interview4.completeLogging();
-            interview4.completeQnaSetDraft();
-            interview4.completeReview();
+                ), InterviewReviewStatus.DEBRIEF_COMPLETED);
             interview4.updateResultStatus(InterviewResultStatus.PASS);
 
             interviewRepository.saveAll(List.of(interview1, interview2, interview3, interview4));
@@ -298,6 +283,93 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
             .then()
                     .statusCode(400)
                     .body("result", nullValue());
+        }
+    }
+
+    @Nested
+    class 면접_임시저장_데이터를_조회할_때 {
+
+        private final String path = "/interview/my/draft";
+
+        private Company company1;
+        private Company company2;
+
+        @BeforeEach
+        void createDraftData() {
+            companyRepository.deleteAll();
+            company1 = createCompany("삼성전자");
+            company2 = createCompany("카카오");
+
+            // 1. LOG_DRAFT (LOGGING)
+            Interview logDraft = createInterview(
+                new InterviewCreateRequest(
+                    LocalDateTime.of(2024, 5, 1, 10, 0, 0),
+                    InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+                ), InterviewReviewStatus.LOG_DRAFT);
+
+            // 2. QNA_SET_DRAFT (LOGGING)
+            Interview qnaDraft = createInterview(
+                new InterviewCreateRequest(
+                    LocalDateTime.of(2024, 5, 2, 10, 0, 0),
+                    InterviewType.SECOND, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+                ), InterviewReviewStatus.QNA_SET_DRAFT);
+
+            // 3. SELF_REVIEW_DRAFT (REVIEWING)
+            Interview reviewDraft = createInterview(
+                new InterviewCreateRequest(
+                    LocalDateTime.of(2024, 5, 3, 10, 0, 0),
+                    InterviewType.THIRD, company2.getName(), industry1.getId(), jobCategory1.getId(), "Manager"
+                ), InterviewReviewStatus.SELF_REVIEW_DRAFT);
+
+            // 4. DEBRIEF_COMPLETED (Not in any draft)
+            Interview completed = createInterview(
+                new InterviewCreateRequest(
+                    LocalDateTime.of(2024, 5, 4, 10, 0, 0),
+                    InterviewType.FIRST, company2.getName(), industry1.getId(), jobCategory1.getId(), "Manager"
+                ), InterviewReviewStatus.DEBRIEF_COMPLETED);
+
+            // 5. NOT_LOGGED (Not in any draft)
+            Interview notLogged = createInterview(
+                new InterviewCreateRequest(
+                    LocalDateTime.of(2024, 6, 1, 10, 0, 0),
+                    InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+                ), InterviewReviewStatus.NOT_LOGGED);
+
+            interviewRepository.saveAll(List.of(logDraft, qnaDraft, reviewDraft, completed, notLogged));
+        }
+
+        @Test
+        void LOGGING_타입으로_조회하면_기록중인_면접만_조회된다() {
+            given(spec)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .queryParam("interviewDraftType", InterviewDraftType.LOGGING)
+            .when()
+                    .get(path)
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("result.content", hasSize(2))
+                    .body("result.content[0].companyInfo.companyName", equalTo(company1.getName()))
+                    .body("result.content[0].interviewReviewStatus", equalTo(InterviewReviewStatus.LOG_DRAFT.name()))
+                    .body("result.content[1].companyInfo.companyName", equalTo(company1.getName()))
+                    .body("result.content[1].interviewReviewStatus", equalTo(InterviewReviewStatus.QNA_SET_DRAFT.name()))
+                    .body("result.totalElements", equalTo(2));
+        }
+
+        @Test
+        void REVIEWING_타입으로_조회하면_회고중인_면접만_조회된다() {
+            given(spec)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .queryParam("interviewDraftType", InterviewDraftType.REVIEWING)
+            .when()
+                    .get(path)
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("result.content", hasSize(1))
+                    .body("result.content[0].companyInfo.companyName", equalTo(company2.getName()))
+                    .body("result.content[0].interviewReviewStatus", equalTo(InterviewReviewStatus.SELF_REVIEW_DRAFT.name()))
+                    .body("result.totalElements", equalTo(1));
         }
     }
 }
