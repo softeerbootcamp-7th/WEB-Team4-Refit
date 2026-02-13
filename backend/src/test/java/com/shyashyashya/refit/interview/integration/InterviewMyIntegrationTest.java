@@ -334,8 +334,6 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
                     LocalDateTime.of(2024, 6, 1, 10, 0, 0),
                     InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
                 ), InterviewReviewStatus.NOT_LOGGED);
-
-            interviewRepository.saveAll(List.of(logDraft, qnaDraft, reviewDraft, completed, notLogged));
         }
 
         @Test
