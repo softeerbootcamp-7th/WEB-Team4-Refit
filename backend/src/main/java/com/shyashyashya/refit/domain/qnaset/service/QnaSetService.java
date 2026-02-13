@@ -27,6 +27,7 @@ import com.shyashyashya.refit.global.util.RequestUserContext;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -50,10 +51,7 @@ public class QnaSetService {
 
     @Transactional(readOnly = true)
     public Page<FrequentQnaSetResponse> getFrequentQuestions(
-            List<Long> industryIds, List<Long> jobCategoryIds, Pageable pageable) {
-        industryIds = removeDuplicatedIds(industryIds);
-        jobCategoryIds = removeDuplicatedIds(jobCategoryIds);
-
+            Set<Long> industryIds, Set<Long> jobCategoryIds, Pageable pageable) {
         industryValidator.validateIndustriesAllExist(industryIds);
         jobCategoryValidator.validateJobCategoriesAllExist(jobCategoryIds);
 

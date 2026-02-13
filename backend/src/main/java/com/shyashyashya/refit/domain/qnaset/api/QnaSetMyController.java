@@ -10,6 +10,7 @@ import com.shyashyashya.refit.domain.qnaset.service.QnaSetMyService;
 import com.shyashyashya.refit.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -52,7 +53,7 @@ public class QnaSetMyController {
     @Operation(summary = "나의 면접 질문들을 검색합니다.", description = "나의 면접 질문들을 검색합니다. 조건을 넣지 않으면 전체 데이터를 조회합니다.")
     @PostMapping("/search")
     public ResponseEntity<ApiResponse<Page<QnaSetSearchResponse>>> searchMyQnaSet(
-            @RequestBody QnaSetSearchRequest request, Pageable pageable) {
+            @Valid @RequestBody QnaSetSearchRequest request, Pageable pageable) {
         var body = qnaSetMyService.searchQnaSets(request, pageable);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);

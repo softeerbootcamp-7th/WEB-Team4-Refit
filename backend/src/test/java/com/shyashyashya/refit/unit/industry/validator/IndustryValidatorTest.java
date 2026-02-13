@@ -11,6 +11,8 @@ import com.shyashyashya.refit.domain.industry.service.validator.IndustryValidato
 import com.shyashyashya.refit.global.exception.CustomException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,7 +31,7 @@ class IndustryValidatorTest {
     @Test
     void 모든_산업군_ID가_존재할_경우_예외를_발생시키지_않는다() {
         // given
-        List<Long> industryIds = List.of(1L, 2L, 3L);
+        Set<Long> industryIds = Set.of(1L, 2L, 3L);
         when(industryRepository.countByIdIn(industryIds)).thenReturn((long) industryIds.size());
 
         // when & then
@@ -39,7 +41,7 @@ class IndustryValidatorTest {
     @Test
     void 일부_산업군_ID가_존재하지_않을_경우_404_에러를_발생시킨다() {
         // given
-        List<Long> industryIds = List.of(1L, 2L, 3L);
+        Set<Long> industryIds = Set.of(1L, 2L, 3L);
         when(industryRepository.countByIdIn(industryIds)).thenReturn(2L);
 
         // when
@@ -53,7 +55,7 @@ class IndustryValidatorTest {
     @Test
     void 산업군_ID_목록이_비어있을_경우_예외를_발생시키지_않는다() {
         // given
-        List<Long> industryIds = Collections.emptyList();
+        Set<Long> industryIds = Collections.emptySet();
 
         // when & then
         assertDoesNotThrow(() -> industryValidator.validateIndustriesAllExist(industryIds));
@@ -62,7 +64,7 @@ class IndustryValidatorTest {
     @Test
     void 산업군_ID_목록이_null일_경우_예외를_발생시키지_않는다() {
         // given
-        List<Long> industryIds = null;
+        Set<Long> industryIds = null;
 
         // when & then
         assertDoesNotThrow(() -> industryValidator.validateIndustriesAllExist(industryIds));
