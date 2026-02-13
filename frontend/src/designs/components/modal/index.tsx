@@ -78,7 +78,7 @@ const Modal = ({
         onClick={(e) => e.stopPropagation()}
       >
         {hasHeader && (
-          <div className="mb-8 flex items-start justify-between gap-4">
+          <div className={`flex items-start justify-between gap-4 ${size === 'sm' ? 'mb-4' : 'mb-8'}`}>
             <div className="min-w-0 flex-1">
               {title != null ? (
                 <h2 id={titleId} className="title-xl-bold wrap-break-words text-gray-900">
