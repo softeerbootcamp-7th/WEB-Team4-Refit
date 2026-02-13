@@ -42,6 +42,7 @@ public class QnaSetController {
     private final QnaSetService qnaSetService;
     private final StarAnalysisAsyncService starAnalysisAsyncService;
 
+    // TODO 통합 테스트 작성
     @Operation(
             summary = "지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다.",
             description = "지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다. 지정하지 않은 필드에 대해서는 전체를 대상으로 조회합니다.")
@@ -105,6 +106,7 @@ public class QnaSetController {
         return ResponseEntity.ok(response);
     }
 
+    // TODO 통합 테스트 작성 (E2E 테스트는 일단 보류)
     @Operation(summary = "지정한 질문 답변 세트에 대해 스타 분석 생성을 요청합니다.", description = "Gemini 요청을 수행하고 10~20초 뒤에 응답이 반환됩니다.")
     @PostMapping("/{qnaSetId}/star-analysis")
     public CompletableFuture<ResponseEntity<ApiResponse<StarAnalysisDto>>> createStarAnalysis(
@@ -114,6 +116,7 @@ public class QnaSetController {
                 .thenApply(rsp -> ResponseEntity.ok(ApiResponse.success(COMMON200, rsp)));
     }
 
+    // TODO 통합 테스트 작성
     @Operation(summary = "지정한 질문 답변 세트가 스크랩 폴더에 포함되어 있는 지 여부가 포함된 스크랩 폴더 리스트를 조회합니다.")
     @GetMapping("/{qnaSetId}/scrap-folder")
     public ResponseEntity<ApiResponse<Page<QnaSetScrapFolderResponse>>> getScrapFoldersContainingQnaSet(
