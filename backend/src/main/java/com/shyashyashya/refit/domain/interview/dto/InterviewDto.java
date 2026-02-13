@@ -3,6 +3,7 @@ package com.shyashyashya.refit.domain.interview.dto;
 import com.shyashyashya.refit.domain.company.model.Company;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewResultStatus;
+import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import java.time.LocalDateTime;
@@ -12,6 +13,7 @@ public record InterviewDto(
         InterviewType interviewType,
         LocalDateTime interviewStartAt,
         InterviewResultStatus interviewResultStatus,
+        InterviewReviewStatus interviewReviewStatus,
         String interviewRawText,
         String companyName,
         Long jobCategoryId,
@@ -27,6 +29,7 @@ public record InterviewDto(
                 interview.getInterviewType(),
                 interview.getStartAt(),
                 interview.getResultStatus(),
+                interview.getReviewStatus(),
                 interview.getRawText(),
                 company.getName(),
                 jobCategory.getId(),
