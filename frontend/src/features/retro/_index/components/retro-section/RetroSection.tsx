@@ -1,9 +1,11 @@
 import { useState } from 'react'
-import { MOCK_QNA_SET_LIST } from '@/constants/example'
-import type { RetroListItem } from '@/constants/example'
-import { Border, FadeScrollArea } from '@/designs/components'
+import { useUpdateQnaSet } from '@/apis/generated/qna-set-api/qna-set-api'
+import { MOCK_QNA_SET_LIST, type RetroListItem } from '@/constants/example'
+import { BookmarkIcon } from '@/designs/assets'
+import { Border, Button, FadeScrollArea } from '@/designs/components'
 import { QnaSetCard, StarAnalysisSection } from '@/features/_common/components/qna-set'
 import { KptWriteCard, RetroWriteCard } from '@/features/retro/_common/components'
+import { ScrapModal } from '@/features/retro/_common/components/ScrapModal'
 import { RetroActionBar } from '@/features/retro/_index/components/retro-section/RetroActionBar'
 import type { StarAnalysisResult } from '@/types/interview'
 
@@ -18,15 +20,31 @@ export function RetroSection({ currentIndex, currentItem, totalCount, onIndexCha
   // TODO: 훅 분리
   const [retroTexts, setRetroTexts] = useState<Record<number, string>>({})
   const [starAnalysis, setStarAnalysis] = useState<Record<number, StarAnalysisResult>>({})
+  const [isScrapModalOpen, setIsScrapModalOpen] = useState(false)
+  const { mutate: updateQnaSet } = useUpdateQnaSet()
+
+  // TODO: STAR 분석, KPT 자기회고 API 연동 필요
+  // const { mutate: createStarAnalysis } = useCreateStarAnalysis()
+  // const { mutate: updateKptSelfReview } = useUpdateKptSelfReview()
 
   const { questionText, answerText, qnaSetId, isKpt } = currentItem
 
   const handleStarButtonClick = () => {
+    // TODO: star 분석 API 연동 필요
     setStarAnalysis((prev) => ({ ...prev, [qnaSetId]: MOCK_QNA_SET_LIST[currentIndex].starAnalysis }))
   }
 
   const handleRetroTextChange = (text: string) => {
     setRetroTexts((prev) => ({ ...prev, [qnaSetId]: text }))
+  }
+
+  const handleSaveRetro = () => {
+    if (isKpt) {
+      // KPT 저장 API
+    } else {
+      const selfReviewText = retroTexts[qnaSetId] ?? ''
+      updateQnaSet({ qnaSetId, data: { selfReviewText } })
+    }
   }
 
   return (
@@ -42,6 +60,11 @@ export function RetroSection({ currentIndex, currentItem, totalCount, onIndexCha
               questionText={questionText}
               answerText={answerText}
               badgeTheme="gray-100"
+              topRightComponent={
+                <Button onClick={() => setIsScrapModalOpen(true)}>
+                  <BookmarkIcon className="h-5 w-5" />
+                </Button>
+              }
             >
               <StarAnalysisSection starAnalysis={starAnalysis[qnaSetId]} onAnalyze={handleStarButtonClick} />
               <Border />
@@ -51,10 +74,16 @@ export function RetroSection({ currentIndex, currentItem, totalCount, onIndexCha
                 onChange={handleRetroTextChange}
               />
             </QnaSetCard>
+            <ScrapModal isOpen={isScrapModalOpen} onClose={() => setIsScrapModalOpen(false)} qnaSetId={qnaSetId} />
           </>
         )}
       </FadeScrollArea>
-      <RetroActionBar currentIndex={currentIndex} totalCount={totalCount} onIndexChange={onIndexChange} />
+      <RetroActionBar
+        currentIndex={currentIndex}
+        totalCount={totalCount}
+        onIndexChange={onIndexChange}
+        onSaveRetro={handleSaveRetro}
+      />
     </>
   )
 }

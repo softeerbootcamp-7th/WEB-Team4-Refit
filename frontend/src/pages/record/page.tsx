@@ -1,9 +1,9 @@
 import { Suspense, useState } from 'react'
 import { useParams } from 'react-router'
 import { useUpdateRawText } from '@/apis'
+import SidebarLayoutSkeleton from '@/features/_common/components/sidebar/SidebarLayoutSkeleton'
 import { RecordPageContent } from '@/features/record/_index'
 import { useRecordPageData } from '@/features/record/_index/hooks/useRecordPageData'
-import SidebarLayoutSkeleton from '@/features/record/confirm/components/SidebarLayoutSkeleton'
 
 export default function RecordPage() {
   return (

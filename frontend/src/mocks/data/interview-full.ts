@@ -21,6 +21,7 @@ export const mockInterviewFull: ApiResponseInterviewFullDto = {
         questionText: 'Mock 질문 1',
         answerText: 'Mock 답변 1',
         isMarkedDifficult: false,
+        qnaSetSelfReviewText: '',
       },
       {
         qnaSetId: 2,
@@ -28,12 +29,13 @@ export const mockInterviewFull: ApiResponseInterviewFullDto = {
         questionText: 'Mock 질문 2',
         answerText: 'Mock 답변 2',
         isMarkedDifficult: true,
+        qnaSetSelfReviewText: '',
       },
     ],
     interviewSelfReview: {
-      keepText: 'keep',
-      problemText: 'problem',
-      tryText: 'try',
+      keepText: '',
+      problemText: '',
+      tryText: '',
     },
   },
 }
