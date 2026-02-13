@@ -89,7 +89,9 @@ public class QnaSetController {
         return ResponseEntity.ok(resposne);
     }
 
-    @Operation(summary = "지정한 질문 답변 세트에 대해 PDF 하이라이팅 정보를 등록/수정합니다.", description = "PDF 하이라이팅 정보 등록/수정은 'QnaSetDraft' 상태에서만 가능합니다.")
+    @Operation(
+            summary = "지정한 질문 답변 세트에 대해 PDF 하이라이팅 정보를 등록/수정합니다.",
+            description = "PDF 하이라이팅 정보 등록/수정은 'QnaSetDraft' 상태에서만 가능합니다.")
     @PutMapping("/{qnaSetId}/pdf-highlightings")
     public ResponseEntity<ApiResponse<Void>> updatePdfHighlighting(
             @PathVariable Long qnaSetId, @Valid @RequestBody List<PdfHighlightingUpdateRequest> request) {
