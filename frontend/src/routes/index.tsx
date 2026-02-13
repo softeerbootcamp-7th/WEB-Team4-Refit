@@ -23,7 +23,7 @@ import {
   MyInterviewsPage,
   TrendQuestionsPage,
 } from '@/pages'
-import { HandleMobileRouting } from '@/routes/redirectToMobileMiddleware'
+import { HandleMobileRouting } from '@/routes/handle-mobile-routing'
 import { ROUTES } from '@/routes/routes'
 
 const getChildPath = (fullPath: string, rootPath: string): string => {
