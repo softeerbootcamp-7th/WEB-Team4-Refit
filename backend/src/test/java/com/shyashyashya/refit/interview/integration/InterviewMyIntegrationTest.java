@@ -232,7 +232,7 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
 
             given(spec)
                     .body(request)
-            .when()
+                    .when()
                     .post(path)
             .then()
                     .statusCode(200)
@@ -285,6 +285,81 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
             .then()
                     .statusCode(400)
                     .body("result", nullValue());
+        }
+    }
+
+    @Nested
+    class 나의_최근_한_달동안_기록을_시작하지_않은_면접_리스트를_조회할_때 {
+
+        private final String path = "/interview/my/not-logged";
+
+        @Test
+        void 다른_사람의_면접은_조회되지_않는다() {
+            User otherUser = createAndSaveUser("other2@example.com", "other2", industry1, jobCategory1);
+            createAndSaveInterview(new InterviewCreateRequest(
+                    LocalDateTime.now(), InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+            ), InterviewReviewStatus.NOT_LOGGED, otherUser);
+
+            createAndSaveInterview(new InterviewCreateRequest(
+                    LocalDateTime.now(), InterviewType.FIRST, company2.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+            ), InterviewReviewStatus.NOT_LOGGED);
+
+            given(spec)
+            .when()
+                    .get(path)
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("result", hasSize(1))
+                    .body("result[0].companyInfo.companyName", equalTo(company2.getName()));
+        }
+
+        @Test
+        void NOT_LOGGED_상태의_면접만_조회된다() {
+            createAndSaveInterview(new InterviewCreateRequest(
+                    LocalDateTime.now(), InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+            ), InterviewReviewStatus.NOT_LOGGED);
+
+            createAndSaveInterview(new InterviewCreateRequest(
+                    LocalDateTime.now(), InterviewType.SECOND, company1.getName(), industry1.getId(), jobCategory1.getId(), "Engineer"
+            ), InterviewReviewStatus.LOG_DRAFT);
+
+            createAndSaveInterview(new InterviewCreateRequest(
+                    LocalDateTime.now(), InterviewType.THIRD, company1.getName(), industry1.getId(), jobCategory1.getId(), "Manager"
+            ), InterviewReviewStatus.QNA_SET_DRAFT);
+
+            createAndSaveInterview(new InterviewCreateRequest(
+                    LocalDateTime.now(), InterviewType.FIRST, company2.getName(), industry1.getId(), jobCategory1.getId(), "Manager"
+            ), InterviewReviewStatus.DEBRIEF_COMPLETED);
+
+            given(spec)
+            .when()
+                    .get(path)
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("result", hasSize(1))
+                    .body("result[0].interviewReviewStatus", equalTo(InterviewReviewStatus.NOT_LOGGED.name()));
+        }
+
+        @Test
+        void 최근_한달_이내의_면접만_조회된다() {
+            createAndSaveInterview(new InterviewCreateRequest(
+                    LocalDateTime.now().minusDays(1), InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+            ), InterviewReviewStatus.NOT_LOGGED);
+
+            createAndSaveInterview(new InterviewCreateRequest(
+                    LocalDateTime.now().minusMonths(2), InterviewType.FIRST, company2.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+            ), InterviewReviewStatus.NOT_LOGGED);
+
+            given(spec)
+            .when()
+                    .get(path)
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("result", hasSize(1))
+                    .body("result[0].companyInfo.companyName", equalTo(company1.getName()));
         }
     }
 
