@@ -49,11 +49,13 @@ function transformInterviewData(res: Awaited<ReturnType<typeof getInterviewFull>
   // TODO: 에러 처리
   if (!interviewFull) throw new Error('인터뷰 데이터가 존재하지 않습니다.')
 
-  const qnaList: SimpleQnaType[] = (interviewFull.qnaSets ?? []).map((qnaSet) => ({
-    qnaSetId: qnaSet.qnaSetId!,
-    questionText: qnaSet.questionText ?? '',
-    answerText: qnaSet.answerText ?? '',
-  }))
+  const qnaList: SimpleQnaType[] = (interviewFull.qnaSets ?? [])
+    .filter((qnaSet) => qnaSet.qnaSetId != null)
+    .map((qnaSet) => ({
+      qnaSetId: qnaSet.qnaSetId as number,
+      questionText: qnaSet.questionText ?? '',
+      answerText: qnaSet.answerText ?? '',
+    }))
 
   return { qnaList }
 }
