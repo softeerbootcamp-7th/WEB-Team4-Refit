@@ -36,6 +36,7 @@ import com.shyashyashya.refit.domain.qnaset.repository.StarAnalysisRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.util.RequestUserContext;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -248,5 +249,14 @@ public class InterviewService {
                                 () -> new IllegalStateException("Company not found after concurrent save attempt"));
             }
         });
+    }
+
+    public List<InterviewSimpleDto> getMyNotLoggedInterviews() {
+        User requestUser = requestUserContext.getRequestUser();
+
+        LocalDateTime now = LocalDateTime.now();
+        return interviewRepository.findInterviewsNotLoggedRecentOneMonth(requestUser, now).stream()
+                .map(InterviewSimpleDto::from)
+                .toList();
     }
 }
