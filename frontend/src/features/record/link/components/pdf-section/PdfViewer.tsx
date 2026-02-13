@@ -21,11 +21,9 @@ export function PdfViewer({ pdfUrl }: PdfViewerProps) {
     <div className="flex min-h-0 flex-1 flex-col">
       {pdf && <PdfNavigation currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />}
       <div ref={viewerRef} className="relative min-h-0 flex-1 overflow-hidden">
-        {isLoading && (
-          <p className="body-m-regular py-10 text-center text-gray-400">PDF 로딩 중...</p>
-        )}
+        {isLoading && <p className="body-m-regular py-10 text-center text-gray-400">PDF 로딩 중...</p>}
         {error && <p className="body-m-regular py-10 text-center text-red-400">{error}</p>}
-        {isReady && <PdfPage pdf={pdf} pageNum={currentPage} containerSize={containerSize} />}
+        {isReady && <PdfPage pdf={pdf} pageNumber={currentPage} containerSize={containerSize} />}
       </div>
     </div>
   )

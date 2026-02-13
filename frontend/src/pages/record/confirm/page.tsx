@@ -1,10 +1,10 @@
 import { Suspense } from 'react'
 import { useParams } from 'react-router'
 import { getInterviewFull, useGetInterviewFullSuspense } from '@/apis/generated/interview-api/interview-api'
+import SidebarLayoutSkeleton from '@/features/_common/components/sidebar/SidebarLayoutSkeleton'
 import { useSectionScroll } from '@/features/_common/hooks/useSectionScroll'
 import { RecordSection } from '@/features/record/confirm/components/contents/RecordSection'
 import { RecordConfirmSidebar } from '@/features/record/confirm/components/sidebar/Sidebar'
-import SidebarLayoutSkeleton from '@/features/record/confirm/components/SidebarLayoutSkeleton'
 import { useQnaList } from '@/features/record/confirm/hooks/useQnaList'
 import type { InterviewInfoType, InterviewType, SimpleQnaType } from '@/types/interview'
 

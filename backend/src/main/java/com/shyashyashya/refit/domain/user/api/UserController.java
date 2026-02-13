@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,10 +46,9 @@ public class UserController {
         String accessTokenCookie = cookieUtil.createAccessTokenCookie(tokenPairDto.accessToken(), clientOriginType);
         String refreshTokenCookie = cookieUtil.createResponseTokenCookie(tokenPairDto.refreshToken(), clientOriginType);
 
-        return ResponseEntity.status(HttpStatus.FOUND)
+        return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, accessTokenCookie)
                 .header(HttpHeaders.SET_COOKIE, refreshTokenCookie)
-                .header(HttpHeaders.LOCATION, clientOriginType.getClientOriginUrl())
                 .build();
     }
 

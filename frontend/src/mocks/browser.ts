@@ -13,7 +13,9 @@ import {
 } from '@/apis/generated/interview-api/interview-api.msw'
 import {
   getCreateStarAnalysisMockHandler,
+  getGetPdfHighlightingsMockHandler,
   getGetScrapFoldersContainingQnaSetMockHandler,
+  getUpdatePdfHighlightingMockHandler,
   getUpdateQnaSetMockHandler,
 } from '@/apis/generated/qna-set-api/qna-set-api.msw'
 import { getCreateScrapFolderMockHandler } from '@/apis/generated/scrap-folder-api/scrap-folder-api.msw'
@@ -36,4 +38,11 @@ export const worker = setupWorker(
   getCreateStarAnalysisMockHandler(mockStarAnalysis),
   getGetScrapFoldersContainingQnaSetMockHandler(mockScrapFolders),
   getCreateScrapFolderMockHandler({ isSuccess: true, code: 'SUCCESS', message: 'mock create scrap folder' }),
+  getGetPdfHighlightingsMockHandler({
+    isSuccess: true,
+    code: 'SUCCESS',
+    message: 'mock get pdf highlightings',
+    result: [],
+  }),
+  getUpdatePdfHighlightingMockHandler({ isSuccess: true, code: 'SUCCESS', message: 'mock update pdf highlighting' }),
 )

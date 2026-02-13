@@ -1,7 +1,7 @@
 package com.shyashyashya.refit.domain.interview.service.validator;
 
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_ACCESSIBLE;
-import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_REVIEW_STATUS_IS_NOT_QNA_SET_DRAFT;
+import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED;
 
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
@@ -18,9 +18,9 @@ public class InterviewValidator {
         }
     }
 
-    public void validateInterviewReviewStatusQnaSetDraft(Interview interview) {
-        if (!interview.getReviewStatus().equals(InterviewReviewStatus.QNA_SET_DRAFT)) {
-            throw new CustomException(INTERVIEW_REVIEW_STATUS_IS_NOT_QNA_SET_DRAFT);
+    public void validateInterviewReviewStatus(Interview interview, InterviewReviewStatus reviewStatus) {
+        if (!interview.getReviewStatus().equals(reviewStatus)) {
+            throw new CustomException(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED);
         }
     }
 }

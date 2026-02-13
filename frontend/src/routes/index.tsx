@@ -6,6 +6,7 @@ import {
   DashboardPage,
   RecordConfirmPage,
   RecordLinkPage,
+  RecordPage,
   RetroDetailPage,
   RetroQuestionPage,
   NotFound,
@@ -102,7 +103,7 @@ const router = createBrowserRouter([
       {
         path: ROUTES.RECORD,
         children: [
-          { index: true, Component: DashboardPage },
+          { index: true, Component: RecordPage },
           {
             path: getChildPath(ROUTES.RECORD_CONFIRM, ROUTES.RECORD),
             Component: RecordConfirmPage,

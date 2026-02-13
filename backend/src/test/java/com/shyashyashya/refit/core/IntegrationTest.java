@@ -8,6 +8,7 @@ import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.model.Interview;
+import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
@@ -94,7 +95,7 @@ public abstract class IntegrationTest {
         company2 = companyRepository.save(Company.create("카카오", "logo2", true));
         company3 = companyRepository.save(Company.create("네이버", "logo3", true));
 
-        requestUser = createUser("test@example.com", "default", industry1, jobCategory1);
+        requestUser = createAndSaveUser("test@example.com", "default", industry1, jobCategory1);
         Instant issuedAt = Instant.now();
         String accessToken = jwtEncoder.encodeAccessJwt(requestUser.getEmail(), requestUser.getId(), issuedAt);
         String refreshToken = jwtEncoder.encodeRefreshJwt(requestUser.getEmail(), requestUser.getId(), issuedAt);
@@ -133,15 +134,19 @@ public abstract class IntegrationTest {
         });
     }
 
-    protected User createUser(String email, String nickname, Industry industry, JobCategory jobCategory) {
+    protected User createAndSaveUser(String email, String nickname, Industry industry, JobCategory jobCategory) {
         return userRepository.save(User.create(email, nickname, "imageUrl", false, industry, jobCategory));
     }
 
-    protected Interview createInterview(InterviewCreateRequest request) {
-        return createInterview(request, requestUser);
+    protected Interview createAndSaveInterview(InterviewCreateRequest request) {
+        return createAndSaveInterview(request, InterviewReviewStatus.NOT_LOGGED, requestUser);
     }
 
-    protected Interview createInterview(InterviewCreateRequest request, User user) {
+    protected Interview createAndSaveInterview(InterviewCreateRequest request, InterviewReviewStatus reviewStatus) {
+        return createAndSaveInterview(request, reviewStatus, requestUser);
+    }
+
+    protected Interview createAndSaveInterview(InterviewCreateRequest request, InterviewReviewStatus reviewStatus, User user) {
         Company company = companyRepository.findByName(request.companyName()).get();
         Industry industry = industryRepository.findById(request.industryId()).get();
         JobCategory jobCategory = jobCategoryRepository.findById(request.jobCategoryId()).get();
@@ -154,10 +159,32 @@ public abstract class IntegrationTest {
                 company,
                 industry,
                 jobCategory);
+
+        switch (reviewStatus) {
+            case LOG_DRAFT:
+                interview.startLogging();
+                break;
+            case QNA_SET_DRAFT:
+                interview.startLogging();
+                interview.completeLogging();
+                break;
+            case SELF_REVIEW_DRAFT:
+                interview.startLogging();
+                interview.completeLogging();
+                interview.completeQnaSetDraft();
+                break;
+            case DEBRIEF_COMPLETED:
+                interview.startLogging();
+                interview.completeLogging();
+                interview.completeQnaSetDraft();
+                interview.completeReview();
+                break;
+        }
+
         return interviewRepository.save(interview);
     }
 
-    protected Company createCompany(String companyName) {
+    protected Company createAndSaveCompany(String companyName) {
         Company company = Company.create(companyName, "logo.url", true);
         return companyRepository.save(company);
     }

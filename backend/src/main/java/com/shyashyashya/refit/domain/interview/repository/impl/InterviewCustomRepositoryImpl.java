@@ -12,6 +12,7 @@ import com.shyashyashya.refit.domain.interview.repository.InterviewCustomReposit
 import com.shyashyashya.refit.domain.user.model.User;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -26,8 +27,8 @@ public class InterviewCustomRepositoryImpl implements InterviewCustomRepository 
     public Page<Interview> searchInterviews(
             User user,
             String keyword,
-            List<InterviewType> interviewTypes,
-            List<InterviewResultStatus> interviewResultStatuses,
+            Set<InterviewType> interviewTypes,
+            Set<InterviewResultStatus> interviewResultStatuses,
             LocalDate startDate,
             LocalDate endDate,
             Pageable pageable) {
@@ -65,14 +66,14 @@ public class InterviewCustomRepositoryImpl implements InterviewCustomRepository 
         return interview.company.name.containsIgnoreCase(keyword);
     }
 
-    private BooleanExpression interviewTypesIn(List<InterviewType> interviewTypes) {
+    private BooleanExpression interviewTypesIn(Set<InterviewType> interviewTypes) {
         if (interviewTypes == null || interviewTypes.isEmpty()) {
             return null;
         }
         return interview.interviewType.in(interviewTypes);
     }
 
-    private BooleanExpression interviewResultStatusIn(List<InterviewResultStatus> interviewResultStatuses) {
+    private BooleanExpression interviewResultStatusIn(Set<InterviewResultStatus> interviewResultStatuses) {
         if (interviewResultStatuses == null || interviewResultStatuses.isEmpty()) {
             return null;
         }

@@ -9,9 +9,10 @@ import { PdfViewer } from './PdfViewer'
 export function PdfSection() {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const { linkingQnaSetId, setHasPdf } = useHighlightContext()
+  const { linkingQnaSetId, setHasPdf, clearAllHighlights } = useHighlightContext()
 
   const navigateWithId = useInterviewNavigate()
+  const goToConfirmPage = () => navigateWithId(ROUTES.RECORD_CONFIRM)
   const goToRetroPage = () => navigateWithId(ROUTES.RETRO_QUESTION)
 
   useEffect(() => {
@@ -37,7 +38,7 @@ export function PdfSection() {
     if (pdfUrl) URL.revokeObjectURL(pdfUrl)
     setPdfUrl(null)
     setHasPdf(false)
-    // file input 초기화 (같은 파일 재선택 가능하도록)
+    clearAllHighlights()
     if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
@@ -71,8 +72,8 @@ export function PdfSection() {
       )}
 
       <div className="flex shrink-0 justify-end gap-3">
-        <Button variant="outline-gray-100" size="md">
-          임시저장
+        <Button variant="outline-gray-white" size="md" onClick={goToConfirmPage}>
+          뒤로 가기
         </Button>
         <Button variant="fill-orange-500" size="md" className="w-60" onClick={goToRetroPage}>
           회고 하러 가기

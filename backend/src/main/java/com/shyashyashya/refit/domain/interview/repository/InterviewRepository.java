@@ -14,8 +14,6 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface InterviewRepository extends JpaRepository<Interview, Long>, InterviewCustomRepository {
 
-    Page<Interview> findAllByUserAndReviewStatus(User user, InterviewReviewStatus reviewStatus, Pageable pageable);
-
     @Query("""
     SELECT i
       FROM Interview i
