@@ -7,10 +7,13 @@ import com.shyashyashya.refit.domain.company.repository.CompanyRepository;
 import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
+import com.shyashyashya.refit.domain.interview.dto.request.QnaSetCreateRequest;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
+import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
+import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
 import com.shyashyashya.refit.global.auth.service.JwtEncoder;
@@ -78,6 +81,8 @@ public abstract class IntegrationTest {
 
     @Autowired
     private CompanyRepository companyRepository;
+    @Autowired
+    private QnaSetRepository qnaSetRepository;
 
     @BeforeEach
     void restAssuredSetUp() {
@@ -160,5 +165,17 @@ public abstract class IntegrationTest {
     protected Company createCompany(String companyName) {
         Company company = Company.create(companyName, "logo.url", true);
         return companyRepository.save(company);
+    }
+
+    protected QnaSet createQnaSet(QnaSetCreateRequest request, Interview interview, boolean isMarkedDifficult) {
+        QnaSet qnaSet = QnaSet.create(
+                request.questionText(),
+                request.answerText(),
+                isMarkedDifficult,
+                interview,
+                null
+        );
+
+        return qnaSetRepository.save(qnaSet);
     }
 }
