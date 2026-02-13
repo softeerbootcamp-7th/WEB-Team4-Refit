@@ -3,15 +3,25 @@ import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
 import type { ReviewWaitingData } from '../components/review-waiting-interview/ReviewWaitingCard'
 
 export const useReviewWaitingInterviews = () => {
-  const { data: response } = useGetDebriefIncompletedInterviews({
-    pageable: {
-      page: 0,
-      size: 10,
+  const { data: response } = useGetDebriefIncompletedInterviews(
+    {
+      pageable: {
+        page: 0,
+        size: 10,
+      },
     },
-  })
+    {
+      query: {
+        select: (data) => ({
+          content: data?.result?.content ?? [],
+          totalElements: data?.result?.totalElements ?? 0,
+        }),
+      },
+    },
+  )
 
   // API 데이터가 없으면 빈 배열 반환
-  const content = response?.result?.content ?? []
+  const content = response?.content ?? []
 
   const data: ReviewWaitingData[] = content.map((item) => {
     const interview = item.interview
@@ -31,6 +41,6 @@ export const useReviewWaitingInterviews = () => {
 
   return {
     data,
-    count: response?.result?.totalElements ?? 0,
+    count: response?.totalElements ?? 0,
   }
 }
