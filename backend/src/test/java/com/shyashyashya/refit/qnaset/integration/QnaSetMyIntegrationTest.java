@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 public class QnaSetMyIntegrationTest extends IntegrationTest {
 
@@ -174,7 +175,7 @@ public class QnaSetMyIntegrationTest extends IntegrationTest {
             QnaSet qnaSet3 = createQnaSet("스타 분석이 없는 질문", "답변", false);
 
             // when & then
-            var filter1 = new QnaSearchFilter(null, List.of(StarInclusionLevel.PRESENT), null, null, null);
+            var filter1 = new QnaSearchFilter(null, Set.of(StarInclusionLevel.PRESENT), null, null, null);
             var request1 = new QnaSetSearchRequest(null, filter1);
 
             given(spec)
@@ -203,7 +204,7 @@ public class QnaSetMyIntegrationTest extends IntegrationTest {
             QnaSet qnaSet3 = createQnaSet("스타 분석이 없는 질문", "답변", false);
 
             // when & then
-            var filter1 = new QnaSearchFilter(null, null, List.of(StarInclusionLevel.INSUFFICIENT), null, null);
+            var filter1 = new QnaSearchFilter(null, null, Set.of(StarInclusionLevel.INSUFFICIENT), null, null);
             var request1 = new QnaSetSearchRequest(null, filter1);
 
             given(spec)
@@ -232,7 +233,7 @@ public class QnaSetMyIntegrationTest extends IntegrationTest {
             QnaSet qnaSet3 = createQnaSet("스타 분석이 없는 질문", "답변", false);
 
             // when & then
-            var filter1 = new QnaSearchFilter(null, null, null, List.of(StarInclusionLevel.PRESENT), null);
+            var filter1 = new QnaSearchFilter(null, null, null, Set.of(StarInclusionLevel.PRESENT), null);
             var request1 = new QnaSetSearchRequest(null, filter1);
 
             given(spec)
@@ -261,7 +262,7 @@ public class QnaSetMyIntegrationTest extends IntegrationTest {
             QnaSet qnaSet3 = createQnaSet("스타 분석이 없는 질문", "답변", false);
 
             // when & then
-            var filter1 = new QnaSearchFilter(null, null, null, null, List.of(StarInclusionLevel.PRESENT));
+            var filter1 = new QnaSearchFilter(null, null, null, null, Set.of(StarInclusionLevel.PRESENT));
             var request1 = new QnaSetSearchRequest(null, filter1);
 
             given(spec)

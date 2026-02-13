@@ -11,6 +11,8 @@ import static org.hamcrest.Matchers.nullValue;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+
 import com.shyashyashya.refit.core.IntegrationTest;
 import com.shyashyashya.refit.domain.company.repository.CompanyRepository;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
@@ -131,7 +133,7 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
         @Test
         void 면접_타입으로_면접을_검색한다() {
             InterviewSearchRequest request = new InterviewSearchRequest(
-                    null, new InterviewSearchRequest.InterviewSearchFilter(List.of(InterviewType.FIRST),
+                    null, new InterviewSearchRequest.InterviewSearchFilter(Set.of(InterviewType.FIRST),
                     null, null, null));
 
             given(spec)
@@ -151,7 +153,7 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
 
         @Test
         void 면접_결과로_면접을_검색한다() {
-            InterviewSearchRequest request = new InterviewSearchRequest(null, new InterviewSearchRequest.InterviewSearchFilter(null, List.of(InterviewResultStatus.PASS), null, null));
+            InterviewSearchRequest request = new InterviewSearchRequest(null, new InterviewSearchRequest.InterviewSearchFilter(null, Set.of(InterviewResultStatus.PASS), null, null));
 
             given(spec)
                     .body(request)
@@ -192,7 +194,7 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
         void 여러_조건으로_면접을_검색한다() {
             InterviewSearchRequest request = new InterviewSearchRequest(
                 "현대", new InterviewSearchRequest.InterviewSearchFilter(
-                    List.of(InterviewType.FIRST), List.of(InterviewResultStatus.PASS),
+                    Set.of(InterviewType.FIRST), Set.of(InterviewResultStatus.PASS),
                     LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31)));
 
             given(spec)

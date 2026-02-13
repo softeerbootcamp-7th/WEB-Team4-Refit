@@ -9,6 +9,8 @@ import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepositor
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.exception.ErrorCode;
 import java.util.List;
+import java.util.Set;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +28,7 @@ class JobCategoryValidatorTest {
     @Test
     void 제공된_모든_직군_ID에_해당하는_직군이_존재하면_검증에_성공한다() {
         // given
-        List<Long> existingJobCategoryIds = List.of(1L, 2L, 3L);
+        Set<Long> existingJobCategoryIds = Set.of(1L, 2L, 3L);
         when(jobCategoryRepository.countByIdIn(existingJobCategoryIds)).thenReturn((long) existingJobCategoryIds.size());
 
         // when & then
@@ -37,7 +39,7 @@ class JobCategoryValidatorTest {
     @Test
     void 제공된_직군_ID_중_일부가_존재하지_않으면_검증에_실패하고_CustomException을_던진다() {
         // given
-        List<Long> jobCategoryIdsWithMissing = List.of(1L, 2L, 99L); // 99L is missing
+        Set<Long> jobCategoryIdsWithMissing = Set.of(1L, 2L, 99L); // 99L is missing
         when(jobCategoryRepository.countByIdIn(jobCategoryIdsWithMissing)).thenReturn(2L); // Only 2 exist
 
         // when & then
@@ -49,7 +51,7 @@ class JobCategoryValidatorTest {
     @Test
     void 빈_리스트로_validateJobCategoriesAllExist를_호출하면_예외를_던지지_않는다() {
         // given
-        List<Long> emptyList = List.of();
+        Set<Long> emptyList = Set.of();
 
         // when & then
         assertThatCode(() -> jobCategoryValidator.validateJobCategoriesAllExist(emptyList))
@@ -59,7 +61,7 @@ class JobCategoryValidatorTest {
     @Test
     void null_리스트로_validateJobCategoriesAllExist를_호출하면_예외를_던지지_않는다() {
         // given
-        List<Long> nullList = null;
+        Set<Long> nullList = null;
 
         // when & then
         assertThatCode(() -> jobCategoryValidator.validateJobCategoriesAllExist(nullList))
