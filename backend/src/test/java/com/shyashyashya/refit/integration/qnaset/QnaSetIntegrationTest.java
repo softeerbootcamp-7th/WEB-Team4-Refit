@@ -6,6 +6,7 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.QNA_SET_NOT_FOUN
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON204;
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
@@ -21,6 +22,7 @@ import com.shyashyashya.refit.domain.qnaset.dto.PdfHighlightingRectDto;
 import com.shyashyashya.refit.domain.qnaset.dto.request.PdfHighlightingUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
+import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -34,6 +36,8 @@ public class QnaSetIntegrationTest extends IntegrationTest {
 
     @Autowired
     private InterviewRepository interviewRepository;
+    @Autowired
+    private QnaSetRepository qnaSetRepository;
 
     @Nested
     class 질답_세트_생성_시 {
@@ -110,6 +114,9 @@ public class QnaSetIntegrationTest extends IntegrationTest {
                     body("code", equalTo(COMMON200.name())).
                     body("message", equalTo(COMMON200.getMessage())).
                     body("result", nullValue());
+
+            QnaSet result = qnaSetRepository.findById(qnaSetId).get();
+            assertThat(result.isMarkedDifficult()).isTrue();
         }
 
         @Test
@@ -125,6 +132,9 @@ public class QnaSetIntegrationTest extends IntegrationTest {
                     body("code", equalTo(COMMON200.name())).
                     body("message", equalTo(COMMON200.getMessage())).
                     body("result", nullValue());
+
+            QnaSet result = qnaSetRepository.findById(qnaSetId).get();
+            assertThat(result.isMarkedDifficult()).isFalse();
         }
     }
 
