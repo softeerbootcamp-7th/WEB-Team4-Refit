@@ -6,20 +6,20 @@ type RetroActionBarProps = {
   currentIndex: number
   totalCount: number
   onIndexChange: (index: number) => void
+  onSaveRetro: () => void
 }
 
-export function RetroActionBar({ currentIndex, totalCount, onIndexChange }: RetroActionBarProps) {
+export function RetroActionBar({ currentIndex, totalCount, onIndexChange, onSaveRetro }: RetroActionBarProps) {
   const navigate = useNavigate()
   const isLast = currentIndex === totalCount - 1
   const buttonText = isLast ? '회고 완료' : '다음으로'
 
   const handleNext = () => {
-    // TODO: 회고 저장 API 호출
+    onSaveRetro()
     onIndexChange(currentIndex + 1)
   }
 
   const handleComplete = () => {
-    // TODO: KPT 저장 API 호출
     navigate(ROUTES.DASHBOARD)
   }
 
