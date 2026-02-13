@@ -91,6 +91,7 @@ public class QnaSetService {
     @Transactional
     public void updatePdfHighlighting(Long qnaSetId, List<PdfHighlightingUpdateRequest> request) {
         QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
+        interviewValidator.validateInterviewReviewStatus(qnaSet.getInterview(), InterviewReviewStatus.QNA_SET_DRAFT);
         deleteAllHighlightingsAndRects(qnaSet);
         saveAllHighlightings(qnaSet, request);
     }
@@ -134,13 +135,6 @@ public class QnaSetService {
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
         return qnaSetScrapFolderRepository.findAllScrapFoldersWithQnaSetContainingInfo(requestUser, qnaSet, pageable);
-    }
-
-    private List<Long> removeDuplicatedIds(List<Long> list) {
-        if (list == null) {
-            return null;
-        }
-        return list.stream().distinct().toList();
     }
 
     private QnaSet getValidatedQnaSet(Long qnaSetId) {
