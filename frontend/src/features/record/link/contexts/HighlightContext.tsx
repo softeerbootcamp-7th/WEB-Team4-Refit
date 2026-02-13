@@ -5,7 +5,7 @@ export type HighlightRect = {
   y: number
   width: number
   height: number
-  pageNum: number
+  pageNumber: number
 }
 
 export type HighlightData = {
@@ -27,6 +27,7 @@ export type HighlightContextType = {
   highlights: Map<number, HighlightData>
   saveHighlight: (data: HighlightData) => void
   removeHighlight: (qnaSetId: number) => void
+  clearAllHighlights: () => void
 
   // 현재 선택된 텍스트
   pendingSelection: HighlightData | null

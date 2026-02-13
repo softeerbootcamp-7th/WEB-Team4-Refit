@@ -8,11 +8,11 @@ import type { PDFDocumentProxy, RenderTask } from 'pdfjs-dist'
 
 type PdfPageProps = {
   pdf: PDFDocumentProxy
-  pageNum: number
+  pageNumber: number
   containerSize: ContainerSize
 }
 
-export function PdfPage({ pdf, pageNum, containerSize }: PdfPageProps) {
+export function PdfPage({ pdf, pageNumber, containerSize }: PdfPageProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const textLayerRef = useRef<HTMLDivElement>(null)
@@ -24,7 +24,7 @@ export function PdfPage({ pdf, pageNum, containerSize }: PdfPageProps) {
 
   const { handleMouseUp } = useTextSelection({
     containerRef: pdfContentRef,
-    pageNum,
+    pageNumber,
     isLinkingMode,
     pendingSelection,
     setPendingSelection,
@@ -36,7 +36,7 @@ export function PdfPage({ pdf, pageNum, containerSize }: PdfPageProps) {
     let textLayerInstance: TextLayer | null = null
 
     const renderPage = async () => {
-      const page = await pdf.getPage(pageNum)
+      const page = await pdf.getPage(pageNumber)
       if (cancelled || !canvasRef.current || !textLayerRef.current || !containerRef.current) return
 
       const devicePixelRatio = window.devicePixelRatio || 1
@@ -79,10 +79,10 @@ export function PdfPage({ pdf, pageNum, containerSize }: PdfPageProps) {
       renderTask?.cancel()
       textLayerInstance?.cancel()
     }
-  }, [pdf, pageNum, containerSize])
+  }, [pdf, pageNumber, containerSize])
 
-  const savedRects = Array.from(highlights.values()).flatMap((h) => h.rects.filter((r) => r.pageNum === pageNum))
-  const pendingRects = pendingSelection?.rects.filter((r) => r.pageNum === pageNum) ?? []
+  const savedRects = Array.from(highlights.values()).flatMap((h) => h.rects.filter((r) => r.pageNumber === pageNumber))
+  const pendingRects = pendingSelection?.rects.filter((r) => r.pageNumber === pageNumber) ?? []
 
   return (
     <div ref={containerRef} className="absolute inset-0 flex items-center justify-center" onMouseUp={handleMouseUp}>
