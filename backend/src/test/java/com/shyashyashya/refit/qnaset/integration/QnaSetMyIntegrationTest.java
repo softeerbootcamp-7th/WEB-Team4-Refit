@@ -11,6 +11,7 @@ import static org.hamcrest.Matchers.nullValue;
 import com.shyashyashya.refit.core.IntegrationTest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.model.Interview;
+import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
 import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetSearchRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetSearchRequest.QnaSearchFilter;
@@ -47,7 +48,7 @@ public class QnaSetMyIntegrationTest extends IntegrationTest {
     void setup() {
         var request = new InterviewCreateRequest(
                 LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-        interview = createInterview(request);
+        interview = createAndSaveInterview(request);
     }
 
     @Nested
@@ -282,10 +283,10 @@ public class QnaSetMyIntegrationTest extends IntegrationTest {
         @Test
         void 다른_사용자의_질답세트는_조회되지_않는다() {
             // given
-            User otherUser = createUser("other@example.com", "otheruser", industry1, jobCategory1);
+            User otherUser = createAndSaveUser("other@example.com", "otheruser", industry1, jobCategory1);
             var request = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            Interview otherInterview = createInterview(request, otherUser);
+            Interview otherInterview = createAndSaveInterview(request, InterviewReviewStatus.NOT_LOGGED, otherUser);
             qnaSetRepository.save(QnaSet.create("다른 사용자 질문", "다른 사용자 답변", false, otherInterview, null));
             createQnaSet("나의 질문", "나의 답변", false);
 
