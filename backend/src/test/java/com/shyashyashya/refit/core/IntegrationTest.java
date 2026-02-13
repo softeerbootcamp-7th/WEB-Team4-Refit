@@ -17,8 +17,10 @@ import com.shyashyashya.refit.domain.qnaset.dto.request.PdfHighlightingUpdateReq
 import com.shyashyashya.refit.domain.qnaset.model.PdfHighlighting;
 import com.shyashyashya.refit.domain.qnaset.model.PdfHighlightingRect;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
+import com.shyashyashya.refit.domain.qnaset.model.QnaSetCategory;
 import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRectRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRepository;
+import com.shyashyashya.refit.domain.qnaset.repository.QnaSetCategoryRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
@@ -66,6 +68,9 @@ public abstract class IntegrationTest {
     protected Company company1;
     protected Company company2;
     protected Company company3;
+    protected QnaSetCategory qnaSetCategory1;
+    protected QnaSetCategory qnaSetCategory2;
+    protected QnaSetCategory qnaSetCategory3;
 
     @PersistenceContext
     private EntityManager em;
@@ -97,6 +102,9 @@ public abstract class IntegrationTest {
     @Autowired
     private PdfHighlightingRectRepository pdfHighlightingRectRepository;
 
+    @Autowired
+    private QnaSetCategoryRepository qnaSetCategoryRepository;
+
     @BeforeEach
     void restAssuredSetUp() {
         clearDatabase();
@@ -111,6 +119,9 @@ public abstract class IntegrationTest {
         company1 = companyRepository.save(Company.create("현대자동차", "logo1", true));
         company2 = companyRepository.save(Company.create("카카오", "logo2", true));
         company3 = companyRepository.save(Company.create("네이버", "logo3", true));
+        qnaSetCategory1 = qnaSetCategoryRepository.save(QnaSetCategory.create("리더십 질문", "당신은 리더십있는 사람입니까?", 3.141592));
+        qnaSetCategory2 = qnaSetCategoryRepository.save(QnaSetCategory.create("인성 질문", "당신은 인성이 좋은 사람입니까?", 2.145));
+        qnaSetCategory3 = qnaSetCategoryRepository.save(QnaSetCategory.create("기술 질문", "당신은 기술 있는 사람입니까?", 0.001));
 
         requestUser = createAndSaveUser("test@example.com", "default", industry1, jobCategory1);
         Instant issuedAt = Instant.now();
@@ -206,6 +217,10 @@ public abstract class IntegrationTest {
         return companyRepository.save(company);
     }
 
+    protected QnaSet createAndSaveQnaSet(QnaSetCreateRequest request, Interview interview) {
+        return createQnaSet(request, interview, false);
+    }
+
     protected QnaSet createQnaSet(QnaSetCreateRequest request, Interview interview, boolean isMarkedDifficult) {
         QnaSet qnaSet = QnaSet.create(
                 request.questionText(),
@@ -213,6 +228,18 @@ public abstract class IntegrationTest {
                 isMarkedDifficult,
                 interview,
                 null
+        );
+
+        return qnaSetRepository.save(qnaSet);
+    }
+
+    protected QnaSet createAndSaveQnaSet(QnaSetCreateRequest request, Interview interview, QnaSetCategory qnaSetCategory) {
+        QnaSet qnaSet = QnaSet.create(
+                request.questionText(),
+                request.answerText(),
+                false,
+                interview,
+                qnaSetCategory
         );
 
         return qnaSetRepository.save(qnaSet);
