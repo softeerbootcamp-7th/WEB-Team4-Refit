@@ -13,7 +13,7 @@ export type ScrapModalProps = {
 export function ScrapModal({ isOpen, onClose, qnaSetId }: ScrapModalProps) {
   const { data } = useGetScrapFoldersContainingQnaSet(
     qnaSetId,
-    { pageable: { page: 1, size: 5 } },
+    { pageable: { page: 0, size: 5 } },
     { query: { enabled: isOpen } },
   )
   const folders = data?.result?.content ?? []
