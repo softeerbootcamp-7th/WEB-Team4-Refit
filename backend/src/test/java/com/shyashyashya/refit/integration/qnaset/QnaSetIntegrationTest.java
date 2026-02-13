@@ -1,10 +1,9 @@
 package com.shyashyashya.refit.integration.qnaset;
 
-import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_REVIEW_STATUS_IS_NOT_QNA_SET_DRAFT;
+import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.in;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
@@ -12,6 +11,7 @@ import com.shyashyashya.refit.core.IntegrationTest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.QnaSetCreateRequest;
 import com.shyashyashya.refit.domain.interview.model.Interview;
+import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
 import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetUpdateRequest;
@@ -36,10 +36,7 @@ public class QnaSetIntegrationTest extends IntegrationTest {
             // given
              InterviewCreateRequest interviewCreateRequest = new InterviewCreateRequest(
                                 LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            Interview interview1 = createInterview(interviewCreateRequest);
-            interview1.startLogging();
-            interview1.completeLogging();
-            interviewRepository.save(interview1);
+            Interview interview1 = createAndSaveInterview(interviewCreateRequest, InterviewReviewStatus.QNA_SET_DRAFT);
             QnaSetCreateRequest request = new QnaSetCreateRequest("test question text", "test answer text");
 
             // when & then
@@ -60,7 +57,7 @@ public class QnaSetIntegrationTest extends IntegrationTest {
             // given
             InterviewCreateRequest interviewCreateRequest = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            Interview interview1 = createInterview(interviewCreateRequest);
+            Interview interview1 = createAndSaveInterview(interviewCreateRequest);
             QnaSetCreateRequest request = new QnaSetCreateRequest("test question text", "test answer text");
 
             // when & then
@@ -70,8 +67,8 @@ public class QnaSetIntegrationTest extends IntegrationTest {
                     .post("/interview/" + interview1.getId() + "/qna-set")
                     .then()
                     .statusCode(400)
-                    .body("code", equalTo(INTERVIEW_REVIEW_STATUS_IS_NOT_QNA_SET_DRAFT.name()))
-                    .body("message", equalTo(INTERVIEW_REVIEW_STATUS_IS_NOT_QNA_SET_DRAFT.getMessage()))
+                    .body("code", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.name()))
+                    .body("message", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.getMessage()))
                     .body("result", nullValue());
         }
     }
@@ -84,7 +81,7 @@ public class QnaSetIntegrationTest extends IntegrationTest {
 
         @BeforeEach
         void setUp() {
-            interview = createInterview(
+            interview = createAndSaveInterview(
                     new InterviewCreateRequest(
                             LocalDateTime.of(2023, 1, 10, 10, 0, 0), InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
                     ));
@@ -127,8 +124,6 @@ public class QnaSetIntegrationTest extends IntegrationTest {
     @Nested
     class 질답_세트_수정_시 {
 
-        private Interview qnaSetDraftInterview;
-        private Interview debriefCompletedInterview;
         private QnaSet qnaSetDraftQnaSet;
         private QnaSet debriefCompletedQnaSet;
 
@@ -136,19 +131,11 @@ public class QnaSetIntegrationTest extends IntegrationTest {
         void setUp() {
             InterviewCreateRequest interviewCreateRequest1 = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            qnaSetDraftInterview = createInterview(interviewCreateRequest1);
-            qnaSetDraftInterview.startLogging();
-            qnaSetDraftInterview.completeLogging();
-            interviewRepository.save(qnaSetDraftInterview);
+            Interview qnaSetDraftInterview = createAndSaveInterview(interviewCreateRequest1, InterviewReviewStatus.QNA_SET_DRAFT);
 
             InterviewCreateRequest interviewCreateRequest2 = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            debriefCompletedInterview = createInterview(interviewCreateRequest2);
-            debriefCompletedInterview.startLogging();
-            debriefCompletedInterview.completeLogging();
-            debriefCompletedInterview.completeQnaSetDraft();
-            debriefCompletedInterview.completeReview();
-            interviewRepository.save(debriefCompletedInterview);
+            Interview debriefCompletedInterview = createAndSaveInterview(interviewCreateRequest2, InterviewReviewStatus.DEBRIEF_COMPLETED);
 
             QnaSetCreateRequest qnaSetCreateRequest1 = new QnaSetCreateRequest("test question text", "test answer text");
             qnaSetDraftQnaSet = createQnaSet(qnaSetCreateRequest1, qnaSetDraftInterview, true);
@@ -203,8 +190,8 @@ public class QnaSetIntegrationTest extends IntegrationTest {
                     .put("/qna-set/" + debriefCompletedQnaSet.getId())
             .then()
                     .statusCode(400)
-                    .body("code", equalTo(INTERVIEW_REVIEW_STATUS_IS_NOT_QNA_SET_DRAFT.name()))
-                    .body("message", equalTo(INTERVIEW_REVIEW_STATUS_IS_NOT_QNA_SET_DRAFT.getMessage()))
+                    .body("code", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.name()))
+                    .body("message", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.getMessage()))
                     .body("result", nullValue());
         }
     }
