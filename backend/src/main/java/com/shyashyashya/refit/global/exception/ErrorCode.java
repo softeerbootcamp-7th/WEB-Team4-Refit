@@ -37,9 +37,10 @@ public enum ErrorCode {
     USER_SIGNUP_EMAIL_CONFLICT(CONFLICT, "이미 사용 중인 이메일입니다."),
     USER_NICKNAME_CONFLICT(CONFLICT, "이미 사용 중인 닉네임입니다."),
     USER_SIGNUP_REQUIRED(UNAUTHORIZED, "회원가입이 필요합니다."),
+    USER_ALREADY_SIGNED_UP(BAD_REQUEST, "이미 회원가입이 완료된 사용자입니다."),
 
-    TOKEN_REQUIRED(UNAUTHORIZED, "토큰이 필요합니다."),
-    TOKEN_EXPIRED(UNAUTHORIZED, "토큰이 만료되었습니다."),
+    TOKEN_REISSUE_REQUIRED(UNAUTHORIZED, "토큰 Reissue가 필요합니다."),
+    OAUTH2_STATE_TOKEN_EXPIRED(BAD_REQUEST, "OAuth2 상태 토큰이 만료되었습니다."),
     TOKEN_VALIDATION_FAILED(BAD_REQUEST, "토큰 검증에 실패했습니다."),
     INVALID_OAUTH2_CODE(BAD_REQUEST, "유효하지 않은 OAuth2 코드입니다."),
     EXTERNAL_OAUTH2_SERVER_ERROR(BAD_GATEWAY, "외부 OAuth2 서버와의 통신에 실패했습니다."),

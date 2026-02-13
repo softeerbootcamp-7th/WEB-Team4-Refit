@@ -1,32 +1,43 @@
 package com.shyashyashya.refit.global.config;
 
-import static com.shyashyashya.refit.global.constant.UrlConstant.DEV_CLIENT_URL;
-import static com.shyashyashya.refit.global.constant.UrlConstant.DEV_SERVER_URL;
-import static com.shyashyashya.refit.global.constant.UrlConstant.LOCAL_CLIENT_URL;
-import static com.shyashyashya.refit.global.constant.UrlConstant.LOCAL_SERVER_URL;
-import static com.shyashyashya.refit.global.constant.UrlConstant.MAIN_CLIENT_URL;
-
+import com.shyashyashya.refit.global.constant.UrlConstant;
+import io.netty.handler.codec.http.HttpMethod;
+import java.util.List;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 @Configuration
-public class CorsConfig implements WebMvcConfigurer {
+public class CorsConfig {
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins(LOCAL_CLIENT_URL, DEV_CLIENT_URL, MAIN_CLIENT_URL, LOCAL_SERVER_URL, DEV_SERVER_URL)
-                .allowedMethods(
-                        HttpMethod.GET.name(),
-                        HttpMethod.POST.name(),
-                        HttpMethod.PATCH.name(),
-                        HttpMethod.PUT.name(),
-                        HttpMethod.DELETE.name(),
-                        HttpMethod.OPTIONS.name())
-                .allowedHeaders("*")
-                .allowCredentials(true)
-                .maxAge(3600);
+    @Bean
+    public CorsFilter corsFilter() {
+        CorsConfiguration config = new CorsConfiguration();
+
+        config.setAllowedOrigins(List.of(
+                UrlConstant.LOCAL_CLIENT_URL,
+                UrlConstant.DEV_CLIENT_URL,
+                UrlConstant.MAIN_CLIENT_URL,
+                UrlConstant.LOCAL_SERVER_URL,
+                UrlConstant.DEV_SERVER_URL));
+
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowedMethods(List.of(
+                HttpMethod.GET.name(),
+                HttpMethod.POST.name(),
+                HttpMethod.PUT.name(),
+                HttpMethod.PATCH.name(),
+                HttpMethod.DELETE.name(),
+                HttpMethod.OPTIONS.name()));
+
+        config.setAllowCredentials(true);
+        config.setMaxAge(3600L);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+
+        return new CorsFilter(source);
     }
 }

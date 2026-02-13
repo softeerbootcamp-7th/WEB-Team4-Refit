@@ -8,13 +8,12 @@ import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.model.Interview;
-import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
-import com.shyashyashya.refit.global.auth.service.JwtUtil;
+import com.shyashyashya.refit.global.auth.service.JwtEncoder;
 import com.shyashyashya.refit.global.constant.AuthConstant;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
@@ -32,6 +31,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.time.format.DateTimeFormatter;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +62,7 @@ public abstract class IntegrationTest {
     private EntityManager em;
 
     @Autowired
-    private JwtUtil jwtUtil;
+    private JwtEncoder jwtEncoder;
 
     @Autowired
     private UserRepository userRepository;
@@ -95,10 +95,13 @@ public abstract class IntegrationTest {
         company3 = companyRepository.save(Company.create("네이버", "logo3", true));
 
         requestUser = createUser("test@example.com", "default", industry1, jobCategory1);
-        String accessToken = jwtUtil.createAccessToken(requestUser.getEmail(), requestUser.getId());
+        Instant issuedAt = Instant.now();
+        String accessToken = jwtEncoder.encodeAccessJwt(requestUser.getEmail(), requestUser.getId(), issuedAt);
+        String refreshToken = jwtEncoder.encodeRefreshJwt(requestUser.getEmail(), requestUser.getId(), issuedAt);
         spec = new RequestSpecBuilder()
                 .setPort(port)
                 .addCookie(AuthConstant.ACCESS_TOKEN, accessToken)
+                .addCookie(AuthConstant.REFRESH_TOKEN, refreshToken)
                 .setContentType(ContentType.JSON)
                 .build();
     }
