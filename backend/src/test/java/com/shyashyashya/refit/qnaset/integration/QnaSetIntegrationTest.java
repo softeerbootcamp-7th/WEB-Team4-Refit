@@ -51,19 +51,19 @@ public class QnaSetIntegrationTest extends IntegrationTest {
         void setUp() {
             var request1 = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            interview1 = createInterview(request1);
+            interview1 = createAndSaveInterview(request1);
 
             var request2 = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 2L, 2L, "BE Developer");
-            interview2 = createInterview(request2);
+            interview2 = createAndSaveInterview(request2);
 
             var request3 = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 30, 10, 0, 0), InterviewType.FIRST, "카카오", 1L, 3L, "FE Developer");
-            interview3 = createInterview(request3);
+            interview3 = createAndSaveInterview(request3);
 
             var request4 = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 31, 10, 0, 0), InterviewType.FIRST, "네이버", 3L, 1L, "Android Developer");
-            interview4 = createInterview(request4);
+            interview4 = createAndSaveInterview(request4);
 
 
             qnaSet1 = QnaSet.create("팀원과 갈등이 발생했을 때 해결한 경험을 알려주세요.", "답변1", true, interview1, null);

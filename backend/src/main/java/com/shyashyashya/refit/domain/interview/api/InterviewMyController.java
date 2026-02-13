@@ -4,8 +4,8 @@ import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 
 import com.shyashyashya.refit.domain.interview.dto.InterviewDto;
 import com.shyashyashya.refit.domain.interview.dto.InterviewSimpleDto;
+import com.shyashyashya.refit.domain.interview.dto.request.InterviewDraftType;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewSearchRequest;
-import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.service.InterviewService;
 import com.shyashyashya.refit.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,8 +47,8 @@ public class InterviewMyController {
             """)
     @GetMapping("/draft")
     public ResponseEntity<ApiResponse<Page<InterviewSimpleDto>>> getMyInterviewDrafts(
-            @RequestParam InterviewReviewStatus interviewReviewStatus, Pageable pageable) {
-        var body = interviewService.getMyInterviewDraftsByReviewStatus(interviewReviewStatus, pageable);
+            @RequestParam InterviewDraftType interviewDraftType, Pageable pageable) {
+        var body = interviewService.getMyInterviewDrafts(interviewDraftType, pageable);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
