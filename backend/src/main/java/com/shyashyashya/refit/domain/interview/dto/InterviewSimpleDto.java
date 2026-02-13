@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 
 public record InterviewSimpleDto(
         Long interviewId,
+        InterviewReviewStatus interviewReviewStatus,
         InterviewType interviewType,
         InterviewReviewStatus interviewReviewStatus,
         LocalDateTime interviewStartAt,
@@ -17,6 +18,7 @@ public record InterviewSimpleDto(
     public static InterviewSimpleDto from(Interview interview) {
         return new InterviewSimpleDto(
                 interview.getId(),
+                interview.getReviewStatus(),
                 interview.getInterviewType(),
                 interview.getReviewStatus(),
                 interview.getStartAt(),
