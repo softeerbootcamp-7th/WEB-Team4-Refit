@@ -2,6 +2,7 @@ import { useState, type Dispatch, type SetStateAction } from 'react'
 import { Button } from '@/designs/components'
 import LiveAudioVisualizer from '@/features/_common/auth/components/LiveAudioVisualizer'
 import { useInterviewNavigate } from '@/features/_common/hooks/useInterviewNavigation'
+import LoadingOverlay from '@/features/_common/loading/LoadingOverlay'
 import { RecordSidebar } from '@/features/record/_index/components/RecordSidebar'
 import { ROUTES } from '@/routes/routes'
 import type { InterviewInfoType } from '@/types/interview'
@@ -32,46 +33,65 @@ export function RecordPageContent({
   canSave,
 }: RecordPageContentProps) {
   const [isRecording, setIsRecording] = useState(false)
+  const [isSummarizing, setIsSummarizing] = useState(false)
 
   const navigateWithId = useInterviewNavigate()
-  const goToConfirmPage = () => navigateWithId(ROUTES.RECORD_CONFIRM)
+  const goToConfirmPage = () => {
+    setIsSummarizing(true)
+    setTimeout(() => {
+      navigateWithId(ROUTES.RECORD_CONFIRM)
+    }, 4000)
+  }
 
   return (
-    <div className="mx-auto grid h-full w-7xl grid-cols-[320px_1fr]">
-      <RecordSidebar infoItems={interviewInfo} />
-      <div className="flex min-h-0 flex-1 flex-col overflow-auto p-6">
-        <div className="mb-5">
-          <h1 className="title-l-bold">면접 기록하기</h1>
-        </div>
+    <>
+      <div className="mx-auto grid h-full w-7xl grid-cols-[320px_1fr]">
+        <RecordSidebar infoItems={interviewInfo} />
+        <div className="flex min-h-0 flex-1 flex-col overflow-auto p-6">
+          <div className="mb-5">
+            <h1 className="title-l-bold">면접 기록하기</h1>
+          </div>
 
-        <div className="border-gray-150 flex min-h-0 flex-1 flex-col rounded-xl border bg-white p-6">
-          <textarea
-            className="body-m-regular flex-1 resize-none overflow-y-auto whitespace-pre-wrap text-gray-800 outline-none"
-            placeholder="텍스트 입력 또는 음성 녹음으로 면접을 기록할 수 있어요."
-            value={text + (realtimeText ? (text ? ' ' : '') + realtimeText : '')}
-            onChange={(e) => onTextChange(e.target.value)}
-            readOnly={!!realtimeText || isRecording}
-          />
-          <div className="mt-4 shrink-0">
-            <LiveAudioVisualizer
-              onComplete={onRecordComplete}
-              onRealtimeTranscript={onRealtimeTranscript}
-              onCancel={onRecordCancel}
-              uiType="desktop"
-              onRecordingChange={setIsRecording}
+          <div className="border-gray-150 flex min-h-0 flex-1 flex-col rounded-xl border bg-white p-6">
+            <textarea
+              className="body-m-regular flex-1 resize-none overflow-y-auto whitespace-pre-wrap text-gray-800 outline-none"
+              placeholder="텍스트 입력 또는 음성 녹음으로 면접을 기록할 수 있어요."
+              value={text + (realtimeText ? (text ? ' ' : '') + realtimeText : '')}
+              onChange={(e) => onTextChange(e.target.value)}
+              readOnly={!!realtimeText || isRecording}
             />
+            <div className="mt-4 shrink-0">
+              <LiveAudioVisualizer
+                onComplete={onRecordComplete}
+                onRealtimeTranscript={onRealtimeTranscript}
+                onCancel={onRecordCancel}
+                uiType="desktop"
+                onRecordingChange={setIsRecording}
+              />
+            </div>
+          </div>
+
+          <div className="mt-auto flex shrink-0 justify-end gap-3 pt-4">
+            <Button variant="outline-gray-100" size="md" onClick={onSave} disabled={isSavePending || !canSave}>
+              임시저장
+            </Button>
+            <Button variant="fill-orange-500" size="md" className="w-60" onClick={goToConfirmPage}>
+              기록 완료
+            </Button>
           </div>
         </div>
-
-        <div className="mt-auto flex shrink-0 justify-end gap-3 pt-4">
-          <Button variant="outline-gray-100" size="md" onClick={onSave} disabled={isSavePending || !canSave}>
-            임시저장
-          </Button>
-          <Button variant="fill-orange-500" size="md" className="w-60" onClick={goToConfirmPage}>
-            작성 완료
-          </Button>
-        </div>
       </div>
-    </div>
+      {isSummarizing && (
+        <LoadingOverlay
+          text={
+            <>
+              작성해주신 내용을 질문과 답변으로
+              <br />
+              정리하고 있어요!
+            </>
+          }
+        />
+      )}
+    </>
   )
 }
