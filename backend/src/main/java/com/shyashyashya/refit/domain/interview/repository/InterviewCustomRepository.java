@@ -6,6 +6,8 @@ import com.shyashyashya.refit.domain.interview.model.InterviewType;
 import com.shyashyashya.refit.domain.user.model.User;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -14,8 +16,8 @@ public interface InterviewCustomRepository {
     Page<Interview> searchInterviews(
             User user,
             String keyword,
-            List<InterviewType> interviewTypes,
-            List<InterviewResultStatus> interviewResultStatuses,
+            Set<InterviewType> interviewTypes,
+            Set<InterviewResultStatus> interviewResultStatuses,
             LocalDate startDate,
             LocalDate endDate,
             Pageable pageable);

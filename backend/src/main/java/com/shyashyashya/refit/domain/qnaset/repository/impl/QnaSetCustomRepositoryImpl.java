@@ -12,6 +12,8 @@ import com.shyashyashya.refit.domain.qnaset.model.StarInclusionLevel;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetCustomRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import java.util.List;
+import java.util.Set;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -24,7 +26,7 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
 
     @Override
     public Page<QnaSet> searchByIndustriesAndJobCategories(
-            List<Long> industryIds, List<Long> jobCategoryIds, Pageable pageable) {
+            Set<Long> industryIds, Set<Long> jobCategoryIds, Pageable pageable) {
         BooleanExpression[] searchConditions = {
             Expressions.asBoolean(true).isTrue(),
             containsIndustryIds(industryIds),
@@ -59,10 +61,10 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
             User user,
             String keyword,
             Boolean hasStarAnalysis,
-            List<StarInclusionLevel> sInclusionLevels,
-            List<StarInclusionLevel> tInclusionLevels,
-            List<StarInclusionLevel> aInclusionLevels,
-            List<StarInclusionLevel> rInclusionLevels,
+            Set<StarInclusionLevel> sInclusionLevels,
+            Set<StarInclusionLevel> tInclusionLevels,
+            Set<StarInclusionLevel> aInclusionLevels,
+            Set<StarInclusionLevel> rInclusionLevels,
             Pageable pageable) {
         BooleanExpression[] searchConditions = {
             qnaSet.interview.user.eq(user),
@@ -92,14 +94,14 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
         return new PageImpl<>(contents, pageable, count);
     }
 
-    private BooleanExpression containsIndustryIds(List<Long> industryIds) {
+    private BooleanExpression containsIndustryIds(Set<Long> industryIds) {
         if (industryIds == null || industryIds.isEmpty()) {
             return null;
         }
         return qnaSet.interview.industry.id.in(industryIds);
     }
 
-    private BooleanExpression containsJobCategoryIds(List<Long> jobCategoryIds) {
+    private BooleanExpression containsJobCategoryIds(Set<Long> jobCategoryIds) {
         if (jobCategoryIds == null || jobCategoryIds.isEmpty()) {
             return null;
         }
@@ -115,10 +117,10 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
 
     private BooleanExpression starInclusionLevelsConditions(
             Boolean hasStarInclusionLevels,
-            List<StarInclusionLevel> sLevels,
-            List<StarInclusionLevel> tLevels,
-            List<StarInclusionLevel> aLevels,
-            List<StarInclusionLevel> rLevels) {
+            Set<StarInclusionLevel> sLevels,
+            Set<StarInclusionLevel> tLevels,
+            Set<StarInclusionLevel> aLevels,
+            Set<StarInclusionLevel> rLevels) {
 
         if (Boolean.FALSE.equals(hasStarInclusionLevels)) {
             return starAnalysis.isNull();
@@ -134,10 +136,10 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
     }
 
     private BooleanBuilder buildStarAnalysisLevelContainsConditions(
-            List<StarInclusionLevel> sLevels,
-            List<StarInclusionLevel> tLevels,
-            List<StarInclusionLevel> aLevels,
-            List<StarInclusionLevel> rLevels) {
+            Set<StarInclusionLevel> sLevels,
+            Set<StarInclusionLevel> tLevels,
+            Set<StarInclusionLevel> aLevels,
+            Set<StarInclusionLevel> rLevels) {
         BooleanBuilder levelConditions = new BooleanBuilder();
         if (sLevels != null && !sLevels.isEmpty()) {
             levelConditions.and(starAnalysis.sInclusionLevel.in(sLevels));

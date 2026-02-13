@@ -4,21 +4,23 @@ import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.StarInclusionLevel;
 import com.shyashyashya.refit.domain.user.model.User;
 import java.util.List;
+import java.util.Set;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface QnaSetCustomRepository {
 
     Page<QnaSet> searchByIndustriesAndJobCategories(
-            List<Long> industryIds, List<Long> jobCategoryIds, Pageable pageable);
+            Set<Long> industryIds, Set<Long> jobCategoryIds, Pageable pageable);
 
     Page<QnaSet> searchMyQnaSet(
             User user,
             String keyword,
             Boolean hasStarAnalysis,
-            List<StarInclusionLevel> sInclusionLevels,
-            List<StarInclusionLevel> tInclusionLevels,
-            List<StarInclusionLevel> aInclusionLevels,
-            List<StarInclusionLevel> rInclusionLevels,
+            Set<StarInclusionLevel> sInclusionLevels,
+            Set<StarInclusionLevel> tInclusionLevels,
+            Set<StarInclusionLevel> aInclusionLevels,
+            Set<StarInclusionLevel> rInclusionLevels,
             Pageable pageable);
 }

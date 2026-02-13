@@ -5,6 +5,8 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.JOB_CATEGORY_PAR
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
 import com.shyashyashya.refit.global.exception.CustomException;
 import java.util.List;
+import java.util.Set;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +16,7 @@ public class JobCategoryValidator {
 
     private final JobCategoryRepository jobCategoryRepository;
 
-    public void validateJobCategoriesAllExist(List<Long> jobCategoryIds) {
+    public void validateJobCategoriesAllExist(Set<Long> jobCategoryIds) {
         if (jobCategoryIds == null || jobCategoryIds.isEmpty()) {
             return;
         }
