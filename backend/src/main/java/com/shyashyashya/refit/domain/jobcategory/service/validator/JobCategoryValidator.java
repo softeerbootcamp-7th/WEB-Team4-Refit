@@ -4,9 +4,7 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.JOB_CATEGORY_PAR
 
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
 import com.shyashyashya.refit.global.exception.CustomException;
-import java.util.List;
 import java.util.Set;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

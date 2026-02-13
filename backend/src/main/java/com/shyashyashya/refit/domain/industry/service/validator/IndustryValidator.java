@@ -4,9 +4,7 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.INDUSTRY_PARTIAL
 
 import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
 import com.shyashyashya.refit.global.exception.CustomException;
-import java.util.List;
 import java.util.Set;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
