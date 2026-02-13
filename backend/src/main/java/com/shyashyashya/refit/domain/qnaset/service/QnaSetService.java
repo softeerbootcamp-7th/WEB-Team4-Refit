@@ -4,6 +4,7 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.QNA_SET_NOT_FOUN
 
 import com.shyashyashya.refit.domain.industry.service.validator.IndustryValidator;
 import com.shyashyashya.refit.domain.interview.model.Interview;
+import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
 import com.shyashyashya.refit.domain.jobcategory.service.validator.JobCategoryValidator;
 import com.shyashyashya.refit.domain.qnaset.dto.PdfHighlightingDto;
@@ -83,7 +84,7 @@ public class QnaSetService {
     @Transactional
     public void deleteQnaSet(Long qnaSetId) {
         QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
-        interviewValidator.validateInterviewReviewStatusQnaSetDraft(qnaSet.getInterview());
+        interviewValidator.validateInterviewReviewStatus(qnaSet.getInterview(), InterviewReviewStatus.QNA_SET_DRAFT);
         qnaSetRepository.delete(qnaSet);
     }
 

@@ -1,11 +1,13 @@
 package com.shyashyashya.refit.interview.integration;
 
+import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON201;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON204;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_ACCESSIBLE;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_FOUND;
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
@@ -13,14 +15,19 @@ import static org.hamcrest.Matchers.nullValue;
 import com.shyashyashya.refit.core.IntegrationTest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatusUpdateRequest;
+import com.shyashyashya.refit.domain.interview.dto.request.QnaSetCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.KptSelfReviewUpdateRequest;
 import com.shyashyashya.refit.domain.interview.model.Interview;
+import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
 import com.shyashyashya.refit.domain.interview.model.InterviewResultStatus;
+import com.shyashyashya.refit.domain.interview.model.InterviewSelfReview;
+import com.shyashyashya.refit.domain.interview.repository.InterviewSelfReviewRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetCategory;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
@@ -29,6 +36,8 @@ import com.shyashyashya.refit.domain.user.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class InterviewIntegrationTest extends IntegrationTest {
@@ -38,6 +47,12 @@ public class InterviewIntegrationTest extends IntegrationTest {
 
     @Autowired
     private QnaSetCategoryRepository qnaSetCategoryRepository;
+
+    @Autowired
+    private InterviewRepository interviewRepository;
+
+    @Autowired
+    private InterviewSelfReviewRepository interviewSelfReviewRepository;
 
     @Nested
     class 면접_생성_시 {
@@ -91,7 +106,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
         void setUp() {
             InterviewCreateRequest request = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            interviewId = createInterview(request).getId();
+            interviewId = createAndSaveInterview(request).getId();
         }
 
         @Test
@@ -126,8 +141,8 @@ public class InterviewIntegrationTest extends IntegrationTest {
             // given
             InterviewCreateRequest request = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            User user = createUser("other@example.com", "other", industry1, jobCategory1);
-            Long otherInterviewId = createInterview(request, user).getId();
+            User user = createAndSaveUser("other@example.com", "other", industry1, jobCategory1);
+            Long otherInterviewId = createAndSaveInterview(request, InterviewReviewStatus.NOT_LOGGED, user).getId();
 
             // when & then
             given(spec).
@@ -151,7 +166,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
         void setUp() {
             InterviewCreateRequest request = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            interviewId = createInterview(request).getId();
+            interviewId = createAndSaveInterview(request).getId();
         }
 
         @Test
@@ -185,8 +200,8 @@ public class InterviewIntegrationTest extends IntegrationTest {
             // given
             InterviewCreateRequest request = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            User user = createUser("other@example.com", "other", industry1, jobCategory1);
-            Long otherInterviewId = createInterview(request, user).getId();
+            User user = createAndSaveUser("other@example.com", "other", industry1, jobCategory1);
+            Long otherInterviewId = createAndSaveInterview(request, InterviewReviewStatus.NOT_LOGGED, user).getId();
 
             // when & then
             given(spec)
@@ -210,7 +225,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
         void setUp() {
             InterviewCreateRequest request = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            interviewId = createInterview(request).getId();
+            interviewId = createAndSaveInterview(request).getId();
         }
 
         @Test
@@ -252,8 +267,8 @@ public class InterviewIntegrationTest extends IntegrationTest {
             // given
             InterviewCreateRequest createRequest = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            User user = createUser("other@example.com", "other", industry1, jobCategory1);
-            Long otherInterviewId = createInterview(createRequest, user).getId();
+            User user = createAndSaveUser("other@example.com", "other", industry1, jobCategory1);
+            Long otherInterviewId = createAndSaveInterview(createRequest, InterviewReviewStatus.NOT_LOGGED, user).getId();
             InterviewResultStatusUpdateRequest updateRequest = new InterviewResultStatusUpdateRequest(InterviewResultStatus.PASS);
 
             // when & then
@@ -281,7 +296,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
         void setUp() {
             InterviewCreateRequest request = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            Interview interview = createInterview(request);
+            Interview interview = createAndSaveInterview(request);
             interviewId = interview.getId();
 
             // Create QnaSetCategory
@@ -331,8 +346,8 @@ public class InterviewIntegrationTest extends IntegrationTest {
             // given
             InterviewCreateRequest createRequest = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            User user = createUser("other@example.com", "other", industry1, jobCategory1);
-            Long otherInterviewId = createInterview(createRequest, user).getId();
+            User user = createAndSaveUser("other@example.com", "other", industry1, jobCategory1);
+            Long otherInterviewId = createAndSaveInterview(createRequest, InterviewReviewStatus.NOT_LOGGED, user).getId();
 
             // when & then
             given(spec).
@@ -356,7 +371,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
         void setUp() {
             InterviewCreateRequest request = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            interviewId = createInterview(request).getId();
+            interviewId = createAndSaveInterview(request, InterviewReviewStatus.LOG_DRAFT).getId();
         }
 
         @Test
@@ -391,8 +406,8 @@ public class InterviewIntegrationTest extends IntegrationTest {
             // given
             InterviewCreateRequest createRequest = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            User user = createUser("other@example.com", "other", industry1, jobCategory1);
-            Long otherInterviewId = createInterview(createRequest, user).getId();
+            User user = createAndSaveUser("other@example.com", "other", industry1, jobCategory1);
+            Long otherInterviewId = createAndSaveInterview(createRequest, InterviewReviewStatus.NOT_LOGGED, user).getId();
 
             // when & then
             given(spec)
@@ -402,6 +417,25 @@ public class InterviewIntegrationTest extends IntegrationTest {
                     .assertThat().statusCode(403)
                     .body("code", equalTo(INTERVIEW_NOT_ACCESSIBLE.name()))
                     .body("message", equalTo(INTERVIEW_NOT_ACCESSIBLE.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @ParameterizedTest
+        @EnumSource(value = InterviewReviewStatus.class, names = { "NOT_LOGGED", "QNA_SET_DRAFT", "SELF_REVIEW_DRAFT", "DEBRIEF_COMPLETED" })
+        void 면접_상태가_기록중이_아닐_때_가이드_질문을_조회하면_실패한다(InterviewReviewStatus status) {
+            // given
+            var createRequest = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview invalidInterview = createAndSaveInterview(createRequest, status);
+
+            // when & then
+            given(spec)
+            .when()
+                    .get(path + "/" + invalidInterview.getId() + "/guide-question")
+            .then()
+                    .assertThat().statusCode(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.getHttpStatus().value())
+                    .body("code", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.name()))
+                    .body("message", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.getMessage()))
                     .body("result", nullValue());
         }
     }
@@ -416,7 +450,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
         void setUp() {
             InterviewCreateRequest request = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            interviewId = createInterview(request).getId();
+            interviewId = createAndSaveInterview(request, InterviewReviewStatus.LOG_DRAFT).getId();
         }
 
         @Test
@@ -458,8 +492,8 @@ public class InterviewIntegrationTest extends IntegrationTest {
             // given
             InterviewCreateRequest createRequest = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            User user = createUser("other@example.com", "other", industry1, jobCategory1);
-            Long otherInterviewId = createInterview(createRequest, user).getId();
+            User user = createAndSaveUser("other@example.com", "other", industry1, jobCategory1);
+            Long otherInterviewId = createAndSaveInterview(createRequest, InterviewReviewStatus.NOT_LOGGED, user).getId();
             RawTextUpdateRequest updateRequest = new RawTextUpdateRequest("Raw text for another user.");
 
             // when & then
@@ -471,6 +505,28 @@ public class InterviewIntegrationTest extends IntegrationTest {
                     .assertThat().statusCode(403)
                     .body("code", equalTo(INTERVIEW_NOT_ACCESSIBLE.name()))
                     .body("message", equalTo(INTERVIEW_NOT_ACCESSIBLE.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @ParameterizedTest
+        @EnumSource(value = InterviewReviewStatus.class, names = { "NOT_LOGGED", "QNA_SET_DRAFT", "SELF_REVIEW_DRAFT", "DEBRIEF_COMPLETED" })
+        void 면접_상태가_기록중이_아닐_때_원문_텍스트를_업데이트하면_실패한다(InterviewReviewStatus status) {
+            // given
+            var createRequest = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview invalidInterview = createAndSaveInterview(createRequest, status);
+
+            RawTextUpdateRequest request = new RawTextUpdateRequest("Updated raw text content.");
+
+            // when & then
+            given(spec)
+                    .body(request)
+            .when()
+                    .put(path + "/" + invalidInterview.getId() + "/raw-text")
+            .then()
+                    .assertThat().statusCode(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.getHttpStatus().value())
+                    .body("code", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.name()))
+                    .body("message", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.getMessage()))
                     .body("result", nullValue());
         }
     }
@@ -485,7 +541,8 @@ public class InterviewIntegrationTest extends IntegrationTest {
         void setUp() {
             InterviewCreateRequest request = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            interviewId = createInterview(request).getId();
+            Interview interview = createAndSaveInterview(request, InterviewReviewStatus.SELF_REVIEW_DRAFT);
+            interviewId = interview.getId();
         }
 
         @Test
@@ -503,6 +560,33 @@ public class InterviewIntegrationTest extends IntegrationTest {
                     .body("code", equalTo(COMMON200.name()))
                     .body("message", equalTo(COMMON200.getMessage()))
                     .body("result", nullValue());
+        }
+
+        @Test
+        void 이미_KPT_회고가_존재할_때_수정에_성공한다() {
+            // given
+            Interview interview = interviewRepository.findById(interviewId).get();
+            interviewSelfReviewRepository.save(
+                    InterviewSelfReview.create("Initial Keep", "Initial Problem", "Initial Try", interview)
+            );
+
+            KptSelfReviewUpdateRequest request = new KptSelfReviewUpdateRequest("Updated Keep", "Updated Problem", "Updated Try");
+
+            // when & then
+            given(spec)
+                    .body(request)
+            .when()
+                    .put(path + "/" + interviewId + "/kpt-self-review")
+            .then()
+                    .assertThat().statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result", nullValue());
+
+            InterviewSelfReview updatedSelfReview = interviewSelfReviewRepository.findByInterview(interview).get();
+            assertThat(updatedSelfReview.getKeepText()).isEqualTo("Updated Keep");
+            assertThat(updatedSelfReview.getProblemText()).isEqualTo("Updated Problem");
+            assertThat(updatedSelfReview.getTryText()).isEqualTo("Updated Try");
         }
 
         @Test
@@ -527,8 +611,8 @@ public class InterviewIntegrationTest extends IntegrationTest {
             // given
             InterviewCreateRequest createRequest = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            User user = createUser("other@example.com", "other", industry1, jobCategory1);
-            Long otherInterviewId = createInterview(createRequest, user).getId();
+            User user = createAndSaveUser("other@example.com", "other", industry1, jobCategory1);
+            Long otherInterviewId = createAndSaveInterview(createRequest, InterviewReviewStatus.NOT_LOGGED, user).getId();
             KptSelfReviewUpdateRequest updateRequest = new KptSelfReviewUpdateRequest("Other Keep", "Other Problem", "Other Try");
 
             // when & then
@@ -540,6 +624,118 @@ public class InterviewIntegrationTest extends IntegrationTest {
                     .assertThat().statusCode(403)
                     .body("code", equalTo(INTERVIEW_NOT_ACCESSIBLE.name()))
                     .body("message", equalTo(INTERVIEW_NOT_ACCESSIBLE.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @ParameterizedTest
+        @EnumSource(value = InterviewReviewStatus.class, names = { "NOT_LOGGED", "LOG_DRAFT", "QNA_SET_DRAFT", "DEBRIEF_COMPLETED" })
+        void 면접_상태가_회고중이_아닐_때_KPT회고를_업데이트하면_실패한다(InterviewReviewStatus status) {
+            // given
+            var createRequest = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview invalidInterview = createAndSaveInterview(createRequest, status);
+            var request = new KptSelfReviewUpdateRequest("Keep text", "Problem text", "Try text");
+
+            // when & then
+            given(spec)
+                    .body(request)
+            .when()
+                    .put(path + "/" + invalidInterview.getId() + "/kpt-self-review")
+            .then()
+                    .assertThat().statusCode(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.getHttpStatus().value())
+                    .body("code", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.name()))
+                    .body("message", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.getMessage()))
+                    .body("result", nullValue());
+        }
+    }
+
+    @Nested
+    class 면접에_QnaSet_추가_시 {
+
+        private static final String path = "/interview";
+        private Long interviewId;
+
+        @BeforeEach
+        void setUp() {
+            InterviewCreateRequest request = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview interview = createAndSaveInterview(request, InterviewReviewStatus.QNA_SET_DRAFT);
+            interviewId = interview.getId();
+        }
+
+        @Test
+        void QnaSet_추가에_성공한다() {
+            // given
+            var request = new QnaSetCreateRequest("Question text", "Answer text");
+
+            // when & then
+            given(spec)
+                    .body(request)
+            .when()
+                    .post(path + "/" + interviewId + "/qna-set")
+            .then()
+                    .assertThat().statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result.qnaSetId", notNullValue());
+        }
+
+        @Test
+        void 존재하지_않는_면접에_QnaSet을_추가하면_실패한다() {
+            // given
+            var request = new QnaSetCreateRequest("Question text", "Answer text");
+
+            // when & then
+            given(spec)
+                    .body(request)
+            .when()
+                    .post(path + "/" + (interviewId+1) + "/qna-set")
+            .then()
+                    .assertThat().statusCode(404)
+                    .body("code", equalTo(INTERVIEW_NOT_FOUND.name()))
+                    .body("message", equalTo(INTERVIEW_NOT_FOUND.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @Test
+        void 로그인한_사용자가_아닌_다른_사람의_면접에_QnaSet을_추가하면_실패한다() {
+            // given
+            InterviewCreateRequest createRequest = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            User user = createAndSaveUser("other@example.com", "other", industry1, jobCategory1);
+            Long otherInterviewId = createAndSaveInterview(createRequest, InterviewReviewStatus.NOT_LOGGED, user).getId();
+            var request = new QnaSetCreateRequest("Question text", "Answer text");
+
+            // when & then
+            given(spec)
+                    .body(request)
+            .when()
+                    .post(path + "/" + otherInterviewId + "/qna-set")
+            .then()
+                    .assertThat().statusCode(403)
+                    .body("code", equalTo(INTERVIEW_NOT_ACCESSIBLE.name()))
+                    .body("message", equalTo(INTERVIEW_NOT_ACCESSIBLE.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @ParameterizedTest
+        @EnumSource(value = InterviewReviewStatus.class, names = { "NOT_LOGGED", "LOG_DRAFT", "SELF_REVIEW_DRAFT", "DEBRIEF_COMPLETED" })
+        void 면접_상태가_기록완료가_아닐_때_면접에_QnaSet을_추가하면_실패한다(InterviewReviewStatus status) {
+            // given
+            var createRequest = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview invalidInterview = createAndSaveInterview(createRequest, status);
+            var request = new QnaSetCreateRequest("Question text", "Answer text");
+
+            // when & then
+            given(spec)
+                    .body(request)
+            .when()
+                    .post(path + "/" + invalidInterview.getId() + "/qna-set")
+            .then()
+                    .assertThat().statusCode(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.getHttpStatus().value())
+                    .body("code", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.name()))
+                    .body("message", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.getMessage()))
                     .body("result", nullValue());
         }
     }

@@ -175,6 +175,23 @@ public class QnaSetIntegrationTest extends IntegrationTest {
         }
 
         @Test
+        void 수정_요청에_필드가_하나여도_질답_세트_수정에_성공한다() {
+            // given
+            QnaSetUpdateRequest qnaSetUpdateRequest = new QnaSetUpdateRequest("only question text update", null, null);
+
+            // when & then
+            given(spec)
+                    .body(qnaSetUpdateRequest)
+            .when()
+                    .put("/qna-set/" + qnaSetDraftQnaSet.getId())
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @Test
         void 인터뷰가_QNA_SET_DRAFT_상태가_아니라면_질답_세트_수정에_실패한다() {
             // given
             QnaSetUpdateRequest qnaSetUpdateRequest = new QnaSetUpdateRequest("update question", "update answer", null);

@@ -2,7 +2,6 @@ package com.shyashyashya.refit.domain.interview.service;
 
 import static com.shyashyashya.refit.global.exception.ErrorCode.INDUSTRY_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_FOUND;
-import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_IN_DRAFT_STATUS;
 import static com.shyashyashya.refit.global.exception.ErrorCode.JOB_CATEGORY_NOT_FOUND;
 
 import com.shyashyashya.refit.domain.company.model.Company;
@@ -14,6 +13,7 @@ import com.shyashyashya.refit.domain.interview.dto.InterviewFullDto;
 import com.shyashyashya.refit.domain.interview.dto.InterviewSimpleDto;
 import com.shyashyashya.refit.domain.interview.dto.StarAnalysisDto;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
+import com.shyashyashya.refit.domain.interview.dto.request.InterviewDraftType;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatusUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewSearchRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.KptSelfReviewUpdateRequest;
@@ -164,16 +164,22 @@ public class InterviewService {
                 .map(InterviewDto::from);
     }
 
-    public Page<InterviewSimpleDto> getMyInterviewDraftsByReviewStatus(
-            InterviewReviewStatus reviewStatus, Pageable pageable) {
+    public Page<InterviewSimpleDto> getMyInterviewDrafts(InterviewDraftType draftType, Pageable pageable) {
         User requestUser = requestUserContext.getRequestUser();
 
-        return switch (reviewStatus) {
-            case LOG_DRAFT, SELF_REVIEW_DRAFT ->
+        return switch (draftType) {
+            case LOGGING ->
                 interviewRepository
-                        .findAllByUserAndReviewStatus(requestUser, reviewStatus, pageable)
+                        .findAllByUserAndReviewStatusIn(
+                                requestUser,
+                                List.of(InterviewReviewStatus.LOG_DRAFT, InterviewReviewStatus.QNA_SET_DRAFT),
+                                pageable)
                         .map(InterviewSimpleDto::from);
-            default -> throw new CustomException(INTERVIEW_NOT_IN_DRAFT_STATUS);
+            case REVIEWING ->
+                interviewRepository
+                        .findAllByUserAndReviewStatusIn(
+                                requestUser, List.of(InterviewReviewStatus.SELF_REVIEW_DRAFT), pageable)
+                        .map(InterviewSimpleDto::from);
         };
     }
 
@@ -183,8 +189,8 @@ public class InterviewService {
 
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
-
         interviewValidator.validateInterviewOwner(interview, requestUser);
+        interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.LOG_DRAFT);
 
         interview.updateRawText(request.rawText());
     }
@@ -192,9 +198,11 @@ public class InterviewService {
     @Transactional
     public void updateKptSelfReview(Long interviewId, KptSelfReviewUpdateRequest request) {
         User requestUser = requestUserContext.getRequestUser();
+
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
+        interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.SELF_REVIEW_DRAFT);
 
         interviewSelfReviewRepository
                 .findByInterview(interview)
@@ -214,14 +222,16 @@ public class InterviewService {
     @Transactional
     public QnaSetCreateResponse createQnaSet(Long interviewId, QnaSetCreateRequest request) {
         User requestUser = requestUserContext.getRequestUser();
+
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
-        interviewValidator.validateInterviewReviewStatusQnaSetDraft(interview);
+        interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.QNA_SET_DRAFT);
 
         QnaSet createdQnaSet = qnaSetRepository.save(
                 QnaSet.create(request.questionText(), request.answerText(), false, interview, null));
-        return new QnaSetCreateResponse(createdQnaSet.getId());
+
+        return QnaSetCreateResponse.from(createdQnaSet);
     }
 
     private Company findOrSaveCompany(InterviewCreateRequest request) {

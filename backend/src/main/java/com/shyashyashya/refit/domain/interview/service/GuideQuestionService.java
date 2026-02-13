@@ -3,6 +3,7 @@ package com.shyashyashya.refit.domain.interview.service;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_FOUND;
 
 import com.shyashyashya.refit.domain.interview.model.Interview;
+import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
 import com.shyashyashya.refit.domain.interview.service.policy.InterviewGuideQuestionPolicy;
 import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
@@ -31,6 +32,7 @@ public class GuideQuestionService {
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, currentUser);
+        interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.LOG_DRAFT);
 
         String rawText = interview.getRawText();
 
