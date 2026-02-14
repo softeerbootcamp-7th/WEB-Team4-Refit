@@ -10,7 +10,7 @@ public record MyProfileResponse(
         @NotNull String nickname,
         @NotNull Long industryId,
         @NotNull Long jobCategoryId,
-        String profileImageUrl) {
+        @NotNull String profileImageUrl) {
 
     public static MyProfileResponse from(User user) {
         return MyProfileResponse.builder()
