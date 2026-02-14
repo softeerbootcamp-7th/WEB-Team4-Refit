@@ -44,7 +44,8 @@ public class StarAnalysisAsyncService {
 
         log.info("Send star analysis generate request to gemini. qnaSetId: {}", qnaSetId);
         CompletableFuture<GeminiGenerateResponse> reqFuture =
-                geminiClient.sendAsyncRequest(requestBody, GenerateModel.GEMINI_2_5_FLASH_LITE, STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC);
+                //geminiClient.sendAsyncRequest(requestBody, GenerateModel.GEMINI_2_5_FLASH_LITE, STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC);
+                geminiClient.sendAsyncRequest(requestBody, GenerateModel.GEMMA_3_27B_IT, STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC);
 
         return reqFuture
                 .thenApplyAsync(

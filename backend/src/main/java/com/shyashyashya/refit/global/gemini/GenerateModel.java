@@ -5,6 +5,7 @@ public enum GenerateModel {
     GEMINI_2_5_FLASH_LITE("gemini-2.5-flash-lite"),
     GEMINI_2_5_FLASH("gemini-2.5-flash"),
     GEMINI_3_FLASH("gemini-3-flash-preview"),
+    GEMINI_3_PRO("gemini-3-pro-preview"),
 
     GEMMA_3_1B_IT("gemma-3-1b-it"),
     GEMMA_3_4B_IT("gemma-3-4b-it"),
