@@ -73,6 +73,12 @@ public class StarAnalysisAsyncService {
 
     private StarAnalysisGeminiResponse parseStarAnalysisGeminiResponse(String text) {
         try {
+            if (text.startsWith("```json\n")) {
+                text = text.substring("```json\n".length());
+            }
+            if (text.endsWith("```")) {
+                text = text.substring(0, text.length() - "```".length());
+            }
             return objectMapper.readValue(text, StarAnalysisGeminiResponse.class);
         } catch (JsonProcessingException e) {
             throw new CustomException(STAR_ANALYSIS_PARSING_FAILED);
