@@ -26,6 +26,7 @@ public enum GenerateModel {
     public String id() {
         return id;
     }
+
     public String endpoint() {
         return endpoint;
     }
