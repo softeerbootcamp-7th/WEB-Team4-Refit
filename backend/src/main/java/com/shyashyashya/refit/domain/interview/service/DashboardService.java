@@ -2,6 +2,7 @@ package com.shyashyashya.refit.domain.interview.service;
 
 import static com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus.LOG_DRAFT;
 import static com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus.NOT_LOGGED;
+import static com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus.QNA_SET_DRAFT;
 import static com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus.SELF_REVIEW_DRAFT;
 
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardCalendarResponse;
@@ -35,7 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class DashboardService {
 
     private static final List<InterviewReviewStatus> REVIEW_NEEDED_STATUSES =
-            List.of(NOT_LOGGED, LOG_DRAFT, SELF_REVIEW_DRAFT);
+            List.of(NOT_LOGGED, LOG_DRAFT, QNA_SET_DRAFT, SELF_REVIEW_DRAFT);
 
     private final RequestUserContext requestUserContext;
     private final InterviewRepository interviewRepository;

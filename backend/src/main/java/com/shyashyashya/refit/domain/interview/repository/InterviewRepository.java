@@ -37,7 +37,7 @@ public interface InterviewRepository extends JpaRepository<Interview, Long>, Int
            AND i.industry = :industry
            AND i.jobCategory = :jobCategory
     """)
-    List<Interview> findAllSimilarInterviewsByUser(User user, Industry interview, JobCategory jobCategory);
+    List<Interview> findAllSimilarInterviewsByUser(User user, Industry industry, JobCategory jobCategory);
 
     @Query("""
         SELECT i
