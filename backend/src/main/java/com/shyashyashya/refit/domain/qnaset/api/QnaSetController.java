@@ -12,9 +12,11 @@ import com.shyashyashya.refit.domain.qnaset.dto.response.QnaSetScrapFolderRespon
 import com.shyashyashya.refit.domain.qnaset.service.QnaSetService;
 import com.shyashyashya.refit.domain.qnaset.service.StarAnalysisAsyncService;
 import com.shyashyashya.refit.global.dto.ApiResponse;
+import com.shyashyashya.refit.global.gemini.GeminiEmbeddingResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -122,5 +124,15 @@ public class QnaSetController {
         var body = qnaSetService.getMyScrapFoldersWithQnaSetContainingInfo(qnaSetId, pageable);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
+    }
+
+    // TODO API 삭제: Gemini Embedding 생성 테스트용 임시 메소드
+    @Operation(summary = "임베딩 생성 테스트")
+    @PostMapping("/test-embedding")
+    public CompletableFuture<ResponseEntity<ApiResponse<GeminiEmbeddingResponse>>> getGeminiEmbedding(
+            @RequestBody @NotBlank String text) {
+        return starAnalysisAsyncService
+                .getTextEmbedding(text)
+                .thenApply(rsp -> ResponseEntity.ok(ApiResponse.success(COMMON200, rsp)));
     }
 }
