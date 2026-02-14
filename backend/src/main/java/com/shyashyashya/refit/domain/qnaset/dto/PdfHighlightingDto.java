@@ -2,9 +2,13 @@ package com.shyashyashya.refit.domain.qnaset.dto;
 
 import com.shyashyashya.refit.domain.qnaset.model.PdfHighlighting;
 import com.shyashyashya.refit.domain.qnaset.model.PdfHighlightingRect;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
-public record PdfHighlightingDto(Long pdfHighlightingId, String highlightingText, List<PdfHighlightingRectDto> rects) {
+public record PdfHighlightingDto(
+        @NotNull Long pdfHighlightingId,
+        @NotNull String highlightingText,
+        @NotNull List<PdfHighlightingRectDto> rects) {
 
     public static PdfHighlightingDto of(PdfHighlighting pdfHighlighting, List<PdfHighlightingRect> rects) {
         List<PdfHighlightingRectDto> pdfHighlightingRectDtos =
