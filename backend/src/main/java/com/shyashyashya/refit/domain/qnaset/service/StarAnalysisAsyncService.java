@@ -3,6 +3,7 @@ package com.shyashyashya.refit.domain.qnaset.service;
 import static com.shyashyashya.refit.domain.qnaset.constant.StarAnalysisConstant.STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC;
 import static com.shyashyashya.refit.global.exception.ErrorCode.STAR_ANALYSIS_CREATE_FAILED;
 import static com.shyashyashya.refit.global.exception.ErrorCode.STAR_ANALYSIS_PARSING_FAILED;
+import static com.shyashyashya.refit.global.exception.ErrorCode.TEXT_EMBED_FAILED;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,6 +13,8 @@ import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.StarAnalysis;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.gemini.GeminiClient;
+import com.shyashyashya.refit.global.gemini.GeminiEmbeddingRequest;
+import com.shyashyashya.refit.global.gemini.GeminiEmbeddingResponse;
 import com.shyashyashya.refit.global.gemini.GeminiGenerateRequest;
 import com.shyashyashya.refit.global.gemini.GeminiGenerateResponse;
 import com.shyashyashya.refit.global.gemini.GenerateModel;
@@ -61,6 +64,28 @@ public class StarAnalysisAsyncService {
                         log.warn(err.getMessage(), err);
                     }
                     throw new CustomException(STAR_ANALYSIS_CREATE_FAILED);
+                });
+    }
+
+    // TODO 메소드 삭제: Gemini Embedding 생성 테스트용 임시 메소드
+    public CompletableFuture<GeminiEmbeddingResponse> getTextEmbedding(String text) {
+
+        GeminiEmbeddingRequest requestBody = GeminiEmbeddingRequest.from(
+                text, GeminiEmbeddingRequest.TaskType.CLUSTERING, GeminiEmbeddingRequest.OutputDimensionality.D128);
+
+        CompletableFuture<GeminiEmbeddingResponse> reqFuture =
+                geminiClient.sendAsyncEmbeddingRequest(requestBody, STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC);
+
+        return reqFuture
+                .thenApplyAsync(
+                        response -> {
+                            log.info("Embedding request result: ");
+                            return response;
+                        },
+                        geminiPostProcessExecutor)
+                .exceptionally(e -> {
+                    log.error(e.getMessage(), e);
+                    throw new CustomException(TEXT_EMBED_FAILED);
                 });
     }
 
