@@ -188,4 +188,14 @@ public abstract class IntegrationTest {
         Company company = Company.create(companyName, "logo.url", true);
         return companyRepository.save(company);
     }
+
+    protected Industry createAndSaveIndustry(String industryName) {
+        Industry industry = Industry.create(industryName);
+        return industryRepository.save(industry);
+    }
+
+    protected JobCategory createAndSaveJobCategory(String jobCategoryName) {
+        JobCategory jobCategory = JobCategory.create(jobCategoryName);
+        return jobCategoryRepository.save(jobCategory);
+    }
 }
