@@ -14,15 +14,6 @@ interface FolderModalProps {
 
 const FolderModal = ({ isOpen, onClose, onSubmit, initialName = '', title, submitLabel }: FolderModalProps) => {
   const [name, setName] = useState(initialName)
-  const [prevIsOpen, setPrevIsOpen] = useState(false)
-
-  if (isOpen && (!prevIsOpen || name !== initialName)) {
-    setName(initialName)
-    setPrevIsOpen(true)
-  }
-  if (!isOpen && prevIsOpen) {
-    setPrevIsOpen(false)
-  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
