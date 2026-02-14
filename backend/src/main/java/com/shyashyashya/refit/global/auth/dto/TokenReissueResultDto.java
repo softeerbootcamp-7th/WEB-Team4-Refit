@@ -1,11 +1,15 @@
 package com.shyashyashya.refit.global.auth.dto;
 
 import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 
 @Builder(access = AccessLevel.PRIVATE)
-public record TokenReissueResultDto(boolean isReissueProcessed, boolean isNeedSignUp, TokenPairDto tokenPair) {
+public record TokenReissueResultDto(
+        @NotNull boolean isReissueProcessed,
+        @NotNull boolean isNeedSignUp,
+        @NotNull TokenPairDto tokenPair) {
 
     public static TokenReissueResultDto createReissueProcessed(
             @Nullable Long userId, String accessToken, String refreshToken) {

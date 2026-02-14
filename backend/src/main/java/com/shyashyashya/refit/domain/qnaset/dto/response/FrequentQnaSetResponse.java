@@ -3,17 +3,18 @@ package com.shyashyashya.refit.domain.qnaset.dto.response;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 
 @Builder(access = AccessLevel.PRIVATE)
 public record FrequentQnaSetResponse(
-        String industryName,
-        String jobCategoryName,
-        InterviewType interviewType,
-        LocalDateTime interviewStartAt,
-        String question) {
+        @NotNull String industryName,
+        @NotNull String jobCategoryName,
+        @NotNull InterviewType interviewType,
+        @NotNull LocalDateTime interviewStartAt,
+        @NotNull String question) {
     public static FrequentQnaSetResponse from(QnaSet qnaSet) {
         // TODO : 질문에서 민감 정보 삭제
         Interview interview = qnaSet.getInterview();

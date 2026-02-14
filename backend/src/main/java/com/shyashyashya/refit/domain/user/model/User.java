@@ -34,7 +34,7 @@ public class User extends BaseEntity {
     @Column(columnDefinition = "varchar(30)", nullable = false, unique = true)
     private String nickname;
 
-    @Column(columnDefinition = "varchar(2048)")
+    @Column(columnDefinition = "varchar(2048)", nullable = false)
     private String profileImageUrl;
 
     @Column(nullable = false)

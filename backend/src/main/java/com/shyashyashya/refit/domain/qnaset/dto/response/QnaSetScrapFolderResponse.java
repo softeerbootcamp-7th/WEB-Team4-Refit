@@ -1,3 +1,8 @@
 package com.shyashyashya.refit.domain.qnaset.dto.response;
 
-public record QnaSetScrapFolderResponse(Long scrapFolderId, String scrapFolderName, boolean contains) {}
+import jakarta.validation.constraints.NotNull;
+
+public record QnaSetScrapFolderResponse(
+        @NotNull Long scrapFolderId,
+        @NotNull String scrapFolderName,
+        @NotNull boolean contains) {}

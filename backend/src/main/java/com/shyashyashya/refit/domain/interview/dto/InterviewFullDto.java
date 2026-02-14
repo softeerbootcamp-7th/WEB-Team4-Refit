@@ -6,6 +6,7 @@ import com.shyashyashya.refit.domain.interview.model.InterviewSelfReview;
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetSelfReview;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -14,17 +15,17 @@ import lombok.Builder;
 
 @Builder(access = AccessLevel.PRIVATE)
 public record InterviewFullDto(
-        Long interviewId,
-        InterviewType interviewType,
-        LocalDateTime interviewStartAt,
-        InterviewResultStatus interviewResultStatus,
-        String company,
-        Long industryId,
-        Long jobCategoryId,
+        @NotNull Long interviewId,
+        @NotNull InterviewType interviewType,
+        @NotNull LocalDateTime interviewStartAt,
+        @NotNull InterviewResultStatus interviewResultStatus,
+        @NotNull String company,
+        @NotNull Long industryId,
+        @NotNull Long jobCategoryId,
         String jobRole,
-        LocalDateTime updatedAt,
+        @NotNull LocalDateTime updatedAt,
         String pdfUrl,
-        List<QnaSetDto> qnaSets,
+        @NotNull List<QnaSetDto> qnaSets,
         InterviewSelfReviewDto interviewSelfReview) {
     public static InterviewFullDto fromInterviewWithEmptyQnaSets(Interview interview) {
         return InterviewFullDto.builder()

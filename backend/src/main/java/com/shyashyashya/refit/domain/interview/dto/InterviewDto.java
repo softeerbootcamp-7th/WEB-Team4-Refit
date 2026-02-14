@@ -6,20 +6,21 @@ import com.shyashyashya.refit.domain.interview.model.InterviewResultStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 public record InterviewDto(
-        Long interviewId,
-        InterviewType interviewType,
-        LocalDateTime interviewStartAt,
-        InterviewResultStatus interviewResultStatus,
-        InterviewReviewStatus interviewReviewStatus,
+        @NotNull Long interviewId,
+        @NotNull InterviewType interviewType,
+        @NotNull LocalDateTime interviewStartAt,
+        @NotNull InterviewResultStatus interviewResultStatus,
+        @NotNull InterviewReviewStatus interviewReviewStatus,
         String interviewRawText,
-        String companyName,
-        Long jobCategoryId,
-        String jobCategoryName,
-        LocalDateTime updatedAt,
-        LocalDateTime createdAt) {
+        @NotNull String companyName,
+        @NotNull Long jobCategoryId,
+        @NotNull String jobCategoryName,
+        @NotNull LocalDateTime updatedAt,
+        @NotNull LocalDateTime createdAt) {
     public static InterviewDto from(Interview interview) {
         Company company = interview.getCompany();
         JobCategory jobCategory = interview.getJobCategory();
