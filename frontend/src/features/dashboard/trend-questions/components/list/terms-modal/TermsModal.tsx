@@ -30,7 +30,7 @@ export default function TermsModal({ open, onClose }: TermsModalProps) {
   }
 
   return (
-    <Modal open={open} onClose={handleClose} title="트렌드 질문 모아보기 서비스 이용 약관 동의" size="md">
+    <Modal open={open} onClose={handleClose} title="트렌드 질문 모아보기 서비스 이용 약관 동의" size="lg">
       <div className="flex flex-col gap-6">
         <p className="body-m-medium text-center text-gray-600">
           본 동의는 트렌드 질문 모아보기 서비스 이용을 위한 필수 동의 약관입니다.
