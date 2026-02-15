@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 public interface CompanyRepository extends JpaRepository<Company, Long> {
     Optional<Company> findByName(String name);
 
+    // TODO: QueryDSL 적용
     @Query(value = """
         SELECT new com.shyashyashya.refit.domain.company.api.response.CompanyResponse(c.id, c.name)
           FROM Company c
