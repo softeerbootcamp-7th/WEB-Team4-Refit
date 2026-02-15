@@ -119,6 +119,57 @@ export const useUpdateQnaSet = <TError = unknown, TContext = unknown>(
   return useMutation(getUpdateQnaSetMutationOptions(options), queryClient)
 }
 /**
+ * 질문 답변 세트 삭제는 'QnaSetDraft' 상태에서만 가능합니다.
+ * @summary 지정한 질문 답변 세트를 삭제합니다.
+ */
+export const getDeleteQnaSetUrl = (qnaSetId: number) => {
+  return `/qna-set/${qnaSetId}`
+}
+
+export const deleteQnaSet = async (qnaSetId: number, options?: RequestInit): Promise<ApiResponseVoid> => {
+  return customFetch<ApiResponseVoid>(getDeleteQnaSetUrl(qnaSetId), {
+    ...options,
+    method: 'DELETE',
+  })
+}
+
+export const getDeleteQnaSetMutationOptions = <TError = unknown, TContext = unknown>(options?: {
+  mutation?: UseMutationOptions<Awaited<ReturnType<typeof deleteQnaSet>>, TError, { qnaSetId: number }, TContext>
+  request?: SecondParameter<typeof customFetch>
+}): UseMutationOptions<Awaited<ReturnType<typeof deleteQnaSet>>, TError, { qnaSetId: number }, TContext> => {
+  const mutationKey = ['deleteQnaSet']
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
+
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteQnaSet>>, { qnaSetId: number }> = (props) => {
+    const { qnaSetId } = props ?? {}
+
+    return deleteQnaSet(qnaSetId, requestOptions)
+  }
+
+  return { mutationFn, ...mutationOptions }
+}
+
+export type DeleteQnaSetMutationResult = NonNullable<Awaited<ReturnType<typeof deleteQnaSet>>>
+
+export type DeleteQnaSetMutationError = unknown
+
+/**
+ * @summary 지정한 질문 답변 세트를 삭제합니다.
+ */
+export const useDeleteQnaSet = <TError = unknown, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<Awaited<ReturnType<typeof deleteQnaSet>>, TError, { qnaSetId: number }, TContext>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<Awaited<ReturnType<typeof deleteQnaSet>>, TError, { qnaSetId: number }, TContext> => {
+  return useMutation(getDeleteQnaSetMutationOptions(options), queryClient)
+}
+/**
  * @summary 지정한 질문 답변 세트에 대해 등록된 PDF 하이라이팅 정보를 조회합니다.
  */
 export const getGetPdfHighlightingsUrl = (qnaSetId: number) => {
