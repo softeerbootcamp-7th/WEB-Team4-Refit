@@ -129,11 +129,20 @@ public class QnaSetController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "지정한 질문 답변 세트를 주어진 스크랩 폴더에 추가합니다.")
+    @Operation(summary = "지정한 질문 답변 세트를 주어진 스크랩 폴더에 추가합니다.", description = "이미 추가된 상태인 경우 아무 일도 발생하지 않습니다.")
     @PostMapping("/{qnaSetId}/scrap-folder/{scrapFolderId}")
     public ResponseEntity<ApiResponse<Void>> addQnaSetToScrapFolder(
             @PathVariable Long qnaSetId, @PathVariable Long scrapFolderId) {
         qnaSetService.addQnaSetToScrapFolder(qnaSetId, scrapFolderId);
+        var response = ApiResponse.success(COMMON200);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "지정한 질문 답변 세트를 주어진 스크랩 폴더에서 제거합니다.", description = "이미 제거된 상태인 경우 아무 일도 발생하지 않습니다.")
+    @DeleteMapping("/{qnaSetId}/scrap-folder/{scrapFolderId}")
+    public ResponseEntity<ApiResponse<Void>> removeQnaSetFromScrapFolder(
+            @PathVariable Long qnaSetId, @PathVariable Long scrapFolderId) {
+        qnaSetService.removeQnaSetFromScrapFolder(qnaSetId, scrapFolderId);
         var response = ApiResponse.success(COMMON200);
         return ResponseEntity.ok(response);
     }
