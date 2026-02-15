@@ -302,6 +302,23 @@ public class QnaSetIntegrationTest extends IntegrationTest {
                     .body("message", equalTo(QNA_SET_NOT_FOUND.getMessage()))
                     .body("result", nullValue());
         }
+
+        @Test
+        void 다른_사람의_질답_세트_수정에_실패한다() {
+            // given
+            QnaSetUpdateRequest qnaSetUpdateRequest = new QnaSetUpdateRequest("update question", "update answer", null);
+
+            // when & then
+            given(spec)
+                    .body(qnaSetUpdateRequest)
+            .when()
+                    .put("/qna-set/" + otherUserQnaSetId)
+            .then()
+                    .statusCode(403)
+                    .body("code", equalTo(INTERVIEW_NOT_ACCESSIBLE.name()))
+                    .body("message", equalTo(INTERVIEW_NOT_ACCESSIBLE.getMessage()))
+                    .body("result", nullValue());
+        }
     }
 
     @Nested
@@ -334,6 +351,35 @@ public class QnaSetIntegrationTest extends IntegrationTest {
                     .statusCode(400)
                     .body("code", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.name()))
                     .body("message", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.getMessage()))
+                    .body("result", nullValue());
+        }
+        @Test
+        void 질답_세트가_존재하지_않으면_질답_세트_삭제에_실패한다() {
+            // given
+
+            // when & then
+            given(spec)
+            .when()
+                    .delete("/qna-set/" + Long.MAX_VALUE)
+            .then()
+                    .statusCode(404)
+                    .body("code", equalTo(QNA_SET_NOT_FOUND.name()))
+                    .body("message", equalTo(QNA_SET_NOT_FOUND.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @Test
+        void 다른_사람의_질답_세트_삭제에_실패한다() {
+            // given
+
+            // when & then
+            given(spec)
+            .when()
+                    .delete("/qna-set/" + otherUserQnaSetId)
+            .then()
+                    .statusCode(403)
+                    .body("code", equalTo(INTERVIEW_NOT_ACCESSIBLE.name()))
+                    .body("message", equalTo(INTERVIEW_NOT_ACCESSIBLE.getMessage()))
                     .body("result", nullValue());
         }
     }
@@ -375,22 +421,69 @@ public class QnaSetIntegrationTest extends IntegrationTest {
                     .body("result", nullValue());
         }
 
-        @Test
-        void 인터뷰가_질답_세트_검토_중_상태가_아니면_PDF_하이라이팅_등록에_실패한다() {
+        @ParameterizedTest
+        @EnumSource(
+                value = InterviewReviewStatus.class,
+                mode = EnumSource.Mode.EXCLUDE,
+                names = "QNA_SET_DRAFT"
+        )
+        void 인터뷰가_질답_세트_검토_중_상태가_아니면_PDF_하이라이팅_등록에_실패한다(InterviewReviewStatus reviewStatus) {
             // given
+            var interviewCreateRequest = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            var interview = createAndSaveInterview(interviewCreateRequest, reviewStatus);
+            var qnaSetCreateRequest = new QnaSetCreateRequest("test question text", "test answer text");
+            var qnaSetId = createAndSaveQnaSet(qnaSetCreateRequest, interview).getId();
+
             List<PdfHighlightingUpdateRequest> request = createPdfHighlightUpdateRequest();
 
             // when & then
             given(spec)
                     .body(request)
             .when()
-                    .put("/qna-set/" + debriefCompletedQnaSetId + "/pdf-highlightings")
+                    .put("/qna-set/" + qnaSetId + "/pdf-highlightings")
             .then()
                     .statusCode(400)
                     .body("code", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.name()))
                     .body("message", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.getMessage()))
                     .body("result", nullValue());
         }
+
+        @Test
+        void 존재하지_않는_질답에_PDF_하이라이팅_등록을_시도하면_실패한다() {
+            // given
+            List<PdfHighlightingUpdateRequest> request = createPdfHighlightUpdateRequest();
+
+            // when & then
+            given(spec)
+                    .body(request)
+                    .when()
+                    .put("/qna-set/" + Long.MAX_VALUE + "/pdf-highlightings")
+                    .then()
+                    .statusCode(404)
+                    .body("code", equalTo(QNA_SET_NOT_FOUND.name()))
+                    .body("message", equalTo(QNA_SET_NOT_FOUND.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @Test
+        void 타인의_질답에_PDF_하이라이팅_등록을_시도하면_실패한다() {
+            // given
+            List<PdfHighlightingUpdateRequest> request = createPdfHighlightUpdateRequest();
+
+            // when & then
+            given(spec)
+                    .body(request)
+                    .when()
+                    .put("/qna-set/" + otherUserQnaSetId + "/pdf-highlightings")
+                    .then()
+                    .statusCode(403)
+                    .body("code", equalTo(INTERVIEW_NOT_ACCESSIBLE.name()))
+                    .body("message", equalTo(INTERVIEW_NOT_ACCESSIBLE.getMessage()))
+                    .body("result", nullValue());
+        }
+
+
     }
 
     @Nested
