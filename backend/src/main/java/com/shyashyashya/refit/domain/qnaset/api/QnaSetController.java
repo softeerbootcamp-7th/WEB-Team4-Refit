@@ -128,4 +128,13 @@ public class QnaSetController {
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
+
+    @Operation(summary = "지정한 질문 답변 세트를 주어진 스크랩 폴더에 추가합니다.")
+    @PostMapping("/{qnaSetId}/scrap-folder/{scrapFolderId}")
+    public ResponseEntity<ApiResponse<Void>> addQnaSetToScrapFolder(
+            @PathVariable Long qnaSetId, @PathVariable Long scrapFolderId) {
+        qnaSetService.addQnaSetToScrapFolder(qnaSetId, scrapFolderId);
+        var response = ApiResponse.success(COMMON200);
+        return ResponseEntity.ok(response);
+    }
 }
