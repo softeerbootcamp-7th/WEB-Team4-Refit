@@ -80,7 +80,7 @@ export type StarLevel =
 type ApiQuestionSearchFilter = NonNullable<QnaSetSearchRequest['searchFilter']>
 
 export type QuestionFilter = {
-  keyword: QnaSetSearchRequest['keyword'] extends string | undefined ? string : never
+  keyword: string
   sort: string
   hasStarAnalysis: ApiQuestionSearchFilter['hasStarAnalysis'] | null
   sInclusionLevels: NonNullable<ApiQuestionSearchFilter['sInclusionLevels']>

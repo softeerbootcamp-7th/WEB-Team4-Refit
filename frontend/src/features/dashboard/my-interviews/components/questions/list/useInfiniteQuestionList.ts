@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { searchMyQnaSet } from '@/apis/generated/qna-set-my-controller/qna-set-my-controller'
+import type { ApiResponsePageQnaSetSearchResponse } from '@/apis/generated/refit-api.schemas'
 import type { QuestionFilter } from '@/types/interview'
 import { mapSearchQuestionToQnaCard, type QnaCardItemModel } from '../mappers'
 
@@ -81,8 +82,8 @@ const hasActiveFilterCondition = (filter: QuestionFilter) =>
   filter.aInclusionLevels.length > 0 ||
   filter.rInclusionLevels.length > 0
 
-const toFlatQuestionItems = (pages: Array<{ result?: { content?: unknown[] } }> | undefined): QnaCardItemModel[] =>
-  (pages ?? []).flatMap((page) => (page.result?.content ?? []).map((item) => mapSearchQuestionToQnaCard(item as never)))
+const toFlatQuestionItems = (pages: ApiResponsePageQnaSetSearchResponse[] | undefined): QnaCardItemModel[] =>
+  (pages ?? []).flatMap((page) => (page.result?.content ?? []).map((item) => mapSearchQuestionToQnaCard(item)))
 
 const getEmptyMessage = ({ isError, hasFilterCondition }: { isError: boolean; hasFilterCondition: boolean }) => {
   if (isError) return '질문 목록을 불러오지 못했어요. 잠시 후 다시 시도해 주세요.'
