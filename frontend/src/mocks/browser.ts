@@ -6,13 +6,16 @@ import {
   getGetMyDifficultQnaSetsMockHandler,
   getGetUpcomingInterviewsMockHandler,
 } from '@/apis/generated/dashboard-api/dashboard-api.msw'
+import { getGetIndustriesMockHandler } from '@/apis/generated/industry-api/industry-api.msw'
 import {
   getGetInterviewFullMockHandler,
   getUpdateKptSelfReviewMockHandler,
   getUpdateRawTextMockHandler,
 } from '@/apis/generated/interview-api/interview-api.msw'
+import { getGetAllJobCategoriesMockHandler } from '@/apis/generated/job-category-api/job-category-api.msw'
 import {
   getCreateStarAnalysisMockHandler,
+  getGetFrequentQuestionsMockHandler,
   getGetPdfHighlightingsMockHandler,
   getGetScrapFoldersContainingQnaSetMockHandler,
   getUpdatePdfHighlightingMockHandler,
@@ -23,9 +26,30 @@ import { debriefIncompletedMock } from '@/mocks/data/debrief-incompleted'
 import { mockInterviewFull } from '@/mocks/data/interview-full'
 import { mockScrapFolders } from '@/mocks/data/scrap-folders'
 import { mockStarAnalysis } from '@/mocks/data/star-analysis'
+import {
+  getMockFrequentQuestions,
+  mockIndustriesResponse,
+  mockJobCategoriesResponse,
+} from '@/mocks/data/trend-questions'
 import { updateRawTextMock } from '@/mocks/data/update-raw-text'
 
 export const worker = setupWorker(
+  getGetIndustriesMockHandler(mockIndustriesResponse),
+  getGetAllJobCategoriesMockHandler(mockJobCategoriesResponse),
+  getGetFrequentQuestionsMockHandler((info) => {
+    const url = new URL(info.request.url)
+    const parseIds = (key: 'industryIds' | 'jobCategoryIds') => {
+      const repeated = url.searchParams.getAll(key)
+      const source = repeated.length > 0 ? repeated : (url.searchParams.get(key) ?? '').split(',')
+      return source.map((v) => Number(v)).filter((v) => Number.isFinite(v))
+    }
+    const industryIds = parseIds('industryIds')
+    const jobCategoryIds = parseIds('jobCategoryIds')
+    const page = Number(url.searchParams.get('page') ?? '0')
+    const size = Number(url.searchParams.get('size') ?? '100')
+
+    return getMockFrequentQuestions({ industryIds, jobCategoryIds, page, size })
+  }),
   getGetMyDifficultQnaSetsMockHandler(),
   getGetUpcomingInterviewsMockHandler(),
   getGetDebriefIncompletedInterviewsMockHandler(debriefIncompletedMock),
