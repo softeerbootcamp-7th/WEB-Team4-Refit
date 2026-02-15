@@ -25,26 +25,35 @@ public class Company {
     @Column(name = "company_name", columnDefinition = "varchar(20)", unique = true)
     private String name;
 
+    @Column(name = "search_name", columnDefinition = "varchar(80)")
+    private String searchName;
+
     @Column(name = "company_logo_url", columnDefinition = "varchar(2048)")
     private String logoUrl;
 
     @Column(nullable = false)
     private boolean isSearchAllowed;
 
+    public void allowSearch() {
+        this.isSearchAllowed = true;
+    }
+
     /*
      Factory Method
     */
-    public static Company create(String name, String logoUrl, boolean isSearchAllowed) {
+    public static Company create(String name, String searchName, String logoUrl) {
         return Company.builder()
                 .name(name)
+                .searchName(searchName)
                 .logoUrl(logoUrl)
-                .isSearchAllowed(isSearchAllowed)
+                .isSearchAllowed(false)
                 .build();
     }
 
     @Builder(access = AccessLevel.PRIVATE)
-    private Company(String name, String logoUrl, boolean isSearchAllowed) {
+    private Company(String name, String searchName, String logoUrl, boolean isSearchAllowed) {
         this.name = name;
+        this.searchName = searchName;
         this.logoUrl = logoUrl;
         this.isSearchAllowed = isSearchAllowed;
     }
