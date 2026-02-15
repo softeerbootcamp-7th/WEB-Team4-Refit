@@ -15,7 +15,7 @@ public class GeminiClient {
     private final GeminiProperty geminiProperty;
     private final WebClient webClient;
 
-    public CompletableFuture<GeminiGenerateResponse> sendAsyncGenerateRequest(
+    public CompletableFuture<GeminiGenerateResponse> sendAsyncTextGenerateRequest(
             GeminiGenerateRequest requestBody, GenerateModel model, Long timeoutSec) {
         return webClient
                 .post()

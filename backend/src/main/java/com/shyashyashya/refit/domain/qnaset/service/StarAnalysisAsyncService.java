@@ -49,7 +49,7 @@ public class StarAnalysisAsyncService {
         CompletableFuture<GeminiGenerateResponse> reqFuture =
                 // geminiClient.sendAsyncRequest(requestBody, GenerateModel.GEMINI_2_5_FLASH_LITE,
                 // STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC);
-                geminiClient.sendAsyncGenerateRequest(
+                geminiClient.sendAsyncTextGenerateRequest(
                         requestBody, GenerateModel.GEMMA_3_27B_IT, STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC);
 
         return reqFuture
