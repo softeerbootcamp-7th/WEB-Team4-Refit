@@ -14,12 +14,12 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
     @Query(value = """
         SELECT new com.shyashyashya.refit.domain.company.api.response.CompanyResponse(c.id, c.name)
           FROM Company c
-         WHERE c.searchName LIKE CONCAT(:query, '%')
+         WHERE LOWER(c.searchName) LIKE LOWER(CONCAT(:query, '%'))
            AND c.isSearchAllowed = TRUE
     """, countQuery = """
         SELECT COUNT(c)
           FROM Company c
-         WHERE c.searchName LIKE CONCAT(:query, '%')
+         WHERE LOWER(c.searchName) LIKE LOWER(CONCAT(:query, '%'))
            AND c.isSearchAllowed = TRUE
     """)
     Page<CompanyResponse> findAllBySearchQuery(String query, Pageable pageable);
