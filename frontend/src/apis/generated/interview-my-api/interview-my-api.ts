@@ -39,7 +39,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
 
  * @summary 내가 복기 완료한 면접을 검색합니다.
  */
-export const getSearchInterviewsUrl = (params: SearchInterviewsParams) => {
+export const getSearchInterviewsUrl = (params?: SearchInterviewsParams) => {
   const normalizedParams = new URLSearchParams()
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -55,7 +55,7 @@ export const getSearchInterviewsUrl = (params: SearchInterviewsParams) => {
 
 export const searchInterviews = async (
   interviewSearchRequest: InterviewSearchRequest,
-  params: SearchInterviewsParams,
+  params?: SearchInterviewsParams,
   options?: RequestInit,
 ): Promise<ApiResponsePageInterviewDto> => {
   return customFetch<ApiResponsePageInterviewDto>(getSearchInterviewsUrl(params), {
@@ -70,14 +70,14 @@ export const getSearchInterviewsMutationOptions = <TError = unknown, TContext = 
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof searchInterviews>>,
     TError,
-    { data: InterviewSearchRequest; params: SearchInterviewsParams },
+    { data: InterviewSearchRequest; params?: SearchInterviewsParams },
     TContext
   >
   request?: SecondParameter<typeof customFetch>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof searchInterviews>>,
   TError,
-  { data: InterviewSearchRequest; params: SearchInterviewsParams },
+  { data: InterviewSearchRequest; params?: SearchInterviewsParams },
   TContext
 > => {
   const mutationKey = ['searchInterviews']
@@ -89,7 +89,7 @@ export const getSearchInterviewsMutationOptions = <TError = unknown, TContext = 
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof searchInterviews>>,
-    { data: InterviewSearchRequest; params: SearchInterviewsParams }
+    { data: InterviewSearchRequest; params?: SearchInterviewsParams }
   > = (props) => {
     const { data, params } = props ?? {}
 
@@ -111,7 +111,7 @@ export const useSearchInterviews = <TError = unknown, TContext = unknown>(
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof searchInterviews>>,
       TError,
-      { data: InterviewSearchRequest; params: SearchInterviewsParams },
+      { data: InterviewSearchRequest; params?: SearchInterviewsParams },
       TContext
     >
     request?: SecondParameter<typeof customFetch>
@@ -120,7 +120,7 @@ export const useSearchInterviews = <TError = unknown, TContext = unknown>(
 ): UseMutationResult<
   Awaited<ReturnType<typeof searchInterviews>>,
   TError,
-  { data: InterviewSearchRequest; params: SearchInterviewsParams },
+  { data: InterviewSearchRequest; params?: SearchInterviewsParams },
   TContext
 > => {
   return useMutation(getSearchInterviewsMutationOptions(options), queryClient)

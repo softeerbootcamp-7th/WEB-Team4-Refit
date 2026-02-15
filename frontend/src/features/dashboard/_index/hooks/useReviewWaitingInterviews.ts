@@ -1,18 +1,17 @@
 import { useGetDebriefIncompletedInterviews } from '@/apis/generated/dashboard-api/dashboard-api'
+import type { DashboardDebriefIncompletedInterviewResponse } from '@/apis/generated/refit-api.schemas'
 import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
 import type { ReviewWaitingData } from '../components/review-waiting-interview/ReviewWaitingCard'
 
 export const useReviewWaitingInterviews = () => {
   const { data: response } = useGetDebriefIncompletedInterviews(
     {
-      pageable: {
-        page: 0,
-        size: 10,
-      },
+      page: 0,
+      size: 10,
     },
     {
       query: {
-        select: (data) => ({
+        select: (data): { content: DashboardDebriefIncompletedInterviewResponse[]; totalElements: number } => ({
           content: data?.result?.content ?? [],
           totalElements: data?.result?.totalElements ?? 0,
         }),

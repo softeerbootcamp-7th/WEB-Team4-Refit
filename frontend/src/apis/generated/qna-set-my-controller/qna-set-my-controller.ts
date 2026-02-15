@@ -40,7 +40,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
  * 나의 면접 질문들을 검색합니다. 조건을 넣지 않으면 전체 데이터를 조회합니다.
  * @summary 나의 면접 질문들을 검색합니다.
  */
-export const getSearchMyQnaSetUrl = (params: SearchMyQnaSetParams) => {
+export const getSearchMyQnaSetUrl = (params?: SearchMyQnaSetParams) => {
   const normalizedParams = new URLSearchParams()
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -56,7 +56,7 @@ export const getSearchMyQnaSetUrl = (params: SearchMyQnaSetParams) => {
 
 export const searchMyQnaSet = async (
   qnaSetSearchRequest: QnaSetSearchRequest,
-  params: SearchMyQnaSetParams,
+  params?: SearchMyQnaSetParams,
   options?: RequestInit,
 ): Promise<ApiResponsePageQnaSetSearchResponse> => {
   return customFetch<ApiResponsePageQnaSetSearchResponse>(getSearchMyQnaSetUrl(params), {
@@ -71,14 +71,14 @@ export const getSearchMyQnaSetMutationOptions = <TError = unknown, TContext = un
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof searchMyQnaSet>>,
     TError,
-    { data: QnaSetSearchRequest; params: SearchMyQnaSetParams },
+    { data: QnaSetSearchRequest; params?: SearchMyQnaSetParams },
     TContext
   >
   request?: SecondParameter<typeof customFetch>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof searchMyQnaSet>>,
   TError,
-  { data: QnaSetSearchRequest; params: SearchMyQnaSetParams },
+  { data: QnaSetSearchRequest; params?: SearchMyQnaSetParams },
   TContext
 > => {
   const mutationKey = ['searchMyQnaSet']
@@ -90,7 +90,7 @@ export const getSearchMyQnaSetMutationOptions = <TError = unknown, TContext = un
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof searchMyQnaSet>>,
-    { data: QnaSetSearchRequest; params: SearchMyQnaSetParams }
+    { data: QnaSetSearchRequest; params?: SearchMyQnaSetParams }
   > = (props) => {
     const { data, params } = props ?? {}
 
@@ -112,7 +112,7 @@ export const useSearchMyQnaSet = <TError = unknown, TContext = unknown>(
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof searchMyQnaSet>>,
       TError,
-      { data: QnaSetSearchRequest; params: SearchMyQnaSetParams },
+      { data: QnaSetSearchRequest; params?: SearchMyQnaSetParams },
       TContext
     >
     request?: SecondParameter<typeof customFetch>
@@ -121,7 +121,7 @@ export const useSearchMyQnaSet = <TError = unknown, TContext = unknown>(
 ): UseMutationResult<
   Awaited<ReturnType<typeof searchMyQnaSet>>,
   TError,
-  { data: QnaSetSearchRequest; params: SearchMyQnaSetParams },
+  { data: QnaSetSearchRequest; params?: SearchMyQnaSetParams },
   TContext
 > => {
   return useMutation(getSearchMyQnaSetMutationOptions(options), queryClient)
@@ -130,7 +130,7 @@ export const useSearchMyQnaSet = <TError = unknown, TContext = unknown>(
  * 나의 빈출 질문 카테고리 리스트와 각 카테고리 별 질문 개수를 질문 개수가 많은 카테고리 순으로 정렬하여 조회합니다.
  * @summary 나의 빈출 질문 카테고리 리스트와 각 카테고리 별 질문 개수를 조회합니다.
  */
-export const getGetMyFrequentQnaSetCategoriesUrl = (params: GetMyFrequentQnaSetCategoriesParams) => {
+export const getGetMyFrequentQnaSetCategoriesUrl = (params?: GetMyFrequentQnaSetCategoriesParams) => {
   const normalizedParams = new URLSearchParams()
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -147,7 +147,7 @@ export const getGetMyFrequentQnaSetCategoriesUrl = (params: GetMyFrequentQnaSetC
 }
 
 export const getMyFrequentQnaSetCategories = async (
-  params: GetMyFrequentQnaSetCategoriesParams,
+  params?: GetMyFrequentQnaSetCategoriesParams,
   options?: RequestInit,
 ): Promise<ApiResponsePageFrequentQnaSetCategoryResponse> => {
   return customFetch<ApiResponsePageFrequentQnaSetCategoryResponse>(getGetMyFrequentQnaSetCategoriesUrl(params), {
@@ -164,7 +164,7 @@ export const getGetMyFrequentQnaSetCategoriesQueryOptions = <
   TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>,
   TError = unknown,
 >(
-  params: GetMyFrequentQnaSetCategoriesParams,
+  params?: GetMyFrequentQnaSetCategoriesParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -193,7 +193,7 @@ export function useGetMyFrequentQnaSetCategories<
   TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>,
   TError = unknown,
 >(
-  params: GetMyFrequentQnaSetCategoriesParams,
+  params: undefined | GetMyFrequentQnaSetCategoriesParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>, TError, TData>> &
       Pick<
@@ -212,7 +212,7 @@ export function useGetMyFrequentQnaSetCategories<
   TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>,
   TError = unknown,
 >(
-  params: GetMyFrequentQnaSetCategoriesParams,
+  params?: GetMyFrequentQnaSetCategoriesParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>, TError, TData>> &
       Pick<
@@ -231,7 +231,7 @@ export function useGetMyFrequentQnaSetCategories<
   TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>,
   TError = unknown,
 >(
-  params: GetMyFrequentQnaSetCategoriesParams,
+  params?: GetMyFrequentQnaSetCategoriesParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -246,7 +246,7 @@ export function useGetMyFrequentQnaSetCategories<
   TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>,
   TError = unknown,
 >(
-  params: GetMyFrequentQnaSetCategoriesParams,
+  params?: GetMyFrequentQnaSetCategoriesParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -266,7 +266,7 @@ export const getGetMyFrequentQnaSetCategoriesSuspenseQueryOptions = <
   TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>,
   TError = unknown,
 >(
-  params: GetMyFrequentQnaSetCategoriesParams,
+  params?: GetMyFrequentQnaSetCategoriesParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -295,7 +295,7 @@ export function useGetMyFrequentQnaSetCategoriesSuspense<
   TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>,
   TError = unknown,
 >(
-  params: GetMyFrequentQnaSetCategoriesParams,
+  params: undefined | GetMyFrequentQnaSetCategoriesParams,
   options: {
     query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -306,7 +306,7 @@ export function useGetMyFrequentQnaSetCategoriesSuspense<
   TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>,
   TError = unknown,
 >(
-  params: GetMyFrequentQnaSetCategoriesParams,
+  params?: GetMyFrequentQnaSetCategoriesParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -317,7 +317,7 @@ export function useGetMyFrequentQnaSetCategoriesSuspense<
   TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>,
   TError = unknown,
 >(
-  params: GetMyFrequentQnaSetCategoriesParams,
+  params?: GetMyFrequentQnaSetCategoriesParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -332,7 +332,7 @@ export function useGetMyFrequentQnaSetCategoriesSuspense<
   TData = Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>,
   TError = unknown,
 >(
-  params: GetMyFrequentQnaSetCategoriesParams,
+  params?: GetMyFrequentQnaSetCategoriesParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategories>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -354,7 +354,7 @@ export function useGetMyFrequentQnaSetCategoriesSuspense<
  */
 export const getGetMyFrequentQnaSetCategoryQuestionsUrl = (
   categoryId: number,
-  params: GetMyFrequentQnaSetCategoryQuestionsParams,
+  params?: GetMyFrequentQnaSetCategoryQuestionsParams,
 ) => {
   const normalizedParams = new URLSearchParams()
 
@@ -373,7 +373,7 @@ export const getGetMyFrequentQnaSetCategoryQuestionsUrl = (
 
 export const getMyFrequentQnaSetCategoryQuestions = async (
   categoryId: number,
-  params: GetMyFrequentQnaSetCategoryQuestionsParams,
+  params?: GetMyFrequentQnaSetCategoryQuestionsParams,
   options?: RequestInit,
 ): Promise<ApiResponsePageFrequentQnaSetCategoryQuestionResponse> => {
   return customFetch<ApiResponsePageFrequentQnaSetCategoryQuestionResponse>(
@@ -397,7 +397,7 @@ export const getGetMyFrequentQnaSetCategoryQuestionsQueryOptions = <
   TError = unknown,
 >(
   categoryId: number,
-  params: GetMyFrequentQnaSetCategoryQuestionsParams,
+  params?: GetMyFrequentQnaSetCategoryQuestionsParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -427,7 +427,7 @@ export function useGetMyFrequentQnaSetCategoryQuestions<
   TError = unknown,
 >(
   categoryId: number,
-  params: GetMyFrequentQnaSetCategoryQuestionsParams,
+  params: undefined | GetMyFrequentQnaSetCategoryQuestionsParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>, TError, TData>> &
       Pick<
@@ -447,7 +447,7 @@ export function useGetMyFrequentQnaSetCategoryQuestions<
   TError = unknown,
 >(
   categoryId: number,
-  params: GetMyFrequentQnaSetCategoryQuestionsParams,
+  params?: GetMyFrequentQnaSetCategoryQuestionsParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>, TError, TData>> &
       Pick<
@@ -467,7 +467,7 @@ export function useGetMyFrequentQnaSetCategoryQuestions<
   TError = unknown,
 >(
   categoryId: number,
-  params: GetMyFrequentQnaSetCategoryQuestionsParams,
+  params?: GetMyFrequentQnaSetCategoryQuestionsParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -483,7 +483,7 @@ export function useGetMyFrequentQnaSetCategoryQuestions<
   TError = unknown,
 >(
   categoryId: number,
-  params: GetMyFrequentQnaSetCategoryQuestionsParams,
+  params?: GetMyFrequentQnaSetCategoryQuestionsParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -504,7 +504,7 @@ export const getGetMyFrequentQnaSetCategoryQuestionsSuspenseQueryOptions = <
   TError = unknown,
 >(
   categoryId: number,
-  params: GetMyFrequentQnaSetCategoryQuestionsParams,
+  params?: GetMyFrequentQnaSetCategoryQuestionsParams,
   options?: {
     query?: Partial<
       UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>, TError, TData>
@@ -536,7 +536,7 @@ export function useGetMyFrequentQnaSetCategoryQuestionsSuspense<
   TError = unknown,
 >(
   categoryId: number,
-  params: GetMyFrequentQnaSetCategoryQuestionsParams,
+  params: undefined | GetMyFrequentQnaSetCategoryQuestionsParams,
   options: {
     query: Partial<
       UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>, TError, TData>
@@ -550,7 +550,7 @@ export function useGetMyFrequentQnaSetCategoryQuestionsSuspense<
   TError = unknown,
 >(
   categoryId: number,
-  params: GetMyFrequentQnaSetCategoryQuestionsParams,
+  params?: GetMyFrequentQnaSetCategoryQuestionsParams,
   options?: {
     query?: Partial<
       UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>, TError, TData>
@@ -564,7 +564,7 @@ export function useGetMyFrequentQnaSetCategoryQuestionsSuspense<
   TError = unknown,
 >(
   categoryId: number,
-  params: GetMyFrequentQnaSetCategoryQuestionsParams,
+  params?: GetMyFrequentQnaSetCategoryQuestionsParams,
   options?: {
     query?: Partial<
       UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>, TError, TData>
@@ -582,7 +582,7 @@ export function useGetMyFrequentQnaSetCategoryQuestionsSuspense<
   TError = unknown,
 >(
   categoryId: number,
-  params: GetMyFrequentQnaSetCategoryQuestionsParams,
+  params?: GetMyFrequentQnaSetCategoryQuestionsParams,
   options?: {
     query?: Partial<
       UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyFrequentQnaSetCategoryQuestions>>, TError, TData>

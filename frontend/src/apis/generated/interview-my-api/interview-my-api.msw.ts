@@ -14,9 +14,9 @@ import type { RequestHandlerOptions } from 'msw'
 export const getSearchInterviewsResponseMock = (
   overrideResponse: Partial<ApiResponsePageInterviewDto> = {},
 ): ApiResponsePageInterviewDto => ({
-  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
+  isSuccess: faker.datatype.boolean(),
+  code: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  message: faker.string.alpha({ length: { min: 10, max: 20 } }),
   result: faker.helpers.arrayElement([
     {
       totalElements: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
@@ -24,38 +24,36 @@ export const getSearchInterviewsResponseMock = (
       size: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
       content: faker.helpers.arrayElement([
         Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({
-          interviewId: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
+          interviewId: faker.number.int({ min: undefined, max: undefined }),
           interviewType: faker.helpers.arrayElement([
-            faker.helpers.arrayElement([
-              'FIRST',
-              'SECOND',
-              'THIRD',
-              'BEHAVIORAL',
-              'TECHNICAL',
-              'EXECUTIVE',
-              'CULTURE_FIT',
-              'COFFEE_CHAT',
-              'PSEUDO',
-            ] as const),
-            undefined,
-          ]),
-          interviewStartAt: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]),
-          interviewResultStatus: faker.helpers.arrayElement([
-            faker.helpers.arrayElement(['WAIT', 'FAIL', 'PASS'] as const),
-            undefined,
-          ]),
+            'FIRST',
+            'SECOND',
+            'THIRD',
+            'BEHAVIORAL',
+            'TECHNICAL',
+            'EXECUTIVE',
+            'CULTURE_FIT',
+            'COFFEE_CHAT',
+            'PSEUDO',
+          ] as const),
+          interviewStartAt: faker.date.past().toISOString().slice(0, 19) + 'Z',
+          interviewResultStatus: faker.helpers.arrayElement(['WAIT', 'FAIL', 'PASS'] as const),
+          interviewReviewStatus: faker.helpers.arrayElement([
+            'NOT_LOGGED',
+            'LOG_DRAFT',
+            'QNA_SET_DRAFT',
+            'SELF_REVIEW_DRAFT',
+            'DEBRIEF_COMPLETED',
+          ] as const),
           interviewRawText: faker.helpers.arrayElement([
             faker.string.alpha({ length: { min: 10, max: 20 } }),
             undefined,
           ]),
-          companyName: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-          jobCategoryId: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-          jobCategoryName: faker.helpers.arrayElement([
-            faker.string.alpha({ length: { min: 10, max: 20 } }),
-            undefined,
-          ]),
-          updatedAt: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]),
-          createdAt: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]),
+          companyName: faker.string.alpha({ length: { min: 10, max: 20 } }),
+          jobCategoryId: faker.number.int({ min: undefined, max: undefined }),
+          jobCategoryName: faker.string.alpha({ length: { min: 10, max: 20 } }),
+          updatedAt: faker.date.past().toISOString().slice(0, 19) + 'Z',
+          createdAt: faker.date.past().toISOString().slice(0, 19) + 'Z',
         })),
         undefined,
       ]),
@@ -99,9 +97,9 @@ export const getSearchInterviewsResponseMock = (
 export const getGetMyInterviewDraftsResponseMock = (
   overrideResponse: Partial<ApiResponsePageInterviewSimpleDto> = {},
 ): ApiResponsePageInterviewSimpleDto => ({
-  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
+  isSuccess: faker.datatype.boolean(),
+  code: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  message: faker.string.alpha({ length: { min: 10, max: 20 } }),
   result: faker.helpers.arrayElement([
     {
       totalElements: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
@@ -109,41 +107,36 @@ export const getGetMyInterviewDraftsResponseMock = (
       size: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
       content: faker.helpers.arrayElement([
         Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({
-          interviewId: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
+          interviewId: faker.number.int({ min: undefined, max: undefined }),
           interviewType: faker.helpers.arrayElement([
-            faker.helpers.arrayElement([
-              'FIRST',
-              'SECOND',
-              'THIRD',
-              'BEHAVIORAL',
-              'TECHNICAL',
-              'EXECUTIVE',
-              'CULTURE_FIT',
-              'COFFEE_CHAT',
-              'PSEUDO',
-            ] as const),
-            undefined,
-          ]),
-          interviewStartAt: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]),
-          companyInfo: faker.helpers.arrayElement([
-            {
-              companyId: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-              companyName: faker.helpers.arrayElement([
-                faker.string.alpha({ length: { min: 10, max: 20 } }),
-                undefined,
-              ]),
-              companyLogoUrl: faker.helpers.arrayElement([
-                faker.string.alpha({ length: { min: 10, max: 20 } }),
-                undefined,
-              ]),
-            },
-            undefined,
-          ]),
-          jobCategoryName: faker.helpers.arrayElement([
-            faker.string.alpha({ length: { min: 10, max: 20 } }),
-            undefined,
-          ]),
-          updatedAt: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]),
+            'FIRST',
+            'SECOND',
+            'THIRD',
+            'BEHAVIORAL',
+            'TECHNICAL',
+            'EXECUTIVE',
+            'CULTURE_FIT',
+            'COFFEE_CHAT',
+            'PSEUDO',
+          ] as const),
+          interviewReviewStatus: faker.helpers.arrayElement([
+            'NOT_LOGGED',
+            'LOG_DRAFT',
+            'QNA_SET_DRAFT',
+            'SELF_REVIEW_DRAFT',
+            'DEBRIEF_COMPLETED',
+          ] as const),
+          interviewStartAt: faker.date.past().toISOString().slice(0, 19) + 'Z',
+          companyInfo: {
+            companyId: faker.number.int({ min: undefined, max: undefined }),
+            companyName: faker.string.alpha({ length: { min: 10, max: 20 } }),
+            companyLogoUrl: faker.helpers.arrayElement([
+              faker.string.alpha({ length: { min: 10, max: 20 } }),
+              undefined,
+            ]),
+          },
+          jobCategoryName: faker.string.alpha({ length: { min: 10, max: 20 } }),
+          updatedAt: faker.date.past().toISOString().slice(0, 19) + 'Z',
         })),
         undefined,
       ]),

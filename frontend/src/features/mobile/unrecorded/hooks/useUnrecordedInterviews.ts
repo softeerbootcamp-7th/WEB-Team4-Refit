@@ -2,8 +2,6 @@ import { useMemo } from 'react'
 import { useGetDebriefIncompletedInterviews } from '@/apis'
 import type { DashboardDebriefIncompletedInterviewResponse } from '@/apis'
 
-const PAGEABLE = { page: 0, size: 20 }
-
 function formatTimeAgo(passedDays?: number): string {
   if (passedDays == null || passedDays < 0) return ''
   if (passedDays === 0) return '오늘'
@@ -38,7 +36,7 @@ function mapToCardItem(item: DashboardDebriefIncompletedInterviewResponse) {
 export type DebriefIncompletedCardItem = ReturnType<typeof mapToCardItem>
 
 export function useUnrecordedInterviews() {
-  const { data, isLoading, isError } = useGetDebriefIncompletedInterviews({ pageable: PAGEABLE })
+  const { data, isLoading, isError } = useGetDebriefIncompletedInterviews({ page: 0, size: 20 })
 
   const items = useMemo(() => {
     const content = data?.result?.content ?? []
