@@ -27,6 +27,8 @@ import com.shyashyashya.refit.domain.user.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
@@ -103,19 +105,25 @@ public class QnaSetIntegrationTest extends IntegrationTest {
                     .body("result.qnaSetId", notNullValue());
         }
 
-        @Test
-        void 인터뷰가_질답_세트_검토_중_상태가_아니라면_질답_세트_생성에_실패한다() {
+        @ParameterizedTest
+        @EnumSource(
+                value = InterviewReviewStatus.class,
+                mode = EnumSource.Mode.EXCLUDE,
+                names = "QNA_SET_DRAFT"
+        )
+        void 인터뷰가_질답_세트_검토_중_상태가_아니라면_질답_세트_생성에_실패한다(InterviewReviewStatus reviewStatus) {
             // given
             InterviewCreateRequest interviewCreateRequest = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            Interview interview1 = createAndSaveInterview(interviewCreateRequest);
+
+            Interview interview = createAndSaveInterview(interviewCreateRequest, reviewStatus);
             QnaSetCreateRequest request = new QnaSetCreateRequest("test question text", "test answer text");
 
             // when & then
             given(spec)
                     .body(request)
             .when()
-                    .post("/interview/" + interview1.getId() + "/qna-set")
+                    .post("/interview/" + interview.getId() + "/qna-set")
             .then()
                     .statusCode(400)
                     .body("code", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.name()))
