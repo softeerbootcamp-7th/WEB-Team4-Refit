@@ -8,3 +8,11 @@ export default function formatDateTime(dateString: string): string {
     hour12: false,
   })
 }
+
+export function formatDate(dateString: string): string {
+  return new Date(dateString).toLocaleDateString('ko-KR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+}
