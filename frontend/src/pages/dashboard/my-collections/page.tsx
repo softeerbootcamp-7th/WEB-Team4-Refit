@@ -112,7 +112,7 @@ export default function MyCollectionsPage() {
       />
 
       <FolderModal
-        key={folderToEditId ? `edit-${folderToEditId}` : 'edit-closed'}
+        key={activeModal === 'edit' ? `edit-open-${folderToEditId ?? 'none'}` : 'edit-closed'}
         isOpen={activeModal === 'edit'}
         onClose={() => setActiveModal(null)}
         onSubmit={handleEditFolder}
