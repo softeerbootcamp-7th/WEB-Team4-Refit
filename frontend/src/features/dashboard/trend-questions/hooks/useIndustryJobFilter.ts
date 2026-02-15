@@ -1,20 +1,18 @@
-import { useState, useMemo, useCallback } from 'react'
-import { INDUSTRIES, JOB_CATEGORIES } from '@/constants/interviews'
-import type { FilterBadge, FilterType } from '@/features/dashboard/trend-questions/constants/constants'
-
-const INDUSTRY_MAP = new Map(INDUSTRIES.map((item) => [item.id, item.label]))
-const JOB_CATEGORY_MAP = new Map(JOB_CATEGORIES.map((item) => [item.id, item.label]))
+import { useCallback, useMemo, useState } from 'react'
+import type { FilterBadge, FilterItem, FilterType } from '@/features/dashboard/trend-questions/constants/constants'
 
 type UseIndustryJobFilterOptions = {
   defaultIndustryIds?: number[]
   defaultJobCategoryIds?: number[]
+  industryItems?: FilterItem[]
+  jobCategoryItems?: FilterItem[]
 }
 
 export function useIndustryJobFilter(options: UseIndustryJobFilterOptions = {}) {
-  const { defaultIndustryIds = [], defaultJobCategoryIds = [] } = options
+  const { defaultIndustryIds = [], defaultJobCategoryIds = [], industryItems = [], jobCategoryItems = [] } = options
 
-  const [industryIds, setIndustryIds] = useState<number[]>(defaultIndustryIds)
-  const [jobCategoryIds, setJobCategoryIds] = useState<number[]>(defaultJobCategoryIds)
+  const [industryIds, setIndustryIds] = useState<number[]>(() => defaultIndustryIds)
+  const [jobCategoryIds, setJobCategoryIds] = useState<number[]>(() => defaultJobCategoryIds)
 
   const toggleIndustry = useCallback((id: number) => {
     setIndustryIds((prev) => (prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id]))
@@ -29,19 +27,28 @@ export function useIndustryJobFilter(options: UseIndustryJobFilterOptions = {}) 
     setJobCategoryIds([])
   }, [])
 
-  const badges = useMemo<FilterBadge[]>(() => {
-    const industryBadges = industryIds.map((id) => ({
-      id,
-      type: 'industry' as FilterType,
-      label: INDUSTRY_MAP.get(id) ?? '',
-    }))
-    const jobBadges = jobCategoryIds.map((id) => ({
-      id,
-      type: 'job' as FilterType,
-      label: JOB_CATEGORY_MAP.get(id) ?? '',
-    }))
-    return [...industryBadges, ...jobBadges]
-  }, [industryIds, jobCategoryIds])
+  const industryMap = useMemo(() => new Map(industryItems.map((item) => [item.id, item.label])), [industryItems])
+  const jobCategoryMap = useMemo(
+    () => new Map(jobCategoryItems.map((item) => [item.id, item.label])),
+    [jobCategoryItems],
+  )
+  const industryBadges = industryIds.map(
+    (id) =>
+      ({
+        id,
+        type: 'industry',
+        label: industryMap.get(id) ?? '',
+      }) satisfies FilterBadge,
+  )
+  const jobBadges = jobCategoryIds.map(
+    (id) =>
+      ({
+        id,
+        type: 'job',
+        label: jobCategoryMap.get(id) ?? '',
+      }) satisfies FilterBadge,
+  )
+  const badges: FilterBadge[] = [...industryBadges, ...jobBadges]
 
   const removeBadge = useCallback(
     (type: FilterType, id: number) => {
@@ -59,6 +66,8 @@ export function useIndustryJobFilter(options: UseIndustryJobFilterOptions = {}) 
     clearAll,
     badges,
     removeBadge,
+    industryItems,
+    jobCategoryItems,
   }
 }
 
