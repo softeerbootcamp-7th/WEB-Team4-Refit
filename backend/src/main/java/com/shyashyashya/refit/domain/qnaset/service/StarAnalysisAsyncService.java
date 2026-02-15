@@ -78,10 +78,7 @@ public class StarAnalysisAsyncService {
 
         return reqFuture
                 .thenApplyAsync(
-                        response -> {
-                            log.info("Embedding request result: ");
-                            return response;
-                        },
+                        response -> response,
                         geminiPostProcessExecutor)
                 .exceptionally(e -> {
                     log.error(e.getMessage(), e);
