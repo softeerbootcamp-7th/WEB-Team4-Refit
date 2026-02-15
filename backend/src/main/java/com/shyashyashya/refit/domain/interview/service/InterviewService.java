@@ -36,7 +36,9 @@ import com.shyashyashya.refit.domain.qnaset.repository.QnaSetSelfReviewRepositor
 import com.shyashyashya.refit.domain.qnaset.repository.StarAnalysisRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
+import com.shyashyashya.refit.global.property.S3Property;
 import com.shyashyashya.refit.global.util.RequestUserContext;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -47,6 +49,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -63,6 +69,8 @@ public class InterviewService {
 
     private final InterviewValidator interviewValidator;
     private final RequestUserContext requestUserContext;
+    private final S3Presigner s3Presigner;
+    private final S3Property s3Property;
 
     @Transactional(readOnly = true)
     public InterviewDto getInterview(Long interviewId) {
@@ -168,10 +176,27 @@ public class InterviewService {
     @Transactional
     public PdfUploadUrlResponse createPdfUploadUrl(Long interviewId) {
         User requestUser = requestUserContext.getRequestUser();
-        Interview interview = interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
+        Interview interview =
+                interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
-        return null;
+        String extension = ".pdf";
+        String key = s3Property.prefix() + interviewId + extension;
+
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(s3Property.bucket())
+                .key(key)
+                .contentType("application/pdf")
+                .build();
+
+        PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
+                .signatureDuration(Duration.ofSeconds(s3Property.presignExpireSeconds()))
+                .putObjectRequest(putObjectRequest)
+                .build();
+
+        PresignedPutObjectRequest presigned = s3Presigner.presignPutObject(presignRequest);
+
+        return new PdfUploadUrlResponse(presigned.url().toString(), key);
     }
 
     public Page<InterviewSimpleDto> getMyInterviewDrafts(InterviewDraftType draftType, Pageable pageable) {
