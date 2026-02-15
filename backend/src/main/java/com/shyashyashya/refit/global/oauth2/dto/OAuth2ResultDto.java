@@ -2,14 +2,15 @@ package com.shyashyashya.refit.global.oauth2.dto;
 
 import com.shyashyashya.refit.global.auth.dto.TokenPairDto;
 import com.shyashyashya.refit.global.model.ClientOriginType;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 @Builder
 public record OAuth2ResultDto(
-        TokenPairDto tokenPair,
-        ClientOriginType clientOriginType,
-        boolean isNeedSignup,
-        String nickname,
+        @NotNull TokenPairDto tokenPair,
+        @NotNull ClientOriginType clientOriginType,
+        @NotNull boolean isNeedSignup,
+        @NotNull String nickname,
         String profileImageUrl) {
 
     public static OAuth2ResultDto of(
