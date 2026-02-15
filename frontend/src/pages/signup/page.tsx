@@ -1,12 +1,26 @@
-import { INDUSTRY_OPTIONS, JOB_OPTIONS } from '@/constants/signup'
 import { Logo } from '@/designs/assets'
 import { Button, Input, NativeCombobox } from '@/designs/components'
 import { useSignupForm } from '@/features/_common/auth'
 import { ROUTES } from '@/routes/routes'
 
 export default function SignupPage() {
-  const { nickname, setNickname, industry, setIndustry, job, setJob, isFormValid, isPending, handleSubmit } =
-    useSignupForm({ redirectTo: ROUTES.DASHBOARD })
+  const {
+    nickname,
+    setNickname,
+    industry,
+    setIndustry,
+    industryOptions,
+    isIndustryOptionsLoading,
+    job,
+    setJob,
+    jobOptions,
+    isJobOptionsLoading,
+    isFormValid,
+    isOptionsLoading,
+    isPending,
+    handleSubmit,
+  } = useSignupForm({ redirectTo: ROUTES.DASHBOARD })
+  const isFormLocked = isPending
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100 px-4 py-8 sm:px-6 sm:py-12">
@@ -24,24 +38,27 @@ export default function SignupPage() {
               label="닉네임"
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
-              placeholder="5글자 이내로 입력해주세요"
-              maxLength={5}
+              placeholder="20자 이내로 입력해주세요"
+              maxLength={20}
+              disabled={isFormLocked}
               required
             />
             <NativeCombobox
               label="관심 산업군"
               value={industry}
               onChange={(e) => setIndustry(e.target.value)}
-              options={INDUSTRY_OPTIONS}
-              placeholder="주로 지원하시는 산업군을 알려주세요"
+              options={industryOptions}
+              placeholder={isIndustryOptionsLoading ? '산업군 목록 불러오는 중...' : '주로 지원하는 산업군'}
+              disabled={isIndustryOptionsLoading || isFormLocked}
               required
             />
             <NativeCombobox
               label="관심 직군"
               value={job}
               onChange={(e) => setJob(e.target.value)}
-              options={JOB_OPTIONS}
-              placeholder="주로 지원하시는 직군을 알려주세요"
+              options={jobOptions}
+              placeholder={isJobOptionsLoading ? '직군 목록 불러오는 중...' : '주로 지원하는 직군'}
+              disabled={isJobOptionsLoading || isFormLocked}
               required
             />
           </div>
@@ -51,7 +68,7 @@ export default function SignupPage() {
             variant="fill-orange-500"
             size="lg"
             className="mt-8 w-full"
-            disabled={!isFormValid || isPending}
+            disabled={!isFormValid || isOptionsLoading || isPending}
             isLoading={isPending}
             onClick={handleSubmit}
           >
