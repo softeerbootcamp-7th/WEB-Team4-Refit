@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +39,8 @@ public class ScrapFolderController {
             summary = "나의 스크랩 폴더 리스트를 조회합니다.",
             description = "스크랩 폴더 리스트에 '나의 어려웠던 질문' 폴더는 포함하지 않습니다. 해당 폴더의 내용은 어려웠던 질문을 조회하는 API로 조회합니다.")
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<ScrapFolderResponse>>> getMyScrapFolders(Pageable pageable) {
+    public ResponseEntity<ApiResponse<Page<ScrapFolderResponse>>> getMyScrapFolders(
+            @ParameterObject Pageable pageable) {
         var body = scrapFolderService.getMyScrapFolders(pageable);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
@@ -49,7 +51,7 @@ public class ScrapFolderController {
             description = "'나의 어려웠던 질문' 폴더는 포함하지 않습니다. 해당 폴더의 내용은 어려웠던 질문을 조회하는 API로 조회합니다.")
     @GetMapping("/{scrapFolderId}")
     public ResponseEntity<ApiResponse<Page<ScrapFolderQnaSetResponse>>> getQnaSetsInScrapFolder(
-            @PathVariable Long scrapFolderId, Pageable pageable) {
+            @PathVariable Long scrapFolderId, @ParameterObject Pageable pageable) {
         var body = scrapFolderService.getQnaSetsInScrapFolder(scrapFolderId, pageable);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
