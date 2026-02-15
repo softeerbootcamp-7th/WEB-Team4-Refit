@@ -118,7 +118,17 @@ public class InterviewController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "특정 면접에 새로운 질답 세트를 생성합니다.")
+    @Operation(summary = "면접 기록 녹음/텍스트 작성을 시작합니다.", description = """
+            면접 상태를 '기록중' 상태로 변화시킵니다. 기록을 완료하고 질답세트로 기록한 내용을 변환 요청하려면 반드시 면접 상태가 '기록중' 상태여야 합니다.
+    """)
+    @PostMapping("/{interviewId}/start-logging")
+    public ResponseEntity<ApiResponse<Void>> startLogging(@PathVariable Long interviewId) {
+        interviewService.startLogging(interviewId);
+        var response = ApiResponse.success(COMMON200);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "면접에 새로운 질답 세트를 추가합니다.")
     @PostMapping("/{interviewId}/qna-set")
     public ResponseEntity<ApiResponse<QnaSetCreateResponse>> createQnaSet(
             @PathVariable Long interviewId, @Valid @RequestBody QnaSetCreateRequest request) {
@@ -127,12 +137,10 @@ public class InterviewController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "면접 기록 녹음/텍스트 작성을 시작합니다.", description = """
-            면접 상태를 '기록중' 상태로 변화시킵니다. 기록을 완료하고 질답세트로 기록한 내용을 변환 요청하려면 반드시 면접 상태가 '기록중' 상태여야 합니다.
-    """)
-    @PostMapping("/{interviewId}/start-logging")
-    public ResponseEntity<ApiResponse<Void>> startLogging(@PathVariable Long interviewId) {
-        interviewService.startLogging(interviewId);
+    @Operation(summary = "면접의 질답 세트 작성을 완료합니다.")
+    @PostMapping("/{interviewId}/qna-set/complete")
+    public ResponseEntity<ApiResponse<Void>> completeQnaSetDraft(@PathVariable Long interviewId) {
+        interviewService.completeQnaSetDraft(interviewId);
         var response = ApiResponse.success(COMMON200);
         return ResponseEntity.ok(response);
     }
