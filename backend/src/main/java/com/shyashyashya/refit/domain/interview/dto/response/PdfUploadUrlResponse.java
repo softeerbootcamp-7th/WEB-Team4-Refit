@@ -1,10 +1,5 @@
 package com.shyashyashya.refit.domain.interview.dto.response;
 
-import java.util.Map;
+import jakarta.validation.constraints.NotNull;
 
-public record PdfUploadUrlResponse(
-        String url,
-        String key,
-        Map<String, String> fields
-) {
-}
+public record PdfUploadUrlResponse(@NotNull String url, @NotNull String key) {}
