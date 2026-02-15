@@ -218,10 +218,10 @@ public abstract class IntegrationTest {
     }
 
     protected QnaSet createAndSaveQnaSet(QnaSetCreateRequest request, Interview interview) {
-        return createQnaSet(request, interview, false);
+        return createAndSaveQnaSet(request, interview, false);
     }
 
-    protected QnaSet createQnaSet(QnaSetCreateRequest request, Interview interview, boolean isMarkedDifficult) {
+    protected QnaSet createAndSaveQnaSet(QnaSetCreateRequest request, Interview interview, boolean isMarkedDifficult) {
         QnaSet qnaSet = QnaSet.create(
                 request.questionText(),
                 request.answerText(),

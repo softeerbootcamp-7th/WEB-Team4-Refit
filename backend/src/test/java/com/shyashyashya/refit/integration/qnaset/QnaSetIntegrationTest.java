@@ -55,15 +55,15 @@ public class QnaSetIntegrationTest extends IntegrationTest {
         Interview debriefCompletedInterview = createAndSaveInterview(interviewCreateRequest2, InterviewReviewStatus.DEBRIEF_COMPLETED);
 
         QnaSetCreateRequest qnaSetCreateRequest1 = new QnaSetCreateRequest("test question text", "test answer text");
-        QnaSet qnaSetDraftQnaSet = createQnaSet(qnaSetCreateRequest1, qnaSetDraftInterview, true);
+        QnaSet qnaSetDraftQnaSet = createAndSaveQnaSet(qnaSetCreateRequest1, qnaSetDraftInterview, true);
         qnaSetDraftQnaSetId = qnaSetDraftQnaSet.getId();
 
         QnaSetCreateRequest qnaSetCreateRequest2 = new QnaSetCreateRequest("test question text", "test answer text");
-        QnaSet debriefCompletedQnaSet = createQnaSet(qnaSetCreateRequest2, debriefCompletedInterview, true);
+        QnaSet debriefCompletedQnaSet = createAndSaveQnaSet(qnaSetCreateRequest2, debriefCompletedInterview, true);
         debriefCompletedQnaSetId = debriefCompletedQnaSet.getId();
 
         QnaSetCreateRequest qnaSetCreateRequest3 = new QnaSetCreateRequest("this qna has pdf highlighting", "hello PDF");
-        QnaSet qnaSetWithPdfHighlighting = createQnaSet(qnaSetCreateRequest3,qnaSetDraftInterview, false);
+        QnaSet qnaSetWithPdfHighlighting = createAndSaveQnaSet(qnaSetCreateRequest3,qnaSetDraftInterview, false);
         qnaSetWithPdfHighlightingId = qnaSetWithPdfHighlighting.getId();
 
         InterviewCreateRequest request = new InterviewCreateRequest(
@@ -72,7 +72,7 @@ public class QnaSetIntegrationTest extends IntegrationTest {
         Interview otherUserInterview = createAndSaveInterview(request, InterviewReviewStatus.NOT_LOGGED, user);
 
         QnaSetCreateRequest qnaSetCreateRequest4 = new QnaSetCreateRequest("this qna is others", "hello stranger");
-        QnaSet otherUserQnaSet = createQnaSet(qnaSetCreateRequest4, otherUserInterview, false);
+        QnaSet otherUserQnaSet = createAndSaveQnaSet(qnaSetCreateRequest4, otherUserInterview, false);
         otherUserQnaSetId = otherUserQnaSet.getId();
 
         List<PdfHighlightingUpdateRequest> pdfHighlightUpdateRequest = createPdfHighlightUpdateRequest();
@@ -114,9 +114,9 @@ public class QnaSetIntegrationTest extends IntegrationTest {
             // when & then
             given(spec)
                     .body(request)
-                    .when()
+            .when()
                     .post("/interview/" + interview1.getId() + "/qna-set")
-                    .then()
+            .then()
                     .statusCode(400)
                     .body("code", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.name()))
                     .body("message", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.getMessage()))
@@ -137,7 +137,7 @@ public class QnaSetIntegrationTest extends IntegrationTest {
                             LocalDateTime.of(2023, 1, 10, 10, 0, 0), InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
                     ));
             QnaSetCreateRequest qnaSetCreateRequest = new QnaSetCreateRequest ("test qqq text", "test aaa text");
-            QnaSet qnaSet = createQnaSet(qnaSetCreateRequest, interview, false);
+            QnaSet qnaSet = createAndSaveQnaSet(qnaSetCreateRequest, interview, false);
             qnaSetId = qnaSet.getId();
         }
 
@@ -195,11 +195,11 @@ public class QnaSetIntegrationTest extends IntegrationTest {
             Interview debriefCompletedInterview = createAndSaveInterview(interviewCreateRequest2, InterviewReviewStatus.DEBRIEF_COMPLETED);
 
             QnaSetCreateRequest qnaSetCreateRequest1 = new QnaSetCreateRequest("test question text", "test answer text");
-            QnaSet qnaSetDraftQnaSet = createQnaSet(qnaSetCreateRequest1, qnaSetDraftInterview, true);
+            QnaSet qnaSetDraftQnaSet = createAndSaveQnaSet(qnaSetCreateRequest1, qnaSetDraftInterview, true);
             qnaSetDraftQnaSetId = qnaSetDraftQnaSet.getId();
 
             QnaSetCreateRequest qnaSetCreateRequest2 = new QnaSetCreateRequest("test question text", "test answer text");
-            QnaSet debriefCompletedQnaSet = createQnaSet(qnaSetCreateRequest2, debriefCompletedInterview, true);
+            QnaSet debriefCompletedQnaSet = createAndSaveQnaSet(qnaSetCreateRequest2, debriefCompletedInterview, true);
             debriefCompletedQnaSetId = debriefCompletedQnaSet.getId();
         }
 
