@@ -72,7 +72,7 @@ public class QnaSetController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "지정한 질문 답변 세트의 질문 답변 내용을 수정합니다.", description = "질문 답변 내용 수정은 'QnaSetDraft' 상태에서만 가능합니다.")
+    @Operation(summary = "지정한 질문 답변 세트의 질문 답변 내용을 수정합니다.", description = "질문 답변 내용 수정은 질답 세트 검토 중 상태에서만 가능합니다.")
     @PutMapping("/{qnaSetId}")
     public ResponseEntity<ApiResponse<Void>> updateQnaSet(
             @PathVariable Long qnaSetId, @Valid @RequestBody QnaSetUpdateRequest request) {
@@ -81,7 +81,7 @@ public class QnaSetController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "지정한 질문 답변 세트를 삭제합니다.", description = "질문 답변 세트 삭제는 'QnaSetDraft' 상태에서만 가능합니다.")
+    @Operation(summary = "지정한 질문 답변 세트를 삭제합니다.", description = "질문 답변 세트 삭제는 질답 세트 검토 중 상태에서만 가능합니다.")
     @DeleteMapping("/{qnaSetId}")
     public ResponseEntity<ApiResponse<Void>> deleteQnaSet(@PathVariable Long qnaSetId) {
         qnaSetService.deleteQnaSet(qnaSetId);
@@ -91,7 +91,7 @@ public class QnaSetController {
 
     @Operation(
             summary = "지정한 질문 답변 세트에 대해 PDF 하이라이팅 정보를 등록/수정합니다.",
-            description = "PDF 하이라이팅 정보 등록/수정은 'QnaSetDraft' 상태에서만 가능합니다.")
+            description = "PDF 하이라이팅 정보 등록/수정은 질답 세트 검토 중 상태에서만 가능합니다.")
     @PutMapping("/{qnaSetId}/pdf-highlightings")
     public ResponseEntity<ApiResponse<Void>> updatePdfHighlighting(
             @PathVariable Long qnaSetId, @Valid @RequestBody List<PdfHighlightingUpdateRequest> request) {

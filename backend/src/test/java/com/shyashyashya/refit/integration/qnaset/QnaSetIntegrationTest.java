@@ -83,7 +83,7 @@ public class QnaSetIntegrationTest extends IntegrationTest {
     class 질답_세트_생성_시 {
 
         @Test
-        void 인터뷰가_QNA_SET_DRAFT_상태이면_질답_세트_생성에_성공한다() {
+        void 인터뷰가_질답_세트_검토_중_상태이면_질답_세트_생성에_성공한다() {
             // given
              InterviewCreateRequest interviewCreateRequest = new InterviewCreateRequest(
                                 LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
@@ -104,7 +104,7 @@ public class QnaSetIntegrationTest extends IntegrationTest {
         }
 
         @Test
-        void 인터뷰가_QNA_SET_DRAFT_상태가_아니라면_질답_세트_생성에_실패한다() {
+        void 인터뷰가_질답_세트_검토_중_상태가_아니라면_질답_세트_생성에_실패한다() {
             // given
             InterviewCreateRequest interviewCreateRequest = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
@@ -204,7 +204,7 @@ public class QnaSetIntegrationTest extends IntegrationTest {
         }
 
         @Test
-        void 인터뷰가_QNA_SET_DRAFT_상태이면_질답_세트_수정에_성공한다() {
+        void 인터뷰가_질답_세트_검토_중_상태이면_질답_세트_수정에_성공한다() {
             // given
             QnaSetUpdateRequest qnaSetUpdateRequest = new QnaSetUpdateRequest("update question", "update answer", "self review self review");
 
@@ -255,7 +255,7 @@ public class QnaSetIntegrationTest extends IntegrationTest {
         }
 
         @Test
-        void 인터뷰가_QNA_SET_DRAFT_상태가_아니라면_질답_세트_수정에_실패한다() {
+        void 인터뷰가_질답_세트_검토_중_상태가_아니라면_질답_세트_수정에_실패한다() {
             // given
             QnaSetUpdateRequest qnaSetUpdateRequest = new QnaSetUpdateRequest("update question", "update answer", null);
 
@@ -272,7 +272,7 @@ public class QnaSetIntegrationTest extends IntegrationTest {
         }
 
         @Test
-        void QNA_SET_이_존재하지_않으면_질답_세트_수정에_실패한다() {
+        void 질답_세트가_존재하지_않으면_질답_세트_수정에_실패한다() {
             // given
             QnaSetUpdateRequest qnaSetUpdateRequest = new QnaSetUpdateRequest("update question", "update answer", null);
 
@@ -293,7 +293,7 @@ public class QnaSetIntegrationTest extends IntegrationTest {
     class 질답_세트_삭제_시 {
 
         @Test
-        void 인터뷰가_QNA_SET_DRAFT_상태이면_질답_세트_삭제에_성공한다() {
+        void 인터뷰가_질답_세트_검토_중_상태이면_질답_세트_삭제에_성공한다() {
             // given
 
             // when & then
@@ -308,7 +308,7 @@ public class QnaSetIntegrationTest extends IntegrationTest {
         }
 
         @Test
-        void 인터뷰가_QNA_SET_DRAFT_상태가_아니면_질답_세트_삭제에_실패한다() {
+        void 인터뷰가_질답_세트_검토_중_상태가_아니면_질답_세트_삭제에_실패한다() {
             // given
 
             // when & then
@@ -327,7 +327,7 @@ public class QnaSetIntegrationTest extends IntegrationTest {
     class PDF_하이라이팅_등록_수정_시 {
 
         @Test
-        void 인터뷰가_QNA_SET_DRAFT_상태이면_PDF_하이라이팅_등록에_성공한다() {
+        void 인터뷰가_질답_세트_검토_중_상태이면_PDF_하이라이팅_등록에_성공한다() {
             // given
             List<PdfHighlightingUpdateRequest> request = createPdfHighlightUpdateRequest();
 
@@ -344,7 +344,7 @@ public class QnaSetIntegrationTest extends IntegrationTest {
         }
 
         @Test
-        void 인터뷰가_QNA_SET_DRAFT_상태이면_비어있는_PDF_하이라이팅_등록에_성공한다() {
+        void 인터뷰가_질답_세트_검토_중_상태이면_비어있는_PDF_하이라이팅_등록에_성공한다() {
             // given
             List<PdfHighlightingUpdateRequest> request = List.of();
 
@@ -361,7 +361,7 @@ public class QnaSetIntegrationTest extends IntegrationTest {
         }
 
         @Test
-        void 인터뷰가_QNA_SET_DRAFT_상태가_아니면_PDF_하이라이팅_등록에_실패한다() {
+        void 인터뷰가_질답_세트_검토_중_상태가_아니면_PDF_하이라이팅_등록에_실패한다() {
             // given
             List<PdfHighlightingUpdateRequest> request = createPdfHighlightUpdateRequest();
 
