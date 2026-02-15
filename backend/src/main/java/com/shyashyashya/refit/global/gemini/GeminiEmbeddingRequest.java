@@ -35,7 +35,7 @@ public record GeminiEmbeddingRequest(TaskType taskType, Content content, OutputD
 
     public record Part(String text) {}
 
-    public static GeminiEmbeddingRequest from(
+    public static GeminiEmbeddingRequest of(
             String text, TaskType taskType, OutputDimensionality outputDimensionality) {
         if (text == null || text.isBlank()) {
             throw new IllegalArgumentException("text must not be blank");

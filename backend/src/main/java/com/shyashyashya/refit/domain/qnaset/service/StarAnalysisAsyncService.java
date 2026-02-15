@@ -70,7 +70,7 @@ public class StarAnalysisAsyncService {
     // TODO 메소드 삭제: Gemini Embedding 생성 테스트용 임시 메소드
     public CompletableFuture<GeminiEmbeddingResponse> getTextEmbedding(String text) {
 
-        GeminiEmbeddingRequest requestBody = GeminiEmbeddingRequest.from(
+        GeminiEmbeddingRequest requestBody = GeminiEmbeddingRequest.of(
                 text, GeminiEmbeddingRequest.TaskType.CLUSTERING, GeminiEmbeddingRequest.OutputDimensionality.D128);
 
         CompletableFuture<GeminiEmbeddingResponse> reqFuture =
