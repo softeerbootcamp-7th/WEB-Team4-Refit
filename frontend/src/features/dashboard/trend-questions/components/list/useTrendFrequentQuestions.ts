@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import qs from 'qs'
-import { customFetch } from '@/apis/custom-fetch'
+import { customFetchWithSerializedQuery } from '@/apis/custom-fetch'
 import type { ApiResponsePageFrequentQnaSetResponse, FrequentQnaSetResponse } from '@/apis/generated/refit-api.schemas'
 
 type UseTrendFrequentQuestionsParams = {
@@ -79,8 +78,7 @@ type FrequentQuestionsQueryParams = {
 async function fetchFrequentQuestionsWithRepeatedParams(
   params: FrequentQuestionsQueryParams,
 ): Promise<ApiResponsePageFrequentQnaSetResponse> {
-  const queryString = qs.stringify(params, { arrayFormat: 'repeat' })
-  return customFetch<ApiResponsePageFrequentQnaSetResponse>(`/qna-set/frequent?${queryString}`, {
+  return customFetchWithSerializedQuery<ApiResponsePageFrequentQnaSetResponse>(`/qna-set/frequent`, params, {
     method: 'GET',
   })
 }
