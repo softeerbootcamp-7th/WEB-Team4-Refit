@@ -256,6 +256,7 @@ public class InterviewService {
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
         interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.NOT_LOGGED);
+
         interview.startLogging();
     }
 
@@ -267,7 +268,20 @@ public class InterviewService {
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
         interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.QNA_SET_DRAFT);
+
         interview.completeQnaSetDraft();
+    }
+
+    @Transactional
+    public void completeSelfReview(Long interviewId) {
+        User requestUser = requestUserContext.getRequestUser();
+
+        Interview interview =
+                interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
+        interviewValidator.validateInterviewOwner(interview, requestUser);
+        interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.SELF_REVIEW_DRAFT);
+
+        interview.completeReview();
     }
 
     private Company findOrSaveCompany(InterviewCreateRequest request) {

@@ -109,15 +109,6 @@ public class InterviewController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "면접에 대한 KPT 회고를 생성/수정합니다.")
-    @PutMapping("/{interviewId}/kpt-self-review")
-    public ResponseEntity<ApiResponse<Void>> updateKptSelfReview(
-            @PathVariable Long interviewId, @Valid @RequestBody KptSelfReviewUpdateRequest request) {
-        interviewService.updateKptSelfReview(interviewId, request);
-        var response = ApiResponse.success(COMMON200);
-        return ResponseEntity.ok(response);
-    }
-
     @Operation(summary = "면접 기록 녹음/텍스트 작성을 시작합니다.", description = """
             면접 상태를 '기록중' 상태로 변화시킵니다. 기록을 완료하고 질답세트로 기록한 내용을 변환 요청하려면 반드시 면접 상태가 '기록중' 상태여야 합니다.
     """)
@@ -141,6 +132,23 @@ public class InterviewController {
     @PostMapping("/{interviewId}/qna-set/complete")
     public ResponseEntity<ApiResponse<Void>> completeQnaSetDraft(@PathVariable Long interviewId) {
         interviewService.completeQnaSetDraft(interviewId);
+        var response = ApiResponse.success(COMMON200);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "면접에 대한 KPT 회고를 생성/수정합니다.")
+    @PutMapping("/{interviewId}/kpt-self-review")
+    public ResponseEntity<ApiResponse<Void>> updateKptSelfReview(
+            @PathVariable Long interviewId, @Valid @RequestBody KptSelfReviewUpdateRequest request) {
+        interviewService.updateKptSelfReview(interviewId, request);
+        var response = ApiResponse.success(COMMON200);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "면접의 회고 작성을 완료합니다.")
+    @PostMapping("/{interviewId}/self-review/complete")
+    public ResponseEntity<ApiResponse<Void>> completeSelfReview(@PathVariable Long interviewId) {
+        interviewService.completeSelfReview(interviewId);
         var response = ApiResponse.success(COMMON200);
         return ResponseEntity.ok(response);
     }
