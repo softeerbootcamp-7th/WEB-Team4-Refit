@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
-import { useGetIndustries } from '@/apis/generated/industry-api/industry-api'
-import { useGetAllJobCategories } from '@/apis/generated/job-category-api/job-category-api'
+import { useGetIndustriesSuspense } from '@/apis/generated/industry-api/industry-api'
+import { useGetAllJobCategoriesSuspense } from '@/apis/generated/job-category-api/job-category-api'
 import { useGetMyProfileInfoSuspense } from '@/apis/generated/user-api/user-api'
 import { SmallLogoIcon } from '@/designs/assets'
 import IndustryJobFilter from '@/features/dashboard/trend-questions/components/filter/IndustryJobFilter'
@@ -16,12 +16,12 @@ export default function TrendQuestionsPage() {
 }
 
 function TrendQuestionsPageContent() {
-  const { data: industries = [] } = useGetIndustries({
+  const { data: industries = [] } = useGetIndustriesSuspense({
     query: {
       select: (response) => (response.result ?? []).map((item) => ({ id: item.industryId, label: item.industryName })),
     },
   })
-  const { data: jobCategories = [] } = useGetAllJobCategories({
+  const { data: jobCategories = [] } = useGetAllJobCategoriesSuspense({
     query: {
       select: (response) =>
         (response.result ?? []).map((item) => ({ id: item.jobCategoryId, label: item.jobCategoryName })),
