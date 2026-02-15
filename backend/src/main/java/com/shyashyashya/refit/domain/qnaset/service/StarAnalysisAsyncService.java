@@ -3,7 +3,7 @@ package com.shyashyashya.refit.domain.qnaset.service;
 import static com.shyashyashya.refit.domain.qnaset.constant.StarAnalysisConstant.STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC;
 import static com.shyashyashya.refit.global.exception.ErrorCode.STAR_ANALYSIS_CREATE_FAILED;
 import static com.shyashyashya.refit.global.exception.ErrorCode.STAR_ANALYSIS_PARSING_FAILED;
-import static com.shyashyashya.refit.global.exception.ErrorCode.TEXT_EMBED_FAILED;
+import static com.shyashyashya.refit.global.exception.ErrorCode.TEXT_EMBEDDING_CREATE_FAILED;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -77,12 +77,10 @@ public class StarAnalysisAsyncService {
                 geminiClient.sendAsyncEmbeddingRequest(requestBody, STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC);
 
         return reqFuture
-                .thenApplyAsync(
-                        response -> response,
-                        geminiPostProcessExecutor)
+                .thenApplyAsync(response -> response, geminiPostProcessExecutor)
                 .exceptionally(e -> {
                     log.error(e.getMessage(), e);
-                    throw new CustomException(TEXT_EMBED_FAILED);
+                    throw new CustomException(TEXT_EMBEDDING_CREATE_FAILED);
                 });
     }
 
