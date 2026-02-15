@@ -26,16 +26,10 @@ import { debriefIncompletedMock } from '@/mocks/data/debrief-incompleted'
 import { mockInterviewFull } from '@/mocks/data/interview-full'
 import { mockScrapFolders } from '@/mocks/data/scrap-folders'
 import { mockStarAnalysis } from '@/mocks/data/star-analysis'
-import {
-  getMockFrequentQuestions,
-  mockIndustriesResponse,
-  mockJobCategoriesResponse,
-} from '@/mocks/data/trend-questions'
+import { getMockFrequentQuestions } from '@/mocks/data/trend-questions'
 import { updateRawTextMock } from '@/mocks/data/update-raw-text'
 
 export const worker = setupWorker(
-  getGetIndustriesMockHandler(mockIndustriesResponse),
-  getGetAllJobCategoriesMockHandler(mockJobCategoriesResponse),
   getGetFrequentQuestionsMockHandler((info) => {
     const url = new URL(info.request.url)
     const parseIds = (key: 'industryIds' | 'jobCategoryIds') => {
