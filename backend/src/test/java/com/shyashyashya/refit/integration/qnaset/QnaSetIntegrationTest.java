@@ -181,28 +181,6 @@ public class QnaSetIntegrationTest extends IntegrationTest {
     @Nested
     class 질답_세트_수정_시 {
 
-        private Long qnaSetDraftQnaSetId;
-        private Long debriefCompletedQnaSetId;
-
-        @BeforeEach
-        void setUp() {
-            InterviewCreateRequest interviewCreateRequest1 = new InterviewCreateRequest(
-                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            Interview qnaSetDraftInterview = createAndSaveInterview(interviewCreateRequest1, InterviewReviewStatus.QNA_SET_DRAFT);
-
-            InterviewCreateRequest interviewCreateRequest2 = new InterviewCreateRequest(
-                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            Interview debriefCompletedInterview = createAndSaveInterview(interviewCreateRequest2, InterviewReviewStatus.DEBRIEF_COMPLETED);
-
-            QnaSetCreateRequest qnaSetCreateRequest1 = new QnaSetCreateRequest("test question text", "test answer text");
-            QnaSet qnaSetDraftQnaSet = createAndSaveQnaSet(qnaSetCreateRequest1, qnaSetDraftInterview, true);
-            qnaSetDraftQnaSetId = qnaSetDraftQnaSet.getId();
-
-            QnaSetCreateRequest qnaSetCreateRequest2 = new QnaSetCreateRequest("test question text", "test answer text");
-            QnaSet debriefCompletedQnaSet = createAndSaveQnaSet(qnaSetCreateRequest2, debriefCompletedInterview, true);
-            debriefCompletedQnaSetId = debriefCompletedQnaSet.getId();
-        }
-
         @Test
         void 인터뷰가_질답_세트_검토_중_상태이면_질답_세트_수정에_성공한다() {
             // given
@@ -218,10 +196,14 @@ public class QnaSetIntegrationTest extends IntegrationTest {
                     .body("code", equalTo(COMMON200.name()))
                     .body("message", equalTo(COMMON200.getMessage()))
                     .body("result", nullValue());
+
+            QnaSet updated = qnaSetRepository.findById(qnaSetDraftQnaSetId).get();
+            assertThat(updated.getQuestionText()).isEqualTo("update question");
+            assertThat(updated.getAnswerText()).isEqualTo("update answer");
         }
 
         @Test
-        void 수정_요청에_필드가_하나일_때_질답_세트_수정에_성공한다() {
+        void 수정_요청에_질문만_존재할_때_질답_세트_수정에_성공한다() {
             // given
             QnaSetUpdateRequest qnaSetUpdateRequest = new QnaSetUpdateRequest("only question text update", null, null);
 
@@ -235,6 +217,31 @@ public class QnaSetIntegrationTest extends IntegrationTest {
                     .body("code", equalTo(COMMON200.name()))
                     .body("message", equalTo(COMMON200.getMessage()))
                     .body("result", nullValue());
+
+            QnaSet updated = qnaSetRepository.findById(qnaSetDraftQnaSetId).get();
+            assertThat(updated.getQuestionText()).isEqualTo("only question text update");
+            assertThat(updated.getAnswerText()).isEqualTo("test answer text");
+        }
+
+        @Test
+        void 수정_요청에_답변만_존재할_때_질답_세트_수정에_성공한다() {
+            // given
+            QnaSetUpdateRequest qnaSetUpdateRequest = new QnaSetUpdateRequest(null, "only answer text update", null);
+
+            // when & then
+            given(spec)
+                    .body(qnaSetUpdateRequest)
+            .when()
+                    .put("/qna-set/" + qnaSetDraftQnaSetId)
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result", nullValue());
+
+            QnaSet updated = qnaSetRepository.findById(qnaSetDraftQnaSetId).get();
+            assertThat(updated.getQuestionText()).isEqualTo("test question text");
+            assertThat(updated.getAnswerText()).isEqualTo("only answer text update");
         }
 
         @Test
