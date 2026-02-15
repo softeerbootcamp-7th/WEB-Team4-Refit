@@ -196,6 +196,20 @@ public class InterviewService {
     }
 
     @Transactional
+    public void convertRawTextToQnaSet(Long interviewId) {
+        User requestUser = requestUserContext.getRequestUser();
+
+        Interview interview =
+                interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
+        interviewValidator.validateInterviewOwner(interview, requestUser);
+        interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.LOG_DRAFT);
+
+        // TODO : 실제로는 서비스가 아닌 LLM 요청 성공에 따른 콜백으로 상태 변화 처리
+        // convert logic
+        interview.completeLogging();
+    }
+
+    @Transactional
     public void updateKptSelfReview(Long interviewId, KptSelfReviewUpdateRequest request) {
         User requestUser = requestUserContext.getRequestUser();
 
