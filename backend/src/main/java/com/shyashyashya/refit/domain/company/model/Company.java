@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -13,7 +14,10 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "companies")
+@Table(name = "companies",
+        indexes = {
+                @Index(name = "idx_company_search_composite", columnList = "is_search_allowed, search_name")
+        })
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Company {
 
@@ -31,7 +35,7 @@ public class Company {
     @Column(name = "company_logo_url", columnDefinition = "varchar(2048)")
     private String logoUrl;
 
-    @Column(nullable = false)
+    @Column(name = "is_search_allowed", nullable = false)
     private boolean isSearchAllowed;
 
     public void allowSearch() {
