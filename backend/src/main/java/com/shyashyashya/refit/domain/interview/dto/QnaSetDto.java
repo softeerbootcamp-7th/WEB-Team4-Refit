@@ -2,15 +2,16 @@ package com.shyashyashya.refit.domain.interview.dto;
 
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetSelfReview;
+import jakarta.validation.constraints.NotNull;
 
 public record QnaSetDto(
-        Long qnaSetId,
-        Long interviewId,
-        String questionText,
-        String answerText,
-        String qnaSetSelfReviewText,
+        @NotNull Long qnaSetId,
+        @NotNull Long interviewId,
+        @NotNull String questionText,
+        @NotNull String answerText,
+        @NotNull String qnaSetSelfReviewText,
         StarAnalysisDto starAnalysis,
-        Boolean isMarkedDifficult) {
+        @NotNull Boolean isMarkedDifficult) {
     public static QnaSetDto from(QnaSet qnaSet, QnaSetSelfReview qnaSetSelfReview, StarAnalysisDto starAnalysisDto) {
         String selfReviewText = "";
         if (qnaSetSelfReview != null) {

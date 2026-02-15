@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -50,7 +51,7 @@ public class QnaSetController {
     public ResponseEntity<ApiResponse<Page<FrequentQnaSetResponse>>> getFrequentQuestions(
             @RequestParam(required = false) Set<Long> industryIds,
             @RequestParam(required = false) Set<Long> jobCategoryIds,
-            Pageable pageable) {
+            @ParameterObject Pageable pageable) {
         var body = qnaSetService.getFrequentQuestions(industryIds, jobCategoryIds, pageable);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
@@ -122,7 +123,7 @@ public class QnaSetController {
     @Operation(summary = "지정한 질문 답변 세트가 스크랩 폴더에 포함되어 있는 지 여부가 포함된 스크랩 폴더 리스트를 조회합니다.")
     @GetMapping("/{qnaSetId}/scrap-folder")
     public ResponseEntity<ApiResponse<Page<QnaSetScrapFolderResponse>>> getScrapFoldersContainingQnaSet(
-            @PathVariable Long qnaSetId, Pageable pageable) {
+            @PathVariable Long qnaSetId, @ParameterObject Pageable pageable) {
         var body = qnaSetService.getMyScrapFoldersWithQnaSetContainingInfo(qnaSetId, pageable);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);

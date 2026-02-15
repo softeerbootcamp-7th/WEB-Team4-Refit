@@ -2,8 +2,13 @@ package com.shyashyashya.refit.global.dto;
 
 import com.shyashyashya.refit.global.exception.ErrorCode;
 import com.shyashyashya.refit.global.model.ResponseCode;
+import jakarta.validation.constraints.NotNull;
 
-public record ApiResponse<T>(boolean isSuccess, String code, String message, T result) {
+public record ApiResponse<T>(
+        @NotNull boolean isSuccess,
+        @NotNull String code,
+        @NotNull String message,
+        T result) {
 
     public static ApiResponse<Void> success(ResponseCode responseCode) {
         return new ApiResponse<>(true, responseCode.name(), responseCode.getMessage(), null);
