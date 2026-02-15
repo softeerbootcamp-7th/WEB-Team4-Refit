@@ -46,30 +46,30 @@ public class QnaSetIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     void setUp() {
-        InterviewCreateRequest interviewCreateRequest1 = new InterviewCreateRequest(
+        var interviewCreateRequest1 = new InterviewCreateRequest(
                 LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
         Interview qnaSetDraftInterview = createAndSaveInterview(interviewCreateRequest1, InterviewReviewStatus.QNA_SET_DRAFT);
 
-        InterviewCreateRequest interviewCreateRequest2 = new InterviewCreateRequest(
+        var interviewCreateRequest2 = new InterviewCreateRequest(
                 LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
         Interview debriefCompletedInterview = createAndSaveInterview(interviewCreateRequest2, InterviewReviewStatus.DEBRIEF_COMPLETED);
 
-        QnaSetCreateRequest qnaSetCreateRequest1 = new QnaSetCreateRequest("test question text", "test answer text");
+        var qnaSetCreateRequest1 = new QnaSetCreateRequest("test question text", "test answer text");
         QnaSet qnaSetDraftQnaSet = createAndSaveQnaSet(qnaSetCreateRequest1, qnaSetDraftInterview, true);
         qnaSetDraftQnaSetId = qnaSetDraftQnaSet.getId();
 
-        QnaSetCreateRequest qnaSetCreateRequest2 = new QnaSetCreateRequest("test question text", "test answer text");
+        var qnaSetCreateRequest2 = new QnaSetCreateRequest("test question text", "test answer text");
         QnaSet debriefCompletedQnaSet = createAndSaveQnaSet(qnaSetCreateRequest2, debriefCompletedInterview, true);
         debriefCompletedQnaSetId = debriefCompletedQnaSet.getId();
 
-        QnaSetCreateRequest qnaSetCreateRequest3 = new QnaSetCreateRequest("this qna has pdf highlighting", "hello PDF");
+        var qnaSetCreateRequest3 = new QnaSetCreateRequest("this qna has pdf highlighting", "hello PDF");
         QnaSet qnaSetWithPdfHighlighting = createAndSaveQnaSet(qnaSetCreateRequest3,qnaSetDraftInterview, false);
         qnaSetWithPdfHighlightingId = qnaSetWithPdfHighlighting.getId();
 
-        InterviewCreateRequest request = new InterviewCreateRequest(
+        var interviewCreateRequest4 = new InterviewCreateRequest(
                 LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
         User user = createAndSaveUser("other@example.com", "other", industry1, jobCategory1);
-        Interview otherUserInterview = createAndSaveInterview(request, InterviewReviewStatus.NOT_LOGGED, user);
+        Interview otherUserInterview = createAndSaveInterview(interviewCreateRequest4, InterviewReviewStatus.NOT_LOGGED, user);
 
         QnaSetCreateRequest qnaSetCreateRequest4 = new QnaSetCreateRequest("this qna is others", "hello stranger");
         QnaSet otherUserQnaSet = createAndSaveQnaSet(qnaSetCreateRequest4, otherUserInterview, false);
