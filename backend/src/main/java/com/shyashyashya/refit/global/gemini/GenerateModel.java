@@ -15,16 +15,16 @@ public enum GenerateModel {
     private static final String PREFIX = "https://generativelanguage.googleapis.com/v1beta/models/";
     private static final String SUFFIX = ":generateContent";
 
-    private final String id;
+    private final String name;
     private final String endpoint;
 
-    GenerateModel(String id) {
-        this.id = id;
-        this.endpoint = PREFIX + id + SUFFIX;
+    GenerateModel(String name) {
+        this.name = name;
+        this.endpoint = PREFIX + name + SUFFIX;
     }
 
     public String id() {
-        return id;
+        return name;
     }
 
     public String endpoint() {
