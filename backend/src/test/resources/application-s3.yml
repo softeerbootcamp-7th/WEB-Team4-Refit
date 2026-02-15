@@ -1,0 +1,6 @@
+spring:
+  s3:
+    region: "ap-northeast-2"
+    bucket: "refit-s3-bucket"
+    prefix: "interview-pdf/"
+    presign-expire-seconds: 300
