@@ -234,6 +234,17 @@ public class InterviewService {
         return QnaSetCreateResponse.from(createdQnaSet);
     }
 
+    @Transactional
+    public void startLogging(Long interviewId) {
+        User requestUser = requestUserContext.getRequestUser();
+
+        Interview interview =
+                interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
+        interviewValidator.validateInterviewOwner(interview, requestUser);
+        interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.NOT_LOGGED);
+        interview.startLogging();
+    }
+
     private Company findOrSaveCompany(InterviewCreateRequest request) {
         return companyRepository.findByName(request.companyName()).orElseGet(() -> {
             try {

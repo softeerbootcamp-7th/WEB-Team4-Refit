@@ -115,4 +115,14 @@ public class InterviewController {
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
+
+    @Operation(summary = "면접 기록 녹음/텍스트 작성을 시작합니다.", description = """
+            면접 상태를 '기록중' 상태로 변화시킵니다. 기록을 완료하고 질답세트로 기록한 내용을 변환 요청하려면 반드시 면접 상태가 '기록중' 상태여야 합니다.
+    """)
+    @PostMapping("/{interviewId}/start-logging")
+    public ResponseEntity<ApiResponse<Void>> startLogging(@PathVariable Long interviewId) {
+        interviewService.startLogging(interviewId);
+        var response = ApiResponse.success(COMMON200);
+        return ResponseEntity.ok(response);
+    }
 }
