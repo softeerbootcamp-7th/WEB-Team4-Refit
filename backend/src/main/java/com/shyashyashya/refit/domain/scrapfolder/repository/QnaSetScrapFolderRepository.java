@@ -43,4 +43,6 @@ public interface QnaSetScrapFolderRepository extends JpaRepository<QnaSetScrapFo
     void deleteAllByScrapFolder(ScrapFolder scrapFolder);
 
     boolean existsByQnaSetAndScrapFolder(QnaSet qnaSet, ScrapFolder scrapFolder);
+
+    void deleteByQnaSetAndScrapFolder(QnaSet qnaSet, ScrapFolder scrapFolder);
 }

@@ -158,6 +158,18 @@ public class QnaSetService {
         }
     }
 
+    @Transactional
+    public void removeQnaSetFromScrapFolder(Long qnaSetId, Long scrapFolderId) {
+        ScrapFolder scrapFolder = scrapFolderRepository
+                .findById(scrapFolderId)
+                .orElseThrow(() -> new CustomException(SCRAP_FOLDER_NOT_FOUND));
+        QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
+        scrapFolderValidator.validateScrapFolderOwner(
+                scrapFolder, qnaSet.getInterview().getUser());
+
+        qnaSetScrapFolderRepository.deleteByQnaSetAndScrapFolder(qnaSet, scrapFolder);
+    }
+
     private QnaSet getValidatedQnaSet(Long qnaSetId) {
         QnaSet qnaSet = qnaSetRepository.findById(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
         User requestUser = requestUserContext.getRequestUser();
