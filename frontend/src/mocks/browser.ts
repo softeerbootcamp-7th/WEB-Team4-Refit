@@ -6,13 +6,11 @@ import {
   getGetMyDifficultQnaSetsMockHandler,
   getGetUpcomingInterviewsMockHandler,
 } from '@/apis/generated/dashboard-api/dashboard-api.msw'
-import { getGetIndustriesMockHandler } from '@/apis/generated/industry-api/industry-api.msw'
 import {
   getGetInterviewFullMockHandler,
   getUpdateKptSelfReviewMockHandler,
   getUpdateRawTextMockHandler,
 } from '@/apis/generated/interview-api/interview-api.msw'
-import { getGetAllJobCategoriesMockHandler } from '@/apis/generated/job-category-api/job-category-api.msw'
 import {
   getCreateStarAnalysisMockHandler,
   getGetFrequentQuestionsMockHandler,
