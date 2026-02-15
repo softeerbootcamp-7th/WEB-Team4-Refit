@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +36,7 @@ public class InterviewMyController {
             """)
     @PostMapping("/search")
     public ResponseEntity<ApiResponse<Page<InterviewDto>>> searchInterviews(
-            @Valid @RequestBody InterviewSearchRequest request, Pageable pageable) {
+            @Valid @RequestBody InterviewSearchRequest request, @ParameterObject Pageable pageable) {
         var body = interviewService.searchMyInterviews(request, pageable);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
@@ -47,7 +48,7 @@ public class InterviewMyController {
             """)
     @GetMapping("/draft")
     public ResponseEntity<ApiResponse<Page<InterviewSimpleDto>>> getMyInterviewDrafts(
-            @RequestParam InterviewDraftType interviewDraftType, Pageable pageable) {
+            @RequestParam InterviewDraftType interviewDraftType, @ParameterObject Pageable pageable) {
         var body = interviewService.getMyInterviewDrafts(interviewDraftType, pageable);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);

@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +36,7 @@ public class QnaSetMyController {
             description = "나의 빈출 질문 카테고리 리스트와 각 카테고리 별 질문 개수를 질문 개수가 많은 카테고리 순으로 정렬하여 조회합니다.")
     @GetMapping("/frequent/category")
     public ResponseEntity<ApiResponse<Page<FrequentQnaSetCategoryResponse>>> getMyFrequentQnaSetCategories(
-            Pageable pageable) {
+            @ParameterObject Pageable pageable) {
         var body = qnaSetMyService.getFrequentQnaSetCategories(pageable);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
@@ -44,7 +45,7 @@ public class QnaSetMyController {
     @Operation(summary = "나의 빈출 질문 중 특정 카테고리에 속한 질문들을 조회합니다.", description = "나의 빈출 질문 중 특정 카테고리에 속한 질문들을 조회합니다.")
     @GetMapping("/frequent/category/{categoryId}")
     public ResponseEntity<ApiResponse<Page<FrequentQnaSetCategoryQuestionResponse>>>
-            getMyFrequentQnaSetCategoryQuestions(@PathVariable Long categoryId, Pageable pageable) {
+            getMyFrequentQnaSetCategoryQuestions(@PathVariable Long categoryId, @ParameterObject Pageable pageable) {
         var body = qnaSetMyService.getFrequentQnaSetCategoryQuestions(categoryId, pageable);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
@@ -53,7 +54,7 @@ public class QnaSetMyController {
     @Operation(summary = "나의 면접 질문들을 검색합니다.", description = "나의 면접 질문들을 검색합니다. 조건을 넣지 않으면 전체 데이터를 조회합니다.")
     @PostMapping("/search")
     public ResponseEntity<ApiResponse<Page<QnaSetSearchResponse>>> searchMyQnaSet(
-            @Valid @RequestBody QnaSetSearchRequest request, Pageable pageable) {
+            @Valid @RequestBody QnaSetSearchRequest request, @ParameterObject Pageable pageable) {
         var body = qnaSetMyService.searchQnaSets(request, pageable);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);

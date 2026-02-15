@@ -1,9 +1,12 @@
 package com.shyashyashya.refit.domain.interview.dto.response;
 
 import com.shyashyashya.refit.domain.user.model.User;
+import jakarta.validation.constraints.NotNull;
 
 public record DashboardHeadlineResponse(
-        DashboardHeadlineType headlineType, String nickname, Long upcomingInterviewDday) {
+        @NotNull DashboardHeadlineType headlineType,
+        @NotNull String nickname,
+        Long upcomingInterviewDday) {
     public static DashboardHeadlineResponse registerInterview(User user) {
         return new DashboardHeadlineResponse(DashboardHeadlineType.REGISTER_INTERVIEW, user.getNickname(), null);
     }

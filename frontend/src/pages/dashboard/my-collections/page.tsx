@@ -103,6 +103,7 @@ export default function MyCollectionsPage() {
       </main>
 
       <FolderModal
+        key={activeModal === 'create' ? 'create-open' : 'create-closed'}
         isOpen={activeModal === 'create'}
         onClose={() => setActiveModal(null)}
         onSubmit={handleCreateFolder}
@@ -111,6 +112,7 @@ export default function MyCollectionsPage() {
       />
 
       <FolderModal
+        key={activeModal === 'edit' ? `edit-open-${folderToEditId ?? 'none'}` : 'edit-closed'}
         isOpen={activeModal === 'edit'}
         onClose={() => setActiveModal(null)}
         onSubmit={handleEditFolder}
