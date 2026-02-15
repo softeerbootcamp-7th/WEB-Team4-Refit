@@ -12,6 +12,7 @@ import com.shyashyashya.refit.domain.interview.dto.request.KptSelfReviewUpdateRe
 import com.shyashyashya.refit.domain.interview.dto.request.QnaSetCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.response.GuideQuestionResponse;
+import com.shyashyashya.refit.domain.interview.dto.response.PdfUploadUrlResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.QnaSetCreateResponse;
 import com.shyashyashya.refit.domain.interview.service.GuideQuestionService;
 import com.shyashyashya.refit.domain.interview.service.InterviewService;
@@ -112,6 +113,14 @@ public class InterviewController {
     public ResponseEntity<ApiResponse<QnaSetCreateResponse>> createQnaSet(
             @PathVariable Long interviewId, @Valid @RequestBody QnaSetCreateRequest request) {
         var body = interviewService.createQnaSet(interviewId, request);
+        var response = ApiResponse.success(COMMON200, body);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "면접 PDF 파일 업로드를 위한 Pre-Signed URL을 요청합니다.")
+    @GetMapping("/{interviewId}/pdf/upload-url")
+    public ResponseEntity<ApiResponse<PdfUploadUrlResponse>> getUploadUrl(@PathVariable Long interviewId) {
+        var body = interviewService.createPdfUploadUrl(interviewId);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
