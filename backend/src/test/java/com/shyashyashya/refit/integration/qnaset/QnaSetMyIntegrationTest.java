@@ -63,7 +63,9 @@ public class QnaSetMyIntegrationTest extends IntegrationTest {
 
         @Test
         void 성공한다() {
+            // given
 
+            // when & then
             given(spec)
             .when()
                     .get("/qna-set/my/frequent/category")
@@ -80,6 +82,9 @@ public class QnaSetMyIntegrationTest extends IntegrationTest {
 
         @Test
         void 질문이_있는_카테고리의_조회를_성공한다() {
+            // given
+
+            // when & then
             given(spec)
             .when()
                     .get("/qna-set/my/frequent/category/" + qnaSetCategory1.getId())
@@ -92,6 +97,9 @@ public class QnaSetMyIntegrationTest extends IntegrationTest {
 
         @Test
         void 질문이_없는_카테고리의_조회를_성공한다() {
+            // given
+
+            // when & then
             given(spec)
             .when()
                     .get("/qna-set/my/frequent/category/" + qnaSetCategory2.getId())
@@ -109,6 +117,7 @@ public class QnaSetMyIntegrationTest extends IntegrationTest {
 
         @Test
         void 모든_질문_검색을_성공한다() {
+            // given
             Set<StarInclusionLevel> inclusionLevels = new HashSet<>();
             inclusionLevels.add(StarInclusionLevel.NULL);
 
@@ -123,6 +132,7 @@ public class QnaSetMyIntegrationTest extends IntegrationTest {
                     )
             );
 
+            // when & then
             given(spec)
                     .body(request)
             .when()
