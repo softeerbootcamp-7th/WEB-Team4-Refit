@@ -19,6 +19,7 @@ import com.shyashyashya.refit.domain.interview.dto.request.InterviewSearchReques
 import com.shyashyashya.refit.domain.interview.dto.request.KptSelfReviewUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.QnaSetCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
+import com.shyashyashya.refit.domain.interview.dto.response.PdfUploadUrlResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.QnaSetCreateResponse;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
@@ -162,6 +163,15 @@ public class InterviewService {
                         request.searchFilter().endDate(),
                         pageable)
                 .map(InterviewDto::from);
+    }
+
+    @Transactional
+    public PdfUploadUrlResponse createPdfUploadUrl(Long interviewId) {
+        User requestUser = requestUserContext.getRequestUser();
+        Interview interview = interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
+        interviewValidator.validateInterviewOwner(interview, requestUser);
+
+        return null;
     }
 
     public Page<InterviewSimpleDto> getMyInterviewDrafts(InterviewDraftType draftType, Pageable pageable) {
