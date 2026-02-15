@@ -10,7 +10,8 @@ public record MyProfileResponse(
         @NotNull String nickname,
         @NotNull Long industryId,
         @NotNull Long jobCategoryId,
-        @NotNull String profileImageUrl) {
+        @NotNull String profileImageUrl,
+        @NotNull boolean isAgreedToTerms) {
 
     public static MyProfileResponse from(User user) {
         return MyProfileResponse.builder()
@@ -18,6 +19,7 @@ public record MyProfileResponse(
                 .industryId(user.getIndustry().getId())
                 .jobCategoryId(user.getJobCategory().getId())
                 .profileImageUrl(user.getProfileImageUrl())
+                .isAgreedToTerms(user.isAgreedToTerms())
                 .build();
     }
 }
