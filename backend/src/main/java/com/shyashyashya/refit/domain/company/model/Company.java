@@ -14,10 +14,9 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "companies",
-        indexes = {
-                @Index(name = "idx_company_search_composite", columnList = "is_search_allowed, search_name")
-        })
+@Table(
+        name = "companies",
+        indexes = {@Index(name = "idx_company_search_composite", columnList = "is_search_allowed, search_name")})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Company {
 
