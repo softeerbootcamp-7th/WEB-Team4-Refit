@@ -10,7 +10,7 @@ spring:
     include:
       - s3
       - auth
-      - gemini
+      - ai
 
 server:
   tomcat:
