@@ -22,13 +22,6 @@ import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRectReposi
 import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetCategoryRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
-import com.shyashyashya.refit.domain.qnaset.dto.request.PdfHighlightingUpdateRequest;
-import com.shyashyashya.refit.domain.qnaset.model.PdfHighlighting;
-import com.shyashyashya.refit.domain.qnaset.model.PdfHighlightingRect;
-import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
-import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRectRepository;
-import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRepository;
-import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
 import com.shyashyashya.refit.global.auth.service.JwtEncoder;
