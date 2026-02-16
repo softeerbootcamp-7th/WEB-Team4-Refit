@@ -1,6 +1,6 @@
 spring:
   s3:
-    region: ""
-    bucket: ""
-    prefix: ""
+    region: "dummy"
+    bucket: "dummy"
+    prefix: "dummy"
     presign-expire-seconds: 0
