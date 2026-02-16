@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useUpdateQnaSet } from '@/apis/generated/qna-set-api/qna-set-api'
 import { MOCK_QNA_SET_LIST, type RetroListItem } from '@/constants/example'
 import { BookmarkIcon } from '@/designs/assets'
 import { Border, Button, FadeScrollArea } from '@/designs/components'
@@ -21,7 +20,6 @@ export function RetroSection({ currentIndex, currentItem, totalCount, onIndexCha
   const [retroTexts, setRetroTexts] = useState<Record<number, string>>({})
   const [starAnalysis, setStarAnalysis] = useState<Record<number, StarAnalysisResult>>({})
   const [isScrapModalOpen, setIsScrapModalOpen] = useState(false)
-  const { mutate: updateQnaSet } = useUpdateQnaSet()
 
   // TODO: STAR 분석, KPT 자기회고 API 연동 필요
   // const { mutate: createStarAnalysis } = useCreateStarAnalysis()
@@ -42,8 +40,9 @@ export function RetroSection({ currentIndex, currentItem, totalCount, onIndexCha
     if (isKpt) {
       // KPT 저장 API
     } else {
-      const selfReviewText = retroTexts[qnaSetId] ?? ''
-      updateQnaSet({ qnaSetId, data: { selfReviewText } })
+      // TODO: 회고 수정 API 연동 필요
+      // const selfReviewText = retroTexts[qnaSetId] ?? ''
+      // updateQnaSet({ qnaSetId, data: { selfReviewText } })
     }
   }
 

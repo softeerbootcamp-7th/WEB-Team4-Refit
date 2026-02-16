@@ -1,3 +1,10 @@
+import type {
+  QnaSetSearchRequest,
+  QnaSearchFilterAInclusionLevelsItem,
+  QnaSearchFilterRInclusionLevelsItem,
+  QnaSearchFilterSInclusionLevelsItem,
+  QnaSearchFilterTInclusionLevelsItem,
+} from '@/apis/generated/refit-api.schemas'
 import type { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
 
 export type SimpleQnaType = {
@@ -17,6 +24,7 @@ export type QnaSetType = {
   isMarkedDifficult: boolean
 }
 
+// TODO: 회고 페이지에서 StarLevel로 변경
 export type StarStatus = 'present' | 'insufficient' | 'absent'
 
 export type StarAnalysisResult = {
@@ -61,4 +69,22 @@ type KptTextsType = {
   keepText: string
   problemText: string
   tryText: string
+}
+
+export type StarLevel =
+  | QnaSearchFilterSInclusionLevelsItem
+  | QnaSearchFilterTInclusionLevelsItem
+  | QnaSearchFilterAInclusionLevelsItem
+  | QnaSearchFilterRInclusionLevelsItem
+
+type ApiQuestionSearchFilter = NonNullable<QnaSetSearchRequest['searchFilter']>
+
+export type QuestionFilter = {
+  keyword: string
+  sort: string
+  hasStarAnalysis: ApiQuestionSearchFilter['hasStarAnalysis'] | null
+  sInclusionLevels: NonNullable<ApiQuestionSearchFilter['sInclusionLevels']>
+  tInclusionLevels: NonNullable<ApiQuestionSearchFilter['tInclusionLevels']>
+  aInclusionLevels: NonNullable<ApiQuestionSearchFilter['aInclusionLevels']>
+  rInclusionLevels: NonNullable<ApiQuestionSearchFilter['rInclusionLevels']>
 }

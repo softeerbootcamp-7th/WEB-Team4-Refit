@@ -9,6 +9,7 @@ import com.shyashyashya.refit.domain.interview.service.validator.InterviewValida
 import com.shyashyashya.refit.domain.jobcategory.service.validator.JobCategoryValidator;
 import com.shyashyashya.refit.domain.qnaset.dto.PdfHighlightingDto;
 import com.shyashyashya.refit.domain.qnaset.dto.request.PdfHighlightingUpdateRequest;
+import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetReviewUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetResponse;
 import com.shyashyashya.refit.domain.qnaset.dto.response.QnaSetScrapFolderResponse;
@@ -75,9 +76,10 @@ public class QnaSetService {
     @Transactional
     public void updateQnaSet(Long qnaSetId, QnaSetUpdateRequest request) {
         QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
+
+        interviewValidator.validateInterviewReviewStatus(qnaSet.getInterview(), InterviewReviewStatus.QNA_SET_DRAFT);
         qnaSet.updateQuestionText(request.questionText());
         qnaSet.updateAnswerText(request.answerText());
-        updateOrCreateSelfReview(qnaSet, request.selfReviewText());
     }
 
     @Transactional
@@ -88,8 +90,18 @@ public class QnaSetService {
     }
 
     @Transactional
+    public void updateQnaSetSelfReview(Long qnaSetId, QnaSetReviewUpdateRequest request) {
+        QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
+
+        interviewValidator.validateInterviewReviewStatus(
+                qnaSet.getInterview(), InterviewReviewStatus.SELF_REVIEW_DRAFT);
+        updateOrCreateSelfReview(qnaSet, request.selfReviewText());
+    }
+
+    @Transactional
     public void updatePdfHighlighting(Long qnaSetId, List<PdfHighlightingUpdateRequest> request) {
         QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
+        interviewValidator.validateInterviewReviewStatus(qnaSet.getInterview(), InterviewReviewStatus.QNA_SET_DRAFT);
         deleteAllHighlightingsAndRects(qnaSet);
         saveAllHighlightings(qnaSet, request);
     }
@@ -135,13 +147,7 @@ public class QnaSetService {
         return qnaSetScrapFolderRepository.findAllScrapFoldersWithQnaSetContainingInfo(requestUser, qnaSet, pageable);
     }
 
-    private List<Long> removeDuplicatedIds(List<Long> list) {
-        if (list == null) {
-            return null;
-        }
-        return list.stream().distinct().toList();
-    }
-
+    // TODO: ID->Entity 변환기 별도로 분리 고려
     private QnaSet getValidatedQnaSet(Long qnaSetId) {
         QnaSet qnaSet = qnaSetRepository.findById(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
         User requestUser = requestUserContext.getRequestUser();

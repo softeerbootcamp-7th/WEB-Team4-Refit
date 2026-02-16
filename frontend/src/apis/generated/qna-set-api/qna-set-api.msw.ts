@@ -33,6 +33,16 @@ export const getDeleteQnaSetResponseMock = (overrideResponse: Partial<ApiRespons
   ...overrideResponse,
 })
 
+export const getUpdateQnaSetSelfReviewResponseMock = (
+  overrideResponse: Partial<ApiResponseVoid> = {},
+): ApiResponseVoid => ({
+  isSuccess: faker.datatype.boolean(),
+  code: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  message: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  result: faker.helpers.arrayElement([{}, undefined]),
+  ...overrideResponse,
+})
+
 export const getGetPdfHighlightingsResponseMock = (
   overrideResponse: Partial<ApiResponseListPdfHighlightingDto> = {},
 ): ApiResponseListPdfHighlightingDto => ({
@@ -277,6 +287,30 @@ export const getDeleteQnaSetMockHandler = (
   )
 }
 
+export const getUpdateQnaSetSelfReviewMockHandler = (
+  overrideResponse?:
+    | ApiResponseVoid
+    | ((info: Parameters<Parameters<typeof http.put>[1]>[0]) => Promise<ApiResponseVoid> | ApiResponseVoid),
+  options?: RequestHandlerOptions,
+) => {
+  return http.put(
+    '*/qna-set/:qnaSetId/self-review',
+    async (info) => {
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === 'function'
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getUpdateQnaSetSelfReviewResponseMock(),
+        ),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      )
+    },
+    options,
+  )
+}
+
 export const getGetPdfHighlightingsMockHandler = (
   overrideResponse?:
     | ApiResponseListPdfHighlightingDto
@@ -455,6 +489,7 @@ export const getGetFrequentQuestionsMockHandler = (
 export const getQnaSetApiMock = () => [
   getUpdateQnaSetMockHandler(),
   getDeleteQnaSetMockHandler(),
+  getUpdateQnaSetSelfReviewMockHandler(),
   getGetPdfHighlightingsMockHandler(),
   getUpdatePdfHighlightingMockHandler(),
   getCreateStarAnalysisMockHandler(),

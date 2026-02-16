@@ -6,3 +6,4 @@ spring:
     include:
       - auth
       - gemini
+      - s3

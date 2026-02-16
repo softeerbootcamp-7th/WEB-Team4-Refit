@@ -1,9 +1,13 @@
 package com.shyashyashya.refit.domain.qnaset.dto.response;
 
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetCategory;
+import jakarta.validation.constraints.NotNull;
 
 public record FrequentQnaSetCategoryResponse(
-        Long categoryId, String categoryName, Long frequentCount, Double cohesion) {
+        @NotNull Long categoryId,
+        @NotNull String categoryName,
+        @NotNull Long frequentCount,
+        @NotNull Double cohesion) {
 
     public static FrequentQnaSetCategoryResponse of(QnaSetCategory category, Long frequentCount) {
         return new FrequentQnaSetCategoryResponse(

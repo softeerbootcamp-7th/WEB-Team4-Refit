@@ -16,6 +16,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -68,7 +69,7 @@ public class DashboardController {
             """)
     @GetMapping("/interview/upcoming")
     public ResponseEntity<ApiResponse<Page<DashboardUpcomingInterviewResponse>>> getUpcomingInterviews(
-            Pageable pageable) {
+            @ParameterObject Pageable pageable) {
         var body = dashboardService.getUpcomingInterviews(pageable);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
@@ -77,7 +78,7 @@ public class DashboardController {
     @Operation(summary = "대시보드에서 '내가 어렵게 느낀 질문'을 조회합니다.")
     @GetMapping("/qna-set/my/difficult")
     public ResponseEntity<ApiResponse<Page<DashboardMyDifficultQuestionResponse>>> getMyDifficultQnaSets(
-            Pageable pageable) {
+            @ParameterObject Pageable pageable) {
         var body = dashboardService.getMyDifficultQnaSets(pageable);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
@@ -86,7 +87,7 @@ public class DashboardController {
     @Operation(summary = "대시보드에서 복기 대기중인 면접 리스트를 조회합니다.")
     @GetMapping("/interview/debrief-uncompleted")
     public ResponseEntity<ApiResponse<Page<DashboardDebriefIncompletedInterviewResponse>>>
-            getDebriefIncompletedInterviews(Pageable pageable) {
+            getDebriefIncompletedInterviews(@ParameterObject Pageable pageable) {
         var body = dashboardService.getDebriefIncompletedInterviews(pageable);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);

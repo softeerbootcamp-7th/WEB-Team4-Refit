@@ -8,9 +8,10 @@ import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { customFetch } from '../../custom-fetch'
 import type {
   ApiResponseGuideQuestionResponse,
+  ApiResponseInterviewCreateResponse,
   ApiResponseInterviewDto,
   ApiResponseInterviewFullDto,
-  ApiResponsePdfUploadUrlResponse,
+  ApiResponsePresignedUrlResponse,
   ApiResponseQnaSetCreateResponse,
   ApiResponseVoid,
   InterviewCreateRequest,
@@ -209,8 +210,8 @@ export const getCreateInterviewUrl = () => {
 export const createInterview = async (
   interviewCreateRequest: InterviewCreateRequest,
   options?: RequestInit,
-): Promise<ApiResponseVoid> => {
-  return customFetch<ApiResponseVoid>(getCreateInterviewUrl(), {
+): Promise<ApiResponseInterviewCreateResponse> => {
+  return customFetch<ApiResponseInterviewCreateResponse>(getCreateInterviewUrl(), {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
@@ -1101,8 +1102,8 @@ export const getCreateUploadUrlUrl = (interviewId: number) => {
 export const createUploadUrl = async (
   interviewId: number,
   options?: RequestInit,
-): Promise<ApiResponsePdfUploadUrlResponse> => {
-  return customFetch<ApiResponsePdfUploadUrlResponse>(getCreateUploadUrlUrl(interviewId), {
+): Promise<ApiResponsePresignedUrlResponse> => {
+  return customFetch<ApiResponsePresignedUrlResponse>(getCreateUploadUrlUrl(interviewId), {
     ...options,
     method: 'GET',
   })
@@ -1261,6 +1262,187 @@ export function useCreateUploadUrlSuspense<TData = Awaited<ReturnType<typeof cre
   queryClient?: QueryClient,
 ): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
   const queryOptions = getCreateUploadUrlSuspenseQueryOptions(interviewId, options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as UseSuspenseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  return { ...query, queryKey: queryOptions.queryKey }
+}
+
+/**
+ * @summary 면접 PDF 파일 다운로드를 위한 Pre-Signed URL을 요청합니다.
+ */
+export const getCreateDownloadUrlUrl = (interviewId: number) => {
+  return `/interview/${interviewId}/pdf/download-url`
+}
+
+export const createDownloadUrl = async (
+  interviewId: number,
+  options?: RequestInit,
+): Promise<ApiResponsePresignedUrlResponse> => {
+  return customFetch<ApiResponsePresignedUrlResponse>(getCreateDownloadUrlUrl(interviewId), {
+    ...options,
+    method: 'GET',
+  })
+}
+
+export const getCreateDownloadUrlQueryKey = (interviewId: number) => {
+  return [`/interview/${interviewId}/pdf/download-url`] as const
+}
+
+export const getCreateDownloadUrlQueryOptions = <
+  TData = Awaited<ReturnType<typeof createDownloadUrl>>,
+  TError = unknown,
+>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof createDownloadUrl>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getCreateDownloadUrlQueryKey(interviewId)
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof createDownloadUrl>>> = ({ signal }) =>
+    createDownloadUrl(interviewId, { signal, ...requestOptions })
+
+  return { queryKey, queryFn, enabled: !!interviewId, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof createDownloadUrl>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type CreateDownloadUrlQueryResult = NonNullable<Awaited<ReturnType<typeof createDownloadUrl>>>
+export type CreateDownloadUrlQueryError = unknown
+
+export function useCreateDownloadUrl<TData = Awaited<ReturnType<typeof createDownloadUrl>>, TError = unknown>(
+  interviewId: number,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof createDownloadUrl>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof createDownloadUrl>>,
+          TError,
+          Awaited<ReturnType<typeof createDownloadUrl>>
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useCreateDownloadUrl<TData = Awaited<ReturnType<typeof createDownloadUrl>>, TError = unknown>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof createDownloadUrl>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof createDownloadUrl>>,
+          TError,
+          Awaited<ReturnType<typeof createDownloadUrl>>
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useCreateDownloadUrl<TData = Awaited<ReturnType<typeof createDownloadUrl>>, TError = unknown>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof createDownloadUrl>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 면접 PDF 파일 다운로드를 위한 Pre-Signed URL을 요청합니다.
+ */
+
+export function useCreateDownloadUrl<TData = Awaited<ReturnType<typeof createDownloadUrl>>, TError = unknown>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof createDownloadUrl>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getCreateDownloadUrlQueryOptions(interviewId, options)
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  return { ...query, queryKey: queryOptions.queryKey }
+}
+
+export const getCreateDownloadUrlSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof createDownloadUrl>>,
+  TError = unknown,
+>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof createDownloadUrl>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getCreateDownloadUrlQueryKey(interviewId)
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof createDownloadUrl>>> = ({ signal }) =>
+    createDownloadUrl(interviewId, { signal, ...requestOptions })
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof createDownloadUrl>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type CreateDownloadUrlSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof createDownloadUrl>>>
+export type CreateDownloadUrlSuspenseQueryError = unknown
+
+export function useCreateDownloadUrlSuspense<TData = Awaited<ReturnType<typeof createDownloadUrl>>, TError = unknown>(
+  interviewId: number,
+  options: {
+    query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof createDownloadUrl>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useCreateDownloadUrlSuspense<TData = Awaited<ReturnType<typeof createDownloadUrl>>, TError = unknown>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof createDownloadUrl>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useCreateDownloadUrlSuspense<TData = Awaited<ReturnType<typeof createDownloadUrl>>, TError = unknown>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof createDownloadUrl>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 면접 PDF 파일 다운로드를 위한 Pre-Signed URL을 요청합니다.
+ */
+
+export function useCreateDownloadUrlSuspense<TData = Awaited<ReturnType<typeof createDownloadUrl>>, TError = unknown>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof createDownloadUrl>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getCreateDownloadUrlSuspenseQueryOptions(interviewId, options)
 
   const query = useSuspenseQuery(queryOptions, queryClient) as UseSuspenseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>

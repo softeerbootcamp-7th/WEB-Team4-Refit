@@ -2,10 +2,14 @@ package com.shyashyashya.refit.domain.interview.dto;
 
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewResultStatus;
+import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewSelfReview;
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
+import com.shyashyashya.refit.domain.qnaset.dto.QnaSetDto;
+import com.shyashyashya.refit.domain.qnaset.dto.StarAnalysisDto;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetSelfReview;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -14,23 +18,25 @@ import lombok.Builder;
 
 @Builder(access = AccessLevel.PRIVATE)
 public record InterviewFullDto(
-        Long interviewId,
-        InterviewType interviewType,
-        LocalDateTime interviewStartAt,
-        InterviewResultStatus interviewResultStatus,
-        String company,
-        Long industryId,
-        Long jobCategoryId,
+        @NotNull Long interviewId,
+        @NotNull InterviewType interviewType,
+        @NotNull LocalDateTime interviewStartAt,
+        @NotNull InterviewReviewStatus interviewReviewStatus,
+        @NotNull InterviewResultStatus interviewResultStatus,
+        @NotNull String company,
+        @NotNull Long industryId,
+        @NotNull Long jobCategoryId,
         String jobRole,
-        LocalDateTime updatedAt,
+        @NotNull LocalDateTime updatedAt,
         String pdfUrl,
-        List<QnaSetDto> qnaSets,
+        @NotNull List<QnaSetDto> qnaSets,
         InterviewSelfReviewDto interviewSelfReview) {
     public static InterviewFullDto fromInterviewWithEmptyQnaSets(Interview interview) {
         return InterviewFullDto.builder()
                 .interviewId(interview.getId())
                 .interviewType(interview.getInterviewType())
                 .interviewStartAt(interview.getStartAt())
+                .interviewReviewStatus(interview.getReviewStatus())
                 .interviewResultStatus(interview.getResultStatus())
                 .company(interview.getCompany().getName())
                 .industryId(interview.getIndustry().getId())
@@ -63,6 +69,7 @@ public record InterviewFullDto(
                 .interviewId(interview.getId())
                 .interviewType(interview.getInterviewType())
                 .interviewStartAt(interview.getStartAt())
+                .interviewReviewStatus(interview.getReviewStatus())
                 .interviewResultStatus(interview.getResultStatus())
                 .company(interview.getCompany().getName())
                 .industryId(interview.getIndustry().getId())

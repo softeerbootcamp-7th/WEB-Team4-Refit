@@ -15,7 +15,7 @@ import { Badge } from '@/designs/components'
 import ConfirmModal from '@/designs/components/modal/ConfirmModal'
 import { useMenuPosition } from '@/features/_common/hooks/useMenuPosition'
 import { useOnClickOutside } from '@/features/_common/hooks/useOnClickOutside'
-import formatDateTime from '@/features/_common/utils/date'
+import { formatDateTime } from '@/features/_common/utils/date'
 import { CalendarInterviewMenu } from './CalendarInterviewMenu'
 
 interface CalendarInterviewCardProps {

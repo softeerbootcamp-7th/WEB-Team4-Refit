@@ -28,6 +28,9 @@ export interface QnaSetUpdateRequest {
    */
   questionText?: string
   answerText?: string
+}
+
+export interface QnaSetReviewUpdateRequest {
   /**
    * @minLength 0
    * @maxLength 500
@@ -341,6 +344,17 @@ export interface InterviewCreateRequest {
   industryId: number
   jobCategoryId: number
   jobRole: string
+}
+
+export interface InterviewCreateResponse {
+  interviewId: number
+}
+
+export interface ApiResponseInterviewCreateResponse {
+  isSuccess: boolean
+  code: string
+  message: string
+  result?: InterviewCreateResponse
 }
 
 export interface QnaSetCreateRequest {
@@ -741,6 +755,17 @@ export const InterviewFullDtoInterviewType = {
   PSEUDO: 'PSEUDO',
 } as const
 
+export type InterviewFullDtoInterviewReviewStatus =
+  (typeof InterviewFullDtoInterviewReviewStatus)[keyof typeof InterviewFullDtoInterviewReviewStatus]
+
+export const InterviewFullDtoInterviewReviewStatus = {
+  NOT_LOGGED: 'NOT_LOGGED',
+  LOG_DRAFT: 'LOG_DRAFT',
+  QNA_SET_DRAFT: 'QNA_SET_DRAFT',
+  SELF_REVIEW_DRAFT: 'SELF_REVIEW_DRAFT',
+  DEBRIEF_COMPLETED: 'DEBRIEF_COMPLETED',
+} as const
+
 export type InterviewFullDtoInterviewResultStatus =
   (typeof InterviewFullDtoInterviewResultStatus)[keyof typeof InterviewFullDtoInterviewResultStatus]
 
@@ -770,6 +795,7 @@ export interface InterviewFullDto {
   interviewId: number
   interviewType: InterviewFullDtoInterviewType
   interviewStartAt: string
+  interviewReviewStatus: InterviewFullDtoInterviewReviewStatus
   interviewResultStatus: InterviewFullDtoInterviewResultStatus
   company: string
   industryId: number
@@ -788,16 +814,17 @@ export interface ApiResponseInterviewFullDto {
   result?: InterviewFullDto
 }
 
-export interface PdfUploadUrlResponse {
+export interface PresignedUrlResponse {
   url: string
   key: string
+  expireSeconds: number
 }
 
-export interface ApiResponsePdfUploadUrlResponse {
+export interface ApiResponsePresignedUrlResponse {
   isSuccess: boolean
   code: string
   message: string
-  result?: PdfUploadUrlResponse
+  result?: PresignedUrlResponse
 }
 
 export interface GuideQuestionResponse {

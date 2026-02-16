@@ -1,3 +1,4 @@
+import qs from 'qs'
 import { markAuthenticated, markUnauthenticated } from '@/routes/middleware/auth-session'
 
 export class HttpError<T = unknown> extends Error {
@@ -94,4 +95,21 @@ const reissueTokens = async (): Promise<void> => {
     })
 
   return reissuePromise
+}
+type QuerySerializationOptions = {
+  arrayFormat?: 'indices' | 'brackets' | 'repeat' | 'comma'
+}
+
+export const customFetchWithSerializedQuery = async <T>(
+  path: string,
+  query: Record<string, unknown>,
+  initOptions: RequestInit,
+  options: QuerySerializationOptions = {},
+): Promise<T> => {
+  const queryString = qs.stringify(query, {
+    arrayFormat: options.arrayFormat ?? 'repeat',
+    skipNulls: true,
+  })
+  const urlWithQuery = queryString ? `${path}?${queryString}` : path
+  return customFetch<T>(urlWithQuery, initOptions)
 }

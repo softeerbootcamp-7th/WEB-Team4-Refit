@@ -1,4 +1,5 @@
 import { useGetDebriefIncompletedInterviews } from '@/apis/generated/dashboard-api/dashboard-api'
+import type { DashboardDebriefIncompletedInterviewResponse } from '@/apis/generated/refit-api.schemas'
 import { INTERVIEW_REVIEW_STATUS_LABEL } from '@/constants/interviewReviewStatus'
 import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
 import type { ReviewWaitingData } from '../components/review-waiting-interview/ReviewWaitingCard'
@@ -6,14 +7,12 @@ import type { ReviewWaitingData } from '../components/review-waiting-interview/R
 export const useReviewWaitingInterviews = () => {
   const { data: response } = useGetDebriefIncompletedInterviews(
     {
-      pageable: {
-        page: 0,
-        size: 10,
-      },
+      page: 0,
+      size: 10,
     },
     {
       query: {
-        select: (data) => ({
+        select: (data): { content: DashboardDebriefIncompletedInterviewResponse[]; totalElements: number } => ({
           content: data?.result?.content ?? [],
           totalElements: data?.result?.totalElements ?? 0,
         }),
@@ -37,7 +36,7 @@ export const useReviewWaitingInterviews = () => {
       // Industry 정보가 API에 없으므로 임시 하드코딩 또는 빈 문자열
       industry: interview?.companyName === '현대자동차' ? '제조업' : 'IT/플랫폼',
       jobCategory: interview?.jobCategoryName ?? '',
-      interviewType: interviewTypeKey ? INTERVIEW_TYPE_LABEL[interviewTypeKey] : interview?.interviewType ?? '',
+      interviewType: interviewTypeKey ? INTERVIEW_TYPE_LABEL[interviewTypeKey] : (interview?.interviewType ?? ''),
     }
   })
 
