@@ -24,9 +24,12 @@ import com.shyashyashya.refit.domain.interview.model.InterviewType;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
 import com.shyashyashya.refit.domain.qnaset.dto.PdfHighlightingRectDto;
 import com.shyashyashya.refit.domain.qnaset.dto.request.PdfHighlightingUpdateRequest;
+import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetReviewUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
+import com.shyashyashya.refit.domain.qnaset.model.QnaSetSelfReview;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
+import com.shyashyashya.refit.domain.qnaset.repository.QnaSetSelfReviewRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -42,6 +45,9 @@ public class QnaSetIntegrationTest extends IntegrationTest {
 
     @Autowired
     private QnaSetRepository qnaSetRepository;
+
+    @Autowired
+    private QnaSetSelfReviewRepository qnaSetSelfReviewRepository;
 
     private Long qnaSetDraftQnaSetId;
     private Long debriefCompletedQnaSetId;
@@ -1021,5 +1027,112 @@ public class QnaSetIntegrationTest extends IntegrationTest {
                                 new PdfHighlightingRectDto(452.1, 123123.1, 30.12, 4123.432, 13)
                         ))
         );
+    }
+
+    @Nested
+    class 질답_세트_회고_수정_시 {
+
+        private Long selfReviewDraftQnaSetId;
+        private Long otherUserQnaSetId;
+
+        @BeforeEach
+        void setUp() {
+            var interviewCreateRequest = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview selfReviewDraftInterview = createAndSaveInterview(interviewCreateRequest, InterviewReviewStatus.SELF_REVIEW_DRAFT);
+
+            var qnaSetCreateRequest = new QnaSetCreateRequest("question", "answer");
+            QnaSet selfReviewDraftQnaSet = createAndSaveQnaSet(qnaSetCreateRequest, selfReviewDraftInterview);
+            selfReviewDraftQnaSetId = selfReviewDraftQnaSet.getId();
+        }
+
+        @Test
+        void 인터뷰가_회고_중_상태이면_회고_수정에_성공한다() {
+            // given
+            QnaSetReviewUpdateRequest request = new QnaSetReviewUpdateRequest("updated review");
+
+            // when & then
+            given(spec)
+                    .body(request)
+            .when()
+                    .put("/qna-set/" + selfReviewDraftQnaSetId + "/self-review")
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result", nullValue());
+
+            QnaSet updated = qnaSetRepository.findById(selfReviewDraftQnaSetId).get();
+            QnaSetSelfReview selfReview = qnaSetSelfReviewRepository.findByQnaSet(updated).get();
+            assertThat(selfReview.getSelfReviewText()).isEqualTo("updated review");
+        }
+
+        @ParameterizedTest
+        @EnumSource(value = InterviewReviewStatus.class, mode = EnumSource.Mode.EXCLUDE, names = "SELF_REVIEW_DRAFT")
+        void 인터뷰가_회고_중_상태가_아니면_회고_수정에_실패한다(InterviewReviewStatus status) {
+            // given
+            var interviewCreateRequest = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview interview = createAndSaveInterview(interviewCreateRequest, status);
+
+            var qnaSetCreateRequest = new QnaSetCreateRequest("question", "answer");
+            QnaSet qnaSet = createAndSaveQnaSet(qnaSetCreateRequest, interview);
+
+            QnaSetReviewUpdateRequest request = new QnaSetReviewUpdateRequest("updated review");
+
+            // when & then
+            given(spec)
+                    .body(request)
+            .when()
+                    .put("/qna-set/" + qnaSet.getId() + "/self-review")
+            .then()
+                    .statusCode(400)
+                    .body("code", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.name()))
+                    .body("message", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @Test
+        void 질답_세트가_존재하지_않으면_회고_수정에_실패한다() {
+            // given
+            QnaSetReviewUpdateRequest request = new QnaSetReviewUpdateRequest("updated review");
+
+            // when & then
+            given(spec)
+                    .body(request)
+            .when()
+                    .put("/qna-set/" + Long.MAX_VALUE + "/self-review")
+            .then()
+                    .statusCode(404)
+                    .body("code", equalTo(QNA_SET_NOT_FOUND.name()))
+                    .body("message", equalTo(QNA_SET_NOT_FOUND.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @Test
+        void 다른_사람의_질답_세트_회고_수정에_실패한다() {
+            // given
+            User user = createAndSaveUser("other@example.com", "other", industry1, jobCategory1);
+
+            var interviewCreateRequest = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview otherUserInterview = createAndSaveInterview(interviewCreateRequest, InterviewReviewStatus.SELF_REVIEW_DRAFT, user);
+
+            var qnaSetCreateRequest = new QnaSetCreateRequest("question", "answer");
+            otherUserQnaSetId = createAndSaveQnaSet(qnaSetCreateRequest, otherUserInterview).getId();
+
+            QnaSetReviewUpdateRequest request = new QnaSetReviewUpdateRequest("updated review");
+
+            // when & then
+            given(spec)
+                    .body(request)
+            .when()
+                    .put("/qna-set/" + otherUserQnaSetId + "/self-review")
+            .then()
+                    .statusCode(403)
+                    .body("code", equalTo(INTERVIEW_NOT_ACCESSIBLE.name()))
+                    .body("message", equalTo(INTERVIEW_NOT_ACCESSIBLE.getMessage()))
+                    .body("result", nullValue());
+        }
     }
 }
