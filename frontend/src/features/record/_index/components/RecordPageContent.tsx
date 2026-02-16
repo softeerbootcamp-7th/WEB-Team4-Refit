@@ -1,23 +1,25 @@
 import { useState, type Dispatch, type SetStateAction } from 'react'
+import { LoadingSpinner } from '@/designs/assets'
 import { Button } from '@/designs/components'
 import LiveAudioVisualizer from '@/features/_common/auth/components/LiveAudioVisualizer'
-import { useInterviewNavigate } from '@/features/_common/hooks/useInterviewNavigation'
 import LoadingOverlay from '@/features/_common/loading/LoadingOverlay'
 import { RecordSidebar } from '@/features/record/_index/components/RecordSidebar'
-import { ROUTES } from '@/routes/routes'
 import type { InterviewInfoType } from '@/types/interview'
+
+type AutoSaveStatus = 'idle' | 'saving' | 'saved' | 'error'
 
 type RecordPageContentProps = {
   interviewInfo: InterviewInfoType
   text: string
   realtimeText: string
-  onTextChange: Dispatch<SetStateAction<string>>
+  onTextChange: (text: string) => void
   onRealtimeTranscript: Dispatch<SetStateAction<string>>
   onRecordComplete: () => void
   onRecordCancel?: () => void
-  onSave: () => void
-  isSavePending: boolean
+  onComplete: () => void
+  isCompletePending: boolean
   canSave: boolean
+  autoSaveStatus: AutoSaveStatus
 }
 
 export function RecordPageContent({
@@ -28,28 +30,23 @@ export function RecordPageContent({
   onRealtimeTranscript,
   onRecordComplete,
   onRecordCancel,
-  onSave,
-  isSavePending,
+  onComplete,
+  isCompletePending,
   canSave,
+  autoSaveStatus,
 }: RecordPageContentProps) {
   const [isRecording, setIsRecording] = useState(false)
-  const [isSummarizing, setIsSummarizing] = useState(false)
-
-  const navigateWithId = useInterviewNavigate()
-  const goToConfirmPage = () => {
-    setIsSummarizing(true)
-    setTimeout(() => {
-      navigateWithId(ROUTES.RECORD_CONFIRM)
-    }, 4000)
-  }
+  const mergedText = `${text}${realtimeText ? `${text ? ' ' : ''}${realtimeText}` : ''}`
+  const canComplete = mergedText.trim().length > 0
 
   return (
     <>
       <div className="mx-auto grid h-full w-7xl grid-cols-[320px_1fr]">
         <RecordSidebar infoItems={interviewInfo} />
         <div className="flex min-h-0 flex-1 flex-col overflow-auto p-6">
-          <div className="mb-5">
+          <div className="mb-5 flex items-center gap-4">
             <h1 className="title-l-bold">면접 기록하기</h1>
+            <AutoSaveStatusBadge status={autoSaveStatus} />
           </div>
 
           <div className="border-gray-150 flex min-h-0 flex-1 flex-col rounded-xl border bg-white p-6">
@@ -71,17 +68,21 @@ export function RecordPageContent({
             </div>
           </div>
 
-          <div className="mt-auto flex shrink-0 justify-end gap-3 pt-4">
-            <Button variant="outline-gray-100" size="md" onClick={onSave} disabled={isSavePending || !canSave}>
-              임시저장
-            </Button>
-            <Button variant="fill-orange-500" size="md" className="w-60" onClick={goToConfirmPage}>
+          <div className="mt-auto flex shrink-0 justify-end pt-4">
+            <Button
+              variant="fill-orange-500"
+              size="md"
+              className="w-60"
+              onClick={onComplete}
+              disabled={!canSave || isRecording || !canComplete}
+              isLoading={isCompletePending}
+            >
               기록 완료
             </Button>
           </div>
         </div>
       </div>
-      {isSummarizing && (
+      {isCompletePending && (
         <LoadingOverlay
           text={
             <>
@@ -93,5 +94,47 @@ export function RecordPageContent({
         />
       )}
     </>
+  )
+}
+
+function AutoSaveStatusBadge({ status }: { status: AutoSaveStatus }) {
+  const label =
+    status === 'saving'
+      ? '저장 중...'
+      : status === 'saved'
+        ? '저장됨'
+        : status === 'error'
+          ? '저장 실패'
+          : '자동 저장'
+
+  const textColor = status === 'error' ? 'text-red-500' : 'text-gray-500'
+
+  return (
+    <div className={`caption-l-semibold inline-flex items-center gap-1.5 ${textColor}`}>
+      <CloudSaveIcon className="h-5 w-5" />
+      <span>{label}</span>
+      {status === 'saving' && <LoadingSpinner className="h-4 w-4 animate-spin" />}
+    </div>
+  )
+}
+
+function CloudSaveIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <path
+        d="M7.5 18.5H17A4 4 0 0 0 17 10.5C16.82 10.5 16.64 10.51 16.46 10.54A5.5 5.5 0 0 0 5.8 11.9A3.5 3.5 0 0 0 7.5 18.5Z"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M12 10.5V16.5M12 16.5L9.7 14.2M12 16.5L14.3 14.2"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   )
 }

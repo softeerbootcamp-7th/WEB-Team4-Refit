@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { useParams } from 'react-router'
-import { useUpdateRawText } from '@/apis'
+import { useStartLogging, useUpdateRawText } from '@/apis'
 import ConfirmModal from '@/designs/components/modal/ConfirmModal'
 import { RecordPageContent } from '@/features/mobile/record/components'
 
@@ -12,6 +12,28 @@ export default function MobileRecordPage() {
   const [showEmptyTranscriptModal, setShowEmptyTranscriptModal] = useState(false)
 
   const { mutate: updateRawText, isPending } = useUpdateRawText()
+  const { mutateAsync: startLogging } = useStartLogging()
+  const startedLoggingRef = useRef(false)
+  const startLoggingPromiseRef = useRef<Promise<boolean> | null>(null)
+
+  const ensureLoggingStarted = useCallback(async () => {
+    if (!interviewId) return false
+    if (startedLoggingRef.current) return true
+
+    if (!startLoggingPromiseRef.current) {
+      startLoggingPromiseRef.current = startLogging({ interviewId: Number(interviewId) })
+        .then(() => {
+          startedLoggingRef.current = true
+          return true
+        })
+        .catch(() => false)
+        .finally(() => {
+          startLoggingPromiseRef.current = null
+        })
+    }
+
+    return startLoggingPromiseRef.current
+  }, [interviewId, startLogging])
 
   const handleRecordComplete = () => {
     const trimmed = realtimeText.trim()
@@ -35,10 +57,16 @@ export default function MobileRecordPage() {
 
   const handleSave = () => {
     if (!interviewId) return
-    updateRawText({
-      interviewId: Number(interviewId),
-      data: { rawText: text },
-    })
+
+    void (async () => {
+      const isLoggingStarted = await ensureLoggingStarted()
+      if (!isLoggingStarted) return
+
+      updateRawText({
+        interviewId: Number(interviewId),
+        data: { rawText: text },
+      })
+    })()
   }
 
   return (
