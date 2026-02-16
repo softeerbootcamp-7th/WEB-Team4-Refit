@@ -7,8 +7,18 @@ import FolderModal from '@/features/dashboard/my-collections/components/FolderMo
 import { useCollectionFolderMutations, useCollectionFolders } from '@/features/dashboard/my-collections/hooks'
 
 export default function MyCollectionsPage() {
-  const { folders, folderId, selectedFolderId, selectedFolder, isFoldersPending, isFoldersError, navigate } =
-    useCollectionFolders()
+  const {
+    folders,
+    folderId,
+    selectedFolderId,
+    selectedFolder,
+    loadMoreRef,
+    isFoldersPending,
+    isFetchingNextFolders,
+    hasNextFolders,
+    isFoldersError,
+    navigate,
+  } = useCollectionFolders()
   const { modal, pending, actions } = useCollectionFolderMutations({
     folders,
     folderId,
@@ -46,6 +56,8 @@ export default function MyCollectionsPage() {
               ))}
 
               {isFoldersPending && <FolderListSkeleton />}
+              {!isFoldersPending && isFetchingNextFolders && <FolderListSkeleton />}
+              {hasNextFolders && <div ref={loadMoreRef} className="h-4 w-full" aria-hidden />}
             </div>
           </div>
 

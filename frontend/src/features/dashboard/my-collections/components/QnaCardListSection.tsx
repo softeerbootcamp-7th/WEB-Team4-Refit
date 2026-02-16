@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState, type RefObject } from 'react'
 import { CaretDownIcon } from '@/designs/assets'
 import { Button, PlainCombobox } from '@/designs/components'
 import { QnaCard } from '@/features/dashboard/my-interviews/components/questions'
@@ -6,7 +6,7 @@ import type { InterviewResultStatus } from '@/features/dashboard/my-interviews/c
 import type { InterviewType } from '@/types/interview'
 
 export type QnaCardListItem = {
-  id: number
+  id: number | string
   resultStatus: InterviewResultStatus
   date: string
   company: string
@@ -14,6 +14,7 @@ export type QnaCardListItem = {
   interviewType: InterviewType
   question: string
   answer?: string
+  createdAt?: string
 }
 
 const SORT_OPTIONS = [
@@ -25,10 +26,44 @@ const SORT_OPTIONS = [
 type QnaCardListSectionProps = {
   title: string
   items: QnaCardListItem[]
+  isLoading?: boolean
+  isFetchingNext?: boolean
+  hasNextPage?: boolean
+  loadMoreRef?: RefObject<HTMLDivElement | null>
+  errorMessage?: string
+  emptyMessage?: string
 }
 
-export default function QnaCardListSection({ title, items }: QnaCardListSectionProps) {
+export default function QnaCardListSection({
+  title,
+  items,
+  isLoading = false,
+  isFetchingNext = false,
+  hasNextPage = false,
+  loadMoreRef,
+  errorMessage,
+  emptyMessage = '아직 저장된 질문이 없어요.',
+}: QnaCardListSectionProps) {
   const [sortOrder, setSortOrder] = useState('latest')
+  const sortedItems = useMemo(() => {
+    const copiedItems = [...items]
+
+    if (sortOrder === 'latest') {
+      copiedItems.sort((a, b) => toSortableTimestamp(b.createdAt) - toSortableTimestamp(a.createdAt))
+      return copiedItems
+    }
+
+    if (sortOrder === 'oldest') {
+      copiedItems.sort((a, b) => toSortableTimestamp(a.createdAt) - toSortableTimestamp(b.createdAt))
+      return copiedItems
+    }
+
+    copiedItems.sort((a, b) => a.question.localeCompare(b.question, 'ko-KR'))
+    return copiedItems
+  }, [items, sortOrder])
+
+  const hasItems = sortedItems.length > 0
+  const isSortDisabled = isLoading || Boolean(errorMessage) || !hasItems
 
   return (
     <div className="mx-auto flex h-full w-full justify-center">
@@ -40,7 +75,7 @@ export default function QnaCardListSection({ title, items }: QnaCardListSectionP
             value={sortOrder}
             onChange={setSortOrder}
             trigger={
-              <Button size="xs" variant="fill-gray-150">
+              <Button size="xs" variant="fill-gray-150" disabled={isSortDisabled}>
                 {SORT_OPTIONS.find((o) => o.value === sortOrder)?.label ?? SORT_OPTIONS[0].label}
                 <CaretDownIcon className="h-2 w-2" />
               </Button>
@@ -48,20 +83,62 @@ export default function QnaCardListSection({ title, items }: QnaCardListSectionP
           />
         </div>
         <div className="flex flex-1 flex-col gap-4 overflow-y-auto px-10 pb-6">
-          {items.map((item) => (
-            <QnaCard
-              key={item.id}
-              resultStatus={item.resultStatus}
-              date={item.date}
-              company={item.company}
-              jobRole={item.job}
-              interviewType={item.interviewType}
-              question={item.question}
-              answer={item.answer ?? ''}
-            />
-          ))}
+          {isLoading && <QnaCardListSkeleton />}
+          {!isLoading && errorMessage && <StatusText text={errorMessage} />}
+          {!isLoading && !errorMessage && !hasItems && <StatusText text={emptyMessage} />}
+          {!isLoading &&
+            !errorMessage &&
+            hasItems &&
+            sortedItems.map((item) => (
+              <QnaCard
+                key={item.id}
+                resultStatus={item.resultStatus}
+                date={item.date}
+                company={item.company}
+                jobRole={item.job}
+                interviewType={item.interviewType}
+                question={item.question}
+                answer={item.answer ?? ''}
+              />
+            ))}
+          {!isLoading && !errorMessage && hasItems && hasNextPage && <div ref={loadMoreRef} className="h-8 w-full" aria-hidden />}
+          {!isLoading && !errorMessage && hasItems && isFetchingNext && <QnaCardFetchMoreSkeleton />}
         </div>
       </div>
     </div>
+  )
+}
+
+function toSortableTimestamp(value?: string): number {
+  if (!value) return 0
+
+  const timestamp = new Date(value).getTime()
+  return Number.isNaN(timestamp) ? 0 : timestamp
+}
+
+function StatusText({ text }: { text: string }) {
+  return (
+    <div className="bg-gray-white body-l-medium rounded-xl px-6 py-12 text-center text-gray-400">
+      {text}
+    </div>
+  )
+}
+
+function QnaCardListSkeleton() {
+  return (
+    <>
+      <div className="bg-gray-150 h-52 animate-pulse rounded-2xl" />
+      <div className="bg-gray-150 h-52 animate-pulse rounded-2xl" />
+      <div className="bg-gray-150 h-52 animate-pulse rounded-2xl" />
+    </>
+  )
+}
+
+function QnaCardFetchMoreSkeleton() {
+  return (
+    <>
+      <div className="bg-gray-150 h-52 animate-pulse rounded-2xl" />
+      <div className="bg-gray-150 h-52 animate-pulse rounded-2xl" />
+    </>
   )
 }
