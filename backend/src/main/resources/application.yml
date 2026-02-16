@@ -10,7 +10,8 @@ spring:
     include:
       - s3
       - auth
-      - ai
+      - gemini
+      - vectorstore
 
 server:
   tomcat:

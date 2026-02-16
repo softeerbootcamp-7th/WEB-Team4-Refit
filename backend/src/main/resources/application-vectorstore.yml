@@ -1,0 +1,10 @@
+spring:
+  vectorstore:
+    qdrant:
+      host: "${QDRANT_HOST}"
+      port: ${QDRANT_PORT}
+      collections:
+        qna-set-question:
+          name: "${QDRANT_QNA_SET_COLLECTION_NAME}"
+          vector-size: ${QDRANT_QNA_SET_COLLECTION_VECTOR_SIZE}
+          distance: "${QDRANT_QNA_SET_COLLECTION_DISTANCE}"

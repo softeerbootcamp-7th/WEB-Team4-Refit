@@ -1,0 +1,5 @@
+spring:
+  gemini:
+    api-key: "${GEMINI_API_KEY}"
+    prompt-path: "${GEMINI_PROMPT_PATH}"
+    embedding-dimension: "${GEMINI_EMBEDDING_DIMENSION}"
