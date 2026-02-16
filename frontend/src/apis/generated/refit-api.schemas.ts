@@ -28,6 +28,9 @@ export interface QnaSetUpdateRequest {
    */
   questionText?: string
   answerText?: string
+}
+
+export interface QnaSetReviewUpdateRequest {
   /**
    * @minLength 0
    * @maxLength 500
@@ -811,16 +814,17 @@ export interface ApiResponseInterviewFullDto {
   result?: InterviewFullDto
 }
 
-export interface PdfUploadUrlResponse {
+export interface PresignedUrlResponse {
   url: string
   key: string
+  expireSeconds: number
 }
 
-export interface ApiResponsePdfUploadUrlResponse {
+export interface ApiResponsePresignedUrlResponse {
   isSuccess: boolean
   code: string
   message: string
-  result?: PdfUploadUrlResponse
+  result?: PresignedUrlResponse
 }
 
 export interface GuideQuestionResponse {

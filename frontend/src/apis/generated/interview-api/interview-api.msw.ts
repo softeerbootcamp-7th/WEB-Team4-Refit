@@ -12,7 +12,7 @@ import type {
   ApiResponseInterviewCreateResponse,
   ApiResponseInterviewDto,
   ApiResponseInterviewFullDto,
-  ApiResponsePdfUploadUrlResponse,
+  ApiResponsePresignedUrlResponse,
   ApiResponseQnaSetCreateResponse,
   ApiResponseVoid,
 } from '../refit-api.schemas'
@@ -225,8 +225,8 @@ export const getGetInterviewFullResponseMock = (
 })
 
 export const getCreateUploadUrlResponseMock = (
-  overrideResponse: Partial<ApiResponsePdfUploadUrlResponse> = {},
-): ApiResponsePdfUploadUrlResponse => ({
+  overrideResponse: Partial<ApiResponsePresignedUrlResponse> = {},
+): ApiResponsePresignedUrlResponse => ({
   isSuccess: faker.datatype.boolean(),
   code: faker.string.alpha({ length: { min: 10, max: 20 } }),
   message: faker.string.alpha({ length: { min: 10, max: 20 } }),
@@ -234,6 +234,24 @@ export const getCreateUploadUrlResponseMock = (
     {
       url: faker.string.alpha({ length: { min: 10, max: 20 } }),
       key: faker.string.alpha({ length: { min: 10, max: 20 } }),
+      expireSeconds: faker.number.int({ min: undefined, max: undefined }),
+    },
+    undefined,
+  ]),
+  ...overrideResponse,
+})
+
+export const getCreateDownloadUrlResponseMock = (
+  overrideResponse: Partial<ApiResponsePresignedUrlResponse> = {},
+): ApiResponsePresignedUrlResponse => ({
+  isSuccess: faker.datatype.boolean(),
+  code: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  message: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  result: faker.helpers.arrayElement([
+    {
+      url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+      key: faker.string.alpha({ length: { min: 10, max: 20 } }),
+      expireSeconds: faker.number.int({ min: undefined, max: undefined }),
     },
     undefined,
   ]),
@@ -551,10 +569,10 @@ export const getGetInterviewFullMockHandler = (
 
 export const getCreateUploadUrlMockHandler = (
   overrideResponse?:
-    | ApiResponsePdfUploadUrlResponse
+    | ApiResponsePresignedUrlResponse
     | ((
         info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Promise<ApiResponsePdfUploadUrlResponse> | ApiResponsePdfUploadUrlResponse),
+      ) => Promise<ApiResponsePresignedUrlResponse> | ApiResponsePresignedUrlResponse),
   options?: RequestHandlerOptions,
 ) => {
   return http.get(
@@ -567,6 +585,32 @@ export const getCreateUploadUrlMockHandler = (
               ? await overrideResponse(info)
               : overrideResponse
             : getCreateUploadUrlResponseMock(),
+        ),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      )
+    },
+    options,
+  )
+}
+
+export const getCreateDownloadUrlMockHandler = (
+  overrideResponse?:
+    | ApiResponsePresignedUrlResponse
+    | ((
+        info: Parameters<Parameters<typeof http.get>[1]>[0],
+      ) => Promise<ApiResponsePresignedUrlResponse> | ApiResponsePresignedUrlResponse),
+  options?: RequestHandlerOptions,
+) => {
+  return http.get(
+    '*/interview/:interviewId/pdf/download-url',
+    async (info) => {
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === 'function'
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getCreateDownloadUrlResponseMock(),
         ),
         { status: 200, headers: { 'Content-Type': 'application/json' } },
       )
@@ -614,5 +658,6 @@ export const getInterviewApiMock = () => [
   getDeleteInterviewMockHandler(),
   getGetInterviewFullMockHandler(),
   getCreateUploadUrlMockHandler(),
+  getCreateDownloadUrlMockHandler(),
   getGetGuideQuestionMockHandler(),
 ]

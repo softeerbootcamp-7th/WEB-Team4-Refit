@@ -1,3 +1,5 @@
+import qs from 'qs'
+
 export class HttpError<T = unknown> extends Error {
   status: number
   payload: unknown
@@ -39,4 +41,23 @@ export const customFetch = async <T>(urlWithoutBase: string, initOptions: Reques
 
   return data as T
 }
+
+type QuerySerializationOptions = {
+  arrayFormat?: 'indices' | 'brackets' | 'repeat' | 'comma'
+}
+
+export const customFetchWithSerializedQuery = async <T>(
+  path: string,
+  query: Record<string, unknown>,
+  initOptions: RequestInit,
+  options: QuerySerializationOptions = {},
+): Promise<T> => {
+  const queryString = qs.stringify(query, {
+    arrayFormat: options.arrayFormat ?? 'repeat',
+    skipNulls: true,
+  })
+  const urlWithQuery = queryString ? `${path}?${queryString}` : path
+  return customFetch<T>(urlWithQuery, initOptions)
+}
+
 export default customFetch
