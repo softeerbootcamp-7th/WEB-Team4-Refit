@@ -23,8 +23,8 @@ public class TestQdrantConfig {
 
         Mockito.when(mockClient.listCollectionsAsync())
                 .thenReturn(Futures.immediateFuture(List.of("existing_collection")));
-        Mockito.when(mockClient.createCollectionAsync(anyString(), any(Collections.VectorParams.class))
-        ).thenReturn(Futures.immediateFuture(Collections.CollectionOperationResponse.newBuilder().build()));
+        Mockito.when(mockClient.createCollectionAsync(anyString(), any(Collections.VectorParams.class)))
+                .thenReturn(Futures.immediateFuture(Collections.CollectionOperationResponse.newBuilder().build()));
 
         return mockClient;
     }
