@@ -4,7 +4,6 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.INDUSTRY_NOT_FOU
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_PDF_ALREADY_EXITS;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_PDF_NOT_FOUND;
-import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED;
 import static com.shyashyashya.refit.global.exception.ErrorCode.JOB_CATEGORY_NOT_FOUND;
 
 import com.shyashyashya.refit.domain.company.model.Company;
