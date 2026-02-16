@@ -1,6 +1,6 @@
 spring:
   s3:
-    region: "ap-northeast-2"
-    bucket: "refit-s3-bucket"
-    prefix: "interview-pdf/"
-    presign-expire-seconds: 300
+    region: "${AWS_S3_REGION}"
+    bucket: "${AWS_S3_BUCKET}"
+    prefix: "${AWS_S3_PREFIX}"
+    presign-expire-seconds: "${AWS_S3_PRESIGN_EXPIRE_SECONDS}"
