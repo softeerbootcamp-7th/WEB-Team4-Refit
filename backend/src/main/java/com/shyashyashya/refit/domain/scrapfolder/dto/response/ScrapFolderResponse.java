@@ -1,11 +1,15 @@
 package com.shyashyashya.refit.domain.scrapfolder.dto.response;
 
 import com.shyashyashya.refit.domain.scrapfolder.model.ScrapFolder;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 
 @Builder(access = AccessLevel.PRIVATE)
-public record ScrapFolderResponse(Long scrapFolderId, String scrapFolderName, Long qnaSetCount) {
+public record ScrapFolderResponse(
+        @NotNull Long scrapFolderId,
+        @NotNull String scrapFolderName,
+        @NotNull Long qnaSetCount) {
 
     public static ScrapFolderResponse from(ScrapFolder scrapFolder, Long qnaSetCount) {
         return ScrapFolderResponse.builder()
