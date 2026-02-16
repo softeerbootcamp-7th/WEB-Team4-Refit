@@ -37,7 +37,7 @@ public class PdfHighlighting extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private QnaSet qnaSet;
 
-    @OneToMany(mappedBy = "pdfHighlighting", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "pdfHighlighting", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<PdfHighlightingRect> rects = new ArrayList<>();
 
     /*
