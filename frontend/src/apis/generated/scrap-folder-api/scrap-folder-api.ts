@@ -37,6 +37,164 @@ import type {
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
 
 /**
+ * 이미 추가된 상태인 경우 아무 일도 발생하지 않습니다.
+ * @summary 주어진 스크랩 폴더에 지정한 질문 답변 세트를 추가합니다.
+ */
+export const getAddQnaSetToScrapFolderUrl = (scrapFolderId: number, qnaSetId: number) => {
+  return `/scrap-folder/${scrapFolderId}/qna-set/${qnaSetId}`
+}
+
+export const addQnaSetToScrapFolder = async (
+  scrapFolderId: number,
+  qnaSetId: number,
+  options?: RequestInit,
+): Promise<ApiResponseVoid> => {
+  return customFetch<ApiResponseVoid>(getAddQnaSetToScrapFolderUrl(scrapFolderId, qnaSetId), {
+    ...options,
+    method: 'PUT',
+  })
+}
+
+export const getAddQnaSetToScrapFolderMutationOptions = <TError = unknown, TContext = unknown>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof addQnaSetToScrapFolder>>,
+    TError,
+    { scrapFolderId: number; qnaSetId: number },
+    TContext
+  >
+  request?: SecondParameter<typeof customFetch>
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof addQnaSetToScrapFolder>>,
+  TError,
+  { scrapFolderId: number; qnaSetId: number },
+  TContext
+> => {
+  const mutationKey = ['addQnaSetToScrapFolder']
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof addQnaSetToScrapFolder>>,
+    { scrapFolderId: number; qnaSetId: number }
+  > = (props) => {
+    const { scrapFolderId, qnaSetId } = props ?? {}
+
+    return addQnaSetToScrapFolder(scrapFolderId, qnaSetId, requestOptions)
+  }
+
+  return { mutationFn, ...mutationOptions }
+}
+
+export type AddQnaSetToScrapFolderMutationResult = NonNullable<Awaited<ReturnType<typeof addQnaSetToScrapFolder>>>
+
+export type AddQnaSetToScrapFolderMutationError = unknown
+
+/**
+ * @summary 주어진 스크랩 폴더에 지정한 질문 답변 세트를 추가합니다.
+ */
+export const useAddQnaSetToScrapFolder = <TError = unknown, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof addQnaSetToScrapFolder>>,
+      TError,
+      { scrapFolderId: number; qnaSetId: number },
+      TContext
+    >
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof addQnaSetToScrapFolder>>,
+  TError,
+  { scrapFolderId: number; qnaSetId: number },
+  TContext
+> => {
+  return useMutation(getAddQnaSetToScrapFolderMutationOptions(options), queryClient)
+}
+/**
+ * 이미 제거된 상태인 경우 아무 일도 발생하지 않습니다.
+ * @summary 주어진 스크랩 폴더에서 지정한 질문 답변 세트를 제거합니다.
+ */
+export const getRemoveQnaSetFromScrapFolderUrl = (scrapFolderId: number, qnaSetId: number) => {
+  return `/scrap-folder/${scrapFolderId}/qna-set/${qnaSetId}`
+}
+
+export const removeQnaSetFromScrapFolder = async (
+  scrapFolderId: number,
+  qnaSetId: number,
+  options?: RequestInit,
+): Promise<ApiResponseVoid> => {
+  return customFetch<ApiResponseVoid>(getRemoveQnaSetFromScrapFolderUrl(scrapFolderId, qnaSetId), {
+    ...options,
+    method: 'DELETE',
+  })
+}
+
+export const getRemoveQnaSetFromScrapFolderMutationOptions = <TError = unknown, TContext = unknown>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof removeQnaSetFromScrapFolder>>,
+    TError,
+    { scrapFolderId: number; qnaSetId: number },
+    TContext
+  >
+  request?: SecondParameter<typeof customFetch>
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof removeQnaSetFromScrapFolder>>,
+  TError,
+  { scrapFolderId: number; qnaSetId: number },
+  TContext
+> => {
+  const mutationKey = ['removeQnaSetFromScrapFolder']
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof removeQnaSetFromScrapFolder>>,
+    { scrapFolderId: number; qnaSetId: number }
+  > = (props) => {
+    const { scrapFolderId, qnaSetId } = props ?? {}
+
+    return removeQnaSetFromScrapFolder(scrapFolderId, qnaSetId, requestOptions)
+  }
+
+  return { mutationFn, ...mutationOptions }
+}
+
+export type RemoveQnaSetFromScrapFolderMutationResult = NonNullable<
+  Awaited<ReturnType<typeof removeQnaSetFromScrapFolder>>
+>
+
+export type RemoveQnaSetFromScrapFolderMutationError = unknown
+
+/**
+ * @summary 주어진 스크랩 폴더에서 지정한 질문 답변 세트를 제거합니다.
+ */
+export const useRemoveQnaSetFromScrapFolder = <TError = unknown, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof removeQnaSetFromScrapFolder>>,
+      TError,
+      { scrapFolderId: number; qnaSetId: number },
+      TContext
+    >
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof removeQnaSetFromScrapFolder>>,
+  TError,
+  { scrapFolderId: number; qnaSetId: number },
+  TContext
+> => {
+  return useMutation(getRemoveQnaSetFromScrapFolderMutationOptions(options), queryClient)
+}
+/**
  * 스크랩 폴더 리스트에 '나의 어려웠던 질문' 폴더는 포함하지 않습니다. 해당 폴더의 내용은 어려웠던 질문을 조회하는 API로 조회합니다.
  * @summary 나의 스크랩 폴더 리스트를 조회합니다.
  */

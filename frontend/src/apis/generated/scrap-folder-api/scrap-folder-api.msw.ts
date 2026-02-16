@@ -15,6 +15,26 @@ import type {
 import type { RequestHandlerOptions } from 'msw'
 
 
+export const getAddQnaSetToScrapFolderResponseMock = (
+  overrideResponse: Partial<ApiResponseVoid> = {},
+): ApiResponseVoid => ({
+  isSuccess: faker.datatype.boolean(),
+  code: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  message: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  result: faker.helpers.arrayElement([{}, undefined]),
+  ...overrideResponse,
+})
+
+export const getRemoveQnaSetFromScrapFolderResponseMock = (
+  overrideResponse: Partial<ApiResponseVoid> = {},
+): ApiResponseVoid => ({
+  isSuccess: faker.datatype.boolean(),
+  code: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  message: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  result: faker.helpers.arrayElement([{}, undefined]),
+  ...overrideResponse,
+})
+
 export const getGetMyScrapFoldersResponseMock = (
   overrideResponse: Partial<ApiResponsePageScrapFolderResponse> = {},
 ): ApiResponsePageScrapFolderResponse => ({
@@ -187,6 +207,54 @@ export const getDeleteScrapFolderResponseMock = (overrideResponse: Partial<ApiRe
   ...overrideResponse,
 })
 
+export const getAddQnaSetToScrapFolderMockHandler = (
+  overrideResponse?:
+    | ApiResponseVoid
+    | ((info: Parameters<Parameters<typeof http.put>[1]>[0]) => Promise<ApiResponseVoid> | ApiResponseVoid),
+  options?: RequestHandlerOptions,
+) => {
+  return http.put(
+    '*/scrap-folder/:scrapFolderId/qna-set/:qnaSetId',
+    async (info) => {
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === 'function'
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getAddQnaSetToScrapFolderResponseMock(),
+        ),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      )
+    },
+    options,
+  )
+}
+
+export const getRemoveQnaSetFromScrapFolderMockHandler = (
+  overrideResponse?:
+    | ApiResponseVoid
+    | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<ApiResponseVoid> | ApiResponseVoid),
+  options?: RequestHandlerOptions,
+) => {
+  return http.delete(
+    '*/scrap-folder/:scrapFolderId/qna-set/:qnaSetId',
+    async (info) => {
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === 'function'
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getRemoveQnaSetFromScrapFolderResponseMock(),
+        ),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      )
+    },
+    options,
+  )
+}
+
 export const getGetMyScrapFoldersMockHandler = (
   overrideResponse?:
     | ApiResponsePageScrapFolderResponse
@@ -311,6 +379,8 @@ export const getDeleteScrapFolderMockHandler = (
   )
 }
 export const getScrapFolderApiMock = () => [
+  getAddQnaSetToScrapFolderMockHandler(),
+  getRemoveQnaSetFromScrapFolderMockHandler(),
   getGetMyScrapFoldersMockHandler(),
   getCreateScrapFolderMockHandler(),
   getUpdateScrapFolderNameMockHandler(),
