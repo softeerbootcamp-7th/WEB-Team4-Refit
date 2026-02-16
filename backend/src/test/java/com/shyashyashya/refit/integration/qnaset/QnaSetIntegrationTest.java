@@ -4,6 +4,7 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.INDUSTRY_PARTIAL
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_ACCESSIBLE;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED;
 import static com.shyashyashya.refit.global.exception.ErrorCode.JOB_CATEGORY_PARTIALLY_NOT_FOUND;
+import static com.shyashyashya.refit.global.exception.ErrorCode.QNA_DELETE_FAILED;
 import static com.shyashyashya.refit.global.exception.ErrorCode.QNA_SET_NOT_FOUND;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON204;
@@ -491,6 +492,21 @@ public class QnaSetIntegrationTest extends IntegrationTest {
                     .statusCode(403)
                     .body("code", equalTo(INTERVIEW_NOT_ACCESSIBLE.name()))
                     .body("message", equalTo(INTERVIEW_NOT_ACCESSIBLE.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @Test
+        void 연관된_PDF_하이라이팅이_존재하면_질답_세트_삭제에_실패한다() {
+            // given
+
+            // when & then
+            given(spec)
+            .when()
+                    .delete("/qna-set/" + qnaSetWithPdfHighlightingId)
+            .then()
+                    .statusCode(400)
+                    .body("code", equalTo(QNA_DELETE_FAILED.name()))
+                    .body("message", equalTo(QNA_DELETE_FAILED.getMessage()))
                     .body("result", nullValue());
         }
     }
@@ -1132,6 +1148,141 @@ public class QnaSetIntegrationTest extends IntegrationTest {
                     .statusCode(403)
                     .body("code", equalTo(INTERVIEW_NOT_ACCESSIBLE.name()))
                     .body("message", equalTo(INTERVIEW_NOT_ACCESSIBLE.getMessage()))
+                    .body("result", nullValue());
+        }
+    }
+
+    @Nested
+    class PDF_하이라이팅_전체_삭제_시 {
+        @BeforeEach
+        void setUp() {
+            var interviewCreateRequest1 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0),
+                    InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer"
+            );
+            Interview qnaSetDraftInterview = createAndSaveInterview(interviewCreateRequest1, InterviewReviewStatus.QNA_SET_DRAFT);
+
+            var interviewCreateRequest2 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0),
+                    InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer"
+            );
+            Interview debriefCompletedInterview = createAndSaveInterview(interviewCreateRequest2, InterviewReviewStatus.DEBRIEF_COMPLETED);
+
+            var qnaSetCreateRequest1 = new QnaSetCreateRequest("test question text", "test answer text");
+            QnaSet qnaSetDraftQnaSet = createAndSaveQnaSet(qnaSetCreateRequest1, qnaSetDraftInterview, true);
+            qnaSetDraftQnaSetId = qnaSetDraftQnaSet.getId();
+
+            var qnaSetCreateRequest2 = new QnaSetCreateRequest("test question text", "test answer text");
+            QnaSet debriefCompletedQnaSet = createAndSaveQnaSet(qnaSetCreateRequest2, debriefCompletedInterview, true);
+            debriefCompletedQnaSetId = debriefCompletedQnaSet.getId();
+
+            var qnaSetCreateRequest3 = new QnaSetCreateRequest("this qna has pdf highlighting", "hello PDF");
+            QnaSet qnaSetWithPdfHighlighting = createAndSaveQnaSet(qnaSetCreateRequest3, qnaSetDraftInterview, false);
+            qnaSetWithPdfHighlightingId = qnaSetWithPdfHighlighting.getId();
+
+            var interviewCreateRequest4 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0),
+                    InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer"
+            );
+            User user = createAndSaveUser("other@example.com", "other", industry1, jobCategory1);
+            Interview otherUserInterview = createAndSaveInterview(interviewCreateRequest4, InterviewReviewStatus.NOT_LOGGED, user);
+
+            QnaSetCreateRequest qnaSetCreateRequest4 = new QnaSetCreateRequest("this qna is others", "hello stranger");
+            QnaSet otherUserQnaSet = createAndSaveQnaSet(qnaSetCreateRequest4, otherUserInterview, false);
+            otherUserQnaSetId = otherUserQnaSet.getId();
+
+            List<PdfHighlightingUpdateRequest> pdfHighlightUpdateRequest = createPdfHighlightUpdateRequest();
+            createAndSavePdfHighlighting(pdfHighlightUpdateRequest, qnaSetWithPdfHighlighting);
+        }
+
+        @Test
+        void 인터뷰가_질답_세트가_검토_중_상태이면_PDF_하이라이팅_전체_삭제에_성공한다() {
+            // given
+
+            // when & then
+            given(spec)
+            .when()
+                    .delete("/qna-set/" + qnaSetWithPdfHighlightingId + "/pdf-highlightings")
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON204.name()))
+                    .body("message", equalTo(COMMON204.getMessage()))
+                    .body("result", nullValue());
+
+            given(spec)
+            .when()
+                    .get("/qna-set/" + qnaSetWithPdfHighlightingId + "/pdf-highlightings")
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result", hasSize(0));
+        }
+
+        @Test
+        void 이미_비어있는_PDF_하이라이팅_전체_삭제도_성공한다() {
+            // given
+
+            // when & then
+            given(spec)
+            .when()
+                    .delete("/qna-set/" + qnaSetDraftQnaSetId + "/pdf-highlightings")
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON204.name()))
+                    .body("message", equalTo(COMMON204.getMessage()))
+                    .body("result", hasSize(0));
+        }
+
+        @Test
+        void 질답_세트가_존재하지_않으면_PDF_하이라이팅_전체_삭제에_실패한다() {
+            given(spec)
+            .when()
+                    .delete("/qna-set/" + Long.MAX_VALUE + "/pdf-highlightings")
+            .then()
+                    .statusCode(404)
+                    .body("code", equalTo(QNA_SET_NOT_FOUND.name()))
+                    .body("message", equalTo(QNA_SET_NOT_FOUND.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @Test
+        void 타인의_질답_세트_PDF_하이라이팅_전체_삭제에_실패한다() {
+            given(spec)
+            .when()
+                    .delete("/qna-set/" + otherUserQnaSetId + "/pdf-highlightings")
+            .then()
+                    .statusCode(403)
+                    .body("code", equalTo(INTERVIEW_NOT_ACCESSIBLE.name()))
+                    .body("message", equalTo(INTERVIEW_NOT_ACCESSIBLE.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @ParameterizedTest
+        @EnumSource(
+                value = InterviewReviewStatus.class,
+                mode = EnumSource.Mode.EXCLUDE,
+                names = "QNA_SET_DRAFT"
+        )
+        void 인터뷰가_질답_세트_검토_중_상태가_아니면_PDF_하이라이팅_전체_삭제에_실패한다(InterviewReviewStatus reviewStatus) {
+            // given
+            var interviewCreateRequest = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0),
+                    InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer"
+            );
+            Interview interview = createAndSaveInterview(interviewCreateRequest, reviewStatus);
+
+            var qnaSetCreateRequest = new QnaSetCreateRequest("q", "a");
+            Long qnaSetId = createAndSaveQnaSet(qnaSetCreateRequest, interview, false).getId();
+
+            // when & then
+            given(spec)
+            .when()
+                    .delete("/qna-set/" + qnaSetId + "/pdf-highlightings")
+            .then()
+                    .statusCode(400)
+                    .body("code", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.name()))
+                    .body("message", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.getMessage()))
                     .body("result", nullValue());
         }
     }
