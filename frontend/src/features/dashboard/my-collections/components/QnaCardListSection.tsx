@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { CaretDownIcon } from '@/designs/assets'
 import { Button, PlainCombobox } from '@/designs/components'
-import { QnaCard } from '@/features/dashboard/my-interviews/components/questions'
+import QnaCard from '@/features/dashboard/my-interviews/components/questions/list/qna-card/QnaCard'
 import type { InterviewResultStatus } from '@/features/dashboard/my-interviews/constants/constants'
 import type { InterviewType } from '@/types/interview'
 
