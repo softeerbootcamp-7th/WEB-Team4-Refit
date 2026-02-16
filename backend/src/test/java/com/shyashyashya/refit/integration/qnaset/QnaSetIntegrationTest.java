@@ -1231,7 +1231,7 @@ public class QnaSetIntegrationTest extends IntegrationTest {
                     .statusCode(200)
                     .body("code", equalTo(COMMON204.name()))
                     .body("message", equalTo(COMMON204.getMessage()))
-                    .body("result", hasSize(0));
+                    .body("result", nullValue());
         }
 
         @Test
