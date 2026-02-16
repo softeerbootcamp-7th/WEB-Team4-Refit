@@ -1,0 +1,12 @@
+spring:
+  ai:
+    gemini:
+      api-key: "${GEMINI_API_KEY}"
+      prompt-path: "${GEMINI_PROMPT_PATH}"
+    vectorstore:
+      qdrant:
+        host: "${QDRANT_HOST}"
+        port: "${QDRANT_PORT}"
+        collection-name: "${QDRANT_COLLECTION_NAME}"
+        distance: "${QDRANT_DISTANCE:Cosine}"
+        vector-size: "${QDRANT_VECTOR_SIZE}"
