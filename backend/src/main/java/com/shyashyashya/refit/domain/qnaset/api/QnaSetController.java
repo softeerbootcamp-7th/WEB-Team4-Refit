@@ -91,7 +91,7 @@ public class QnaSetController {
     }
 
     @Operation(summary = "지정한 질문 답변 세트의 회고 내용을 수정합니다.", description = "질문 답변 내용 수정은 '회고중' 상태에서만 가능합니다.")
-    @PutMapping("/{qnaSetId}")
+    @PutMapping("/{qnaSetId}/self-review")
     public ResponseEntity<ApiResponse<Void>> updateQnaSetSelfReview(
             @PathVariable Long qnaSetId, @Valid @RequestBody QnaSetReviewUpdateRequest request) {
         qnaSetService.updateQnaSetSelfReview(qnaSetId, request);
