@@ -7,11 +7,28 @@ import com.shyashyashya.refit.domain.company.repository.CompanyRepository;
 import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
+import com.shyashyashya.refit.domain.interview.dto.request.QnaSetCreateRequest;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
+import com.shyashyashya.refit.domain.qnaset.dto.request.PdfHighlightingUpdateRequest;
+import com.shyashyashya.refit.domain.qnaset.model.PdfHighlighting;
+import com.shyashyashya.refit.domain.qnaset.model.PdfHighlightingRect;
+import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
+import com.shyashyashya.refit.domain.qnaset.model.QnaSetCategory;
+import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRectRepository;
+import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRepository;
+import com.shyashyashya.refit.domain.qnaset.repository.QnaSetCategoryRepository;
+import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
+import com.shyashyashya.refit.domain.qnaset.dto.request.PdfHighlightingUpdateRequest;
+import com.shyashyashya.refit.domain.qnaset.model.PdfHighlighting;
+import com.shyashyashya.refit.domain.qnaset.model.PdfHighlightingRect;
+import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
+import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRectRepository;
+import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRepository;
+import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
 import com.shyashyashya.refit.global.auth.service.JwtEncoder;
@@ -31,6 +48,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -40,6 +58,7 @@ import java.util.List;
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 public abstract class IntegrationTest {
 
+    protected static final LocalDateTime NOW = LocalDateTime.of(2026, 2, 16, 10, 0, 0);
     protected static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     @LocalServerPort
@@ -58,6 +77,9 @@ public abstract class IntegrationTest {
     protected Company company1;
     protected Company company2;
     protected Company company3;
+    protected QnaSetCategory qnaSetCategory1;
+    protected QnaSetCategory qnaSetCategory2;
+    protected QnaSetCategory qnaSetCategory3;
 
     @PersistenceContext
     private EntityManager em;
@@ -80,6 +102,18 @@ public abstract class IntegrationTest {
     @Autowired
     private CompanyRepository companyRepository;
 
+    @Autowired
+    private QnaSetRepository qnaSetRepository;
+
+    @Autowired
+    private PdfHighlightingRepository pdfHighlightingRepository;
+
+    @Autowired
+    private PdfHighlightingRectRepository pdfHighlightingRectRepository;
+
+    @Autowired
+    private QnaSetCategoryRepository qnaSetCategoryRepository;
+
     @BeforeEach
     void restAssuredSetUp() {
         clearDatabase();
@@ -94,6 +128,9 @@ public abstract class IntegrationTest {
         company1 = companyRepository.save(Company.create("현대자동차", "logo1", true));
         company2 = companyRepository.save(Company.create("카카오", "logo2", true));
         company3 = companyRepository.save(Company.create("네이버", "logo3", true));
+        qnaSetCategory1 = qnaSetCategoryRepository.save(QnaSetCategory.create("리더십 질문", "당신은 리더십있는 사람입니까?", 3.141592));
+        qnaSetCategory2 = qnaSetCategoryRepository.save(QnaSetCategory.create("인성 질문", "당신은 인성이 좋은 사람입니까?", 2.145));
+        qnaSetCategory3 = qnaSetCategoryRepository.save(QnaSetCategory.create("기술 질문", "당신은 기술 있는 사람입니까?", 0.001));
 
         requestUser = createAndSaveUser("test@example.com", "default", industry1, jobCategory1);
         Instant issuedAt = Instant.now();
@@ -187,5 +224,68 @@ public abstract class IntegrationTest {
     protected Company createAndSaveCompany(String companyName) {
         Company company = Company.create(companyName, "logo.url", true);
         return companyRepository.save(company);
+    }
+
+    protected Industry createAndSaveIndustry(String industryName) {
+        Industry industry = Industry.create(industryName);
+        return industryRepository.save(industry);
+    }
+
+    protected JobCategory createAndSaveJobCategory(String jobCategoryName) {
+        JobCategory jobCategory = JobCategory.create(jobCategoryName);
+        return jobCategoryRepository.save(jobCategory);
+    }
+
+    protected QnaSet createAndSaveQnaSet(QnaSetCreateRequest request, Interview interview) {
+        return createAndSaveQnaSet(request, interview, false);
+    }
+
+    protected QnaSet createAndSaveQnaSet(QnaSetCreateRequest request, Interview interview, boolean isMarkedDifficult) {
+        QnaSet qnaSet = QnaSet.create(
+                request.questionText(),
+                request.answerText(),
+                isMarkedDifficult,
+                interview,
+                null
+        );
+
+        return qnaSetRepository.save(qnaSet);
+    }
+
+    protected QnaSet createAndSaveQnaSet(QnaSetCreateRequest request, Interview interview, QnaSetCategory qnaSetCategory) {
+        QnaSet qnaSet = QnaSet.create(
+                request.questionText(),
+                request.answerText(),
+                false,
+                interview,
+                qnaSetCategory
+        );
+
+        return qnaSetRepository.save(qnaSet);
+    }
+
+    protected List<PdfHighlighting> createAndSavePdfHighlighting(List<PdfHighlightingUpdateRequest> requests, QnaSet qnaSet) {
+        List<PdfHighlighting> result = new ArrayList<>();
+
+        requests.forEach(request -> {
+            PdfHighlighting pdfHighlighting = PdfHighlighting.create(request.highlightingText(), qnaSet);
+            result.add(pdfHighlightingRepository.save(pdfHighlighting));
+
+            request.rects().forEach(
+                    rectDto -> {
+                        PdfHighlightingRect rect = PdfHighlightingRect.create(
+                                rectDto.x(),
+                                rectDto.y(),
+                                rectDto.width(),
+                                rectDto.height(),
+                                rectDto.pageNumber(),
+                                pdfHighlighting);
+
+                        pdfHighlightingRectRepository.save(rect);
+                    }
+            );
+        });
+
+        return result;
     }
 }
