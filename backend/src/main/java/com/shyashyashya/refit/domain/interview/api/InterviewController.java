@@ -172,7 +172,9 @@ public class InterviewController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "면접 PDF 파일을 삭제합니다.")
+    @Operation(summary = "면접 PDF 파일을 삭제합니다.", description = """
+            연관된 하이라이팅은 모두 삭제됩니다.
+            """)
     @DeleteMapping("/{interviewId}/pdf")
     public ResponseEntity<ApiResponse<Void>> deleteInterviewPdf(@PathVariable Long interviewId) {
         interviewService.deletePdf(interviewId);
