@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -81,6 +82,24 @@ public class ScrapFolderController {
             @Valid @RequestBody ScrapFolderNameUpdateRequest scrapFolderNameUpdateRequest) {
         scrapFolderService.updateScrapFolderName(scrapFolderId, scrapFolderNameUpdateRequest.scrapFolderName());
         var response = ApiResponse.success(COMMON200);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "주어진 스크랩 폴더에 지정한 질문 답변 세트를 추가합니다.", description = "이미 추가된 상태인 경우 아무 일도 발생하지 않습니다.")
+    @PutMapping("{scrapFolderId}/qna-set/{qnaSetId}")
+    public ResponseEntity<ApiResponse<Void>> addQnaSetToScrapFolder(
+            @PathVariable Long qnaSetId, @PathVariable Long scrapFolderId) {
+        scrapFolderService.addQnaSetToScrapFolder(qnaSetId, scrapFolderId);
+        var response = ApiResponse.success(COMMON200);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "주어진 스크랩 폴더에서 지정한 질문 답변 세트를 제거합니다.", description = "이미 제거된 상태인 경우 아무 일도 발생하지 않습니다.")
+    @DeleteMapping("{scrapFolderId}/qna-set/{qnaSetId}")
+    public ResponseEntity<ApiResponse<Void>> removeQnaSetFromScrapFolder(
+            @PathVariable Long qnaSetId, @PathVariable Long scrapFolderId) {
+        scrapFolderService.removeQnaSetFromScrapFolder(qnaSetId, scrapFolderId);
+        var response = ApiResponse.success(COMMON204);
         return ResponseEntity.ok(response);
     }
 }
