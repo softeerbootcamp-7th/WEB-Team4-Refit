@@ -10,6 +10,7 @@ import type {
   ApiResponseGuideQuestionResponse,
   ApiResponseInterviewDto,
   ApiResponseInterviewFullDto,
+  ApiResponsePdfUploadUrlResponse,
   ApiResponseQnaSetCreateResponse,
   ApiResponseVoid,
   InterviewCreateRequest,
@@ -276,7 +277,191 @@ export const useCreateInterview = <TError = unknown, TContext = unknown>(
   return useMutation(getCreateInterviewMutationOptions(options), queryClient)
 }
 /**
- * @summary 특정 면접에 새로운 질답 세트를 생성합니다.
+ *         면접 상태를 '기록중' 상태로 변화시킵니다. 기록을 완료하고 질답세트로 기록한 내용을 변환 요청하려면 반드시 면접 상태가 '기록중' 상태여야 합니다.
+
+ * @summary 면접 기록 녹음/텍스트 작성을 시작합니다.
+ */
+export const getStartLoggingUrl = (interviewId: number) => {
+  return `/interview/${interviewId}/start-logging`
+}
+
+export const startLogging = async (interviewId: number, options?: RequestInit): Promise<ApiResponseVoid> => {
+  return customFetch<ApiResponseVoid>(getStartLoggingUrl(interviewId), {
+    ...options,
+    method: 'POST',
+  })
+}
+
+export const getStartLoggingMutationOptions = <TError = unknown, TContext = unknown>(options?: {
+  mutation?: UseMutationOptions<Awaited<ReturnType<typeof startLogging>>, TError, { interviewId: number }, TContext>
+  request?: SecondParameter<typeof customFetch>
+}): UseMutationOptions<Awaited<ReturnType<typeof startLogging>>, TError, { interviewId: number }, TContext> => {
+  const mutationKey = ['startLogging']
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
+
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof startLogging>>, { interviewId: number }> = (props) => {
+    const { interviewId } = props ?? {}
+
+    return startLogging(interviewId, requestOptions)
+  }
+
+  return { mutationFn, ...mutationOptions }
+}
+
+export type StartLoggingMutationResult = NonNullable<Awaited<ReturnType<typeof startLogging>>>
+
+export type StartLoggingMutationError = unknown
+
+/**
+ * @summary 면접 기록 녹음/텍스트 작성을 시작합니다.
+ */
+export const useStartLogging = <TError = unknown, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<Awaited<ReturnType<typeof startLogging>>, TError, { interviewId: number }, TContext>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<Awaited<ReturnType<typeof startLogging>>, TError, { interviewId: number }, TContext> => {
+  return useMutation(getStartLoggingMutationOptions(options), queryClient)
+}
+/**
+ * @summary 면접의 회고 작성을 완료합니다.
+ */
+export const getCompleteSelfReviewUrl = (interviewId: number) => {
+  return `/interview/${interviewId}/self-review/complete`
+}
+
+export const completeSelfReview = async (interviewId: number, options?: RequestInit): Promise<ApiResponseVoid> => {
+  return customFetch<ApiResponseVoid>(getCompleteSelfReviewUrl(interviewId), {
+    ...options,
+    method: 'POST',
+  })
+}
+
+export const getCompleteSelfReviewMutationOptions = <TError = unknown, TContext = unknown>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof completeSelfReview>>,
+    TError,
+    { interviewId: number },
+    TContext
+  >
+  request?: SecondParameter<typeof customFetch>
+}): UseMutationOptions<Awaited<ReturnType<typeof completeSelfReview>>, TError, { interviewId: number }, TContext> => {
+  const mutationKey = ['completeSelfReview']
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
+
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof completeSelfReview>>, { interviewId: number }> = (
+    props,
+  ) => {
+    const { interviewId } = props ?? {}
+
+    return completeSelfReview(interviewId, requestOptions)
+  }
+
+  return { mutationFn, ...mutationOptions }
+}
+
+export type CompleteSelfReviewMutationResult = NonNullable<Awaited<ReturnType<typeof completeSelfReview>>>
+
+export type CompleteSelfReviewMutationError = unknown
+
+/**
+ * @summary 면접의 회고 작성을 완료합니다.
+ */
+export const useCompleteSelfReview = <TError = unknown, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof completeSelfReview>>,
+      TError,
+      { interviewId: number },
+      TContext
+    >
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<Awaited<ReturnType<typeof completeSelfReview>>, TError, { interviewId: number }, TContext> => {
+  return useMutation(getCompleteSelfReviewMutationOptions(options), queryClient)
+}
+/**
+ *         변환이 완료되면 면접 상태를 '질답 세트 검토중' 상태로 변화시킵니다. 질답세트를 추가/수정/삭제하려면 반드시 면접 상태가 '질답 세트 검토중' 상태여야 합니다.
+        변환이 실패하면 ? (고도화 예정)
+
+ * @summary 면접 기록을 질문/답변 세트로 변환합니다.
+ */
+export const getConvertRawTextToQnaSetUrl = (interviewId: number) => {
+  return `/interview/${interviewId}/raw-text/convert`
+}
+
+export const convertRawTextToQnaSet = async (interviewId: number, options?: RequestInit): Promise<ApiResponseVoid> => {
+  return customFetch<ApiResponseVoid>(getConvertRawTextToQnaSetUrl(interviewId), {
+    ...options,
+    method: 'POST',
+  })
+}
+
+export const getConvertRawTextToQnaSetMutationOptions = <TError = unknown, TContext = unknown>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof convertRawTextToQnaSet>>,
+    TError,
+    { interviewId: number },
+    TContext
+  >
+  request?: SecondParameter<typeof customFetch>
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof convertRawTextToQnaSet>>,
+  TError,
+  { interviewId: number },
+  TContext
+> => {
+  const mutationKey = ['convertRawTextToQnaSet']
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
+
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof convertRawTextToQnaSet>>, { interviewId: number }> = (
+    props,
+  ) => {
+    const { interviewId } = props ?? {}
+
+    return convertRawTextToQnaSet(interviewId, requestOptions)
+  }
+
+  return { mutationFn, ...mutationOptions }
+}
+
+export type ConvertRawTextToQnaSetMutationResult = NonNullable<Awaited<ReturnType<typeof convertRawTextToQnaSet>>>
+
+export type ConvertRawTextToQnaSetMutationError = unknown
+
+/**
+ * @summary 면접 기록을 질문/답변 세트로 변환합니다.
+ */
+export const useConvertRawTextToQnaSet = <TError = unknown, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof convertRawTextToQnaSet>>,
+      TError,
+      { interviewId: number },
+      TContext
+    >
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<Awaited<ReturnType<typeof convertRawTextToQnaSet>>, TError, { interviewId: number }, TContext> => {
+  return useMutation(getConvertRawTextToQnaSetMutationOptions(options), queryClient)
+}
+/**
+ * @summary 면접에 새로운 질답 세트를 추가합니다.
  */
 export const getCreateQnaSetUrl = (interviewId: number) => {
   return `/interview/${interviewId}/qna-set`
@@ -333,7 +518,7 @@ export type CreateQnaSetMutationBody = QnaSetCreateRequest
 export type CreateQnaSetMutationError = unknown
 
 /**
- * @summary 특정 면접에 새로운 질답 세트를 생성합니다.
+ * @summary 면접에 새로운 질답 세트를 추가합니다.
  */
 export const useCreateQnaSet = <TError = unknown, TContext = unknown>(
   options?: {
@@ -353,6 +538,68 @@ export const useCreateQnaSet = <TError = unknown, TContext = unknown>(
   TContext
 > => {
   return useMutation(getCreateQnaSetMutationOptions(options), queryClient)
+}
+/**
+ * @summary 면접의 질답 세트 작성을 완료합니다.
+ */
+export const getCompleteQnaSetDraftUrl = (interviewId: number) => {
+  return `/interview/${interviewId}/qna-set/complete`
+}
+
+export const completeQnaSetDraft = async (interviewId: number, options?: RequestInit): Promise<ApiResponseVoid> => {
+  return customFetch<ApiResponseVoid>(getCompleteQnaSetDraftUrl(interviewId), {
+    ...options,
+    method: 'POST',
+  })
+}
+
+export const getCompleteQnaSetDraftMutationOptions = <TError = unknown, TContext = unknown>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof completeQnaSetDraft>>,
+    TError,
+    { interviewId: number },
+    TContext
+  >
+  request?: SecondParameter<typeof customFetch>
+}): UseMutationOptions<Awaited<ReturnType<typeof completeQnaSetDraft>>, TError, { interviewId: number }, TContext> => {
+  const mutationKey = ['completeQnaSetDraft']
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
+
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof completeQnaSetDraft>>, { interviewId: number }> = (
+    props,
+  ) => {
+    const { interviewId } = props ?? {}
+
+    return completeQnaSetDraft(interviewId, requestOptions)
+  }
+
+  return { mutationFn, ...mutationOptions }
+}
+
+export type CompleteQnaSetDraftMutationResult = NonNullable<Awaited<ReturnType<typeof completeQnaSetDraft>>>
+
+export type CompleteQnaSetDraftMutationError = unknown
+
+/**
+ * @summary 면접의 질답 세트 작성을 완료합니다.
+ */
+export const useCompleteQnaSetDraft = <TError = unknown, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof completeQnaSetDraft>>,
+      TError,
+      { interviewId: number },
+      TContext
+    >
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<Awaited<ReturnType<typeof completeQnaSetDraft>>, TError, { interviewId: number }, TContext> => {
+  return useMutation(getCompleteQnaSetDraftMutationOptions(options), queryClient)
 }
 /**
  * @summary 면접 결과를 수정합니다.
@@ -836,6 +1083,184 @@ export function useGetInterviewFullSuspense<TData = Awaited<ReturnType<typeof ge
   queryClient?: QueryClient,
 ): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
   const queryOptions = getGetInterviewFullSuspenseQueryOptions(interviewId, options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as UseSuspenseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  return { ...query, queryKey: queryOptions.queryKey }
+}
+
+/**
+ * @summary 면접 PDF 파일 업로드를 위한 Pre-Signed URL을 요청합니다.
+ */
+export const getCreateUploadUrlUrl = (interviewId: number) => {
+  return `/interview/${interviewId}/pdf/upload-url`
+}
+
+export const createUploadUrl = async (
+  interviewId: number,
+  options?: RequestInit,
+): Promise<ApiResponsePdfUploadUrlResponse> => {
+  return customFetch<ApiResponsePdfUploadUrlResponse>(getCreateUploadUrlUrl(interviewId), {
+    ...options,
+    method: 'GET',
+  })
+}
+
+export const getCreateUploadUrlQueryKey = (interviewId: number) => {
+  return [`/interview/${interviewId}/pdf/upload-url`] as const
+}
+
+export const getCreateUploadUrlQueryOptions = <TData = Awaited<ReturnType<typeof createUploadUrl>>, TError = unknown>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof createUploadUrl>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getCreateUploadUrlQueryKey(interviewId)
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof createUploadUrl>>> = ({ signal }) =>
+    createUploadUrl(interviewId, { signal, ...requestOptions })
+
+  return { queryKey, queryFn, enabled: !!interviewId, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof createUploadUrl>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type CreateUploadUrlQueryResult = NonNullable<Awaited<ReturnType<typeof createUploadUrl>>>
+export type CreateUploadUrlQueryError = unknown
+
+export function useCreateUploadUrl<TData = Awaited<ReturnType<typeof createUploadUrl>>, TError = unknown>(
+  interviewId: number,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof createUploadUrl>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof createUploadUrl>>,
+          TError,
+          Awaited<ReturnType<typeof createUploadUrl>>
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useCreateUploadUrl<TData = Awaited<ReturnType<typeof createUploadUrl>>, TError = unknown>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof createUploadUrl>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof createUploadUrl>>,
+          TError,
+          Awaited<ReturnType<typeof createUploadUrl>>
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useCreateUploadUrl<TData = Awaited<ReturnType<typeof createUploadUrl>>, TError = unknown>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof createUploadUrl>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 면접 PDF 파일 업로드를 위한 Pre-Signed URL을 요청합니다.
+ */
+
+export function useCreateUploadUrl<TData = Awaited<ReturnType<typeof createUploadUrl>>, TError = unknown>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof createUploadUrl>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getCreateUploadUrlQueryOptions(interviewId, options)
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  return { ...query, queryKey: queryOptions.queryKey }
+}
+
+export const getCreateUploadUrlSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof createUploadUrl>>,
+  TError = unknown,
+>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof createUploadUrl>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getCreateUploadUrlQueryKey(interviewId)
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof createUploadUrl>>> = ({ signal }) =>
+    createUploadUrl(interviewId, { signal, ...requestOptions })
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof createUploadUrl>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type CreateUploadUrlSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof createUploadUrl>>>
+export type CreateUploadUrlSuspenseQueryError = unknown
+
+export function useCreateUploadUrlSuspense<TData = Awaited<ReturnType<typeof createUploadUrl>>, TError = unknown>(
+  interviewId: number,
+  options: {
+    query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof createUploadUrl>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useCreateUploadUrlSuspense<TData = Awaited<ReturnType<typeof createUploadUrl>>, TError = unknown>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof createUploadUrl>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useCreateUploadUrlSuspense<TData = Awaited<ReturnType<typeof createUploadUrl>>, TError = unknown>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof createUploadUrl>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 면접 PDF 파일 업로드를 위한 Pre-Signed URL을 요청합니다.
+ */
+
+export function useCreateUploadUrlSuspense<TData = Awaited<ReturnType<typeof createUploadUrl>>, TError = unknown>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof createUploadUrl>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getCreateUploadUrlSuspenseQueryOptions(interviewId, options)
 
   const query = useSuspenseQuery(queryOptions, queryClient) as UseSuspenseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>

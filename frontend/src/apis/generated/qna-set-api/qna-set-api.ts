@@ -39,7 +39,7 @@ import type {
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
 
 /**
- * 질문 답변 내용 수정은 '기록중' 상태에서만 가능합니다.
+ * 질문 답변 내용 수정은 질답 세트 검토 중 상태에서만 가능합니다.
  * @summary 지정한 질문 답변 세트의 질문 답변 내용을 수정합니다.
  */
 export const getUpdateQnaSetUrl = (qnaSetId: number) => {
@@ -119,7 +119,7 @@ export const useUpdateQnaSet = <TError = unknown, TContext = unknown>(
   return useMutation(getUpdateQnaSetMutationOptions(options), queryClient)
 }
 /**
- * 질문 답변 세트 삭제는 'QnaSetDraft' 상태에서만 가능합니다.
+ * 질문 답변 세트 삭제는 질답 세트 검토 중 상태에서만 가능합니다.
  * @summary 지정한 질문 답변 세트를 삭제합니다.
  */
 export const getDeleteQnaSetUrl = (qnaSetId: number) => {
@@ -363,6 +363,7 @@ export function useGetPdfHighlightingsSuspense<
 }
 
 /**
+ * PDF 하이라이팅 정보 등록/수정은 질답 세트 검토 중 상태에서만 가능합니다.
  * @summary 지정한 질문 답변 세트에 대해 PDF 하이라이팅 정보를 등록/수정합니다.
  */
 export const getUpdatePdfHighlightingUrl = (qnaSetId: number) => {
@@ -631,7 +632,7 @@ export const useMarkDifficultQuestion = <TError = unknown, TContext = unknown>(
  */
 export const getGetScrapFoldersContainingQnaSetUrl = (
   qnaSetId: number,
-  params: GetScrapFoldersContainingQnaSetParams,
+  params?: GetScrapFoldersContainingQnaSetParams,
 ) => {
   const normalizedParams = new URLSearchParams()
 
@@ -650,7 +651,7 @@ export const getGetScrapFoldersContainingQnaSetUrl = (
 
 export const getScrapFoldersContainingQnaSet = async (
   qnaSetId: number,
-  params: GetScrapFoldersContainingQnaSetParams,
+  params?: GetScrapFoldersContainingQnaSetParams,
   options?: RequestInit,
 ): Promise<ApiResponsePageQnaSetScrapFolderResponse> => {
   return customFetch<ApiResponsePageQnaSetScrapFolderResponse>(
@@ -674,7 +675,7 @@ export const getGetScrapFoldersContainingQnaSetQueryOptions = <
   TError = unknown,
 >(
   qnaSetId: number,
-  params: GetScrapFoldersContainingQnaSetParams,
+  params?: GetScrapFoldersContainingQnaSetParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -704,7 +705,7 @@ export function useGetScrapFoldersContainingQnaSet<
   TError = unknown,
 >(
   qnaSetId: number,
-  params: GetScrapFoldersContainingQnaSetParams,
+  params: undefined | GetScrapFoldersContainingQnaSetParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>, TError, TData>> &
       Pick<
@@ -724,7 +725,7 @@ export function useGetScrapFoldersContainingQnaSet<
   TError = unknown,
 >(
   qnaSetId: number,
-  params: GetScrapFoldersContainingQnaSetParams,
+  params?: GetScrapFoldersContainingQnaSetParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>, TError, TData>> &
       Pick<
@@ -744,7 +745,7 @@ export function useGetScrapFoldersContainingQnaSet<
   TError = unknown,
 >(
   qnaSetId: number,
-  params: GetScrapFoldersContainingQnaSetParams,
+  params?: GetScrapFoldersContainingQnaSetParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -760,7 +761,7 @@ export function useGetScrapFoldersContainingQnaSet<
   TError = unknown,
 >(
   qnaSetId: number,
-  params: GetScrapFoldersContainingQnaSetParams,
+  params?: GetScrapFoldersContainingQnaSetParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -781,7 +782,7 @@ export const getGetScrapFoldersContainingQnaSetSuspenseQueryOptions = <
   TError = unknown,
 >(
   qnaSetId: number,
-  params: GetScrapFoldersContainingQnaSetParams,
+  params?: GetScrapFoldersContainingQnaSetParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -811,7 +812,7 @@ export function useGetScrapFoldersContainingQnaSetSuspense<
   TError = unknown,
 >(
   qnaSetId: number,
-  params: GetScrapFoldersContainingQnaSetParams,
+  params: undefined | GetScrapFoldersContainingQnaSetParams,
   options: {
     query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -823,7 +824,7 @@ export function useGetScrapFoldersContainingQnaSetSuspense<
   TError = unknown,
 >(
   qnaSetId: number,
-  params: GetScrapFoldersContainingQnaSetParams,
+  params?: GetScrapFoldersContainingQnaSetParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -835,7 +836,7 @@ export function useGetScrapFoldersContainingQnaSetSuspense<
   TError = unknown,
 >(
   qnaSetId: number,
-  params: GetScrapFoldersContainingQnaSetParams,
+  params?: GetScrapFoldersContainingQnaSetParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -851,7 +852,7 @@ export function useGetScrapFoldersContainingQnaSetSuspense<
   TError = unknown,
 >(
   qnaSetId: number,
-  params: GetScrapFoldersContainingQnaSetParams,
+  params?: GetScrapFoldersContainingQnaSetParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getScrapFoldersContainingQnaSet>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -871,7 +872,7 @@ export function useGetScrapFoldersContainingQnaSetSuspense<
  * 지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다. 지정하지 않은 필드에 대해서는 전체를 대상으로 조회합니다.
  * @summary 지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다.
  */
-export const getGetFrequentQuestionsUrl = (params: GetFrequentQuestionsParams) => {
+export const getGetFrequentQuestionsUrl = (params?: GetFrequentQuestionsParams) => {
   const normalizedParams = new URLSearchParams()
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -886,7 +887,7 @@ export const getGetFrequentQuestionsUrl = (params: GetFrequentQuestionsParams) =
 }
 
 export const getFrequentQuestions = async (
-  params: GetFrequentQuestionsParams,
+  params?: GetFrequentQuestionsParams,
   options?: RequestInit,
 ): Promise<ApiResponsePageFrequentQnaSetResponse> => {
   return customFetch<ApiResponsePageFrequentQnaSetResponse>(getGetFrequentQuestionsUrl(params), {
@@ -903,7 +904,7 @@ export const getGetFrequentQuestionsQueryOptions = <
   TData = Awaited<ReturnType<typeof getFrequentQuestions>>,
   TError = unknown,
 >(
-  params: GetFrequentQuestionsParams,
+  params?: GetFrequentQuestionsParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getFrequentQuestions>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -927,7 +928,7 @@ export type GetFrequentQuestionsQueryResult = NonNullable<Awaited<ReturnType<typ
 export type GetFrequentQuestionsQueryError = unknown
 
 export function useGetFrequentQuestions<TData = Awaited<ReturnType<typeof getFrequentQuestions>>, TError = unknown>(
-  params: GetFrequentQuestionsParams,
+  params: undefined | GetFrequentQuestionsParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getFrequentQuestions>>, TError, TData>> &
       Pick<
@@ -943,7 +944,7 @@ export function useGetFrequentQuestions<TData = Awaited<ReturnType<typeof getFre
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetFrequentQuestions<TData = Awaited<ReturnType<typeof getFrequentQuestions>>, TError = unknown>(
-  params: GetFrequentQuestionsParams,
+  params?: GetFrequentQuestionsParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getFrequentQuestions>>, TError, TData>> &
       Pick<
@@ -959,7 +960,7 @@ export function useGetFrequentQuestions<TData = Awaited<ReturnType<typeof getFre
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetFrequentQuestions<TData = Awaited<ReturnType<typeof getFrequentQuestions>>, TError = unknown>(
-  params: GetFrequentQuestionsParams,
+  params?: GetFrequentQuestionsParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getFrequentQuestions>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -971,7 +972,7 @@ export function useGetFrequentQuestions<TData = Awaited<ReturnType<typeof getFre
  */
 
 export function useGetFrequentQuestions<TData = Awaited<ReturnType<typeof getFrequentQuestions>>, TError = unknown>(
-  params: GetFrequentQuestionsParams,
+  params?: GetFrequentQuestionsParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getFrequentQuestions>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -991,7 +992,7 @@ export const getGetFrequentQuestionsSuspenseQueryOptions = <
   TData = Awaited<ReturnType<typeof getFrequentQuestions>>,
   TError = unknown,
 >(
-  params: GetFrequentQuestionsParams,
+  params?: GetFrequentQuestionsParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getFrequentQuestions>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -1018,7 +1019,7 @@ export function useGetFrequentQuestionsSuspense<
   TData = Awaited<ReturnType<typeof getFrequentQuestions>>,
   TError = unknown,
 >(
-  params: GetFrequentQuestionsParams,
+  params: undefined | GetFrequentQuestionsParams,
   options: {
     query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getFrequentQuestions>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -1029,7 +1030,7 @@ export function useGetFrequentQuestionsSuspense<
   TData = Awaited<ReturnType<typeof getFrequentQuestions>>,
   TError = unknown,
 >(
-  params: GetFrequentQuestionsParams,
+  params?: GetFrequentQuestionsParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getFrequentQuestions>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -1040,7 +1041,7 @@ export function useGetFrequentQuestionsSuspense<
   TData = Awaited<ReturnType<typeof getFrequentQuestions>>,
   TError = unknown,
 >(
-  params: GetFrequentQuestionsParams,
+  params?: GetFrequentQuestionsParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getFrequentQuestions>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -1055,7 +1056,7 @@ export function useGetFrequentQuestionsSuspense<
   TData = Awaited<ReturnType<typeof getFrequentQuestions>>,
   TError = unknown,
 >(
-  params: GetFrequentQuestionsParams,
+  params?: GetFrequentQuestionsParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getFrequentQuestions>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>

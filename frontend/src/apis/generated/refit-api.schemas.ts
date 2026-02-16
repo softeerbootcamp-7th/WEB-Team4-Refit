@@ -93,6 +93,21 @@ export interface UserSignUpRequest {
   jobCategoryId: number
 }
 
+export interface Embedding {
+  values?: number[]
+}
+
+export interface GeminiEmbeddingResponse {
+  embedding?: Embedding
+}
+
+export interface ApiResponseGeminiEmbeddingResponse {
+  isSuccess: boolean
+  code: string
+  message: string
+  result?: GeminiEmbeddingResponse
+}
+
 export interface ScrapFolderCreateRequest {
   /**
    * @minLength 0
@@ -207,14 +222,6 @@ export interface QnaSearchFilter {
 export interface QnaSetSearchRequest {
   keyword?: string
   searchFilter: QnaSearchFilter
-}
-
-export interface Pageable {
-  /** @minimum 0 */
-  page?: number
-  /** @minimum 1 */
-  size?: number
-  sort?: string[]
 }
 
 export type InterviewDtoInterviewType = (typeof InterviewDtoInterviewType)[keyof typeof InterviewDtoInterviewType]
@@ -440,6 +447,7 @@ export interface MyProfileResponse {
   industryId: number
   jobCategoryId: number
   profileImageUrl: string
+  isAgreedToTerms: boolean
 }
 
 export interface ApiResponseMyProfileResponse {
@@ -780,6 +788,18 @@ export interface ApiResponseInterviewFullDto {
   result?: InterviewFullDto
 }
 
+export interface PdfUploadUrlResponse {
+  url: string
+  key: string
+}
+
+export interface ApiResponsePdfUploadUrlResponse {
+  isSuccess: boolean
+  code: string
+  message: string
+  result?: PdfUploadUrlResponse
+}
+
 export interface GuideQuestionResponse {
   guideQuestion: string
 }
@@ -789,6 +809,13 @@ export interface ApiResponseGuideQuestionResponse {
   code: string
   message: string
   result?: GuideQuestionResponse
+}
+
+export interface ApiResponseListInterviewSimpleDto {
+  isSuccess: boolean
+  code: string
+  message: string
+  result?: InterviewSimpleDto[]
 }
 
 export interface PageInterviewSimpleDto {
@@ -967,15 +994,54 @@ export type SignUpParams = {
 }
 
 export type GetMyScrapFoldersParams = {
-  pageable: Pageable
+  /**
+   * Zero-based page index (0..N)
+   * @minimum 0
+   */
+  page?: number
+  /**
+   * The size of the page to be returned
+   * @minimum 1
+   */
+  size?: number
+  /**
+   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   */
+  sort?: string[]
 }
 
 export type SearchMyQnaSetParams = {
-  pageable: Pageable
+  /**
+   * Zero-based page index (0..N)
+   * @minimum 0
+   */
+  page?: number
+  /**
+   * The size of the page to be returned
+   * @minimum 1
+   */
+  size?: number
+  /**
+   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   */
+  sort?: string[]
 }
 
 export type SearchInterviewsParams = {
-  pageable: Pageable
+  /**
+   * Zero-based page index (0..N)
+   * @minimum 0
+   */
+  page?: number
+  /**
+   * The size of the page to be returned
+   * @minimum 1
+   */
+  size?: number
+  /**
+   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   */
+  sort?: string[]
 }
 
 export type PublishTokenParams = {
@@ -988,30 +1054,108 @@ export type PublishTokenByUserIdParams = {
 }
 
 export type GetQnaSetsInScrapFolderParams = {
-  pageable: Pageable
+  /**
+   * Zero-based page index (0..N)
+   * @minimum 0
+   */
+  page?: number
+  /**
+   * The size of the page to be returned
+   * @minimum 1
+   */
+  size?: number
+  /**
+   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   */
+  sort?: string[]
 }
 
 export type GetScrapFoldersContainingQnaSetParams = {
-  pageable: Pageable
+  /**
+   * Zero-based page index (0..N)
+   * @minimum 0
+   */
+  page?: number
+  /**
+   * The size of the page to be returned
+   * @minimum 1
+   */
+  size?: number
+  /**
+   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   */
+  sort?: string[]
 }
 
 export type GetMyFrequentQnaSetCategoriesParams = {
-  pageable: Pageable
+  /**
+   * Zero-based page index (0..N)
+   * @minimum 0
+   */
+  page?: number
+  /**
+   * The size of the page to be returned
+   * @minimum 1
+   */
+  size?: number
+  /**
+   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   */
+  sort?: string[]
 }
 
 export type GetMyFrequentQnaSetCategoryQuestionsParams = {
-  pageable: Pageable
+  /**
+   * Zero-based page index (0..N)
+   * @minimum 0
+   */
+  page?: number
+  /**
+   * The size of the page to be returned
+   * @minimum 1
+   */
+  size?: number
+  /**
+   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   */
+  sort?: string[]
 }
 
 export type GetFrequentQuestionsParams = {
   industryIds?: number[]
   jobCategoryIds?: number[]
-  pageable: Pageable
+  /**
+   * Zero-based page index (0..N)
+   * @minimum 0
+   */
+  page?: number
+  /**
+   * The size of the page to be returned
+   * @minimum 1
+   */
+  size?: number
+  /**
+   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   */
+  sort?: string[]
 }
 
 export type GetMyInterviewDraftsParams = {
   interviewDraftType: GetMyInterviewDraftsInterviewDraftType
-  pageable: Pageable
+  /**
+   * Zero-based page index (0..N)
+   * @minimum 0
+   */
+  page?: number
+  /**
+   * The size of the page to be returned
+   * @minimum 1
+   */
+  size?: number
+  /**
+   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   */
+  sort?: string[]
 }
 
 export type GetMyInterviewDraftsInterviewDraftType =
@@ -1023,15 +1167,54 @@ export const GetMyInterviewDraftsInterviewDraftType = {
 } as const
 
 export type GetMyDifficultQnaSetsParams = {
-  pageable: Pageable
+  /**
+   * Zero-based page index (0..N)
+   * @minimum 0
+   */
+  page?: number
+  /**
+   * The size of the page to be returned
+   * @minimum 1
+   */
+  size?: number
+  /**
+   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   */
+  sort?: string[]
 }
 
 export type GetUpcomingInterviewsParams = {
-  pageable: Pageable
+  /**
+   * Zero-based page index (0..N)
+   * @minimum 0
+   */
+  page?: number
+  /**
+   * The size of the page to be returned
+   * @minimum 1
+   */
+  size?: number
+  /**
+   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   */
+  sort?: string[]
 }
 
 export type GetDebriefIncompletedInterviewsParams = {
-  pageable: Pageable
+  /**
+   * Zero-based page index (0..N)
+   * @minimum 0
+   */
+  page?: number
+  /**
+   * The size of the page to be returned
+   * @minimum 1
+   */
+  size?: number
+  /**
+   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   */
+  sort?: string[]
 }
 
 export type GetDashboardCalendarInterviewsParams = {
