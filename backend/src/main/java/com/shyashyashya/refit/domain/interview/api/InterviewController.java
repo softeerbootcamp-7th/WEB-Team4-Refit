@@ -44,7 +44,8 @@ public class InterviewController {
 
     @Operation(summary = "면접 데이터를 생성합니다.")
     @PostMapping
-    public ResponseEntity<ApiResponse<InterviewCreateResponse>> createInterview(@Valid @RequestBody InterviewCreateRequest request) {
+    public ResponseEntity<ApiResponse<InterviewCreateResponse>> createInterview(
+            @Valid @RequestBody InterviewCreateRequest request) {
         var body = interviewService.createInterview(request);
         var response = ApiResponse.success(COMMON201, body);
         return ResponseEntity.ok(response);
