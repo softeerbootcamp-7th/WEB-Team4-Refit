@@ -38,7 +38,7 @@ function mapToCardItem(item: DashboardDebriefIncompletedInterviewResponse) {
 export type DebriefIncompletedCardItem = ReturnType<typeof mapToCardItem>
 
 export function useUnrecordedInterviews() {
-  const { data, isLoading, isError } = useGetDebriefIncompletedInterviews({ pageable: PAGEABLE })
+  const { data, isLoading, isError } = useGetDebriefIncompletedInterviews(PAGEABLE)
 
   const items = useMemo(() => {
     const content = data?.result?.content ?? []

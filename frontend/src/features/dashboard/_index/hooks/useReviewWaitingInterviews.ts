@@ -5,10 +5,8 @@ import type { ReviewWaitingData } from '../components/review-waiting-interview/R
 export const useReviewWaitingInterviews = () => {
   const { data: response } = useGetDebriefIncompletedInterviews(
     {
-      pageable: {
-        page: 0,
-        size: 10,
-      },
+      page: 0,
+      size: 10,
     },
     {
       query: {
@@ -35,7 +33,7 @@ export const useReviewWaitingInterviews = () => {
       // Industry 정보가 API에 없으므로 임시 하드코딩 또는 빈 문자열
       industry: interview?.companyName === '현대자동차' ? '제조업' : 'IT/플랫폼',
       jobCategory: interview?.jobCategoryName ?? '',
-      interviewType: interviewTypeKey ? INTERVIEW_TYPE_LABEL[interviewTypeKey] : interview?.interviewType ?? '',
+      interviewType: interviewTypeKey ? INTERVIEW_TYPE_LABEL[interviewTypeKey] : (interview?.interviewType ?? ''),
     }
   })
 
