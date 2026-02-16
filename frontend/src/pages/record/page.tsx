@@ -1,6 +1,6 @@
 import { Suspense, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
-import { useUpdateRawText } from '@/apis'
+import { useConvertRawTextToQnaSet, useUpdateRawText } from '@/apis'
 import SidebarLayoutSkeleton from '@/features/_common/components/sidebar/SidebarLayoutSkeleton'
 import { RecordPageContent } from '@/features/record/_index'
 import { useRecordAutoSave } from '@/features/record/_index/hooks/useRecordAutoSave'
@@ -30,7 +30,8 @@ function RecordPageContentContainer({ interviewId }: RecordPageContentContainerP
     interviewId,
     startLoggingRequired: data.interviewReviewStatus === 'NOT_LOGGED',
   })
-  const { mutate: completeRawText, isPending: isCompleteMutationPending } = useUpdateRawText()
+  const { mutateAsync: completeRawText } = useUpdateRawText()
+  const { mutateAsync: convertRawTextToQnaSet } = useConvertRawTextToQnaSet()
 
   const handleRecordComplete = () => {
     if (realtimeText) {
@@ -56,20 +57,16 @@ function RecordPageContentContainer({ interviewId }: RecordPageContentContainerP
         return
       }
 
-      completeRawText(
-        {
+      try {
+        await completeRawText({
           interviewId: Number(interviewId),
           data: { rawText: mergedText },
-        },
-        {
-          onSuccess: () => {
-            navigate(ROUTES.RECORD_CONFIRM.replace(':interviewId', interviewId))
-          },
-          onError: () => {
-            setIsCompleting(false)
-          },
-        },
-      )
+        })
+        await convertRawTextToQnaSet({ interviewId: Number(interviewId) })
+        navigate(ROUTES.RECORD_CONFIRM.replace(':interviewId', interviewId))
+      } catch {
+        setIsCompleting(false)
+      }
     })()
   }
 
@@ -83,7 +80,7 @@ function RecordPageContentContainer({ interviewId }: RecordPageContentContainerP
       onRecordComplete={handleRecordComplete}
       onRecordCancel={handleRecordCancel}
       onComplete={handleComplete}
-      isCompletePending={isCompleting && isCompleteMutationPending}
+      isCompletePending={isCompleting}
       canSave={Boolean(interviewId)}
       autoSaveStatus={autoSaveStatus}
     />

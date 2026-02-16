@@ -1,5 +1,5 @@
 import { useState, type Dispatch, type SetStateAction } from 'react'
-import { LoadingSpinner } from '@/designs/assets'
+import { CloudSaveIcon, LoadingSpinner } from '@/designs/assets'
 import { Button } from '@/designs/components'
 import LiveAudioVisualizer from '@/features/_common/auth/components/LiveAudioVisualizer'
 import LoadingOverlay from '@/features/_common/loading/LoadingOverlay'
@@ -115,26 +115,5 @@ function AutoSaveStatusBadge({ status }: { status: AutoSaveStatus }) {
       <span>{label}</span>
       {status === 'saving' && <LoadingSpinner className="h-4 w-4 animate-spin" />}
     </div>
-  )
-}
-
-function CloudSaveIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
-      <path
-        d="M7.5 18.5H17A4 4 0 0 0 17 10.5C16.82 10.5 16.64 10.51 16.46 10.54A5.5 5.5 0 0 0 5.8 11.9A3.5 3.5 0 0 0 7.5 18.5Z"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M12 10.5V16.5M12 16.5L9.7 14.2M12 16.5L14.3 14.2"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
   )
 }
