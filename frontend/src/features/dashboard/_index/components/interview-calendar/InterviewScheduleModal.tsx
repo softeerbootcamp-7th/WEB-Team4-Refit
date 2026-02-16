@@ -1,4 +1,11 @@
-import { InterviewCreateRequestInterviewType, useCreateInterview } from '@/apis'
+import { useQueryClient } from '@tanstack/react-query'
+import {
+  getGetDashboardCalendarInterviewsQueryKey,
+  getGetDebriefIncompletedInterviewsQueryKey,
+  getGetUpcomingInterviewsQueryKey,
+  InterviewCreateRequestInterviewType,
+  useCreateInterview,
+} from '@/apis'
 import Modal from '@/designs/components/modal'
 import { ScheduleModalContent } from '@/features/dashboard/_index/components/schedule-modal-content/ScheduleModalContent'
 import type { ScheduleFormSubmitValues } from '@/features/dashboard/_index/components/schedule-modal-content/ScheduleModalContent'
@@ -17,9 +24,13 @@ const toStartAt = (date: string, time: string) => {
 
 export default function InterviewScheduleModal() {
   const modalContext = useScheduleModal()
+  const queryClient = useQueryClient()
   const { mutate: createInterview, isPending } = useCreateInterview({
     mutation: {
       onSuccess: () => {
+        void queryClient.invalidateQueries({ queryKey: getGetDashboardCalendarInterviewsQueryKey() })
+        void queryClient.invalidateQueries({ queryKey: getGetDebriefIncompletedInterviewsQueryKey() })
+        void queryClient.invalidateQueries({ queryKey: getGetUpcomingInterviewsQueryKey() })
         modalContext?.closeModal()
       },
     },
