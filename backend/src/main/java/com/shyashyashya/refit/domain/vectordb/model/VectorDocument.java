@@ -8,8 +8,8 @@ import lombok.experimental.SuperBuilder;
 public abstract class VectorDocument<K> {
 
     @Getter
-    protected K id;
+    private K id;
 
     @Getter
-    protected Map<String, Object> payload;
+    private Map<String, Object> payload;
 }

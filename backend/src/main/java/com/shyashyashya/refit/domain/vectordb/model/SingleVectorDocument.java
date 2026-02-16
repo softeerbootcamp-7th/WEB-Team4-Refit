@@ -9,7 +9,7 @@ import lombok.experimental.SuperBuilder;
 public class SingleVectorDocument<K> extends VectorDocument<K> {
 
     @Getter
-    protected List<Float> vector;
+    private List<Float> vector;
 
     public static <K> SingleVectorDocument<K> of(K id, Map<String, Object> payload, List<Float> vector) {
         return SingleVectorDocument.<K>builder()

@@ -15,7 +15,7 @@ public class QdrantConfig {
 
     private final VectorStoreProperty vectorStoreProperty;
 
-    @Bean
+    @Bean(destroyMethod = "close")
     public QdrantClient qdrantClient() {
         return new QdrantClient(QdrantGrpcClient.newBuilder(
                         vectorStoreProperty.qdrant().host(),

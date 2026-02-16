@@ -16,7 +16,7 @@ public interface VectorRepository<K, V extends VectorDocument<K>> {
 
     void deleteAll();
 
-    List<Long> searchSimilar(List<Float> queryVector, int topK);
+    List<K> searchSimilar(List<Float> queryVector, int topK);
 
     Optional<V> findById(K id);
 
