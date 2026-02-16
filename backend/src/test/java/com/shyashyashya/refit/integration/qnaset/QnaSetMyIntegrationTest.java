@@ -41,46 +41,39 @@ public class QnaSetMyIntegrationTest extends IntegrationTest {
 
     private Interview interview;
 
-    @BeforeEach
-    void setup() {
-        var request = new InterviewCreateRequest(
-                LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-        interview = createAndSaveInterview(request);
-    }
-
-    @BeforeEach
-    void setUp() {
-        Interview interview = createAndSaveInterview(
-                new InterviewCreateRequest(
-                        LocalDateTime.of(2023, 1, 10, 10, 0, 0), InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
-                ), InterviewReviewStatus.DEBRIEF_COMPLETED);
-
-        // category가 null인 qnaSet 존재하면 NPE 발생
-        // QnaSet qnaSet1 = createAndSaveQnaSet(new QnaSetCreateRequest("q text", "a text"), interview);
-
-        QnaSet qnaSet2 = createAndSaveQnaSet(
-                new QnaSetCreateRequest("q text2", "a text"),
-                interview,
-                qnaSetCategory1);
-
-        QnaSet qnaSet3 = createAndSaveQnaSet(
-                new QnaSetCreateRequest("q text3", "a text"),
-                interview,
-                qnaSetCategory1);
-
-        QnaSet qnaSet4 = createAndSaveQnaSet(
-                new QnaSetCreateRequest("q text3", "a text"),
-                interview,
-                qnaSetCategory1);
-
-        QnaSet qnaSet5 = createAndSaveQnaSet(
-                new QnaSetCreateRequest("q text3", "a text"),
-                interview,
-                qnaSetCategory3);
-    }
-
     @Nested
     class 빈출_질문_카테고리_조회할_때 {
+
+        @BeforeEach
+        void setUp() {
+            Interview interview = createAndSaveInterview(
+                    new InterviewCreateRequest(
+                            LocalDateTime.of(2023, 1, 10, 10, 0, 0), InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+                    ), InterviewReviewStatus.DEBRIEF_COMPLETED);
+
+            // category가 null인 qnaSet 존재하면 NPE 발생
+            // QnaSet qnaSet1 = createAndSaveQnaSet(new QnaSetCreateRequest("q text", "a text"), interview);
+
+            QnaSet qnaSet2 = createAndSaveQnaSet(
+                    new QnaSetCreateRequest("q text2", "a text"),
+                    interview,
+                    qnaSetCategory1);
+
+            QnaSet qnaSet3 = createAndSaveQnaSet(
+                    new QnaSetCreateRequest("q text3", "a text"),
+                    interview,
+                    qnaSetCategory1);
+
+            QnaSet qnaSet4 = createAndSaveQnaSet(
+                    new QnaSetCreateRequest("q text3", "a text"),
+                    interview,
+                    qnaSetCategory1);
+
+            QnaSet qnaSet5 = createAndSaveQnaSet(
+                    new QnaSetCreateRequest("q text3", "a text"),
+                    interview,
+                    qnaSetCategory3);
+        }
 
         @Test
         void 성공한다() {
@@ -100,6 +93,37 @@ public class QnaSetMyIntegrationTest extends IntegrationTest {
 
     @Nested
     class 특정_카테고리_질문_조회할_때 {
+
+        @BeforeEach
+        void setUp() {
+            Interview interview = createAndSaveInterview(
+                    new InterviewCreateRequest(
+                            LocalDateTime.of(2023, 1, 10, 10, 0, 0), InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+                    ), InterviewReviewStatus.DEBRIEF_COMPLETED);
+
+            // category가 null인 qnaSet 존재하면 NPE 발생
+            // QnaSet qnaSet1 = createAndSaveQnaSet(new QnaSetCreateRequest("q text", "a text"), interview);
+
+            QnaSet qnaSet2 = createAndSaveQnaSet(
+                    new QnaSetCreateRequest("q text2", "a text"),
+                    interview,
+                    qnaSetCategory1);
+
+            QnaSet qnaSet3 = createAndSaveQnaSet(
+                    new QnaSetCreateRequest("q text3", "a text"),
+                    interview,
+                    qnaSetCategory1);
+
+            QnaSet qnaSet4 = createAndSaveQnaSet(
+                    new QnaSetCreateRequest("q text3", "a text"),
+                    interview,
+                    qnaSetCategory1);
+
+            QnaSet qnaSet5 = createAndSaveQnaSet(
+                    new QnaSetCreateRequest("q text3", "a text"),
+                    interview,
+                    qnaSetCategory3);
+        }
 
         @Test
         void 질문이_있는_카테고리의_조회를_성공한다() {
@@ -137,6 +161,13 @@ public class QnaSetMyIntegrationTest extends IntegrationTest {
     class 나의_질답세트_검색_시 {
 
         private static final String path = "/qna-set/my/search";
+
+        @BeforeEach
+        void setup() {
+            var request = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            interview = createAndSaveInterview(request);
+        }
 
         @Test
         void 모든_질답세트를_성공적으로_조회한다() {
