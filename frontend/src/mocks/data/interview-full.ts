@@ -8,6 +8,7 @@ export const mockInterviewFull: ApiResponseInterviewFullDto = {
     interviewId: 1,
     interviewType: 'FIRST',
     interviewStartAt: '2026-02-11T10:00:00Z',
+    interviewResultStatus: 'WAIT',
     company: 'Mock Company',
     industryId: 1,
     jobCategoryId: 1,

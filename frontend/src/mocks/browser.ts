@@ -13,6 +13,7 @@ import {
 } from '@/apis/generated/interview-api/interview-api.msw'
 import {
   getCreateStarAnalysisMockHandler,
+  getGetFrequentQuestionsMockHandler,
   getGetPdfHighlightingsMockHandler,
   getGetScrapFoldersContainingQnaSetMockHandler,
   getUpdatePdfHighlightingMockHandler,
@@ -34,9 +35,24 @@ import {
 } from '@/mocks/data/my-frequent-questions'
 import { mockScrapFolders } from '@/mocks/data/scrap-folders'
 import { mockStarAnalysis } from '@/mocks/data/star-analysis'
+import { getMockFrequentQuestions } from '@/mocks/data/trend-questions'
 import { updateRawTextMock } from '@/mocks/data/update-raw-text'
 
 export const worker = setupWorker(
+  getGetFrequentQuestionsMockHandler((info) => {
+    const url = new URL(info.request.url)
+    const parseIds = (key: 'industryIds' | 'jobCategoryIds') => {
+      const repeated = url.searchParams.getAll(key)
+      const source = repeated.length > 0 ? repeated : (url.searchParams.get(key) ?? '').split(',')
+      return source.map((v) => Number(v)).filter((v) => Number.isFinite(v))
+    }
+    const industryIds = parseIds('industryIds')
+    const jobCategoryIds = parseIds('jobCategoryIds')
+    const page = Number(url.searchParams.get('page') ?? '0')
+    const size = Number(url.searchParams.get('size') ?? '100')
+
+    return getMockFrequentQuestions({ industryIds, jobCategoryIds, page, size })
+  }),
   getGetMyFrequentQnaSetCategoriesMockHandler(mockFrequentQuestionCategories),
   getGetMyFrequentQnaSetCategoryQuestionsMockHandler((info) => {
     const categoryId = Number(info.params.categoryId)

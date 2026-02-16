@@ -1,10 +1,13 @@
 import { CloseIcon } from '@/designs/assets'
-import {
-  FILTER_COLORS,
-  MAX_VISIBLE_BADGES,
-  type FilterBadge,
-  type FilterType,
-} from '@/features/dashboard/trend-questions/constants/constants'
+import { type FilterBadge, type FilterType } from '@/features/dashboard/trend-questions/constants/constants'
+
+const MAX_VISIBLE_BADGES = 7
+
+type ColorSet = { bg: string; text: string; hover: string }
+const FILTER_COLORS = {
+  industry: { bg: 'bg-orange-100', text: 'text-orange-600', hover: 'hover:bg-orange-200' },
+  job: { bg: 'bg-blue-050', text: 'text-blue-600', hover: 'hover:bg-blue-200' },
+} as const satisfies Record<FilterType, ColorSet>
 
 type FilterBadgesProps = {
   badges: FilterBadge[]

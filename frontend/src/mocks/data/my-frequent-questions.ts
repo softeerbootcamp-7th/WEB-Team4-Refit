@@ -23,6 +23,7 @@ const questionsByCategoryId: Record<number, FrequentQnaSetCategoryQuestionRespon
       interviewInfo: {
         interviewId: 5001,
         interviewType: 'TECHNICAL',
+        interviewReviewStatus: 'DEBRIEF_COMPLETED',
         interviewStartAt: '2026-01-12T01:00:00Z',
         companyInfo: { companyId: 1, companyName: '카카오헬스케어', companyLogoUrl: '' },
         jobCategoryName: '프론트엔드',
@@ -34,6 +35,7 @@ const questionsByCategoryId: Record<number, FrequentQnaSetCategoryQuestionRespon
       interviewInfo: {
         interviewId: 5002,
         interviewType: 'BEHAVIORAL',
+        interviewReviewStatus: 'DEBRIEF_COMPLETED',
         interviewStartAt: '2025-12-21T01:00:00Z',
         companyInfo: { companyId: 2, companyName: '네이버', companyLogoUrl: '' },
         jobCategoryName: '웹 개발',
@@ -45,6 +47,7 @@ const questionsByCategoryId: Record<number, FrequentQnaSetCategoryQuestionRespon
       interviewInfo: {
         interviewId: 5003,
         interviewType: 'BEHAVIORAL',
+        interviewReviewStatus: 'DEBRIEF_COMPLETED',
         interviewStartAt: '2025-12-21T01:00:00Z',
         companyInfo: { companyId: 2, companyName: '네이버', companyLogoUrl: '' },
         jobCategoryName: '웹 개발',
@@ -56,6 +59,7 @@ const questionsByCategoryId: Record<number, FrequentQnaSetCategoryQuestionRespon
       interviewInfo: {
         interviewId: 5004,
         interviewType: 'BEHAVIORAL',
+        interviewReviewStatus: 'DEBRIEF_COMPLETED',
         interviewStartAt: '2025-12-21T01:00:00Z',
         companyInfo: { companyId: 2, companyName: '네이버', companyLogoUrl: '' },
         jobCategoryName: '웹 개발',
@@ -69,6 +73,7 @@ const questionsByCategoryId: Record<number, FrequentQnaSetCategoryQuestionRespon
       interviewInfo: {
         interviewId: 5101,
         interviewType: 'TECHNICAL',
+        interviewReviewStatus: 'DEBRIEF_COMPLETED',
         interviewStartAt: '2026-01-03T01:00:00Z',
         companyInfo: { companyId: 3, companyName: '토스', companyLogoUrl: '' },
         jobCategoryName: '프론트엔드',
@@ -80,6 +85,7 @@ const questionsByCategoryId: Record<number, FrequentQnaSetCategoryQuestionRespon
       interviewInfo: {
         interviewId: 5102,
         interviewType: 'FIRST',
+        interviewReviewStatus: 'DEBRIEF_COMPLETED',
         interviewStartAt: '2025-11-30T01:00:00Z',
         companyInfo: { companyId: 4, companyName: '당근', companyLogoUrl: '' },
         jobCategoryName: '앱 개발',
@@ -93,6 +99,7 @@ const questionsByCategoryId: Record<number, FrequentQnaSetCategoryQuestionRespon
       interviewInfo: {
         interviewId: 5201,
         interviewType: 'CULTURE_FIT',
+        interviewReviewStatus: 'DEBRIEF_COMPLETED',
         interviewStartAt: '2025-12-16T01:00:00Z',
         companyInfo: { companyId: 5, companyName: '라인', companyLogoUrl: '' },
         jobCategoryName: '서비스 개발',
@@ -106,6 +113,7 @@ const questionsByCategoryId: Record<number, FrequentQnaSetCategoryQuestionRespon
       interviewInfo: {
         interviewId: 5301,
         interviewType: 'BEHAVIORAL',
+        interviewReviewStatus: 'DEBRIEF_COMPLETED',
         interviewStartAt: '2025-10-19T01:00:00Z',
         companyInfo: { companyId: 6, companyName: '쿠팡', companyLogoUrl: '' },
         jobCategoryName: '프론트엔드',
@@ -166,7 +174,9 @@ const searchableQuestions: QnaSetSearchResponse[] = Object.values(questionsByCat
     interviewInfo: {
       interviewId: item.interviewInfo?.interviewId ?? index + 1,
       interviewType: item.interviewInfo?.interviewType ?? 'FIRST',
+      interviewStartAt: item.interviewInfo?.interviewStartAt ?? '2026-01-01T00:00:00Z',
       interviewResultStatus: 'PASS',
+      interviewReviewStatus: item.interviewInfo?.interviewReviewStatus ?? 'DEBRIEF_COMPLETED',
       interviewRawText: '',
       companyName: item.interviewInfo?.companyInfo?.companyName ?? '',
       jobCategoryId: 1,
