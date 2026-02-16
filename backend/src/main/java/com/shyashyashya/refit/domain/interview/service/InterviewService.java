@@ -19,7 +19,7 @@ import com.shyashyashya.refit.domain.interview.dto.request.KptSelfReviewUpdateRe
 import com.shyashyashya.refit.domain.interview.dto.request.QnaSetCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.response.InterviewCreateResponse;
-import com.shyashyashya.refit.domain.interview.dto.response.PdfUploadUrlResponse;
+import com.shyashyashya.refit.domain.interview.dto.response.PresignedUrlResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.QnaSetCreateResponse;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
@@ -52,8 +52,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 
@@ -178,7 +181,7 @@ public class InterviewService {
     }
 
     @Transactional
-    public PdfUploadUrlResponse createPdfUploadUrl(Long interviewId) {
+    public PresignedUrlResponse createPdfUploadUrl(Long interviewId) {
         User requestUser = requestUserContext.getRequestUser();
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
@@ -201,7 +204,28 @@ public class InterviewService {
 
         PresignedPutObjectRequest presigned = s3Presigner.presignPutObject(presignRequest);
 
-        return new PdfUploadUrlResponse(presigned.url().toString(), key);
+        return new PresignedUrlResponse(presigned.url().toString(), key, s3Property.presignExpireSeconds());
+    }
+
+    @Transactional(readOnly = true)
+    public PresignedUrlResponse createPdfDownloadUrl(Long interviewId) {
+        User requestUser = requestUserContext.getRequestUser();
+        Interview interview =
+                interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
+        interviewValidator.validateInterviewOwner(interview, requestUser);
+
+        String key = interview.getPdfUrl();
+        GetObjectRequest getObjectRequest =
+                GetObjectRequest.builder().bucket(s3Property.bucket()).key(key).build();
+
+        GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
+                .signatureDuration(Duration.ofSeconds(s3Property.presignExpireSeconds()))
+                .getObjectRequest(getObjectRequest)
+                .build();
+
+        PresignedGetObjectRequest presigned = s3Presigner.presignGetObject(presignRequest);
+
+        return new PresignedUrlResponse(presigned.url().toString(), key, s3Property.presignExpireSeconds());
     }
 
     public Page<InterviewSimpleDto> getMyInterviewDrafts(InterviewDraftType draftType, Pageable pageable) {
