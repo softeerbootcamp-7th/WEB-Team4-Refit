@@ -18,6 +18,7 @@ import com.shyashyashya.refit.domain.interview.dto.request.InterviewSearchReques
 import com.shyashyashya.refit.domain.interview.dto.request.KptSelfReviewUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.QnaSetCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
+import com.shyashyashya.refit.domain.interview.dto.response.InterviewCreateResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.PdfUploadUrlResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.QnaSetCreateResponse;
 import com.shyashyashya.refit.domain.interview.model.Interview;
@@ -115,7 +116,7 @@ public class InterviewService {
     }
 
     @Transactional
-    public void createInterview(InterviewCreateRequest request) {
+    public InterviewCreateResponse createInterview(InterviewCreateRequest request) {
 
         User user = requestUserContext.getRequestUser();
 
@@ -132,7 +133,8 @@ public class InterviewService {
         Interview interview = Interview.create(
                 request.jobRole(), request.interviewType(), request.startAt(), user, company, industry, jobCategory);
 
-        interviewRepository.save(interview);
+        Long interviewId = interviewRepository.save(interview).getId();
+        return new InterviewCreateResponse(interviewId);
     }
 
     @Transactional
