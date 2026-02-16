@@ -13,7 +13,7 @@ import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.gemini.GeminiClient;
 import com.shyashyashya.refit.global.gemini.GeminiEmbeddingRequest;
 import com.shyashyashya.refit.global.gemini.GeminiEmbeddingResponse;
-import com.shyashyashya.refit.global.property.VectorStoreProperty;
+import com.shyashyashya.refit.global.property.GeminiProperty;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Email;
@@ -43,7 +43,7 @@ public class TestUserController {
     private final RefreshTokenRepository refreshTokenRepository;
     private final GeminiClient geminiClient;
     private final Executor geminiPostProcessExecutor;
-    private final VectorStoreProperty vectorStoreProperty;
+    private final GeminiProperty geminiProperty;
 
     @Operation(summary = "(테스트용) 유저를 이메일로 찾아 삭제합니다.")
     @DeleteMapping
@@ -86,9 +86,7 @@ public class TestUserController {
             @RequestBody @NotBlank String text) {
 
         GeminiEmbeddingRequest requestBody = GeminiEmbeddingRequest.of(
-                text,
-                GeminiEmbeddingRequest.TaskType.CLUSTERING,
-                GeminiEmbeddingRequest.OutputDimensionality.fromValue(vectorStoreProperty.vectorSize()));
+                text, GeminiEmbeddingRequest.TaskType.CLUSTERING, geminiProperty.embeddingDimension());
 
         CompletableFuture<GeminiEmbeddingResponse> reqFuture =
                 geminiClient.sendAsyncEmbeddingRequest(requestBody, STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC);
