@@ -3,7 +3,6 @@ package com.shyashyashya.refit.domain.interview.service;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INDUSTRY_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_PDF_ALREADY_EXITS;
-import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_PDF_DELETE_FAILED;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_PDF_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.JOB_CATEGORY_NOT_FOUND;
 
@@ -41,14 +40,12 @@ import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetSelfReviewRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.StarAnalysisRepository;
 import com.shyashyashya.refit.domain.user.model.User;
+import com.shyashyashya.refit.global.aws.S3;
 import com.shyashyashya.refit.global.exception.CustomException;
-import com.shyashyashya.refit.global.property.S3Property;
 import com.shyashyashya.refit.global.util.RequestUserContext;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -58,16 +55,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
-import software.amazon.awssdk.services.s3.model.GetObjectRequest;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.model.S3Exception;
-import software.amazon.awssdk.services.s3.presigner.S3Presigner;
-import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
-import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
-import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
-import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -86,9 +73,7 @@ public class InterviewService {
 
     private final InterviewValidator interviewValidator;
     private final RequestUserContext requestUserContext;
-    private final S3Presigner s3Presigner;
-    private final S3Client s3Client;
-    private final S3Property s3Property;
+    private final S3 s3;
 
     @Transactional(readOnly = true)
     public InterviewDto getInterview(Long interviewId) {
@@ -203,24 +188,9 @@ public class InterviewService {
             throw new CustomException(INTERVIEW_PDF_ALREADY_EXITS);
         }
 
-        String extension = ".pdf";
-        String key = s3Property.prefix() + UUID.randomUUID() + extension;
-        interview.updatePdfUrl(key);
-
-        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                .bucket(s3Property.bucket())
-                .key(key)
-                .contentType("application/pdf")
-                .build();
-
-        PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
-                .signatureDuration(Duration.ofSeconds(s3Property.presignExpireSeconds()))
-                .putObjectRequest(putObjectRequest)
-                .build();
-
-        PresignedPutObjectRequest presigned = s3Presigner.presignPutObject(presignRequest);
-
-        return new PresignedUrlResponse(presigned.url().toString(), key, s3Property.presignExpireSeconds());
+        PresignedUrlResponse response = s3.createPdfUploadUrl();
+        interview.updatePdfUrl(response.key());
+        return response;
     }
 
     @Transactional(readOnly = true)
@@ -235,17 +205,7 @@ public class InterviewService {
         }
 
         String key = interview.getPdfUrl();
-        GetObjectRequest getObjectRequest =
-                GetObjectRequest.builder().bucket(s3Property.bucket()).key(key).build();
-
-        GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
-                .signatureDuration(Duration.ofSeconds(s3Property.presignExpireSeconds()))
-                .getObjectRequest(getObjectRequest)
-                .build();
-
-        PresignedGetObjectRequest presigned = s3Presigner.presignGetObject(presignRequest);
-
-        return new PresignedUrlResponse(presigned.url().toString(), key, s3Property.presignExpireSeconds());
+        return s3.createPdfDownloadUrl(key);
     }
 
     @Transactional
@@ -260,16 +220,7 @@ public class InterviewService {
             throw new CustomException(INTERVIEW_PDF_NOT_FOUND);
         }
 
-        try {
-            s3Client.deleteObject(DeleteObjectRequest.builder()
-                    .bucket(s3Property.bucket())
-                    .key(key)
-                    .build());
-        } catch (S3Exception e) {
-            log.error(e.getMessage(), e);
-            throw new CustomException(INTERVIEW_PDF_DELETE_FAILED);
-        }
-
+        s3.deleteFile(key);
         deleteAllPdfHighlighting(interview);
         interview.deletePdfUrl();
     }
