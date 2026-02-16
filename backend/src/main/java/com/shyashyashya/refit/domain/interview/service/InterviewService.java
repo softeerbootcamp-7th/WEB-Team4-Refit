@@ -11,7 +11,6 @@ import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
 import com.shyashyashya.refit.domain.interview.dto.InterviewDto;
 import com.shyashyashya.refit.domain.interview.dto.InterviewFullDto;
 import com.shyashyashya.refit.domain.interview.dto.InterviewSimpleDto;
-import com.shyashyashya.refit.domain.qnaset.dto.StarAnalysisDto;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewDraftType;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatusUpdateRequest;
@@ -29,6 +28,7 @@ import com.shyashyashya.refit.domain.interview.repository.InterviewSelfReviewRep
 import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
+import com.shyashyashya.refit.domain.qnaset.dto.StarAnalysisDto;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetSelfReview;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;

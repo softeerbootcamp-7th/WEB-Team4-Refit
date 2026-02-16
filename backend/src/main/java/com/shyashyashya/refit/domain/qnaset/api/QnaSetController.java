@@ -3,8 +3,8 @@ package com.shyashyashya.refit.domain.qnaset.api;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON204;
 
-import com.shyashyashya.refit.domain.qnaset.dto.StarAnalysisDto;
 import com.shyashyashya.refit.domain.qnaset.dto.PdfHighlightingDto;
+import com.shyashyashya.refit.domain.qnaset.dto.StarAnalysisDto;
 import com.shyashyashya.refit.domain.qnaset.dto.request.PdfHighlightingUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetResponse;
