@@ -1,5 +1,6 @@
 package com.shyashyashya.refit.global.property;
 
+import io.qdrant.client.grpc.Collections;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -17,5 +18,5 @@ public record QdrantProperty(
     public record CollectionProperty(
             @NotBlank String name,
             @NotNull Integer vectorDimension,
-            @NotBlank String distance) {}
+            @NotNull Collections.Distance distance) {}
 }
