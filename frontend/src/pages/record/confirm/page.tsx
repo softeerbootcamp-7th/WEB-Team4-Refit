@@ -23,6 +23,7 @@ function RecordConfirmContent() {
 
   const { qnaList, isAddMode, handleEdit, handleDelete, handleAddSave, startAddMode, cancelAddMode } = useQnaList(
     data.qnaList,
+    { interviewId: id },
   )
   const sectionScroll = useSectionScroll({ idPrefix: 'record-confirm' })
 
