@@ -158,7 +158,7 @@ public class InterviewController {
 
     @Operation(summary = "면접 PDF 파일 업로드를 위한 Pre-Signed URL을 요청합니다.")
     @GetMapping("/{interviewId}/pdf/upload-url")
-    public ResponseEntity<ApiResponse<PresignedUrlResponse>> createUploadUrl(@PathVariable Long interviewId) {
+    public ResponseEntity<ApiResponse<PresignedUrlResponse>> createPdfUploadUrl(@PathVariable Long interviewId) {
         var body = interviewService.createPdfUploadUrl(interviewId);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
@@ -166,7 +166,7 @@ public class InterviewController {
 
     @Operation(summary = "면접 PDF 파일 다운로드를 위한 Pre-Signed URL을 요청합니다.")
     @GetMapping("/{interviewId}/pdf/download-url")
-    public ResponseEntity<ApiResponse<PresignedUrlResponse>> createDownloadUrl(@PathVariable Long interviewId) {
+    public ResponseEntity<ApiResponse<PresignedUrlResponse>> createPdfDownloadUrl(@PathVariable Long interviewId) {
         var body = interviewService.createPdfDownloadUrl(interviewId);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
