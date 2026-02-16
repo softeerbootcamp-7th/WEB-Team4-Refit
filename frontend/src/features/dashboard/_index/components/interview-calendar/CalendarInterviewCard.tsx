@@ -1,11 +1,11 @@
-import { useRef, useState } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
+import { useEffect, useRef, useState } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createPortal } from 'react-dom'
 import {
+  deleteInterview as deleteInterviewApi,
   getGetDashboardCalendarInterviewsQueryKey,
   getGetDebriefIncompletedInterviewsQueryKey,
   getGetUpcomingInterviewsQueryKey,
-  useDeleteInterview,
 } from '@/apis'
 import type { InterviewDto } from '@/apis'
 import { INTERVIEW_REVIEW_STATUS_LABEL } from '@/constants/interviewReviewStatus'
@@ -31,6 +31,7 @@ export function CalendarInterviewCard({ interview, onItemClick }: CalendarInterv
   const queryClient = useQueryClient()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false)
+  const deleteAbortControllerRef = useRef<AbortController | null>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const menuRef = useRef<HTMLDivElement>(null)
   const { menuPosition, setMenuPosition } = useMenuPosition({
@@ -38,16 +39,29 @@ export function CalendarInterviewCard({ interview, onItemClick }: CalendarInterv
     triggerRef,
     menuRef,
   })
-  const { mutate: deleteInterview, isPending: isDeletingInterview } = useDeleteInterview({
-    mutation: {
-      onSuccess: () => {
-        setIsDeleteConfirmOpen(false)
-        void queryClient.invalidateQueries({ queryKey: getGetDashboardCalendarInterviewsQueryKey() })
-        void queryClient.invalidateQueries({ queryKey: getGetDebriefIncompletedInterviewsQueryKey() })
-        void queryClient.invalidateQueries({ queryKey: getGetUpcomingInterviewsQueryKey() })
-      },
+  const cancelDeleteRequest = () => {
+    deleteAbortControllerRef.current?.abort()
+    deleteAbortControllerRef.current = null
+  }
+  const { mutate: deleteInterview, isPending: isDeletingInterview } = useMutation({
+    mutationFn: ({ interviewId, signal }: { interviewId: number; signal: AbortSignal }) =>
+      deleteInterviewApi(interviewId, { signal }),
+    onSuccess: () => {
+      setIsDeleteConfirmOpen(false)
+      void queryClient.invalidateQueries({ queryKey: getGetDashboardCalendarInterviewsQueryKey() })
+      void queryClient.invalidateQueries({ queryKey: getGetDebriefIncompletedInterviewsQueryKey() })
+      void queryClient.invalidateQueries({ queryKey: getGetUpcomingInterviewsQueryKey() })
+    },
+    onSettled: () => {
+      deleteAbortControllerRef.current = null
     },
   })
+
+  useEffect(() => {
+    return () => {
+      cancelDeleteRequest()
+    }
+  }, [])
 
   useOnClickOutside(
     menuRef,
@@ -129,12 +143,16 @@ export function CalendarInterviewCard({ interview, onItemClick }: CalendarInterv
       <ConfirmModal
         open={isDeleteConfirmOpen}
         onClose={() => {
-          if (isDeletingInterview) return
+          if (isDeletingInterview) {
+            cancelDeleteRequest()
+          }
           setIsDeleteConfirmOpen(false)
         }}
         onOk={() => {
           if (isDeletingInterview) return
-          deleteInterview({ interviewId: interview.interviewId })
+          const controller = new AbortController()
+          deleteAbortControllerRef.current = controller
+          deleteInterview({ interviewId: interview.interviewId, signal: controller.signal })
         }}
         title="면접을 삭제하시겠어요?"
         description="삭제 후에는 되돌릴 수 없어요."
