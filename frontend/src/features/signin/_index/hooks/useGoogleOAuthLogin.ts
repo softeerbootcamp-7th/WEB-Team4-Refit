@@ -10,7 +10,7 @@ import {
 const POPUP_NAME = 'google-oauth-login'
 const POPUP_WIDTH = 500
 const POPUP_HEIGHT = 600
-const SIGNUP_OPTIONS_STALE_TIME = 5 * 60 * 1000
+const SIGNUP_OPTIONS_STALE_TIME = 60 * 60 * 1000
 
 type UseGoogleOAuthLoginOptions = {
   redirectTo: { signUp: string; success: string }

@@ -4,7 +4,7 @@ import { useGetAllJobCategories, useGetIndustries, useSignUp } from '@/apis'
 import { markAuthenticated } from '@/routes/middleware/auth-session'
 
 type SignupLocationState = { nickname?: string; profileImageUrl?: string } | null
-const SIGNUP_OPTIONS_STALE_TIME = 5 * 60 * 1000
+const SIGNUP_OPTIONS_STALE_TIME = 60 * 60 * 1000
 
 type UseSignupFormOptions = {
   redirectTo: string

@@ -3,7 +3,7 @@ import { useGetAllJobCategories, useGetIndustries } from '@/apis'
 import { SearchableCombobox } from '@/designs/components'
 import Button from '@/designs/components/button'
 
-const FORM_OPTIONS_STALE_TIME = 5 * 60 * 1000
+const FORM_OPTIONS_STALE_TIME = 60 * 60 * 1000
 
 const COMPANY_OPTIONS: { value: string; label: string }[] = [
   { value: '카카오', label: '카카오' },
