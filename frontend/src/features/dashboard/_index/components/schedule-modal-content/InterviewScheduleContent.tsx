@@ -61,8 +61,9 @@ export function InterviewScheduleContent({ values, onChange, onPrev, onNext, isS
                 <button
                   key={option.value}
                   type="button"
+                  disabled={isSubmitting}
                   onClick={() => onChange({ ...values, interviewType: option.value })}
-                  className={`body-l-medium cursor-pointer rounded-[10px] p-4 transition-colors ${
+                  className={`body-l-medium rounded-[10px] p-4 transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
                     isSelected ? 'bg-orange-500 text-white' : 'border-gray-150 border bg-white text-gray-600'
                   }`}
                 >
@@ -78,12 +79,14 @@ export function InterviewScheduleContent({ values, onChange, onPrev, onNext, isS
             <input
               type="date"
               value={displayDate}
+              disabled={isSubmitting}
               onChange={(e) => onChange({ ...values, interviewDate: e.target.value })}
               className={inputBaseClass}
             />
             <input
               type="time"
               value={displayTime}
+              disabled={isSubmitting}
               onChange={(e) => onChange({ ...values, interviewTime: e.target.value })}
               className={inputBaseClass}
             />
@@ -91,7 +94,7 @@ export function InterviewScheduleContent({ values, onChange, onPrev, onNext, isS
         </div>
       </div>
       <div className="mt-8 flex gap-3">
-        <Button type="button" variant="fill-gray-150" size="md" className="flex-1" onClick={onPrev}>
+        <Button type="button" variant="fill-gray-150" size="md" className="flex-1" onClick={onPrev} disabled={isSubmitting}>
           이전
         </Button>
         <Button
