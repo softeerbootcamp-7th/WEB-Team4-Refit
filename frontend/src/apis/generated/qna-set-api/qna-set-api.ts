@@ -39,7 +39,7 @@ import type {
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
 
 /**
- * 질문 답변 내용 수정은 '기록중' 상태에서만 가능합니다.
+ * 질문 답변 내용 수정은 질답 세트 검토 중 상태에서만 가능합니다.
  * @summary 지정한 질문 답변 세트의 질문 답변 내용을 수정합니다.
  */
 export const getUpdateQnaSetUrl = (qnaSetId: number) => {
@@ -119,7 +119,7 @@ export const useUpdateQnaSet = <TError = unknown, TContext = unknown>(
   return useMutation(getUpdateQnaSetMutationOptions(options), queryClient)
 }
 /**
- * 질문 답변 세트 삭제는 'QnaSetDraft' 상태에서만 가능합니다.
+ * 질문 답변 세트 삭제는 질답 세트 검토 중 상태에서만 가능합니다.
  * @summary 지정한 질문 답변 세트를 삭제합니다.
  */
 export const getDeleteQnaSetUrl = (qnaSetId: number) => {
@@ -363,6 +363,7 @@ export function useGetPdfHighlightingsSuspense<
 }
 
 /**
+ * PDF 하이라이팅 정보 등록/수정은 질답 세트 검토 중 상태에서만 가능합니다.
  * @summary 지정한 질문 답변 세트에 대해 PDF 하이라이팅 정보를 등록/수정합니다.
  */
 export const getUpdatePdfHighlightingUrl = (qnaSetId: number) => {

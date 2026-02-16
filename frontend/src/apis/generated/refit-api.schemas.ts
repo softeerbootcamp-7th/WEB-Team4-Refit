@@ -93,6 +93,21 @@ export interface UserSignUpRequest {
   jobCategoryId: number
 }
 
+export interface Embedding {
+  values?: number[]
+}
+
+export interface GeminiEmbeddingResponse {
+  embedding?: Embedding
+}
+
+export interface ApiResponseGeminiEmbeddingResponse {
+  isSuccess: boolean
+  code: string
+  message: string
+  result?: GeminiEmbeddingResponse
+}
+
 export interface ScrapFolderCreateRequest {
   /**
    * @minLength 0
@@ -773,6 +788,18 @@ export interface ApiResponseInterviewFullDto {
   result?: InterviewFullDto
 }
 
+export interface PdfUploadUrlResponse {
+  url: string
+  key: string
+}
+
+export interface ApiResponsePdfUploadUrlResponse {
+  isSuccess: boolean
+  code: string
+  message: string
+  result?: PdfUploadUrlResponse
+}
+
 export interface GuideQuestionResponse {
   guideQuestion: string
 }
@@ -782,6 +809,13 @@ export interface ApiResponseGuideQuestionResponse {
   code: string
   message: string
   result?: GuideQuestionResponse
+}
+
+export interface ApiResponseListInterviewSimpleDto {
+  isSuccess: boolean
+  code: string
+  message: string
+  result?: InterviewSimpleDto[]
 }
 
 export interface PageInterviewSimpleDto {

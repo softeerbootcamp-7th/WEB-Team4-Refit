@@ -7,51 +7,36 @@
 import { faker } from '@faker-js/faker'
 
 import { HttpResponse, http } from 'msw'
-import type { ApiResponseTestPublishTokenResponse, ApiResponseVoid } from '../refit-api.schemas'
+import type { ApiResponseGeminiEmbeddingResponse, ApiResponseVoid } from '../refit-api.schemas'
 import type { RequestHandlerOptions } from 'msw'
 
 
-export const getPublishTokenResponseMock = (
-  overrideResponse: Partial<ApiResponseTestPublishTokenResponse> = {},
-): ApiResponseTestPublishTokenResponse => ({
+export const getGetGeminiEmbeddingResponseMock = (
+  overrideResponse: Partial<ApiResponseGeminiEmbeddingResponse> = {},
+): ApiResponseGeminiEmbeddingResponse => ({
   isSuccess: faker.datatype.boolean(),
   code: faker.string.alpha({ length: { min: 10, max: 20 } }),
   message: faker.string.alpha({ length: { min: 10, max: 20 } }),
   result: faker.helpers.arrayElement([
     {
-      isNeedSignUp: faker.datatype.boolean(),
-      tokens: {
-        accessToken: faker.string.alpha({ length: { min: 10, max: 20 } }),
-        refreshToken: faker.string.alpha({ length: { min: 10, max: 20 } }),
-      },
+      embedding: faker.helpers.arrayElement([
+        {
+          values: faker.helpers.arrayElement([
+            Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() =>
+              faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
+            ),
+            undefined,
+          ]),
+        },
+        undefined,
+      ]),
     },
     undefined,
   ]),
   ...overrideResponse,
 })
 
-export const getPublishTokenByUserIdResponseMock = (
-  overrideResponse: Partial<ApiResponseTestPublishTokenResponse> = {},
-): ApiResponseTestPublishTokenResponse => ({
-  isSuccess: faker.datatype.boolean(),
-  code: faker.string.alpha({ length: { min: 10, max: 20 } }),
-  message: faker.string.alpha({ length: { min: 10, max: 20 } }),
-  result: faker.helpers.arrayElement([
-    {
-      isNeedSignUp: faker.datatype.boolean(),
-      tokens: {
-        accessToken: faker.string.alpha({ length: { min: 10, max: 20 } }),
-        refreshToken: faker.string.alpha({ length: { min: 10, max: 20 } }),
-      },
-    },
-    undefined,
-  ]),
-  ...overrideResponse,
-})
-
-export const getDeleteTokenCookiesResponseMock = (
-  overrideResponse: Partial<ApiResponseVoid> = {},
-): ApiResponseVoid => ({
+export const getDeleteUserByEmailResponseMock = (overrideResponse: Partial<ApiResponseVoid> = {}): ApiResponseVoid => ({
   isSuccess: faker.datatype.boolean(),
   code: faker.string.alpha({ length: { min: 10, max: 20 } }),
   message: faker.string.alpha({ length: { min: 10, max: 20 } }),
@@ -59,16 +44,24 @@ export const getDeleteTokenCookiesResponseMock = (
   ...overrideResponse,
 })
 
-export const getPublishTokenMockHandler = (
+export const getDeleteUserByIdResponseMock = (overrideResponse: Partial<ApiResponseVoid> = {}): ApiResponseVoid => ({
+  isSuccess: faker.datatype.boolean(),
+  code: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  message: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  result: faker.helpers.arrayElement([{}, undefined]),
+  ...overrideResponse,
+})
+
+export const getGetGeminiEmbeddingMockHandler = (
   overrideResponse?:
-    | ApiResponseTestPublishTokenResponse
+    | ApiResponseGeminiEmbeddingResponse
     | ((
-        info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Promise<ApiResponseTestPublishTokenResponse> | ApiResponseTestPublishTokenResponse),
+        info: Parameters<Parameters<typeof http.post>[1]>[0],
+      ) => Promise<ApiResponseGeminiEmbeddingResponse> | ApiResponseGeminiEmbeddingResponse),
   options?: RequestHandlerOptions,
 ) => {
-  return http.get(
-    '*/test/auth/token',
+  return http.post(
+    '*/test/user/test-embedding',
     async (info) => {
       return new HttpResponse(
         JSON.stringify(
@@ -76,7 +69,7 @@ export const getPublishTokenMockHandler = (
             ? typeof overrideResponse === 'function'
               ? await overrideResponse(info)
               : overrideResponse
-            : getPublishTokenResponseMock(),
+            : getGetGeminiEmbeddingResponseMock(),
         ),
         { status: 200, headers: { 'Content-Type': 'application/json' } },
       )
@@ -85,40 +78,14 @@ export const getPublishTokenMockHandler = (
   )
 }
 
-export const getPublishTokenByUserIdMockHandler = (
-  overrideResponse?:
-    | ApiResponseTestPublishTokenResponse
-    | ((
-        info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Promise<ApiResponseTestPublishTokenResponse> | ApiResponseTestPublishTokenResponse),
-  options?: RequestHandlerOptions,
-) => {
-  return http.get(
-    '*/test/auth/token/:userId',
-    async (info) => {
-      return new HttpResponse(
-        JSON.stringify(
-          overrideResponse !== undefined
-            ? typeof overrideResponse === 'function'
-              ? await overrideResponse(info)
-              : overrideResponse
-            : getPublishTokenByUserIdResponseMock(),
-        ),
-        { status: 200, headers: { 'Content-Type': 'application/json' } },
-      )
-    },
-    options,
-  )
-}
-
-export const getDeleteTokenCookiesMockHandler = (
+export const getDeleteUserByEmailMockHandler = (
   overrideResponse?:
     | ApiResponseVoid
     | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<ApiResponseVoid> | ApiResponseVoid),
   options?: RequestHandlerOptions,
 ) => {
   return http.delete(
-    '*/test/auth/cookies',
+    '*/test/user',
     async (info) => {
       return new HttpResponse(
         JSON.stringify(
@@ -126,7 +93,7 @@ export const getDeleteTokenCookiesMockHandler = (
             ? typeof overrideResponse === 'function'
               ? await overrideResponse(info)
               : overrideResponse
-            : getDeleteTokenCookiesResponseMock(),
+            : getDeleteUserByEmailResponseMock(),
         ),
         { status: 200, headers: { 'Content-Type': 'application/json' } },
       )
@@ -134,8 +101,32 @@ export const getDeleteTokenCookiesMockHandler = (
     options,
   )
 }
-export const getTestAuthUserApiMock = () => [
-  getPublishTokenMockHandler(),
-  getPublishTokenByUserIdMockHandler(),
-  getDeleteTokenCookiesMockHandler(),
+
+export const getDeleteUserByIdMockHandler = (
+  overrideResponse?:
+    | ApiResponseVoid
+    | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<ApiResponseVoid> | ApiResponseVoid),
+  options?: RequestHandlerOptions,
+) => {
+  return http.delete(
+    '*/test/user/:userId',
+    async (info) => {
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === 'function'
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getDeleteUserByIdResponseMock(),
+        ),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      )
+    },
+    options,
+  )
+}
+export const getTestApiMock = () => [
+  getGetGeminiEmbeddingMockHandler(),
+  getDeleteUserByEmailMockHandler(),
+  getDeleteUserByIdMockHandler(),
 ]

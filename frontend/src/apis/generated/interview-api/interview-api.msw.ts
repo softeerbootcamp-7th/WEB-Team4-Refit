@@ -11,6 +11,7 @@ import type {
   ApiResponseGuideQuestionResponse,
   ApiResponseInterviewDto,
   ApiResponseInterviewFullDto,
+  ApiResponsePdfUploadUrlResponse,
   ApiResponseQnaSetCreateResponse,
   ApiResponseVoid,
 } from '../refit-api.schemas'
@@ -43,6 +44,34 @@ export const getCreateInterviewResponseMock = (overrideResponse: Partial<ApiResp
   ...overrideResponse,
 })
 
+export const getStartLoggingResponseMock = (overrideResponse: Partial<ApiResponseVoid> = {}): ApiResponseVoid => ({
+  isSuccess: faker.datatype.boolean(),
+  code: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  message: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  result: faker.helpers.arrayElement([{}, undefined]),
+  ...overrideResponse,
+})
+
+export const getCompleteSelfReviewResponseMock = (
+  overrideResponse: Partial<ApiResponseVoid> = {},
+): ApiResponseVoid => ({
+  isSuccess: faker.datatype.boolean(),
+  code: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  message: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  result: faker.helpers.arrayElement([{}, undefined]),
+  ...overrideResponse,
+})
+
+export const getConvertRawTextToQnaSetResponseMock = (
+  overrideResponse: Partial<ApiResponseVoid> = {},
+): ApiResponseVoid => ({
+  isSuccess: faker.datatype.boolean(),
+  code: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  message: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  result: faker.helpers.arrayElement([{}, undefined]),
+  ...overrideResponse,
+})
+
 export const getCreateQnaSetResponseMock = (
   overrideResponse: Partial<ApiResponseQnaSetCreateResponse> = {},
 ): ApiResponseQnaSetCreateResponse => ({
@@ -50,6 +79,16 @@ export const getCreateQnaSetResponseMock = (
   code: faker.string.alpha({ length: { min: 10, max: 20 } }),
   message: faker.string.alpha({ length: { min: 10, max: 20 } }),
   result: faker.helpers.arrayElement([{ qnaSetId: faker.number.int({ min: undefined, max: undefined }) }, undefined]),
+  ...overrideResponse,
+})
+
+export const getCompleteQnaSetDraftResponseMock = (
+  overrideResponse: Partial<ApiResponseVoid> = {},
+): ApiResponseVoid => ({
+  isSuccess: faker.datatype.boolean(),
+  code: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  message: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  result: faker.helpers.arrayElement([{}, undefined]),
   ...overrideResponse,
 })
 
@@ -172,6 +211,22 @@ export const getGetInterviewFullResponseMock = (
   ...overrideResponse,
 })
 
+export const getCreateUploadUrlResponseMock = (
+  overrideResponse: Partial<ApiResponsePdfUploadUrlResponse> = {},
+): ApiResponsePdfUploadUrlResponse => ({
+  isSuccess: faker.datatype.boolean(),
+  code: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  message: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  result: faker.helpers.arrayElement([
+    {
+      url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+      key: faker.string.alpha({ length: { min: 10, max: 20 } }),
+    },
+    undefined,
+  ]),
+  ...overrideResponse,
+})
+
 export const getGetGuideQuestionResponseMock = (
   overrideResponse: Partial<ApiResponseGuideQuestionResponse> = {},
 ): ApiResponseGuideQuestionResponse => ({
@@ -257,6 +312,78 @@ export const getCreateInterviewMockHandler = (
   )
 }
 
+export const getStartLoggingMockHandler = (
+  overrideResponse?:
+    | ApiResponseVoid
+    | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<ApiResponseVoid> | ApiResponseVoid),
+  options?: RequestHandlerOptions,
+) => {
+  return http.post(
+    '*/interview/:interviewId/start-logging',
+    async (info) => {
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === 'function'
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getStartLoggingResponseMock(),
+        ),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      )
+    },
+    options,
+  )
+}
+
+export const getCompleteSelfReviewMockHandler = (
+  overrideResponse?:
+    | ApiResponseVoid
+    | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<ApiResponseVoid> | ApiResponseVoid),
+  options?: RequestHandlerOptions,
+) => {
+  return http.post(
+    '*/interview/:interviewId/self-review/complete',
+    async (info) => {
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === 'function'
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getCompleteSelfReviewResponseMock(),
+        ),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      )
+    },
+    options,
+  )
+}
+
+export const getConvertRawTextToQnaSetMockHandler = (
+  overrideResponse?:
+    | ApiResponseVoid
+    | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<ApiResponseVoid> | ApiResponseVoid),
+  options?: RequestHandlerOptions,
+) => {
+  return http.post(
+    '*/interview/:interviewId/raw-text/convert',
+    async (info) => {
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === 'function'
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getConvertRawTextToQnaSetResponseMock(),
+        ),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      )
+    },
+    options,
+  )
+}
+
 export const getCreateQnaSetMockHandler = (
   overrideResponse?:
     | ApiResponseQnaSetCreateResponse
@@ -275,6 +402,30 @@ export const getCreateQnaSetMockHandler = (
               ? await overrideResponse(info)
               : overrideResponse
             : getCreateQnaSetResponseMock(),
+        ),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      )
+    },
+    options,
+  )
+}
+
+export const getCompleteQnaSetDraftMockHandler = (
+  overrideResponse?:
+    | ApiResponseVoid
+    | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<ApiResponseVoid> | ApiResponseVoid),
+  options?: RequestHandlerOptions,
+) => {
+  return http.post(
+    '*/interview/:interviewId/qna-set/complete',
+    async (info) => {
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === 'function'
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getCompleteQnaSetDraftResponseMock(),
         ),
         { status: 200, headers: { 'Content-Type': 'application/json' } },
       )
@@ -383,6 +534,32 @@ export const getGetInterviewFullMockHandler = (
   )
 }
 
+export const getCreateUploadUrlMockHandler = (
+  overrideResponse?:
+    | ApiResponsePdfUploadUrlResponse
+    | ((
+        info: Parameters<Parameters<typeof http.get>[1]>[0],
+      ) => Promise<ApiResponsePdfUploadUrlResponse> | ApiResponsePdfUploadUrlResponse),
+  options?: RequestHandlerOptions,
+) => {
+  return http.get(
+    '*/interview/:interviewId/pdf/upload-url',
+    async (info) => {
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === 'function'
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getCreateUploadUrlResponseMock(),
+        ),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      )
+    },
+    options,
+  )
+}
+
 export const getGetGuideQuestionMockHandler = (
   overrideResponse?:
     | ApiResponseGuideQuestionResponse
@@ -412,10 +589,15 @@ export const getInterviewApiMock = () => [
   getUpdateRawTextMockHandler(),
   getUpdateKptSelfReviewMockHandler(),
   getCreateInterviewMockHandler(),
+  getStartLoggingMockHandler(),
+  getCompleteSelfReviewMockHandler(),
+  getConvertRawTextToQnaSetMockHandler(),
   getCreateQnaSetMockHandler(),
+  getCompleteQnaSetDraftMockHandler(),
   getUpdateInterviewResultStatusMockHandler(),
   getGetInterviewMockHandler(),
   getDeleteInterviewMockHandler(),
   getGetInterviewFullMockHandler(),
+  getCreateUploadUrlMockHandler(),
   getGetGuideQuestionMockHandler(),
 ]
