@@ -12,7 +12,7 @@ export const EMPTY_FILTER: InterviewFilter = {
   resultStatus: [],
   startDate: '',
   endDate: '',
-  sort: 'date-latest',
+  sort: 'interviewStartAt,desc',
 }
 
 export const RESULT_THEME = {
@@ -34,6 +34,13 @@ export const RESULT_STATUS_ITEMS: LabelValueType[] = [
 ]
 
 export type InterviewResultStatus = 'PASS' | 'WAIT' | 'FAIL'
+
+export const INTERVIEW_SORT_OPTIONS = [
+  { label: '면접 일시 최신순', value: 'interviewStartAt,desc' },
+  { label: '면접 일시 오래된 순', value: 'interviewStartAt,asc' },
+  { label: '최신 업데이트순', value: 'updatedAt,desc' },
+  { label: '가나다순', value: 'companyName,asc' },
+] as const
 
 export const EMPTY_QUESTION_FILTER: QuestionFilter = {
   keyword: '',
@@ -59,6 +66,6 @@ export const STAR_LEVEL_OPTIONS: { label: string; value: StarLevel }[] = [
 ]
 
 export const DATA_EMPTY_MESSAGE = {
-  interviews: '아직 면접 기록이 없어요. 면접을 보고 결과를 등록해서 면접 기록을 모아보세요.',
+  interviews: '아직 면접 기록이 없어요. 면접을 등록하고 기록을 모아보세요.',
   questions: '아직 질문 데이터가 없어요. 면접 기록을 진행해서 질문과 답변을 모아보세요.',
 }
