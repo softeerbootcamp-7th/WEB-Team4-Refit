@@ -9,4 +9,4 @@ spring:
         port: "${QDRANT_PORT}"
         collection-name: "${QDRANT_COLLECTION_NAME}"
         distance: "${QDRANT_DISTANCE:Cosine}"
-        vector-size: "${QDRANT_VECTOR_SIZE}"
+        vector-size: ${QDRANT_VECTOR_SIZE}
