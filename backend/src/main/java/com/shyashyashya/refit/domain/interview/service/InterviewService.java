@@ -2,6 +2,9 @@ package com.shyashyashya.refit.domain.interview.service;
 
 import static com.shyashyashya.refit.global.exception.ErrorCode.INDUSTRY_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_FOUND;
+import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_PDF_ALREADY_EXITS;
+import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_PDF_NOT_FOUND;
+import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED;
 import static com.shyashyashya.refit.global.exception.ErrorCode.JOB_CATEGORY_NOT_FOUND;
 
 import com.shyashyashya.refit.domain.company.model.Company;
@@ -187,6 +190,10 @@ public class InterviewService {
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
+        if (interview.getPdfUrl() != null) {
+            throw new CustomException(INTERVIEW_PDF_ALREADY_EXITS);
+        }
+
         String extension = ".pdf";
         String key = s3Property.prefix() + UUID.randomUUID() + extension;
         interview.updatePdfUrl(key);
@@ -213,6 +220,10 @@ public class InterviewService {
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
+
+        if (interview.getPdfUrl() == null) {
+            throw new CustomException(INTERVIEW_PDF_NOT_FOUND);
+        }
 
         String key = interview.getPdfUrl();
         GetObjectRequest getObjectRequest =

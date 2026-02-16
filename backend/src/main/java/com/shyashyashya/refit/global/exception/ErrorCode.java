@@ -21,6 +21,8 @@ public enum ErrorCode {
     INTERVIEW_REVIEW_STATUS_NOT_UPDATABLE_TO_SELF_REVIEW_DRAFT(BAD_REQUEST, "인터뷰 상태가 질답세트검토중 상태일 때만 회고중으로 바뀔 수 있습니다"),
     INTERVIEW_REVIEW_STATUS_NOT_UPDATABLE_TO_DEBRIEF_COMPLETED(BAD_REQUEST, "인터뷰 상태가 회고중 상태일 때만 회고완료로 바뀔 수 있습니다"),
     INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED(BAD_REQUEST, "요청을 처리하는데 필요한 인터뷰 상태의 검증에 실패하였습니다."),
+    INTERVIEW_PDF_NOT_FOUND(NOT_FOUND, "인터뷰에 PDF 파일이 존재하지 않습니다."),
+    INTERVIEW_PDF_ALREADY_EXITS(BAD_REQUEST, "인터뷰에 PDF 파일이 이미 존재합니다. 파일을 삭제하고 업로드 URL을 요청해주세요."),
 
     QNA_SET_CATEGORY_NOT_FOUND(NOT_FOUND, "질문 카테고리가 존재하지 않습니다."),
 
