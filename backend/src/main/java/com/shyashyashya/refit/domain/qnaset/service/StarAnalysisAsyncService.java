@@ -67,23 +67,6 @@ public class StarAnalysisAsyncService {
                 });
     }
 
-    // TODO 메소드 삭제: Gemini Embedding 생성 테스트용 임시 메소드
-    public CompletableFuture<GeminiEmbeddingResponse> getTextEmbedding(String text) {
-
-        GeminiEmbeddingRequest requestBody = GeminiEmbeddingRequest.of(
-                text, GeminiEmbeddingRequest.TaskType.CLUSTERING, GeminiEmbeddingRequest.OutputDimensionality.D128);
-
-        CompletableFuture<GeminiEmbeddingResponse> reqFuture =
-                geminiClient.sendAsyncEmbeddingRequest(requestBody, STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC);
-
-        return reqFuture
-                .thenApplyAsync(response -> response, geminiPostProcessExecutor)
-                .exceptionally(e -> {
-                    log.error(e.getMessage(), e);
-                    throw new CustomException(TEXT_EMBEDDING_CREATE_FAILED);
-                });
-    }
-
     private StarAnalysisDto processSuccessRequest(
             Long starAnalysisId, Long qnaSetId, GeminiGenerateResponse geminiResponse) {
         log.info("Receive star analysis generate response from gemini. qnaSetId: {} \n{}", qnaSetId, geminiResponse);

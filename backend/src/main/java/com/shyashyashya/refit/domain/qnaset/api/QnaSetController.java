@@ -1,5 +1,7 @@
 package com.shyashyashya.refit.domain.qnaset.api;
 
+import static com.shyashyashya.refit.domain.qnaset.constant.StarAnalysisConstant.STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC;
+import static com.shyashyashya.refit.global.exception.ErrorCode.TEXT_EMBEDDING_CREATE_FAILED;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON204;
 
@@ -12,6 +14,8 @@ import com.shyashyashya.refit.domain.qnaset.dto.response.QnaSetScrapFolderRespon
 import com.shyashyashya.refit.domain.qnaset.service.QnaSetService;
 import com.shyashyashya.refit.domain.qnaset.service.StarAnalysisAsyncService;
 import com.shyashyashya.refit.global.dto.ApiResponse;
+import com.shyashyashya.refit.global.exception.CustomException;
+import com.shyashyashya.refit.global.gemini.GeminiEmbeddingRequest;
 import com.shyashyashya.refit.global.gemini.GeminiEmbeddingResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -131,8 +135,20 @@ public class QnaSetController {
     @PostMapping("/test-embedding")
     public CompletableFuture<ResponseEntity<ApiResponse<GeminiEmbeddingResponse>>> getGeminiEmbedding(
             @RequestBody @NotBlank String text) {
-        return starAnalysisAsyncService
-                .getTextEmbedding(text)
-                .thenApply(rsp -> ResponseEntity.ok(ApiResponse.success(COMMON200, rsp)));
+
+        GeminiEmbeddingRequest requestBody = GeminiEmbeddingRequest.of(
+                text, GeminiEmbeddingRequest.TaskType.CLUSTERING, GeminiEmbeddingRequest.OutputDimensionality.D128);
+
+        CompletableFuture<GeminiEmbeddingResponse> reqFuture =
+                geminiClient.sendAsyncEmbeddingRequest(requestBody, STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC);
+
+        CompletableFuture<GeminiEmbeddingResponse> result =  reqFuture
+                .thenApplyAsync(response -> response, geminiPostProcessExecutor)
+                .exceptionally(e -> {
+                    log.error(e.getMessage(), e);
+                    throw new CustomException(TEXT_EMBEDDING_CREATE_FAILED);
+                });
+
+        return result.thenApply(rsp -> ResponseEntity.ok(ApiResponse.success(COMMON200, rsp)));
     }
 }
