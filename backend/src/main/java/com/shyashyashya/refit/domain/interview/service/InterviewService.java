@@ -197,6 +197,20 @@ public class InterviewService {
     }
 
     @Transactional
+    public void convertRawTextToQnaSet(Long interviewId) {
+        User requestUser = requestUserContext.getRequestUser();
+
+        Interview interview =
+                interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
+        interviewValidator.validateInterviewOwner(interview, requestUser);
+        interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.LOG_DRAFT);
+
+        // TODO : 실제로는 서비스가 아닌 LLM 요청 성공에 따른 콜백으로 상태 변화 처리
+        // convert logic
+        interview.completeLogging();
+    }
+
+    @Transactional
     public void updateKptSelfReview(Long interviewId, KptSelfReviewUpdateRequest request) {
         User requestUser = requestUserContext.getRequestUser();
 
@@ -233,6 +247,42 @@ public class InterviewService {
                 QnaSet.create(request.questionText(), request.answerText(), false, interview, null));
 
         return QnaSetCreateResponse.from(createdQnaSet);
+    }
+
+    @Transactional
+    public void startLogging(Long interviewId) {
+        User requestUser = requestUserContext.getRequestUser();
+
+        Interview interview =
+                interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
+        interviewValidator.validateInterviewOwner(interview, requestUser);
+        interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.NOT_LOGGED);
+
+        interview.startLogging();
+    }
+
+    @Transactional
+    public void completeQnaSetDraft(Long interviewId) {
+        User requestUser = requestUserContext.getRequestUser();
+
+        Interview interview =
+                interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
+        interviewValidator.validateInterviewOwner(interview, requestUser);
+        interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.QNA_SET_DRAFT);
+
+        interview.completeQnaSetDraft();
+    }
+
+    @Transactional
+    public void completeSelfReview(Long interviewId) {
+        User requestUser = requestUserContext.getRequestUser();
+
+        Interview interview =
+                interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
+        interviewValidator.validateInterviewOwner(interview, requestUser);
+        interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.SELF_REVIEW_DRAFT);
+
+        interview.completeReview();
     }
 
     private Company findOrSaveCompany(InterviewCreateRequest request) {
