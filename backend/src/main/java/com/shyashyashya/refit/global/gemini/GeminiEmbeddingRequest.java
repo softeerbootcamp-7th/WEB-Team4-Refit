@@ -25,6 +25,15 @@ public record GeminiEmbeddingRequest(TaskType taskType, Content content, OutputD
             this.value = value;
         }
 
+        public static OutputDimensionality fromValue(int value) {
+            for (OutputDimensionality dimensionality : OutputDimensionality.values()) {
+                if (dimensionality.value == value) {
+                    return dimensionality;
+                }
+            }
+            throw new IllegalArgumentException("Invalid output dimensionality value: " + value);
+        }
+
         @JsonValue
         public int value() {
             return value;
