@@ -40,7 +40,7 @@ import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetSelfReviewRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.StarAnalysisRepository;
 import com.shyashyashya.refit.domain.user.model.User;
-import com.shyashyashya.refit.global.aws.S3;
+import com.shyashyashya.refit.global.aws.S3Util;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.util.RequestUserContext;
 import java.time.LocalDateTime;
@@ -73,7 +73,7 @@ public class InterviewService {
 
     private final InterviewValidator interviewValidator;
     private final RequestUserContext requestUserContext;
-    private final S3 s3;
+    private final S3Util s3;
 
     @Transactional(readOnly = true)
     public InterviewDto getInterview(Long interviewId) {

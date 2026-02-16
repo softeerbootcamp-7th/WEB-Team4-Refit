@@ -24,7 +24,7 @@ import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignReques
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class S3 {
+public class S3Util {
 
     private static final String PDF_EXTENSION = ".pdf";
 
