@@ -38,7 +38,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
 /**
  * @summary 대시보드에서 '내가 어렵게 느낀 질문'을 조회합니다.
  */
-export const getGetMyDifficultQnaSetsUrl = (params: GetMyDifficultQnaSetsParams) => {
+export const getGetMyDifficultQnaSetsUrl = (params?: GetMyDifficultQnaSetsParams) => {
   const normalizedParams = new URLSearchParams()
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -55,7 +55,7 @@ export const getGetMyDifficultQnaSetsUrl = (params: GetMyDifficultQnaSetsParams)
 }
 
 export const getMyDifficultQnaSets = async (
-  params: GetMyDifficultQnaSetsParams,
+  params?: GetMyDifficultQnaSetsParams,
   options?: RequestInit,
 ): Promise<ApiResponsePageDashboardMyDifficultQuestionResponse> => {
   return customFetch<ApiResponsePageDashboardMyDifficultQuestionResponse>(getGetMyDifficultQnaSetsUrl(params), {
@@ -72,7 +72,7 @@ export const getGetMyDifficultQnaSetsQueryOptions = <
   TData = Awaited<ReturnType<typeof getMyDifficultQnaSets>>,
   TError = unknown,
 >(
-  params: GetMyDifficultQnaSetsParams,
+  params?: GetMyDifficultQnaSetsParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -96,7 +96,7 @@ export type GetMyDifficultQnaSetsQueryResult = NonNullable<Awaited<ReturnType<ty
 export type GetMyDifficultQnaSetsQueryError = unknown
 
 export function useGetMyDifficultQnaSets<TData = Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError = unknown>(
-  params: GetMyDifficultQnaSetsParams,
+  params: undefined | GetMyDifficultQnaSetsParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError, TData>> &
       Pick<
@@ -112,7 +112,7 @@ export function useGetMyDifficultQnaSets<TData = Awaited<ReturnType<typeof getMy
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetMyDifficultQnaSets<TData = Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError = unknown>(
-  params: GetMyDifficultQnaSetsParams,
+  params?: GetMyDifficultQnaSetsParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError, TData>> &
       Pick<
@@ -128,7 +128,7 @@ export function useGetMyDifficultQnaSets<TData = Awaited<ReturnType<typeof getMy
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetMyDifficultQnaSets<TData = Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError = unknown>(
-  params: GetMyDifficultQnaSetsParams,
+  params?: GetMyDifficultQnaSetsParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -140,7 +140,7 @@ export function useGetMyDifficultQnaSets<TData = Awaited<ReturnType<typeof getMy
  */
 
 export function useGetMyDifficultQnaSets<TData = Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError = unknown>(
-  params: GetMyDifficultQnaSetsParams,
+  params?: GetMyDifficultQnaSetsParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -160,7 +160,7 @@ export const getGetMyDifficultQnaSetsSuspenseQueryOptions = <
   TData = Awaited<ReturnType<typeof getMyDifficultQnaSets>>,
   TError = unknown,
 >(
-  params: GetMyDifficultQnaSetsParams,
+  params?: GetMyDifficultQnaSetsParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -187,7 +187,7 @@ export function useGetMyDifficultQnaSetsSuspense<
   TData = Awaited<ReturnType<typeof getMyDifficultQnaSets>>,
   TError = unknown,
 >(
-  params: GetMyDifficultQnaSetsParams,
+  params: undefined | GetMyDifficultQnaSetsParams,
   options: {
     query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -198,7 +198,7 @@ export function useGetMyDifficultQnaSetsSuspense<
   TData = Awaited<ReturnType<typeof getMyDifficultQnaSets>>,
   TError = unknown,
 >(
-  params: GetMyDifficultQnaSetsParams,
+  params?: GetMyDifficultQnaSetsParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -209,7 +209,7 @@ export function useGetMyDifficultQnaSetsSuspense<
   TData = Awaited<ReturnType<typeof getMyDifficultQnaSets>>,
   TError = unknown,
 >(
-  params: GetMyDifficultQnaSetsParams,
+  params?: GetMyDifficultQnaSetsParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -224,7 +224,7 @@ export function useGetMyDifficultQnaSetsSuspense<
   TData = Awaited<ReturnType<typeof getMyDifficultQnaSets>>,
   TError = unknown,
 >(
-  params: GetMyDifficultQnaSetsParams,
+  params?: GetMyDifficultQnaSetsParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -246,7 +246,7 @@ export function useGetMyDifficultQnaSetsSuspense<
 
  * @summary 대시보드에서 '곧 있을 면접' 영역의 데이터를 조회합니다.
  */
-export const getGetUpcomingInterviewsUrl = (params: GetUpcomingInterviewsParams) => {
+export const getGetUpcomingInterviewsUrl = (params?: GetUpcomingInterviewsParams) => {
   const normalizedParams = new URLSearchParams()
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -263,7 +263,7 @@ export const getGetUpcomingInterviewsUrl = (params: GetUpcomingInterviewsParams)
 }
 
 export const getUpcomingInterviews = async (
-  params: GetUpcomingInterviewsParams,
+  params?: GetUpcomingInterviewsParams,
   options?: RequestInit,
 ): Promise<ApiResponsePageDashboardUpcomingInterviewResponse> => {
   return customFetch<ApiResponsePageDashboardUpcomingInterviewResponse>(getGetUpcomingInterviewsUrl(params), {
@@ -280,7 +280,7 @@ export const getGetUpcomingInterviewsQueryOptions = <
   TData = Awaited<ReturnType<typeof getUpcomingInterviews>>,
   TError = unknown,
 >(
-  params: GetUpcomingInterviewsParams,
+  params?: GetUpcomingInterviewsParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getUpcomingInterviews>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -304,7 +304,7 @@ export type GetUpcomingInterviewsQueryResult = NonNullable<Awaited<ReturnType<ty
 export type GetUpcomingInterviewsQueryError = unknown
 
 export function useGetUpcomingInterviews<TData = Awaited<ReturnType<typeof getUpcomingInterviews>>, TError = unknown>(
-  params: GetUpcomingInterviewsParams,
+  params: undefined | GetUpcomingInterviewsParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getUpcomingInterviews>>, TError, TData>> &
       Pick<
@@ -320,7 +320,7 @@ export function useGetUpcomingInterviews<TData = Awaited<ReturnType<typeof getUp
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetUpcomingInterviews<TData = Awaited<ReturnType<typeof getUpcomingInterviews>>, TError = unknown>(
-  params: GetUpcomingInterviewsParams,
+  params?: GetUpcomingInterviewsParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getUpcomingInterviews>>, TError, TData>> &
       Pick<
@@ -336,7 +336,7 @@ export function useGetUpcomingInterviews<TData = Awaited<ReturnType<typeof getUp
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetUpcomingInterviews<TData = Awaited<ReturnType<typeof getUpcomingInterviews>>, TError = unknown>(
-  params: GetUpcomingInterviewsParams,
+  params?: GetUpcomingInterviewsParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getUpcomingInterviews>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -348,7 +348,7 @@ export function useGetUpcomingInterviews<TData = Awaited<ReturnType<typeof getUp
  */
 
 export function useGetUpcomingInterviews<TData = Awaited<ReturnType<typeof getUpcomingInterviews>>, TError = unknown>(
-  params: GetUpcomingInterviewsParams,
+  params?: GetUpcomingInterviewsParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getUpcomingInterviews>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -368,7 +368,7 @@ export const getGetUpcomingInterviewsSuspenseQueryOptions = <
   TData = Awaited<ReturnType<typeof getUpcomingInterviews>>,
   TError = unknown,
 >(
-  params: GetUpcomingInterviewsParams,
+  params?: GetUpcomingInterviewsParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getUpcomingInterviews>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -395,7 +395,7 @@ export function useGetUpcomingInterviewsSuspense<
   TData = Awaited<ReturnType<typeof getUpcomingInterviews>>,
   TError = unknown,
 >(
-  params: GetUpcomingInterviewsParams,
+  params: undefined | GetUpcomingInterviewsParams,
   options: {
     query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getUpcomingInterviews>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -406,7 +406,7 @@ export function useGetUpcomingInterviewsSuspense<
   TData = Awaited<ReturnType<typeof getUpcomingInterviews>>,
   TError = unknown,
 >(
-  params: GetUpcomingInterviewsParams,
+  params?: GetUpcomingInterviewsParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getUpcomingInterviews>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -417,7 +417,7 @@ export function useGetUpcomingInterviewsSuspense<
   TData = Awaited<ReturnType<typeof getUpcomingInterviews>>,
   TError = unknown,
 >(
-  params: GetUpcomingInterviewsParams,
+  params?: GetUpcomingInterviewsParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getUpcomingInterviews>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -432,7 +432,7 @@ export function useGetUpcomingInterviewsSuspense<
   TData = Awaited<ReturnType<typeof getUpcomingInterviews>>,
   TError = unknown,
 >(
-  params: GetUpcomingInterviewsParams,
+  params?: GetUpcomingInterviewsParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getUpcomingInterviews>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -451,7 +451,7 @@ export function useGetUpcomingInterviewsSuspense<
 /**
  * @summary 대시보드에서 복기 대기중인 면접 리스트를 조회합니다.
  */
-export const getGetDebriefIncompletedInterviewsUrl = (params: GetDebriefIncompletedInterviewsParams) => {
+export const getGetDebriefIncompletedInterviewsUrl = (params?: GetDebriefIncompletedInterviewsParams) => {
   const normalizedParams = new URLSearchParams()
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -468,7 +468,7 @@ export const getGetDebriefIncompletedInterviewsUrl = (params: GetDebriefIncomple
 }
 
 export const getDebriefIncompletedInterviews = async (
-  params: GetDebriefIncompletedInterviewsParams,
+  params?: GetDebriefIncompletedInterviewsParams,
   options?: RequestInit,
 ): Promise<ApiResponsePageDashboardDebriefIncompletedInterviewResponse> => {
   return customFetch<ApiResponsePageDashboardDebriefIncompletedInterviewResponse>(
@@ -488,7 +488,7 @@ export const getGetDebriefIncompletedInterviewsQueryOptions = <
   TData = Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>,
   TError = unknown,
 >(
-  params: GetDebriefIncompletedInterviewsParams,
+  params?: GetDebriefIncompletedInterviewsParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -517,7 +517,7 @@ export function useGetDebriefIncompletedInterviews<
   TData = Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>,
   TError = unknown,
 >(
-  params: GetDebriefIncompletedInterviewsParams,
+  params: undefined | GetDebriefIncompletedInterviewsParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>, TError, TData>> &
       Pick<
@@ -536,7 +536,7 @@ export function useGetDebriefIncompletedInterviews<
   TData = Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>,
   TError = unknown,
 >(
-  params: GetDebriefIncompletedInterviewsParams,
+  params?: GetDebriefIncompletedInterviewsParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>, TError, TData>> &
       Pick<
@@ -555,7 +555,7 @@ export function useGetDebriefIncompletedInterviews<
   TData = Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>,
   TError = unknown,
 >(
-  params: GetDebriefIncompletedInterviewsParams,
+  params?: GetDebriefIncompletedInterviewsParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -570,7 +570,7 @@ export function useGetDebriefIncompletedInterviews<
   TData = Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>,
   TError = unknown,
 >(
-  params: GetDebriefIncompletedInterviewsParams,
+  params?: GetDebriefIncompletedInterviewsParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -590,7 +590,7 @@ export const getGetDebriefIncompletedInterviewsSuspenseQueryOptions = <
   TData = Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>,
   TError = unknown,
 >(
-  params: GetDebriefIncompletedInterviewsParams,
+  params?: GetDebriefIncompletedInterviewsParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -619,7 +619,7 @@ export function useGetDebriefIncompletedInterviewsSuspense<
   TData = Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>,
   TError = unknown,
 >(
-  params: GetDebriefIncompletedInterviewsParams,
+  params: undefined | GetDebriefIncompletedInterviewsParams,
   options: {
     query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -630,7 +630,7 @@ export function useGetDebriefIncompletedInterviewsSuspense<
   TData = Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>,
   TError = unknown,
 >(
-  params: GetDebriefIncompletedInterviewsParams,
+  params?: GetDebriefIncompletedInterviewsParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -641,7 +641,7 @@ export function useGetDebriefIncompletedInterviewsSuspense<
   TData = Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>,
   TError = unknown,
 >(
-  params: GetDebriefIncompletedInterviewsParams,
+  params?: GetDebriefIncompletedInterviewsParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -656,7 +656,7 @@ export function useGetDebriefIncompletedInterviewsSuspense<
   TData = Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>,
   TError = unknown,
 >(
-  params: GetDebriefIncompletedInterviewsParams,
+  params?: GetDebriefIncompletedInterviewsParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getDebriefIncompletedInterviews>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
