@@ -1,4 +1,5 @@
 import type {
+  InterviewSearchRequest,
   QnaSetSearchRequest,
   QnaSearchFilterAInclusionLevelsItem,
   QnaSearchFilterRInclusionLevelsItem,
@@ -56,8 +57,8 @@ type InterviewFullType = {
 
 export type InterviewFilter = {
   keyword: string
-  interviewType: string[]
-  resultStatus: string[]
+  interviewType: NonNullable<InterviewSearchRequest['searchFilter']['interviewType']>
+  resultStatus: NonNullable<InterviewSearchRequest['searchFilter']['interviewResultStatus']>
   startDate: string
   endDate: string
   sort: string

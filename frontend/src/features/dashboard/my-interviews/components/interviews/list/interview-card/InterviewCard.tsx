@@ -27,7 +27,7 @@ export default function InterviewCard({
   children,
 }: InterviewCardProps) {
   return (
-    <div className="bg-gray-white flex cursor-pointer flex-col gap-2.5 rounded-2xl p-5 transition-colors hover:bg-gray-100">
+    <div className="bg-gray-white hover:bg-gray-150 flex cursor-pointer flex-col gap-2.5 rounded-2xl p-5 transition-colors">
       <div className="flex items-center gap-2">
         <Badge content={RESULT_LABEL[resultStatus]} type="question-label" theme={RESULT_THEME[resultStatus]} />
         <span className="body-m-medium text-gray-500">{date}</span>
