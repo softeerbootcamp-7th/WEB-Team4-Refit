@@ -174,4 +174,8 @@ public class Interview extends BaseEntity {
     public void updatePdfUrl(String pdfUrl) {
         this.pdfUrl = pdfUrl;
     }
+
+    public void deletePdfUrl() {
+        this.pdfUrl = null;
+    }
 }

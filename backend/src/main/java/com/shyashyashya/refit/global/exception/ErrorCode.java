@@ -23,6 +23,7 @@ public enum ErrorCode {
     INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED(BAD_REQUEST, "요청을 처리하는데 필요한 인터뷰 상태의 검증에 실패하였습니다."),
     INTERVIEW_PDF_NOT_FOUND(NOT_FOUND, "인터뷰에 PDF 파일이 존재하지 않습니다."),
     INTERVIEW_PDF_ALREADY_EXITS(BAD_REQUEST, "인터뷰에 PDF 파일이 이미 존재합니다. 파일을 삭제하고 업로드 URL을 요청해주세요."),
+    INTERVIEW_PDF_DELETE_FAILED(INTERNAL_SERVER_ERROR, "인터뷰 PDF 파일 삭제 중 오류가 발생했습니다."),
 
     QNA_SET_CATEGORY_NOT_FOUND(NOT_FOUND, "질문 카테고리가 존재하지 않습니다."),
 
