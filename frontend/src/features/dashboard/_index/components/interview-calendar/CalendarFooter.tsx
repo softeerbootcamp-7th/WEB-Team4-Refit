@@ -6,7 +6,7 @@ interface CalendarFooterProps {
   items: CalendarInterviewItem[]
   isLoading: boolean
   isError: boolean
-  onItemClick: (interviewId: number) => void
+  onItemClick: (interview: CalendarInterviewItem['interview']) => void
 }
 
 export function CalendarFooter({ selectedDate, items, isLoading, isError, onItemClick }: CalendarFooterProps) {
@@ -37,7 +37,7 @@ export function CalendarFooter({ selectedDate, items, isLoading, isError, onItem
   }
 
   return (
-    <ul className="flex max-h-52 flex-col gap-1.5 overflow-y-auto">
+    <ul data-calendar-footer-list="true" className="flex h-full min-h-0 flex-col gap-1.5 overflow-y-auto">
       {items.map(({ interview }) => (
         <CalendarInterviewCard key={interview.interviewId} interview={interview} onItemClick={onItemClick} />
       ))}
