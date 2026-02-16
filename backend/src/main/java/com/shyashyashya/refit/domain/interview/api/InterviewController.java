@@ -12,6 +12,7 @@ import com.shyashyashya.refit.domain.interview.dto.request.KptSelfReviewUpdateRe
 import com.shyashyashya.refit.domain.interview.dto.request.QnaSetCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.response.GuideQuestionResponse;
+import com.shyashyashya.refit.domain.interview.dto.response.InterviewCreateResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.PdfUploadUrlResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.QnaSetCreateResponse;
 import com.shyashyashya.refit.domain.interview.service.GuideQuestionService;
@@ -43,9 +44,9 @@ public class InterviewController {
 
     @Operation(summary = "면접 데이터를 생성합니다.")
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> createInterview(@Valid @RequestBody InterviewCreateRequest request) {
-        interviewService.createInterview(request);
-        var response = ApiResponse.success(COMMON201);
+    public ResponseEntity<ApiResponse<InterviewCreateResponse>> createInterview(@Valid @RequestBody InterviewCreateRequest request) {
+        var body = interviewService.createInterview(request);
+        var response = ApiResponse.success(COMMON201, body);
         return ResponseEntity.ok(response);
     }
 
