@@ -25,6 +25,7 @@ import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
 import com.shyashyashya.refit.global.auth.service.JwtEncoder;
+import com.shyashyashya.refit.global.config.TestQdrantConfig;
 import com.shyashyashya.refit.global.constant.AuthConstant;
 import com.shyashyashya.refit.global.util.HangulUtil;
 import io.restassured.RestAssured;
@@ -38,6 +39,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.sql.ResultSet;
@@ -50,6 +52,7 @@ import java.util.List;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = RANDOM_PORT)
+@Import(TestQdrantConfig.class)
 public abstract class IntegrationTest {
 
     protected static final LocalDateTime NOW = LocalDateTime.of(2026, 2, 16, 10, 0, 0);
