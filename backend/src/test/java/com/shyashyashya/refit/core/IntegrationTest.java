@@ -48,6 +48,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -57,6 +58,7 @@ import java.util.List;
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 public abstract class IntegrationTest {
 
+    protected static final LocalDateTime NOW = LocalDateTime.of(2026, 2, 16, 10, 0, 0);
     protected static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     @LocalServerPort
@@ -222,6 +224,16 @@ public abstract class IntegrationTest {
     protected Company createAndSaveCompany(String companyName) {
         Company company = Company.create(companyName, "logo.url", true);
         return companyRepository.save(company);
+    }
+
+    protected Industry createAndSaveIndustry(String industryName) {
+        Industry industry = Industry.create(industryName);
+        return industryRepository.save(industry);
+    }
+
+    protected JobCategory createAndSaveJobCategory(String jobCategoryName) {
+        JobCategory jobCategory = JobCategory.create(jobCategoryName);
+        return jobCategoryRepository.save(jobCategory);
     }
 
     protected QnaSet createAndSaveQnaSet(QnaSetCreateRequest request, Interview interview) {
