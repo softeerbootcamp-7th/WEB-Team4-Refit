@@ -1,4 +1,5 @@
 import { useGetDebriefIncompletedInterviews } from '@/apis/generated/dashboard-api/dashboard-api'
+import { REVIEW_WAITING_STATUS_LABEL } from '@/constants/interviewReviewStatus'
 import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
 import type { ReviewWaitingData } from '../components/review-waiting-interview/ReviewWaitingCard'
 
@@ -28,7 +29,8 @@ export const useReviewWaitingInterviews = () => {
     const interviewTypeKey = interview?.interviewType as keyof typeof INTERVIEW_TYPE_LABEL | undefined
     return {
       id: interview?.interviewId ?? 0,
-      status: '기록 전',
+      reviewStatus: interview?.interviewReviewStatus ?? 'NOT_LOGGED',
+      status: REVIEW_WAITING_STATUS_LABEL[interview?.interviewReviewStatus ?? 'NOT_LOGGED'],
       // passedDays가 0일 때 처리 (오늘 완료됨 등) 로직은 기획에 따라 다를 수 있음
       elapsedText: `면접 끝난지 ${item.passedDays ?? 0}일 지남`,
       companyName: interview?.companyName ?? '',

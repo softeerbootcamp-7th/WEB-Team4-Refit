@@ -121,7 +121,7 @@ const router = createBrowserRouter([
             path: ROUTES.RETRO,
             children: [
               {
-                path: getChildPath(ROUTES.RETRO_QUESTION, ROUTES.RETRO),
+                index: true,
                 Component: RetroQuestionPage,
               },
               {
