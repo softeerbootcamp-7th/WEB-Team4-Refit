@@ -119,7 +119,7 @@ public class InterviewController {
 
     @Operation(summary = "면접 PDF 파일 업로드를 위한 Pre-Signed URL을 요청합니다.")
     @GetMapping("/{interviewId}/pdf/upload-url")
-    public ResponseEntity<ApiResponse<PdfUploadUrlResponse>> getUploadUrl(@PathVariable Long interviewId) {
+    public ResponseEntity<ApiResponse<PdfUploadUrlResponse>> createUploadUrl(@PathVariable Long interviewId) {
         var body = interviewService.createPdfUploadUrl(interviewId);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
