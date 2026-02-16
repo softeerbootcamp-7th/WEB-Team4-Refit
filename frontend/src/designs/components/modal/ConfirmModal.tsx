@@ -44,8 +44,10 @@ const ConfirmModal = ({
     >
       <div className="flex flex-1 flex-col items-center justify-center gap-6">
         <div className="flex w-full flex-col items-center gap-3">
-          <span className="title-l-semibold">{title}</span>
-          <span className="title-s-medium text-gray-500">{description}</span>
+          {title && <span className="title-l-semibold text-center whitespace-pre-line">{title}</span>}
+          {description && (
+            <span className="title-s-medium text-center whitespace-pre-line text-gray-500">{description}</span>
+          )}
         </div>
         <div className="flex w-full flex-1 shrink-0 gap-3">
           {hasCancelButton && (
