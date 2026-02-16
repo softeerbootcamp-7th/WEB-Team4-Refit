@@ -140,6 +140,7 @@ export function CalendarInterviewCard({ interview, onItemClick }: CalendarInterv
         description="삭제 후에는 되돌릴 수 없어요."
         okText="삭제하기"
         okButtonVariant="fill-gray-800"
+        okButtonLoading={isDeletingInterview}
         hasCancelButton={true}
         cancelText="취소"
       />

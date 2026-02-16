@@ -8,6 +8,8 @@ export interface ConfirmModalBaseProps {
   description?: React.ReactNode
   okText: string
   okButtonVariant?: VariantType
+  okButtonDisabled?: boolean
+  okButtonLoading?: boolean
   onOk: () => void
   size?: 'sm' | 'md'
   className?: string
@@ -26,6 +28,8 @@ const ConfirmModal = ({
   description,
   okText,
   okButtonVariant,
+  okButtonDisabled,
+  okButtonLoading,
   onOk,
   hasCancelButton,
   cancelText,
@@ -53,7 +57,14 @@ const ConfirmModal = ({
               {cancelText}
             </Button>
           )}
-          <Button variant={okButtonVariant} size="md" onClick={onOk} className="flex-1 shrink-0">
+          <Button
+            variant={okButtonVariant}
+            size="md"
+            onClick={onOk}
+            disabled={okButtonDisabled}
+            isLoading={okButtonLoading}
+            className="flex-1 shrink-0"
+          >
             {okText}
           </Button>
         </div>
