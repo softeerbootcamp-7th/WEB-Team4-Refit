@@ -15,6 +15,7 @@ import type {
   GetFrequentQuestionsParams,
   GetScrapFoldersContainingQnaSetParams,
   PdfHighlightingUpdateRequest,
+  QnaSetReviewUpdateRequest,
   QnaSetUpdateRequest,
 } from '../refit-api.schemas'
 import type {
@@ -168,6 +169,86 @@ export const useDeleteQnaSet = <TError = unknown, TContext = unknown>(
   queryClient?: QueryClient,
 ): UseMutationResult<Awaited<ReturnType<typeof deleteQnaSet>>, TError, { qnaSetId: number }, TContext> => {
   return useMutation(getDeleteQnaSetMutationOptions(options), queryClient)
+}
+/**
+ * 질문 답변 내용 수정은 '회고중' 상태에서만 가능합니다.
+ * @summary 지정한 질문 답변 세트의 회고 내용을 수정합니다.
+ */
+export const getUpdateQnaSetSelfReviewUrl = (qnaSetId: number) => {
+  return `/qna-set/${qnaSetId}/self-review`
+}
+
+export const updateQnaSetSelfReview = async (
+  qnaSetId: number,
+  qnaSetReviewUpdateRequest: QnaSetReviewUpdateRequest,
+  options?: RequestInit,
+): Promise<ApiResponseVoid> => {
+  return customFetch<ApiResponseVoid>(getUpdateQnaSetSelfReviewUrl(qnaSetId), {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(qnaSetReviewUpdateRequest),
+  })
+}
+
+export const getUpdateQnaSetSelfReviewMutationOptions = <TError = unknown, TContext = unknown>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateQnaSetSelfReview>>,
+    TError,
+    { qnaSetId: number; data: QnaSetReviewUpdateRequest },
+    TContext
+  >
+  request?: SecondParameter<typeof customFetch>
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateQnaSetSelfReview>>,
+  TError,
+  { qnaSetId: number; data: QnaSetReviewUpdateRequest },
+  TContext
+> => {
+  const mutationKey = ['updateQnaSetSelfReview']
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateQnaSetSelfReview>>,
+    { qnaSetId: number; data: QnaSetReviewUpdateRequest }
+  > = (props) => {
+    const { qnaSetId, data } = props ?? {}
+
+    return updateQnaSetSelfReview(qnaSetId, data, requestOptions)
+  }
+
+  return { mutationFn, ...mutationOptions }
+}
+
+export type UpdateQnaSetSelfReviewMutationResult = NonNullable<Awaited<ReturnType<typeof updateQnaSetSelfReview>>>
+export type UpdateQnaSetSelfReviewMutationBody = QnaSetReviewUpdateRequest
+export type UpdateQnaSetSelfReviewMutationError = unknown
+
+/**
+ * @summary 지정한 질문 답변 세트의 회고 내용을 수정합니다.
+ */
+export const useUpdateQnaSetSelfReview = <TError = unknown, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateQnaSetSelfReview>>,
+      TError,
+      { qnaSetId: number; data: QnaSetReviewUpdateRequest },
+      TContext
+    >
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateQnaSetSelfReview>>,
+  TError,
+  { qnaSetId: number; data: QnaSetReviewUpdateRequest },
+  TContext
+> => {
+  return useMutation(getUpdateQnaSetSelfReviewMutationOptions(options), queryClient)
 }
 /**
  * @summary 지정한 질문 답변 세트에 대해 등록된 PDF 하이라이팅 정보를 조회합니다.
