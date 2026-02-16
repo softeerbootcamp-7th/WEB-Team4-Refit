@@ -86,8 +86,8 @@ public class QnaSetController {
     @DeleteMapping("/{qnaSetId}")
     public ResponseEntity<ApiResponse<Void>> deleteQnaSet(@PathVariable Long qnaSetId) {
         qnaSetService.deleteQnaSet(qnaSetId);
-        var resposne = ApiResponse.success(COMMON204);
-        return ResponseEntity.ok(resposne);
+        var response = ApiResponse.success(COMMON204);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(

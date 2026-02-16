@@ -137,6 +137,7 @@ public class QnaSetService {
         return qnaSetScrapFolderRepository.findAllScrapFoldersWithQnaSetContainingInfo(requestUser, qnaSet, pageable);
     }
 
+    // TODO: ID->Entity 변환기 별도로 분리 고려
     private QnaSet getValidatedQnaSet(Long qnaSetId) {
         QnaSet qnaSet = qnaSetRepository.findById(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
         User requestUser = requestUserContext.getRequestUser();

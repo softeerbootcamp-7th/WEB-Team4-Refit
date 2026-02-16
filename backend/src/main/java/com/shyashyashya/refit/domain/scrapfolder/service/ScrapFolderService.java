@@ -1,9 +1,14 @@
 package com.shyashyashya.refit.domain.scrapfolder.service;
 
+import static com.shyashyashya.refit.global.exception.ErrorCode.QNA_SET_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.SCRAP_FOLDER_NOT_FOUND;
 
+import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
+import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
+import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.scrapfolder.dto.response.ScrapFolderQnaSetResponse;
 import com.shyashyashya.refit.domain.scrapfolder.dto.response.ScrapFolderResponse;
+import com.shyashyashya.refit.domain.scrapfolder.model.QnaSetScrapFolder;
 import com.shyashyashya.refit.domain.scrapfolder.model.ScrapFolder;
 import com.shyashyashya.refit.domain.scrapfolder.repository.QnaSetScrapFolderRepository;
 import com.shyashyashya.refit.domain.scrapfolder.repository.ScrapFolderRepository;
@@ -24,8 +29,10 @@ public class ScrapFolderService {
 
     private final ScrapFolderRepository scrapFolderRepository;
     private final QnaSetScrapFolderRepository qnaSetScrapFolderRepository;
+    private final QnaSetRepository qnaSetRepository;
     private final RequestUserContext requestUserContext;
     private final ScrapFolderValidator scrapFolderValidator;
+    private final InterviewValidator interviewValidator;
 
     @Transactional(readOnly = true)
     public Page<ScrapFolderResponse> getMyScrapFolders(Pageable pageable) {
@@ -82,5 +89,39 @@ public class ScrapFolderService {
 
         scrapFolderValidator.validateScrapFolderOwner(scrapFolder, user);
         scrapFolder.updateName(scrapFolderName);
+    }
+
+    @Transactional
+    public void addQnaSetToScrapFolder(Long qnaSetId, Long scrapFolderId) {
+        ScrapFolder scrapFolder = scrapFolderRepository
+                .findById(scrapFolderId)
+                .orElseThrow(() -> new CustomException(SCRAP_FOLDER_NOT_FOUND));
+        QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
+        scrapFolderValidator.validateScrapFolderOwner(
+                scrapFolder, qnaSet.getInterview().getUser());
+
+        if (!qnaSetScrapFolderRepository.existsByQnaSetAndScrapFolder(qnaSet, scrapFolder)) {
+            qnaSetScrapFolderRepository.save(QnaSetScrapFolder.create(qnaSet, scrapFolder));
+        }
+    }
+
+    @Transactional
+    public void removeQnaSetFromScrapFolder(Long qnaSetId, Long scrapFolderId) {
+        ScrapFolder scrapFolder = scrapFolderRepository
+                .findById(scrapFolderId)
+                .orElseThrow(() -> new CustomException(SCRAP_FOLDER_NOT_FOUND));
+        QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
+        scrapFolderValidator.validateScrapFolderOwner(
+                scrapFolder, qnaSet.getInterview().getUser());
+
+        qnaSetScrapFolderRepository.deleteByQnaSetAndScrapFolder(qnaSet, scrapFolder);
+    }
+
+    // TODO: ID->Entity 변환기 별도로 분리 고려
+    private QnaSet getValidatedQnaSet(Long qnaSetId) {
+        QnaSet qnaSet = qnaSetRepository.findById(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
+        User requestUser = requestUserContext.getRequestUser();
+        interviewValidator.validateInterviewOwner(qnaSet.getInterview(), requestUser);
+        return qnaSet;
     }
 }
