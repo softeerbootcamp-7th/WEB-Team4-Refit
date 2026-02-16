@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router'
 import type { InterviewDto } from '@/apis'
+import type { InterviewReviewStatusLabel } from '@/constants/interviewReviewStatus'
 import { getInterviewNavigationPath } from '@/constants/interviewReviewStatusRoutes'
 import { SmallLogoIcon } from '@/designs/assets'
 import { Badge } from '@/designs/components'
@@ -8,7 +9,7 @@ import Button from '@/designs/components/button'
 export interface ReviewWaitingData {
   id: number
   reviewStatus: InterviewDto['interviewReviewStatus']
-  status: '기록 전' | '기록 중'
+  status: InterviewReviewStatusLabel
   elapsedText: string
   companyName: string
   industry: string

@@ -8,24 +8,18 @@ import {
   useDeleteInterview,
 } from '@/apis'
 import type { InterviewDto } from '@/apis'
+import { INTERVIEW_REVIEW_STATUS_LABEL } from '@/constants/interviewReviewStatus'
 import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
 import { MoreIcon, SmallLogoIcon } from '@/designs/assets'
 import { Badge } from '@/designs/components'
 import ConfirmModal from '@/designs/components/modal/ConfirmModal'
+import { useOnClickOutside } from '@/features/_common/hooks/useOnClickOutside'
 import formatDateTime from '@/features/_common/utils/date'
 import { CalendarInterviewMenu } from './CalendarInterviewMenu'
 
 interface CalendarInterviewCardProps {
   interview: InterviewDto
   onItemClick: (interview: InterviewDto) => void
-}
-
-const INTERVIEW_REVIEW_STATUS_LABEL: Record<InterviewDto['interviewReviewStatus'], string> = {
-  NOT_LOGGED: '기록 전',
-  LOG_DRAFT: '기록 중',
-  QNA_SET_DRAFT: '기록 확인',
-  SELF_REVIEW_DRAFT: '회고 중',
-  DEBRIEF_COMPLETED: '회고 완료',
 }
 
 export function CalendarInterviewCard({ interview, onItemClick }: CalendarInterviewCardProps) {
@@ -65,25 +59,26 @@ export function CalendarInterviewCard({ interview, onItemClick }: CalendarInterv
     setMenuPosition({ top, left })
   }, [])
 
+  useOnClickOutside(
+    menuRef,
+    (event) => {
+      const target = event.target as Node
+      if (triggerRef.current?.contains(target)) return
+      setIsMenuOpen(false)
+    },
+    isMenuOpen,
+  )
+
   useEffect(() => {
     if (!isMenuOpen) return
 
-    const handleOutsideClick = (event: MouseEvent) => {
-      const target = event.target as Node
-      if (triggerRef.current?.contains(target)) return
-      if (menuRef.current?.contains(target)) return
-      setIsMenuOpen(false)
-    }
-
     const handleReposition = () => updateMenuPosition()
 
-    document.addEventListener('mousedown', handleOutsideClick)
     window.addEventListener('resize', handleReposition)
     window.addEventListener('scroll', handleReposition, true)
     updateMenuPosition()
 
     return () => {
-      document.removeEventListener('mousedown', handleOutsideClick)
       window.removeEventListener('resize', handleReposition)
       window.removeEventListener('scroll', handleReposition, true)
     }
