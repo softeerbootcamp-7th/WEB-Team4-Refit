@@ -8,6 +8,7 @@ type QnaSetEditFormProps = {
   initialAnswer?: string
   onSave: (question: string, answer: string) => void
   onCancel: () => void
+  isSaving?: boolean
   children?: React.ReactNode
 }
 
@@ -19,6 +20,7 @@ export function QnaSetEditForm({
   initialAnswer = '',
   onSave,
   onCancel,
+  isSaving = false,
   children,
 }: QnaSetEditFormProps) {
   const [question, setQuestion] = useState(initialQuestion)
@@ -31,10 +33,10 @@ export function QnaSetEditForm({
       <div className="flex flex-wrap items-center justify-between gap-2.5">
         <Badge type="question-label" theme={badgeTheme} content={questionLabel} />
         <div className="flex gap-2">
-          <Button size="xs" variant="outline-gray-100" onClick={onCancel}>
+          <Button size="xs" variant="outline-gray-100" onClick={onCancel} disabled={isSaving}>
             취소
           </Button>
-          <Button size="xs" variant="outline-orange-100" onClick={() => onSave(question, answer)}>
+          <Button size="xs" variant="outline-orange-100" onClick={() => onSave(question, answer)} isLoading={isSaving}>
             저장
           </Button>
         </div>
@@ -44,12 +46,14 @@ export function QnaSetEditForm({
         value={question}
         onChange={(e) => setQuestion(e.target.value)}
         placeholder="질문을 작성해주세요."
+        disabled={isSaving}
       />
       <textarea
         className="body-m-regular outline-gray-150 min-h-40 resize-none rounded-[10px] p-4 outline-1"
         value={answer}
         onChange={(e) => setAnswer(e.target.value)}
         placeholder="답변을 작성해주세요."
+        disabled={isSaving}
       />
       {children}
     </div>

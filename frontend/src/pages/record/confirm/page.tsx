@@ -21,13 +21,20 @@ function RecordConfirmContent() {
   const id = Number(interviewId)
   const { data } = useGetInterviewFullSuspense(id, { query: { select: transformInterviewData } })
 
-  const { qnaList, isAddMode, handleEdit, handleDelete, handleAddSave, startAddMode, cancelAddMode } = useQnaList(
-    data.qnaList,
-    { interviewId: id },
-  )
+  const {
+    isAddMode,
+    isCreating,
+    isDeleting,
+    actionError,
+    handleEdit,
+    handleDelete,
+    handleAddSave,
+    startAddMode,
+    cancelAddMode,
+  } = useQnaList({ interviewId: id })
   const sectionScroll = useSectionScroll({ idPrefix: 'record-confirm' })
 
-  const questionItems = qnaList.map(({ qnaSetId, questionText }, index) => ({
+  const questionItems = data.qnaList.map(({ qnaSetId, questionText }, index) => ({
     id: qnaSetId,
     label: `${index + 1}. ${questionText}`,
   }))
@@ -41,8 +48,11 @@ function RecordConfirmContent() {
         onItemClick={sectionScroll.handleItemClick}
       />
       <RecordSection
-        qnaList={qnaList}
+        qnaList={data.qnaList}
         isAddMode={isAddMode}
+        isCreating={isCreating}
+        isDeleting={isDeleting}
+        actionError={actionError}
         onEdit={handleEdit}
         onDelete={handleDelete}
         onAddSave={handleAddSave}
