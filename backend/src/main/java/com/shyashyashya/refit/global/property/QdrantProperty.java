@@ -16,6 +16,6 @@ public record QdrantProperty(
 
     public record CollectionProperty(
             @NotBlank String name,
-            @NotNull Integer vectorSize,
+            @NotNull Integer vectorDimension,
             @NotBlank String distance) {}
 }

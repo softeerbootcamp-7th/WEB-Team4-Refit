@@ -6,5 +6,5 @@ spring:
       collections:
         qna-set-question:
           name: "collection_name"
-          vector-size: 128
+          vector-dimension: 128
           distance: "Cosine"
