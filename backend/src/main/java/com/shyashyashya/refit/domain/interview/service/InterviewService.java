@@ -2,6 +2,8 @@ package com.shyashyashya.refit.domain.interview.service;
 
 import static com.shyashyashya.refit.global.exception.ErrorCode.INDUSTRY_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_FOUND;
+import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_PDF_ALREADY_EXITS;
+import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_PDF_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.JOB_CATEGORY_NOT_FOUND;
 
 import com.shyashyashya.refit.domain.company.model.Company;
@@ -11,7 +13,6 @@ import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
 import com.shyashyashya.refit.domain.interview.dto.InterviewDto;
 import com.shyashyashya.refit.domain.interview.dto.InterviewFullDto;
 import com.shyashyashya.refit.domain.interview.dto.InterviewSimpleDto;
-import com.shyashyashya.refit.domain.interview.dto.StarAnalysisDto;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewDraftType;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatusUpdateRequest;
@@ -19,6 +20,8 @@ import com.shyashyashya.refit.domain.interview.dto.request.InterviewSearchReques
 import com.shyashyashya.refit.domain.interview.dto.request.KptSelfReviewUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.QnaSetCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
+import com.shyashyashya.refit.domain.interview.dto.response.InterviewCreateResponse;
+import com.shyashyashya.refit.domain.interview.dto.response.PresignedUrlResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.QnaSetCreateResponse;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
@@ -28,6 +31,7 @@ import com.shyashyashya.refit.domain.interview.repository.InterviewSelfReviewRep
 import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
+import com.shyashyashya.refit.domain.qnaset.dto.StarAnalysisDto;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetSelfReview;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
@@ -35,9 +39,13 @@ import com.shyashyashya.refit.domain.qnaset.repository.QnaSetSelfReviewRepositor
 import com.shyashyashya.refit.domain.qnaset.repository.StarAnalysisRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
+import com.shyashyashya.refit.global.property.S3Property;
 import com.shyashyashya.refit.global.util.RequestUserContext;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +54,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -62,6 +77,8 @@ public class InterviewService {
 
     private final InterviewValidator interviewValidator;
     private final RequestUserContext requestUserContext;
+    private final S3Presigner s3Presigner;
+    private final S3Property s3Property;
 
     @Transactional(readOnly = true)
     public InterviewDto getInterview(Long interviewId) {
@@ -105,7 +122,7 @@ public class InterviewService {
     }
 
     @Transactional
-    public void createInterview(InterviewCreateRequest request) {
+    public InterviewCreateResponse createInterview(InterviewCreateRequest request) {
 
         User user = requestUserContext.getRequestUser();
 
@@ -122,7 +139,8 @@ public class InterviewService {
         Interview interview = Interview.create(
                 request.jobRole(), request.interviewType(), request.startAt(), user, company, industry, jobCategory);
 
-        interviewRepository.save(interview);
+        Long interviewId = interviewRepository.save(interview).getId();
+        return new InterviewCreateResponse(interviewId);
     }
 
     @Transactional
@@ -164,6 +182,62 @@ public class InterviewService {
                 .map(InterviewDto::from);
     }
 
+    @Transactional
+    public PresignedUrlResponse createPdfUploadUrl(Long interviewId) {
+        User requestUser = requestUserContext.getRequestUser();
+        Interview interview =
+                interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
+        interviewValidator.validateInterviewOwner(interview, requestUser);
+
+        if (interview.getPdfUrl() != null) {
+            throw new CustomException(INTERVIEW_PDF_ALREADY_EXITS);
+        }
+
+        String extension = ".pdf";
+        String key = s3Property.prefix() + UUID.randomUUID() + extension;
+        interview.updatePdfUrl(key);
+
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(s3Property.bucket())
+                .key(key)
+                .contentType("application/pdf")
+                .build();
+
+        PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
+                .signatureDuration(Duration.ofSeconds(s3Property.presignExpireSeconds()))
+                .putObjectRequest(putObjectRequest)
+                .build();
+
+        PresignedPutObjectRequest presigned = s3Presigner.presignPutObject(presignRequest);
+
+        return new PresignedUrlResponse(presigned.url().toString(), key, s3Property.presignExpireSeconds());
+    }
+
+    @Transactional(readOnly = true)
+    public PresignedUrlResponse createPdfDownloadUrl(Long interviewId) {
+        User requestUser = requestUserContext.getRequestUser();
+        Interview interview =
+                interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
+        interviewValidator.validateInterviewOwner(interview, requestUser);
+
+        if (interview.getPdfUrl() == null) {
+            throw new CustomException(INTERVIEW_PDF_NOT_FOUND);
+        }
+
+        String key = interview.getPdfUrl();
+        GetObjectRequest getObjectRequest =
+                GetObjectRequest.builder().bucket(s3Property.bucket()).key(key).build();
+
+        GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
+                .signatureDuration(Duration.ofSeconds(s3Property.presignExpireSeconds()))
+                .getObjectRequest(getObjectRequest)
+                .build();
+
+        PresignedGetObjectRequest presigned = s3Presigner.presignGetObject(presignRequest);
+
+        return new PresignedUrlResponse(presigned.url().toString(), key, s3Property.presignExpireSeconds());
+    }
+
     public Page<InterviewSimpleDto> getMyInterviewDrafts(InterviewDraftType draftType, Pageable pageable) {
         User requestUser = requestUserContext.getRequestUser();
 
@@ -193,6 +267,20 @@ public class InterviewService {
         interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.LOG_DRAFT);
 
         interview.updateRawText(request.rawText());
+    }
+
+    @Transactional
+    public void convertRawTextToQnaSet(Long interviewId) {
+        User requestUser = requestUserContext.getRequestUser();
+
+        Interview interview =
+                interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
+        interviewValidator.validateInterviewOwner(interview, requestUser);
+        interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.LOG_DRAFT);
+
+        // TODO : 실제로는 서비스가 아닌 LLM 요청 성공에 따른 콜백으로 상태 변화 처리
+        // convert logic
+        interview.completeLogging();
     }
 
     @Transactional
@@ -234,6 +322,42 @@ public class InterviewService {
         return QnaSetCreateResponse.from(createdQnaSet);
     }
 
+    @Transactional
+    public void startLogging(Long interviewId) {
+        User requestUser = requestUserContext.getRequestUser();
+
+        Interview interview =
+                interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
+        interviewValidator.validateInterviewOwner(interview, requestUser);
+        interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.NOT_LOGGED);
+
+        interview.startLogging();
+    }
+
+    @Transactional
+    public void completeQnaSetDraft(Long interviewId) {
+        User requestUser = requestUserContext.getRequestUser();
+
+        Interview interview =
+                interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
+        interviewValidator.validateInterviewOwner(interview, requestUser);
+        interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.QNA_SET_DRAFT);
+
+        interview.completeQnaSetDraft();
+    }
+
+    @Transactional
+    public void completeSelfReview(Long interviewId) {
+        User requestUser = requestUserContext.getRequestUser();
+
+        Interview interview =
+                interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
+        interviewValidator.validateInterviewOwner(interview, requestUser);
+        interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.SELF_REVIEW_DRAFT);
+
+        interview.completeReview();
+    }
+
     private Company findOrSaveCompany(InterviewCreateRequest request) {
         return companyRepository.findByName(request.companyName()).orElseGet(() -> {
             try {
@@ -248,5 +372,14 @@ public class InterviewService {
                                 () -> new IllegalStateException("Company not found after concurrent save attempt"));
             }
         });
+    }
+
+    public List<InterviewSimpleDto> getMyNotLoggedInterviews() {
+        User requestUser = requestUserContext.getRequestUser();
+
+        LocalDateTime now = LocalDateTime.now();
+        return interviewRepository.findInterviewsNotLoggedRecentOneMonth(requestUser, now).stream()
+                .map(InterviewSimpleDto::from)
+                .toList();
     }
 }

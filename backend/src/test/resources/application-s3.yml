@@ -1,0 +1,6 @@
+spring:
+  s3:
+    region: "dummy"
+    bucket: "dummy"
+    prefix: "dummy"
+    presign-expire-seconds: 0

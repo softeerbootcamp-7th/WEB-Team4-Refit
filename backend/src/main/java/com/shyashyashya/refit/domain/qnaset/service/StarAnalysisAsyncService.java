@@ -6,14 +6,15 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.STAR_ANALYSIS_PA
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.shyashyashya.refit.domain.interview.dto.StarAnalysisDto;
 import com.shyashyashya.refit.domain.qnaset.constant.StarAnalysisPromptGenerator;
+import com.shyashyashya.refit.domain.qnaset.dto.StarAnalysisDto;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.StarAnalysis;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.gemini.GeminiClient;
 import com.shyashyashya.refit.global.gemini.GeminiGenerateRequest;
 import com.shyashyashya.refit.global.gemini.GeminiGenerateResponse;
+import com.shyashyashya.refit.global.gemini.GenerateModel;
 import com.shyashyashya.refit.global.gemini.StarAnalysisGeminiResponse;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -43,7 +44,10 @@ public class StarAnalysisAsyncService {
 
         log.info("Send star analysis generate request to gemini. qnaSetId: {}", qnaSetId);
         CompletableFuture<GeminiGenerateResponse> reqFuture =
-                geminiClient.sendAsyncRequest(requestBody, STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC);
+                // geminiClient.sendAsyncRequest(requestBody, GenerateModel.GEMINI_2_5_FLASH_LITE,
+                // STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC);
+                geminiClient.sendAsyncTextGenerateRequest(
+                        requestBody, GenerateModel.GEMMA_3_27B_IT, STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC);
 
         return reqFuture
                 .thenApplyAsync(
@@ -72,6 +76,12 @@ public class StarAnalysisAsyncService {
 
     private StarAnalysisGeminiResponse parseStarAnalysisGeminiResponse(String text) {
         try {
+            if (text.startsWith("```json\n")) {
+                text = text.substring("```json\n".length());
+            }
+            if (text.endsWith("```")) {
+                text = text.substring(0, text.length() - "```".length());
+            }
             return objectMapper.readValue(text, StarAnalysisGeminiResponse.class);
         } catch (JsonProcessingException e) {
             throw new CustomException(STAR_ANALYSIS_PARSING_FAILED);

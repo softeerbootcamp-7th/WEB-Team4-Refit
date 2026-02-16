@@ -1,3 +1,3 @@
-export { default as FrequentQuestionsSection } from './FrequentQuestionsSection'
-export { default as QnaCard } from './QnaCard'
-export { default as QuestionListSection } from './QuestionListSection'
+export { default as FrequentQuestionsSection } from './frequent/FrequentQuestionsSection'
+export { default as QnaCard } from './list/qna-card/QnaCard'
+export { default as QuestionListSection } from './list/QuestionListSection'

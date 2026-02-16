@@ -19,9 +19,20 @@ import {
   getUpdatePdfHighlightingMockHandler,
   getUpdateQnaSetMockHandler,
 } from '@/apis/generated/qna-set-api/qna-set-api.msw'
+import {
+  getSearchMyQnaSetMockHandler,
+  getGetMyFrequentQnaSetCategoriesMockHandler,
+  getGetMyFrequentQnaSetCategoryQuestionsMockHandler,
+} from '@/apis/generated/qna-set-my-controller/qna-set-my-controller.msw'
+import type { QnaSetSearchRequest } from '@/apis/generated/refit-api.schemas'
 import { getCreateScrapFolderMockHandler } from '@/apis/generated/scrap-folder-api/scrap-folder-api.msw'
 import { debriefIncompletedMock } from '@/mocks/data/debrief-incompleted'
 import { mockInterviewFull } from '@/mocks/data/interview-full'
+import {
+  getMockFrequentCategoryQuestions,
+  getMockSearchMyQnaSet,
+  mockFrequentQuestionCategories,
+} from '@/mocks/data/my-frequent-questions'
 import { mockScrapFolders } from '@/mocks/data/scrap-folders'
 import { mockStarAnalysis } from '@/mocks/data/star-analysis'
 import { getMockFrequentQuestions } from '@/mocks/data/trend-questions'
@@ -41,6 +52,21 @@ export const worker = setupWorker(
     const size = Number(url.searchParams.get('size') ?? '100')
 
     return getMockFrequentQuestions({ industryIds, jobCategoryIds, page, size })
+  }),
+  getGetMyFrequentQnaSetCategoriesMockHandler(mockFrequentQuestionCategories),
+  getGetMyFrequentQnaSetCategoryQuestionsMockHandler((info) => {
+    const categoryId = Number(info.params.categoryId)
+    const url = new URL(info.request.url)
+    const page = Number(url.searchParams.get('page') ?? '0')
+    const size = Number(url.searchParams.get('size') ?? '9')
+    return getMockFrequentCategoryQuestions(categoryId, page, size)
+  }),
+  getSearchMyQnaSetMockHandler(async (info) => {
+    const url = new URL(info.request.url)
+    const page = Number(url.searchParams.get('page') ?? '0')
+    const size = Number(url.searchParams.get('size') ?? '9')
+    const request = (await info.request.json().catch(() => ({}))) as QnaSetSearchRequest
+    return getMockSearchMyQnaSet({ page, size, request })
   }),
   getGetMyDifficultQnaSetsMockHandler(),
   getGetUpcomingInterviewsMockHandler(),
