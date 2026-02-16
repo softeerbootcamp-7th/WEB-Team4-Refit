@@ -931,15 +931,24 @@ export type SignUpParams = {
 }
 
 export type GetMyScrapFoldersParams = {
-  pageable: Pageable
+  pageable?: Pageable
+  page?: number
+  size?: number
+  sort?: string[]
 }
 
 export type SearchMyQnaSetParams = {
-  pageable: Pageable
+  pageable?: Pageable
+  page?: number
+  size?: number
+  sort?: string[]
 }
 
 export type SearchInterviewsParams = {
-  pageable: Pageable
+  pageable?: Pageable
+  page?: number
+  size?: number
+  sort?: string[]
 }
 
 export type PublishTokenParams = {
@@ -952,30 +961,48 @@ export type PublishTokenByUserIdParams = {
 }
 
 export type GetQnaSetsInScrapFolderParams = {
-  pageable: Pageable
+  pageable?: Pageable
+  page?: number
+  size?: number
+  sort?: string[]
 }
 
 export type GetScrapFoldersContainingQnaSetParams = {
-  pageable: Pageable
+  pageable?: Pageable
+  page?: number
+  size?: number
+  sort?: string[]
 }
 
 export type GetMyFrequentQnaSetCategoriesParams = {
-  pageable: Pageable
+  pageable?: Pageable
+  page?: number
+  size?: number
+  sort?: string[]
 }
 
 export type GetMyFrequentQnaSetCategoryQuestionsParams = {
-  pageable: Pageable
+  pageable?: Pageable
+  page?: number
+  size?: number
+  sort?: string[]
 }
 
 export type GetFrequentQuestionsParams = {
   industryIds?: number[]
   jobCategoryIds?: number[]
-  pageable: Pageable
+  pageable?: Pageable
+  page?: number
+  size?: number
+  sort?: string[]
 }
 
 export type GetMyInterviewDraftsParams = {
   interviewReviewStatus: GetMyInterviewDraftsInterviewReviewStatus
-  pageable: Pageable
+  pageable?: Pageable
+  page?: number
+  size?: number
+  sort?: string[]
 }
 
 export type GetMyInterviewDraftsInterviewReviewStatus =
@@ -989,15 +1016,24 @@ export const GetMyInterviewDraftsInterviewReviewStatus = {
 } as const
 
 export type GetMyDifficultQnaSetsParams = {
-  pageable: Pageable
+  pageable?: Pageable
+  page?: number
+  size?: number
+  sort?: string[]
 }
 
 export type GetUpcomingInterviewsParams = {
-  pageable: Pageable
+  pageable?: Pageable
+  page?: number
+  size?: number
+  sort?: string[]
 }
 
 export type GetDebriefIncompletedInterviewsParams = {
-  pageable: Pageable
+  pageable?: Pageable
+  page?: number
+  size?: number
+  sort?: string[]
 }
 
 export type GetDashboardCalendarInterviewsParams = {
