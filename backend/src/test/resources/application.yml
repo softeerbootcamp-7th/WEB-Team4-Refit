@@ -5,5 +5,5 @@ spring:
     active: TEST
     include:
       - auth
-      - gemini
+      - ai
       - s3
