@@ -1,6 +1,7 @@
 package com.shyashyashya.refit.domain.qnaset.service;
 
 import static com.shyashyashya.refit.global.exception.ErrorCode.QNA_SET_NOT_FOUND;
+import static com.shyashyashya.refit.global.exception.ErrorCode.SCRAP_FOLDER_NOT_FOUND;
 
 import com.shyashyashya.refit.domain.industry.service.validator.IndustryValidator;
 import com.shyashyashya.refit.domain.interview.model.Interview;
@@ -20,7 +21,11 @@ import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRectReposi
 import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetSelfReviewRepository;
+import com.shyashyashya.refit.domain.scrapfolder.model.QnaSetScrapFolder;
+import com.shyashyashya.refit.domain.scrapfolder.model.ScrapFolder;
 import com.shyashyashya.refit.domain.scrapfolder.repository.QnaSetScrapFolderRepository;
+import com.shyashyashya.refit.domain.scrapfolder.repository.ScrapFolderRepository;
+import com.shyashyashya.refit.domain.scrapfolder.service.validator.ScrapFolderValidator;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.util.RequestUserContext;
@@ -43,11 +48,13 @@ public class QnaSetService {
     private final QnaSetSelfReviewRepository qnaSetSelfReviewRepository;
     private final PdfHighlightingRepository pdfHighlightingRepository;
     private final QnaSetScrapFolderRepository qnaSetScrapFolderRepository;
+    private final ScrapFolderRepository scrapFolderRepository;
     private final PdfHighlightingRectRepository pdfHighlightingRectRepository;
     private final RequestUserContext requestUserContext;
     private final InterviewValidator interviewValidator;
     private final IndustryValidator industryValidator;
     private final JobCategoryValidator jobCategoryValidator;
+    private final ScrapFolderValidator scrapFolderValidator;
 
     @Transactional(readOnly = true)
     public Page<FrequentQnaSetResponse> getFrequentQuestions(
@@ -135,6 +142,20 @@ public class QnaSetService {
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
         return qnaSetScrapFolderRepository.findAllScrapFoldersWithQnaSetContainingInfo(requestUser, qnaSet, pageable);
+    }
+
+    @Transactional
+    public void addQnaSetToScrapFolder(Long qnaSetId, Long scrapFolderId) {
+        ScrapFolder scrapFolder = scrapFolderRepository
+                .findById(scrapFolderId)
+                .orElseThrow(() -> new CustomException(SCRAP_FOLDER_NOT_FOUND));
+        QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
+        scrapFolderValidator.validateScrapFolderOwner(
+                scrapFolder, qnaSet.getInterview().getUser());
+
+        if (!qnaSetScrapFolderRepository.existsByQnaSetAndScrapFolder(qnaSet, scrapFolder)) {
+            qnaSetScrapFolderRepository.save(QnaSetScrapFolder.create(qnaSet, scrapFolder));
+        }
     }
 
     private QnaSet getValidatedQnaSet(Long qnaSetId) {
