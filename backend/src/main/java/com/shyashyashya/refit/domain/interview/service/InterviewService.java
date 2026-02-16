@@ -43,6 +43,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -176,7 +177,7 @@ public class InterviewService {
                 .map(InterviewDto::from);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public PdfUploadUrlResponse createPdfUploadUrl(Long interviewId) {
         User requestUser = requestUserContext.getRequestUser();
         Interview interview =
@@ -184,7 +185,8 @@ public class InterviewService {
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
         String extension = ".pdf";
-        String key = s3Property.prefix() + interviewId + extension;
+        String key = s3Property.prefix() + UUID.randomUUID() + extension;
+        interview.updatePdfUrl(key);
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(s3Property.bucket())
