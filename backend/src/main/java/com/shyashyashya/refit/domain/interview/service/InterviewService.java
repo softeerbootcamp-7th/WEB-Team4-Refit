@@ -73,7 +73,7 @@ public class InterviewService {
 
     private final InterviewValidator interviewValidator;
     private final RequestUserContext requestUserContext;
-    private final S3Util s3;
+    private final S3Util s3Util;
 
     @Transactional(readOnly = true)
     public InterviewDto getInterview(Long interviewId) {
@@ -188,7 +188,7 @@ public class InterviewService {
             throw new CustomException(INTERVIEW_PDF_ALREADY_EXITS);
         }
 
-        PresignedUrlResponse response = s3.createPdfUploadUrl();
+        PresignedUrlResponse response = s3Util.createPdfUploadUrl();
         interview.updatePdfUrl(response.key());
         return response;
     }
@@ -205,7 +205,7 @@ public class InterviewService {
         }
 
         String key = interview.getPdfUrl();
-        return s3.createPdfDownloadUrl(key);
+        return s3Util.createPdfDownloadUrl(key);
     }
 
     @Transactional
@@ -220,7 +220,7 @@ public class InterviewService {
             throw new CustomException(INTERVIEW_PDF_NOT_FOUND);
         }
 
-        s3.deleteFile(key);
+        s3Util.deleteFile(key);
         deleteAllPdfHighlighting(interview);
         interview.deletePdfUrl();
     }
