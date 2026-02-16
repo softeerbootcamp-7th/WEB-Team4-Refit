@@ -6,6 +6,7 @@ import static com.shyashyashya.refit.global.model.ResponseCode.COMMON204;
 import com.shyashyashya.refit.domain.qnaset.dto.PdfHighlightingDto;
 import com.shyashyashya.refit.domain.qnaset.dto.StarAnalysisDto;
 import com.shyashyashya.refit.domain.qnaset.dto.request.PdfHighlightingUpdateRequest;
+import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetReviewUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetResponse;
 import com.shyashyashya.refit.domain.qnaset.dto.response.QnaSetScrapFolderResponse;
@@ -43,7 +44,6 @@ public class QnaSetController {
     private final QnaSetService qnaSetService;
     private final StarAnalysisAsyncService starAnalysisAsyncService;
 
-    // TODO 통합 테스트 작성
     @Operation(
             summary = "지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다.",
             description = "지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다. 지정하지 않은 필드에 대해서는 전체를 대상으로 조회합니다.")
@@ -87,6 +87,15 @@ public class QnaSetController {
     public ResponseEntity<ApiResponse<Void>> deleteQnaSet(@PathVariable Long qnaSetId) {
         qnaSetService.deleteQnaSet(qnaSetId);
         var response = ApiResponse.success(COMMON204);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "지정한 질문 답변 세트의 회고 내용을 수정합니다.", description = "질문 답변 내용 수정은 '회고중' 상태에서만 가능합니다.")
+    @PutMapping("/{qnaSetId}/self-review")
+    public ResponseEntity<ApiResponse<Void>> updateQnaSetSelfReview(
+            @PathVariable Long qnaSetId, @Valid @RequestBody QnaSetReviewUpdateRequest request) {
+        qnaSetService.updateQnaSetSelfReview(qnaSetId, request);
+        var response = ApiResponse.success(COMMON200);
         return ResponseEntity.ok(response);
     }
 
