@@ -9,6 +9,7 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_FO
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
@@ -74,7 +75,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
                     .assertThat().statusCode(200)
                     .body("code", equalTo(COMMON201.name()))
                     .body("message", equalTo(COMMON201.getMessage()))
-                    .body("result", nullValue());
+                    .body("result", notNullValue());
         }
 
         @Test
@@ -92,7 +93,7 @@ public class InterviewIntegrationTest extends IntegrationTest {
                     .assertThat().statusCode(200)
                     .body("code", equalTo(COMMON201.name()))
                     .body("message", equalTo(COMMON201.getMessage()))
-                    .body("result", nullValue());
+                    .body("result", notNullValue());
         }
     }
 
