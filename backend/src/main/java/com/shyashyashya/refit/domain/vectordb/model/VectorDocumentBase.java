@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
 @SuperBuilder
-public abstract class VectorDocument<K> {
+public abstract class VectorDocumentBase<K> {
 
     @Getter
     private K id;

@@ -1,12 +1,12 @@
 package com.shyashyashya.refit.domain.vectordb.repository;
 
-import com.shyashyashya.refit.domain.vectordb.model.VectorDocument;
+import com.shyashyashya.refit.domain.vectordb.model.VectorDocumentBase;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public interface VectorRepository<K, V extends VectorDocument<K>> {
+public interface VectorRepository<K, V extends VectorDocumentBase<K>> {
 
     void save(V document);
 

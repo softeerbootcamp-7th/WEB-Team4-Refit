@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
 @SuperBuilder
-public class SingleVectorDocument<K> extends VectorDocument<K> {
+public class SingleVectorDocument<K> extends VectorDocumentBase<K> {
 
     @Getter
     private List<Float> vector;
