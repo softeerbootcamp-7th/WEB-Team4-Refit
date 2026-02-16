@@ -125,6 +125,13 @@ public class QnaSetService {
                 .toList();
     }
 
+    @Transactional
+    public void deletePdfHighlighting(Long qnaSetId) {
+        QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
+        interviewValidator.validateInterviewReviewStatus(qnaSet.getInterview(), InterviewReviewStatus.QNA_SET_DRAFT);
+        deleteAllHighlightingsAndRects(qnaSet);
+    }
+
     @Transactional(readOnly = true)
     public QnaSet getQnaSet(Long qnaSetId) {
         QnaSet qnaSet = qnaSetRepository.findById(qnaSetId).orElseThrow(() -> new CustomException(QNA_SET_NOT_FOUND));
