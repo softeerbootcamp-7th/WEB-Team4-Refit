@@ -3,7 +3,6 @@ package com.shyashyashya.refit.domain.qnaset.service;
 import static com.shyashyashya.refit.domain.qnaset.constant.StarAnalysisConstant.STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC;
 import static com.shyashyashya.refit.global.exception.ErrorCode.STAR_ANALYSIS_CREATE_FAILED;
 import static com.shyashyashya.refit.global.exception.ErrorCode.STAR_ANALYSIS_PARSING_FAILED;
-import static com.shyashyashya.refit.global.exception.ErrorCode.TEXT_EMBEDDING_CREATE_FAILED;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,8 +12,6 @@ import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.StarAnalysis;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.gemini.GeminiClient;
-import com.shyashyashya.refit.global.gemini.GeminiEmbeddingRequest;
-import com.shyashyashya.refit.global.gemini.GeminiEmbeddingResponse;
 import com.shyashyashya.refit.global.gemini.GeminiGenerateRequest;
 import com.shyashyashya.refit.global.gemini.GeminiGenerateResponse;
 import com.shyashyashya.refit.global.gemini.GenerateModel;

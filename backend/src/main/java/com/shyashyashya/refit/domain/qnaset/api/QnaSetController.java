@@ -1,7 +1,5 @@
 package com.shyashyashya.refit.domain.qnaset.api;
 
-import static com.shyashyashya.refit.domain.qnaset.constant.StarAnalysisConstant.STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC;
-import static com.shyashyashya.refit.global.exception.ErrorCode.TEXT_EMBEDDING_CREATE_FAILED;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON204;
 
@@ -14,13 +12,9 @@ import com.shyashyashya.refit.domain.qnaset.dto.response.QnaSetScrapFolderRespon
 import com.shyashyashya.refit.domain.qnaset.service.QnaSetService;
 import com.shyashyashya.refit.domain.qnaset.service.StarAnalysisAsyncService;
 import com.shyashyashya.refit.global.dto.ApiResponse;
-import com.shyashyashya.refit.global.exception.CustomException;
-import com.shyashyashya.refit.global.gemini.GeminiEmbeddingRequest;
-import com.shyashyashya.refit.global.gemini.GeminiEmbeddingResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;

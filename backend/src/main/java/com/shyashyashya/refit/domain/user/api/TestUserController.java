@@ -17,6 +17,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -28,9 +30,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 
 @Tag(name = "Test API", description = "개발용 테스트 API입니다.")
 @RestController
@@ -90,7 +89,7 @@ public class TestUserController {
         CompletableFuture<GeminiEmbeddingResponse> reqFuture =
                 geminiClient.sendAsyncEmbeddingRequest(requestBody, STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC);
 
-        CompletableFuture<GeminiEmbeddingResponse> result =  reqFuture
+        CompletableFuture<GeminiEmbeddingResponse> result = reqFuture
                 .thenApplyAsync(response -> response, geminiPostProcessExecutor)
                 .exceptionally(e -> {
                     log.error(e.getMessage(), e);
