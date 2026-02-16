@@ -50,7 +50,7 @@ public class DashboardIntegrationTest extends IntegrationTest {
         @Test
         void 일주일_내_예정된_면접이_있는_경우_PREPARE_INTERVIEW_타입을_반환한다() {
             // given
-            LocalDateTime upcomingDate = LocalDateTime.now().plusDays(3);
+            LocalDateTime upcomingDate = NOW.plusDays(3);
             var request = new InterviewCreateRequest(upcomingDate, InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer");
             createAndSaveInterview(request, InterviewReviewStatus.NOT_LOGGED);
 
@@ -69,11 +69,11 @@ public class DashboardIntegrationTest extends IntegrationTest {
         @EnumSource(value = InterviewReviewStatus.class, names = {"NOT_LOGGED", "LOG_DRAFT", "QNA_SET_DRAFT", "SELF_REVIEW_DRAFT"})
         void 일주일_내_예정된_면접이_있고_아직_복기하지_않은_면접도_있는_경우_PREPARE_INTERVIEW_타입을_반환한다(InterviewReviewStatus reviewStatus) {
             // given
-            LocalDateTime upcomingDate = LocalDateTime.now().plusDays(3);
+            LocalDateTime upcomingDate = NOW.plusDays(3);
             var upcomingRequest = new InterviewCreateRequest(upcomingDate, InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer");
             createAndSaveInterview(upcomingRequest, InterviewReviewStatus.NOT_LOGGED);
 
-            LocalDateTime pastDate = LocalDateTime.now().minusDays(3);
+            LocalDateTime pastDate = NOW.minusDays(3);
             var request = new InterviewCreateRequest(pastDate, InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer");
             createAndSaveInterview(request, reviewStatus);
 
@@ -92,7 +92,7 @@ public class DashboardIntegrationTest extends IntegrationTest {
         @EnumSource(value = InterviewReviewStatus.class, names = {"NOT_LOGGED", "LOG_DRAFT", "QNA_SET_DRAFT", "SELF_REVIEW_DRAFT"})
         void 복기를_완료하지_않은_면접이_있는_경우_REVIEW_INTERVIEW_타입을_반환한다(InterviewReviewStatus reviewStatus) {
             // given
-            LocalDateTime pastDate = LocalDateTime.now().minusDays(3);
+            LocalDateTime pastDate = NOW.minusDays(3);
             var request = new InterviewCreateRequest(pastDate, InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer");
             createAndSaveInterview(request, reviewStatus);
 
@@ -110,11 +110,11 @@ public class DashboardIntegrationTest extends IntegrationTest {
         @EnumSource(value = InterviewReviewStatus.class, names = {"NOT_LOGGED", "LOG_DRAFT", "QNA_SET_DRAFT", "SELF_REVIEW_DRAFT"})
         void 일주일_바깥에_예정된_면접이_있고_복기를_완료하지_않은_면접이_있는_경우_REVIEW_INTERVIEW_타입을_반환한다(InterviewReviewStatus reviewStatus) {
             // given
-            LocalDateTime futureDate = LocalDateTime.now().plusDays(10);
+            LocalDateTime futureDate = NOW.plusDays(10);
             var futureInterviewRequest = new InterviewCreateRequest(futureDate, InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer");
             createAndSaveInterview(futureInterviewRequest, InterviewReviewStatus.DEBRIEF_COMPLETED);
 
-            LocalDateTime pastDate = LocalDateTime.now().minusDays(3);
+            LocalDateTime pastDate = NOW.minusDays(3);
             var request = new InterviewCreateRequest(pastDate, InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer");
             createAndSaveInterview(request, reviewStatus);
 
@@ -131,7 +131,7 @@ public class DashboardIntegrationTest extends IntegrationTest {
         @Test
         void 예정된_면접이_없고_모든_면접을_복기_완료했다면_CHECK_INTERVIEW_HISTORY_타입을_반환한다() {
             // given
-            LocalDateTime pastDate = LocalDateTime.now().minusDays(10);
+            LocalDateTime pastDate = NOW.minusDays(10);
             var request = new InterviewCreateRequest(pastDate, InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer");
             createAndSaveInterview(request, InterviewReviewStatus.DEBRIEF_COMPLETED);
 
@@ -148,11 +148,11 @@ public class DashboardIntegrationTest extends IntegrationTest {
         @Test
         void 일주일_바깥에_예정된_면접이_있고_모든_면접을_복기_완료했다면_CHECK_INTERVIEW_HISTORY_타입을_반환한다() {
             // given
-            LocalDateTime futureDate = LocalDateTime.now().plusDays(10);
+            LocalDateTime futureDate = NOW.plusDays(10);
             var futureInterviewRequest = new InterviewCreateRequest(futureDate, InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer");
             createAndSaveInterview(futureInterviewRequest, InterviewReviewStatus.DEBRIEF_COMPLETED);
 
-            LocalDateTime pastDate = LocalDateTime.now().minusDays(10);
+            LocalDateTime pastDate = NOW.minusDays(10);
             var request = new InterviewCreateRequest(pastDate, InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer");
             createAndSaveInterview(request, InterviewReviewStatus.DEBRIEF_COMPLETED);
 
@@ -175,8 +175,7 @@ public class DashboardIntegrationTest extends IntegrationTest {
         @Test
         void 특정_월의_면접_일정을_조회한다() {
             // given
-            LocalDateTime now = LocalDateTime.now();
-            LocalDateTime startOfMonth = LocalDateTime.of(now.getYear(), now.getMonth(), 1, 10, 0);
+            LocalDateTime startOfMonth = LocalDateTime.of(NOW.getYear(), NOW.getMonth(), 1, 10, 0);
             LocalDateTime endOfMonth = startOfMonth.plusMonths(1).minusDays(1);
 
             int id1 = createAndSaveInterview(
@@ -211,8 +210,8 @@ public class DashboardIntegrationTest extends IntegrationTest {
 
             // when & then
             given(spec)
-                    .queryParam("year", now.getYear())
-                    .queryParam("month", now.getMonthValue())
+                    .queryParam("year", NOW.getYear())
+                    .queryParam("month", NOW.getMonthValue())
             .when()
                     .get(path)
             .then()
@@ -231,7 +230,7 @@ public class DashboardIntegrationTest extends IntegrationTest {
         @Test
         void 곧_있을_면접_리스트를_조회한다() {
             // given
-            LocalDateTime upcomingDate = LocalDateTime.now().plusDays(2);
+            LocalDateTime upcomingDate = NOW.plusDays(2);
 
             createAndSaveInterview(
                 new InterviewCreateRequest(
@@ -261,7 +260,7 @@ public class DashboardIntegrationTest extends IntegrationTest {
             // given
             Interview interview = createAndSaveInterview(
                 new InterviewCreateRequest(
-                    LocalDateTime.now().minusDays(5),
+                    NOW.minusDays(5),
                     InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
                 ), InterviewReviewStatus.DEBRIEF_COMPLETED);
 
@@ -293,13 +292,13 @@ public class DashboardIntegrationTest extends IntegrationTest {
             // given
             int interviewId = createAndSaveInterview(
                 new InterviewCreateRequest(
-                    LocalDateTime.now().minusDays(1),
+                    NOW.minusDays(1),
                     InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
                 ), reviewStatus).getId().intValue();
 
             createAndSaveInterview(
                 new InterviewCreateRequest(
-                    LocalDateTime.now().minusDays(2),
+                    NOW.minusDays(2),
                     InterviewType.SECOND, company2.getName(), industry1.getId(), jobCategory1.getId(), "Engineer"
                 ), InterviewReviewStatus.DEBRIEF_COMPLETED);
 
