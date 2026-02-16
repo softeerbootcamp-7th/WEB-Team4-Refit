@@ -171,4 +171,12 @@ public class InterviewController {
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
+
+    @Operation(summary = "면접 PDF 파일을 삭제합니다.")
+    @DeleteMapping("/{interviewId}/pdf")
+    public ResponseEntity<ApiResponse<Void>> deleteInterviewPdf(@PathVariable Long interviewId) {
+        interviewService.deleteInterviewPdf(interviewId);
+        var response = ApiResponse.success(COMMON204);
+        return ResponseEntity.ok(response);
+    }
 }
