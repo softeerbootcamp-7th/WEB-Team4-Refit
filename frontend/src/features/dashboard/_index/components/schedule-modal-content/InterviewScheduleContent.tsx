@@ -102,10 +102,11 @@ export function InterviewScheduleContent({ values, onChange, onPrev, onNext, isS
           variant="fill-gray-800"
           size="md"
           className="flex-1"
-          disabled={!isFormValid || isSubmitting}
+          isLoading={isSubmitting}
+          disabled={!isFormValid}
           onClick={onNext}
         >
-          {isSubmitting ? '등록 중...' : '등록하기'}
+          등록하기
         </Button>
       </div>
     </>
