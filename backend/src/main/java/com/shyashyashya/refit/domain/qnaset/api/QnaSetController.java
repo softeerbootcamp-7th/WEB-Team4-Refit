@@ -118,6 +118,14 @@ public class QnaSetController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "지정한 질문 답변 세트의 PDF 하이라이팅을 모두 삭제합니다.")
+    @DeleteMapping("/{qnaSetId}/pdf-highlightings")
+    public ResponseEntity<ApiResponse<Void>> deletePdfHighlighting(@PathVariable Long qnaSetId) {
+        qnaSetService.deletePdfHighlighting(qnaSetId);
+        var response = ApiResponse.success(COMMON204);
+        return ResponseEntity.ok(response);
+    }
+
     // TODO 통합 테스트 작성 (E2E 테스트는 일단 보류)
     @Operation(summary = "지정한 질문 답변 세트에 대해 스타 분석 생성을 요청합니다.", description = "Gemini 요청을 수행하고 10~20초 뒤에 응답이 반환됩니다.")
     @PostMapping("/{qnaSetId}/star-analysis")
