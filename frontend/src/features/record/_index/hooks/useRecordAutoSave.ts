@@ -6,6 +6,7 @@ type AutoSaveStatus = 'idle' | 'saving' | 'saved' | 'error'
 type UseRecordAutoSaveParams = {
   interviewId?: string
   startLoggingRequired?: boolean
+  initialText?: string
 }
 
 type UseRecordAutoSaveResult = {
@@ -21,15 +22,16 @@ const AUTO_SAVE_DEBOUNCE_MS = 1000
 export function useRecordAutoSave({
   interviewId,
   startLoggingRequired = true,
+  initialText = '',
 }: UseRecordAutoSaveParams): UseRecordAutoSaveResult {
-  const [text, setText] = useState('')
+  const [text, setText] = useState(initialText)
   const [hasStartedLogging, setHasStartedLogging] = useState(false)
   const [isAutoSaving, setIsAutoSaving] = useState(false)
   const [hasPendingAutoSave, setHasPendingAutoSave] = useState(false)
   const [isAutoSaveError, setIsAutoSaveError] = useState(false)
   const { mutateAsync: autoSaveRawText } = useUpdateRawText()
   const { mutateAsync: startLogging } = useStartLogging()
-  const textRef = useRef('')
+  const textRef = useRef(initialText)
   const lastRequestedAutoSaveTextRef = useRef('')
   const lastAutoSaveRequestIdRef = useRef(0)
   const pendingAutoSaveCountRef = useRef(0)

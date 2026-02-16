@@ -26,9 +26,11 @@ function RecordPageContentContainer({ interviewId }: RecordPageContentContainerP
   const [realtimeText, setRealtimeText] = useState('')
   const [isCompleting, setIsCompleting] = useState(false)
   const { data } = useRecordPageData(Number(interviewId))
+  const isLoggingDraft = data.interviewReviewStatus === 'LOG_DRAFT'
   const { text, onTextChange, appendText, autoSaveStatus, ensureLoggingStarted } = useRecordAutoSave({
     interviewId,
     startLoggingRequired: data.interviewReviewStatus === 'NOT_LOGGED',
+    initialText: isLoggingDraft ? data.interviewRawText : '',
   })
   const { mutateAsync: completeRawText } = useUpdateRawText()
   const { mutateAsync: convertRawTextToQnaSet } = useConvertRawTextToQnaSet()

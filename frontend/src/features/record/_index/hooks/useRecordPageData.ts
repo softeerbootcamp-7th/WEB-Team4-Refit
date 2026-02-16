@@ -19,5 +19,6 @@ function transformInterviewInfo(res: Awaited<ReturnType<typeof getInterview>>) {
       interviewStartAt: interview.interviewStartAt ?? '',
     },
     interviewReviewStatus: interview.interviewReviewStatus ?? 'NOT_LOGGED',
+    interviewRawText: interview.interviewRawText ?? '',
   }
 }
