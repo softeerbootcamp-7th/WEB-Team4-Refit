@@ -4,9 +4,9 @@ spring:
       api-key: "///"
       prompt-path: "src/test/resources/dummyprompt/"
     vectorstore:
+      vector-size: 100
       qdrant:
         host: "localhost"
         port: 6334
-        collection-name: "collection_name"
+        collection-base-name: "collection_name"
         distance: "Cosine"
-        vector-size: 1000

@@ -4,9 +4,9 @@ spring:
       api-key: "${GEMINI_API_KEY}"
       prompt-path: "${GEMINI_PROMPT_PATH}"
     vectorstore:
+      vector-size: ${VECTOR_STORE_VECTOR_SIZE}
       qdrant:
         host: "${QDRANT_HOST}"
         port: ${QDRANT_PORT}
-        collection-name: "${QDRANT_COLLECTION_NAME}"
+        collection-base-name: "${QDRANT_COLLECTION_BASE_NAME}"
         distance: "${QDRANT_DISTANCE}"
-        vector-size: ${QDRANT_VECTOR_SIZE}
