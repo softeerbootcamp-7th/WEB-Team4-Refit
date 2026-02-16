@@ -23,12 +23,13 @@ export interface InterviewScheduleContentProps {
   onChange: (values: InterviewScheduleFormValues) => void
   onPrev: () => void
   onNext: () => void
+  isSubmitting?: boolean
 }
 
 const inputBaseClass =
   'body-l-medium border-gray-150 w-full rounded-[8px] border px-4 py-3 text-gray-900 outline-none placeholder:text-gray-300 focus:border-orange-500'
 
-export function InterviewScheduleContent({ values, onChange, onPrev, onNext }: InterviewScheduleContentProps) {
+export function InterviewScheduleContent({ values, onChange, onPrev, onNext, isSubmitting }: InterviewScheduleContentProps) {
   const { interviewType, interviewDate, interviewTime } = values
   const defaultDate = getTodayDateString()
   const displayDate = interviewDate || defaultDate
@@ -98,10 +99,10 @@ export function InterviewScheduleContent({ values, onChange, onPrev, onNext }: I
           variant="fill-gray-800"
           size="md"
           className="flex-1"
-          disabled={!isFormValid}
+          disabled={!isFormValid || isSubmitting}
           onClick={onNext}
         >
-          등록하기
+          {isSubmitting ? '등록 중...' : '등록하기'}
         </Button>
       </div>
     </>
