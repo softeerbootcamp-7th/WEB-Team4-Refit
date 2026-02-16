@@ -67,7 +67,7 @@ public class InterviewCustomRepositoryImpl implements InterviewCustomRepository 
                 .where(
                         interview.user.eq(user),
                         interview.reviewStatus.eq(InterviewReviewStatus.NOT_LOGGED),
-                        interview.startAt.between(now.minusDays(30), now))
+                        interview.startAt.between(now.minusMonths(1), now))
                 .orderBy(interview.startAt.desc())
                 .fetch();
     }
