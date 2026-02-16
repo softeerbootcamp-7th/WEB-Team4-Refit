@@ -6,7 +6,7 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.STAR_ANALYSIS_PA
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.shyashyashya.refit.domain.interview.dto.StarAnalysisDto;
+import com.shyashyashya.refit.domain.qnaset.dto.StarAnalysisDto;
 import com.shyashyashya.refit.domain.qnaset.constant.StarAnalysisPromptGenerator;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.StarAnalysis;

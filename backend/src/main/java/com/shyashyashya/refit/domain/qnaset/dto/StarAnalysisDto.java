@@ -1,4 +1,4 @@
-package com.shyashyashya.refit.domain.interview.dto;
+package com.shyashyashya.refit.domain.qnaset.dto;
 
 import com.shyashyashya.refit.domain.qnaset.model.StarAnalysis;
 import com.shyashyashya.refit.domain.qnaset.model.StarInclusionLevel;
