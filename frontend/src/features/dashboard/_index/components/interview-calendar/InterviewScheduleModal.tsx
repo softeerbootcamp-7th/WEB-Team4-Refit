@@ -1,30 +1,33 @@
-import { useCreateInterview } from '@/apis'
+import { InterviewCreateRequestInterviewType, useCreateInterview } from '@/apis'
 import Modal from '@/designs/components/modal'
 import { ScheduleModalContent } from '@/features/dashboard/_index/components/schedule-modal-content/ScheduleModalContent'
 import type { ScheduleFormSubmitValues } from '@/features/dashboard/_index/components/schedule-modal-content/ScheduleModalContent'
 import { SCHEDULE_MODAL_STEP_CONFIG } from '@/features/dashboard/_index/constants/interviewCalendar'
 import { useScheduleModal } from '@/features/dashboard/_index/contexts/ScheduleModalContext'
-import type { InterviewCreateRequestInterviewType } from '@/apis/generated/refit-api.schemas'
 
 const toStartAt = (date: string, time: string) => {
-  const startAt = new Date(`${date}T${time}:00`)
-  if (Number.isNaN(startAt.getTime())) return null
-  return startAt.toISOString()
+  if (!date || !time) return null
+
+  const localDateTime = `${date}T${time}:00`
+  const parsed = new Date(localDateTime)
+  if (Number.isNaN(parsed.getTime())) return null
+
+  return localDateTime
 }
 
 export default function InterviewScheduleModal() {
   const modalContext = useScheduleModal()
+  const { mutate: createInterview, isPending } = useCreateInterview({
+    mutation: {
+      onSuccess: () => {
+        modalContext?.closeModal()
+      },
+    },
+  })
   if (!modalContext) return null
 
   const { isOpen, closeModal, step, setStep } = modalContext
   const config = SCHEDULE_MODAL_STEP_CONFIG[step]
-  const { mutate: createInterview, isPending } = useCreateInterview({
-    mutation: {
-      onSuccess: () => {
-        closeModal()
-      },
-    },
-  })
 
   const handleSubmit = (values: ScheduleFormSubmitValues) => {
     const companyName = values.companyName.trim()

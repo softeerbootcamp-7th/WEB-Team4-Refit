@@ -45,7 +45,7 @@ export function InterviewScheduleContent({ values, onChange, onPrev, onNext, isS
         ...(needsTime && { interviewTime: DEFAULT_INTERVIEW_TIME }),
       })
     }
-  }, [])
+  }, [defaultDate, interviewDate, interviewTime, onChange, values])
 
   const isFormValid = interviewType !== '' && interviewDate.trim() !== '' && interviewTime.trim() !== ''
 
