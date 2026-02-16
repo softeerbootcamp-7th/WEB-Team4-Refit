@@ -173,7 +173,7 @@ public class InterviewService {
                 .map(InterviewDto::from);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public PdfUploadUrlResponse createPdfUploadUrl(Long interviewId) {
         User requestUser = requestUserContext.getRequestUser();
         Interview interview =
