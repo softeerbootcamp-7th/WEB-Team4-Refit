@@ -38,7 +38,7 @@ export function mapDraftInterviewRow(item: InterviewSimpleDto): DraftInterviewRo
 export function mapInterviewCard(item: InterviewDto): InterviewCardModel {
   return {
     resultStatus: toResultStatus(item.interviewResultStatus),
-    date: `${formatDate(item.interviewStartAt)} 응시`,
+    date: item.interviewStartAt,
     company: item.companyName ?? '',
     jobRole: item.jobCategoryName ?? '',
     interviewType: toInterviewType(item.interviewType),
