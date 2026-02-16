@@ -170,4 +170,8 @@ public class Interview extends BaseEntity {
     public void updateResultStatus(InterviewResultStatus interviewResultStatus) {
         this.resultStatus = interviewResultStatus;
     }
+
+    public void updatePdfUrl(String pdfUrl) {
+        this.pdfUrl = pdfUrl;
+    }
 }

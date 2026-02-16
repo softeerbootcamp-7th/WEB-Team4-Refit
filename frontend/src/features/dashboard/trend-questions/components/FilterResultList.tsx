@@ -1,4 +1,4 @@
-import QnaCard from '@/features/dashboard/my-interviews/components/questions/QnaCard'
+import QnaCard from '@/features/dashboard/my-interviews/components/questions/list/qna-card/QnaCard'
 import { MOCK_QNA } from '@/features/dashboard/my-interviews/example'
 import FilterBadges from '@/features/dashboard/trend-questions/components/FilterBadges'
 import type { IndustryJobFilterState } from '@/features/dashboard/trend-questions/hooks/useIndustryJobFilter'

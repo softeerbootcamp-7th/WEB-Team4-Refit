@@ -9,6 +9,7 @@ import com.shyashyashya.refit.domain.interview.service.validator.InterviewValida
 import com.shyashyashya.refit.domain.jobcategory.service.validator.JobCategoryValidator;
 import com.shyashyashya.refit.domain.qnaset.dto.PdfHighlightingDto;
 import com.shyashyashya.refit.domain.qnaset.dto.request.PdfHighlightingUpdateRequest;
+import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetReviewUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetResponse;
 import com.shyashyashya.refit.domain.qnaset.dto.response.QnaSetScrapFolderResponse;
@@ -75,10 +76,10 @@ public class QnaSetService {
     @Transactional
     public void updateQnaSet(Long qnaSetId, QnaSetUpdateRequest request) {
         QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
+
         interviewValidator.validateInterviewReviewStatus(qnaSet.getInterview(), InterviewReviewStatus.QNA_SET_DRAFT);
         qnaSet.updateQuestionText(request.questionText());
         qnaSet.updateAnswerText(request.answerText());
-        updateOrCreateSelfReview(qnaSet, request.selfReviewText());
     }
 
     @Transactional
@@ -86,6 +87,15 @@ public class QnaSetService {
         QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
         interviewValidator.validateInterviewReviewStatus(qnaSet.getInterview(), InterviewReviewStatus.QNA_SET_DRAFT);
         qnaSetRepository.delete(qnaSet);
+    }
+
+    @Transactional
+    public void updateQnaSetSelfReview(Long qnaSetId, QnaSetReviewUpdateRequest request) {
+        QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
+
+        interviewValidator.validateInterviewReviewStatus(
+                qnaSet.getInterview(), InterviewReviewStatus.SELF_REVIEW_DRAFT);
+        updateOrCreateSelfReview(qnaSet, request.selfReviewText());
     }
 
     @Transactional
