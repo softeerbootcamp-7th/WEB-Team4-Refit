@@ -1,12 +1,15 @@
 package com.shyashyashya.refit.global.gemini;
 
+ import com.shyashyashya.refit.global.config.RestClientConfig;
 import com.shyashyashya.refit.global.property.GeminiProperty;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.client.RestClient;
+ import org.springframework.web.client.RestClientException;
+ import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
 @RequiredArgsConstructor
@@ -14,6 +17,7 @@ public class GeminiClient {
 
     private final GeminiProperty geminiProperty;
     private final WebClient webClient;
+    private final RestClient restClient;
 
     public CompletableFuture<GeminiGenerateResponse> sendAsyncTextGenerateRequest(
             GeminiGenerateRequest requestBody, GenerateModel model, Long timeoutSec) {
@@ -44,5 +48,21 @@ public class GeminiClient {
                 .bodyToMono(GeminiEmbeddingResponse.class)
                 .timeout(Duration.ofSeconds(timeoutSec))
                 .toFuture();
+    }
+
+    public GeminiGenerateResponse sendTextGenerateRequest(GeminiGenerateRequest requestBody, GenerateModel model, Long timeoutSec) {
+        try {
+            return restClient
+                    .post()
+                    .uri(model.endpoint())
+                    .header("x-goog-api-key", geminiProperty.apiKey())
+                    .accept(MediaType.APPLICATION_JSON)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(requestBody)
+                    .retrieve()
+                    .body(GeminiGenerateResponse.class);
+        } catch (RestClientException e) {
+            throw e;
+        }
     }
 }
