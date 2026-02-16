@@ -11,6 +11,7 @@ import com.shyashyashya.refit.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
@@ -50,6 +51,17 @@ public class InterviewMyController {
     public ResponseEntity<ApiResponse<Page<InterviewSimpleDto>>> getMyInterviewDrafts(
             @RequestParam InterviewDraftType interviewDraftType, @ParameterObject Pageable pageable) {
         var body = interviewService.getMyInterviewDrafts(interviewDraftType, pageable);
+        var response = ApiResponse.success(COMMON200, body);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "아직 기록하지 않은 나의 면접들을 조회합니다.", description = """
+            현재일 기준 최근 한 달동안 본 면접 데이터 중 상태가 '기록전' 상태인 면접을 면접일 기준 내림차순으로 조회합니다.
+            모바일 화면에서 기록할 면접을 조회할 때 사용됩니다.
+    """)
+    @GetMapping("/not-logged")
+    public ResponseEntity<ApiResponse<List<InterviewSimpleDto>>> getMyNotLoggedInterviews() {
+        var body = interviewService.getMyNotLoggedInterviews();
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }

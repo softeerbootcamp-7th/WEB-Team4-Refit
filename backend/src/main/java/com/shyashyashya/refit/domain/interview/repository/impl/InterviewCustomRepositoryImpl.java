@@ -11,6 +11,7 @@ import com.shyashyashya.refit.domain.interview.model.InterviewType;
 import com.shyashyashya.refit.domain.interview.repository.InterviewCustomRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -57,6 +58,18 @@ public class InterviewCustomRepositoryImpl implements InterviewCustomRepository 
         totalSize = totalSize == null ? 0L : totalSize;
 
         return new PageImpl<>(interviews, pageable, totalSize);
+    }
+
+    @Override
+    public List<Interview> findInterviewsNotLoggedRecentOneMonth(User user, LocalDateTime now) {
+        return jpaQueryFactory
+                .selectFrom(interview)
+                .where(
+                        interview.user.eq(user),
+                        interview.reviewStatus.eq(InterviewReviewStatus.NOT_LOGGED),
+                        interview.startAt.between(now.minusMonths(1), now))
+                .orderBy(interview.startAt.desc())
+                .fetch();
     }
 
     private BooleanExpression companyNameContains(String keyword) {
