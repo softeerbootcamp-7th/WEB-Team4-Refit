@@ -30,7 +30,7 @@ public class StarAnalysisAsyncService {
     private final QnaSetService qnaSetService;
     private final StarAnalysisService starAnalysisService;
     private final GeminiClient geminiClient;
-    private final StarAnalysisPromptGenerator starAnalysisGeneratePrompt;
+    private final StarAnalysisPromptGenerator starAnalysisPromptGenerator;
     private final Executor geminiPostProcessExecutor;
     private final ObjectMapper objectMapper;
 
@@ -39,7 +39,7 @@ public class StarAnalysisAsyncService {
         Long starAnalysisId =
                 starAnalysisService.createInProgressStarAnalysis(qnaSet).getId();
 
-        String prompt = starAnalysisGeneratePrompt.buildPrompt(qnaSet);
+        String prompt = starAnalysisPromptGenerator.buildPrompt(qnaSet);
         GeminiGenerateRequest requestBody = GeminiGenerateRequest.from(prompt);
 
         log.info("Send star analysis generate request to gemini. qnaSetId: {}", qnaSetId);
