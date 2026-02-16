@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { createPortal } from 'react-dom'
 import {
@@ -13,6 +13,7 @@ import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
 import { MoreIcon, SmallLogoIcon } from '@/designs/assets'
 import { Badge } from '@/designs/components'
 import ConfirmModal from '@/designs/components/modal/ConfirmModal'
+import { useMenuPosition } from '@/features/_common/hooks/useMenuPosition'
 import { useOnClickOutside } from '@/features/_common/hooks/useOnClickOutside'
 import formatDateTime from '@/features/_common/utils/date'
 import { CalendarInterviewMenu } from './CalendarInterviewMenu'
@@ -30,9 +31,13 @@ export function CalendarInterviewCard({ interview, onItemClick }: CalendarInterv
   const queryClient = useQueryClient()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false)
-  const [menuPosition, setMenuPosition] = useState<{ top: number; left: number } | null>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const menuRef = useRef<HTMLDivElement>(null)
+  const { menuPosition, setMenuPosition } = useMenuPosition({
+    isOpen: isMenuOpen,
+    triggerRef,
+    menuRef,
+  })
   const { mutate: deleteInterview, isPending: isDeletingInterview } = useDeleteInterview({
     mutation: {
       onSuccess: () => {
@@ -44,21 +49,6 @@ export function CalendarInterviewCard({ interview, onItemClick }: CalendarInterv
     },
   })
 
-  const updateMenuPosition = useCallback(() => {
-    const trigger = triggerRef.current
-    const menu = menuRef.current
-    if (!trigger || !menu) return
-
-    const triggerRect = trigger.getBoundingClientRect()
-    const menuWidth = menu.offsetWidth
-    const menuHeight = menu.offsetHeight
-    const hasSpaceBelow = window.innerHeight - triggerRect.bottom >= menuHeight + 4
-    const top = hasSpaceBelow ? triggerRect.bottom + 4 : Math.max(8, triggerRect.top - menuHeight - 4)
-    const left = Math.min(Math.max(8, triggerRect.right - menuWidth), window.innerWidth - menuWidth - 8)
-
-    setMenuPosition({ top, left })
-  }, [])
-
   useOnClickOutside(
     menuRef,
     (event) => {
@@ -68,21 +58,6 @@ export function CalendarInterviewCard({ interview, onItemClick }: CalendarInterv
     },
     isMenuOpen,
   )
-
-  useEffect(() => {
-    if (!isMenuOpen) return
-
-    const handleReposition = () => updateMenuPosition()
-
-    window.addEventListener('resize', handleReposition)
-    window.addEventListener('scroll', handleReposition, true)
-    updateMenuPosition()
-
-    return () => {
-      window.removeEventListener('resize', handleReposition)
-      window.removeEventListener('scroll', handleReposition, true)
-    }
-  }, [isMenuOpen, updateMenuPosition])
 
   return (
     <li>
