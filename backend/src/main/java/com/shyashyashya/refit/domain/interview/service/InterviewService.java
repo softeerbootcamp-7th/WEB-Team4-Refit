@@ -33,8 +33,10 @@ import com.shyashyashya.refit.domain.interview.service.validator.InterviewValida
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
 import com.shyashyashya.refit.domain.qnaset.dto.StarAnalysisDto;
+import com.shyashyashya.refit.domain.qnaset.model.PdfHighlighting;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetSelfReview;
+import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetSelfReviewRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.StarAnalysisRepository;
@@ -78,6 +80,7 @@ public class InterviewService {
     private final JobCategoryRepository jobCategoryRepository;
     private final QnaSetRepository qnaSetRepository;
     private final QnaSetSelfReviewRepository qnaSetSelfReviewRepository;
+    private final PdfHighlightingRepository pdfHighlightingRepository;
     private final StarAnalysisRepository starAnalysisRepository;
     private final InterviewSelfReviewRepository interviewSelfReviewRepository;
 
@@ -267,6 +270,7 @@ public class InterviewService {
             throw new CustomException(INTERVIEW_PDF_DELETE_FAILED);
         }
 
+        deleteAllPdfHighlighting(interview);
         interview.deletePdfUrl();
     }
 
@@ -413,5 +417,15 @@ public class InterviewService {
         return interviewRepository.findInterviewsNotLoggedRecentOneMonth(requestUser, now).stream()
                 .map(InterviewSimpleDto::from)
                 .toList();
+    }
+
+    private void deleteAllPdfHighlighting(Interview interview) {
+        List<QnaSet> qnaSets = qnaSetRepository.findAllByInterview(interview);
+        if (qnaSets.isEmpty()) return;
+
+        List<PdfHighlighting> highlightings = pdfHighlightingRepository.findAllByQnaSetIn(qnaSets);
+        if (highlightings.isEmpty()) return;
+
+        pdfHighlightingRepository.deleteAllInBatch(highlightings);
     }
 }
