@@ -2,6 +2,7 @@ package com.shyashyashya.refit.domain.interview.dto;
 
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewResultStatus;
+import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewSelfReview;
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
@@ -18,6 +19,7 @@ public record InterviewFullDto(
         @NotNull Long interviewId,
         @NotNull InterviewType interviewType,
         @NotNull LocalDateTime interviewStartAt,
+        @NotNull InterviewReviewStatus interviewReviewStatus,
         @NotNull InterviewResultStatus interviewResultStatus,
         @NotNull String company,
         @NotNull Long industryId,
@@ -32,6 +34,7 @@ public record InterviewFullDto(
                 .interviewId(interview.getId())
                 .interviewType(interview.getInterviewType())
                 .interviewStartAt(interview.getStartAt())
+                .interviewReviewStatus(interview.getReviewStatus())
                 .interviewResultStatus(interview.getResultStatus())
                 .company(interview.getCompany().getName())
                 .industryId(interview.getIndustry().getId())
@@ -64,6 +67,7 @@ public record InterviewFullDto(
                 .interviewId(interview.getId())
                 .interviewType(interview.getInterviewType())
                 .interviewStartAt(interview.getStartAt())
+                .interviewReviewStatus(interview.getReviewStatus())
                 .interviewResultStatus(interview.getResultStatus())
                 .company(interview.getCompany().getName())
                 .industryId(interview.getIndustry().getId())
