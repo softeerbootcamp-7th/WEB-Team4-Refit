@@ -108,7 +108,7 @@ public class QnaSetService {
     public void updatePdfHighlighting(Long qnaSetId, List<PdfHighlightingUpdateRequest> request) {
         QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
         interviewValidator.validateInterviewReviewStatus(qnaSet.getInterview(), InterviewReviewStatus.QNA_SET_DRAFT);
-        deleteAllHighlightingsAndRects(qnaSet);
+        pdfHighlightingRepository.deleteAllByQnaSet(qnaSet);
         saveAllHighlightings(qnaSet, request);
     }
 
@@ -135,7 +135,7 @@ public class QnaSetService {
     public void deletePdfHighlighting(Long qnaSetId) {
         QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
         interviewValidator.validateInterviewReviewStatus(qnaSet.getInterview(), InterviewReviewStatus.QNA_SET_DRAFT);
-        deleteAllHighlightingsAndRects(qnaSet);
+        pdfHighlightingRepository.deleteAllByQnaSet(qnaSet);
     }
 
     @Transactional(readOnly = true)
@@ -177,11 +177,6 @@ public class QnaSetService {
                 .ifPresentOrElse(
                         selfReview -> selfReview.updateSelfReviewText(reqSelfReviewText),
                         () -> qnaSetSelfReviewRepository.save(QnaSetSelfReview.create(reqSelfReviewText, qnaSet)));
-    }
-
-    private void deleteAllHighlightingsAndRects(QnaSet qnaSet) {
-        pdfHighlightingRectRepository.deleteAllByQnaSet(qnaSet);
-        pdfHighlightingRepository.deleteAllByQnaSet(qnaSet);
     }
 
     private void saveAllHighlightings(QnaSet qnaSet, List<PdfHighlightingUpdateRequest> request) {
