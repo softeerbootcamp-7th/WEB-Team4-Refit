@@ -129,26 +129,4 @@ public class QnaSetController {
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
-
-    // TODO API 삭제: Gemini Embedding 생성 테스트용 임시 메소드
-    @Operation(summary = "임베딩 생성 테스트")
-    @PostMapping("/test-embedding")
-    public CompletableFuture<ResponseEntity<ApiResponse<GeminiEmbeddingResponse>>> getGeminiEmbedding(
-            @RequestBody @NotBlank String text) {
-
-        GeminiEmbeddingRequest requestBody = GeminiEmbeddingRequest.of(
-                text, GeminiEmbeddingRequest.TaskType.CLUSTERING, GeminiEmbeddingRequest.OutputDimensionality.D128);
-
-        CompletableFuture<GeminiEmbeddingResponse> reqFuture =
-                geminiClient.sendAsyncEmbeddingRequest(requestBody, STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC);
-
-        CompletableFuture<GeminiEmbeddingResponse> result =  reqFuture
-                .thenApplyAsync(response -> response, geminiPostProcessExecutor)
-                .exceptionally(e -> {
-                    log.error(e.getMessage(), e);
-                    throw new CustomException(TEXT_EMBEDDING_CREATE_FAILED);
-                });
-
-        return result.thenApply(rsp -> ResponseEntity.ok(ApiResponse.success(COMMON200, rsp)));
-    }
 }
