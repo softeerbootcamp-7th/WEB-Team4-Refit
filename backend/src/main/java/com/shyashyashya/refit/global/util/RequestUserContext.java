@@ -5,30 +5,42 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.USER_NOT_FOUND;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
 import com.shyashyashya.refit.global.exception.CustomException;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 
 // TODO: 패키지 위치 다시 생각해보기
 @Component
 @RequestScope
-@Getter
 @RequiredArgsConstructor
+@Slf4j
 public class RequestUserContext {
 
+    private static final String ERROR_MSG_EMAIL = "RequestUserContext에 설정된 email이 없습니다.";
+    private static final String ERROR_MSG_USER_ID = "RequestUserContext에 설정된 userId가 없습니다.";
     private final UserRepository userRepository;
+
+    @Setter
+    private String email;
 
     @Setter
     private Long userId;
 
-    private User user;
+    public String getEmail() {
+        if (this.email == null) {
+            log.error(ERROR_MSG_EMAIL);
+            throw new IllegalStateException(ERROR_MSG_EMAIL);
+        }
+        return this.email;
+    }
 
     public User getRequestUser() {
-        if (user == null && userId != null) {
-            user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        if (userId == null) {
+            log.error(ERROR_MSG_USER_ID);
+            throw new IllegalStateException(ERROR_MSG_USER_ID);
         }
-        return user;
+        return userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
     }
 }

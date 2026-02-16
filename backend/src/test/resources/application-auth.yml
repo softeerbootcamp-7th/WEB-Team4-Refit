@@ -1,0 +1,28 @@
+spring:
+  auth:
+    url:
+      frontend-redirect-path: "/auth/callback"
+      sign-up: "/user/signup"
+      whitelists:
+        # TODO: public한 API 경로가 더 있는지 검토 필요
+        - "/test/**"
+        - "/auth/**"
+        - "/industry"
+        - "/job-category"
+        - "/swagger-ui/**"
+        - "/v3/api-docs/**"
+    jwt:
+      secret: test_jwt_secret_key_aopsidjfaoisfjq9w83r9q8weahso9f8ahx90e8xhf9a8wehouahwefiauxhsdf
+      token-expiration:
+        access-token: 1h
+        refresh-token: 7d
+    oauth2:
+      state-expiration: 5m
+      google:
+        client-id: "${GOOGLE_CLIENT_ID}"
+        client-secret: "${GOOGLE_CLIENT_SECRET}"
+        redirect-path: "${GOOGLE_REDIRECT_PATH}"
+        scope:
+          - openid
+          - profile
+          - email

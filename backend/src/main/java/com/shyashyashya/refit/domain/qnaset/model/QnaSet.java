@@ -1,7 +1,7 @@
 package com.shyashyashya.refit.domain.qnaset.model;
 
-import com.shyashyashya.refit.domain.common.model.BaseEntity;
 import com.shyashyashya.refit.domain.interview.model.Interview;
+import com.shyashyashya.refit.global.model.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -60,6 +60,26 @@ public class QnaSet extends BaseEntity {
                 .interview(interview)
                 .qnaSetCategory(qnaSetCategory)
                 .build();
+    }
+
+    public void updateQuestionText(String questionText) {
+        if (questionText != null) {
+            this.questionText = questionText;
+        }
+    }
+
+    public void updateAnswerText(String answerText) {
+        if (answerText != null) {
+            this.answerText = answerText;
+        }
+    }
+
+    public void markDifficult() {
+        this.isMarkedDifficult = true;
+    }
+
+    public void unmarkDifficult() {
+        this.isMarkedDifficult = false;
     }
 
     @Builder(access = AccessLevel.PRIVATE)

@@ -1,8 +1,8 @@
 package com.shyashyashya.refit.domain.user.model;
 
-import com.shyashyashya.refit.domain.common.model.BaseEntity;
 import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
+import com.shyashyashya.refit.global.model.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -34,17 +34,17 @@ public class User extends BaseEntity {
     @Column(columnDefinition = "varchar(30)", nullable = false, unique = true)
     private String nickname;
 
-    @Column(columnDefinition = "varchar(2048)")
+    @Column(columnDefinition = "varchar(2048)", nullable = false)
     private String profileImageUrl;
 
     @Column(nullable = false)
     private boolean isAgreedToTerms = false;
 
-    @JoinColumn(name = "industry_id")
+    @JoinColumn(name = "industry_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Industry industry;
 
-    @JoinColumn(name = "job_category_id")
+    @JoinColumn(name = "job_category_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private JobCategory jobCategory;
 
@@ -53,6 +53,12 @@ public class User extends BaseEntity {
     */
     public void agreeToTerms() {
         this.isAgreedToTerms = true;
+    }
+
+    public void updateMyPage(String nickname, Industry industry, JobCategory jobCategory) {
+        this.nickname = nickname;
+        this.industry = industry;
+        this.jobCategory = jobCategory;
     }
 
     /*

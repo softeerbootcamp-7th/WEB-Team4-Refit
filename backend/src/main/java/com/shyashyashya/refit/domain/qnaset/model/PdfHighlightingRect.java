@@ -1,6 +1,6 @@
 package com.shyashyashya.refit.domain.qnaset.model;
 
-import com.shyashyashya.refit.domain.common.model.BaseEntity;
+import com.shyashyashya.refit.global.model.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -38,6 +38,9 @@ public class PdfHighlightingRect extends BaseEntity {
     @Column(nullable = false)
     private double height;
 
+    @Column(nullable = false)
+    private int pageNumber;
+
     @JoinColumn(name = "pdf_highlighting_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private PdfHighlighting pdfHighlighting;
@@ -46,22 +49,25 @@ public class PdfHighlightingRect extends BaseEntity {
      * Static Factory Method
      */
     public static PdfHighlightingRect create(
-            double x, double y, double width, double height, PdfHighlighting pdfHighlighting) {
+            double x, double y, double width, double height, int pageNumber, PdfHighlighting pdfHighlighting) {
         return PdfHighlightingRect.builder()
                 .x(x)
                 .y(y)
                 .width(width)
                 .height(height)
+                .pageNumber(pageNumber)
                 .pdfHighlighting(pdfHighlighting)
                 .build();
     }
 
     @Builder(access = AccessLevel.PRIVATE)
-    private PdfHighlightingRect(double x, double y, double width, double height, PdfHighlighting pdfHighlighting) {
+    private PdfHighlightingRect(
+            double x, double y, double width, double height, int pageNumber, PdfHighlighting pdfHighlighting) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+        this.pageNumber = pageNumber;
         this.pdfHighlighting = pdfHighlighting;
     }
 }

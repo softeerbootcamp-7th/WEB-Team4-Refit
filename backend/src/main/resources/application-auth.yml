@@ -1,7 +1,28 @@
 spring:
   auth:
-    # TODO: public한 API 경로가 더 있는지 검토 필요
-    whitelist-api-urls:
-      - /auth/login/**
-      - /swagger-ui/**
-      - /v3/api-docs/**
+    url:
+      frontend-redirect-path: "/auth/callback"
+      sign-up: "/user/signup"
+      whitelists:
+        # TODO: public한 API 경로가 더 있는지 검토 필요
+        - "/test/**" # TODO: 추후 prod 환경 도입시 별도 프로필로 분리 후 해당 URL 제거하기
+        - "/auth/**"
+        - "/industry"
+        - "/job-category"
+        - "/swagger-ui/**"
+        - "/v3/api-docs/**"
+    jwt:
+      secret: "${JWT_SECRET}"
+      token-expiration:
+        access-token: ${JWT_ACCESS_TOKEN_EXPIRATION}
+        refresh-token: ${JWT_REFRESH_TOKEN_EXPIRATION}
+    oauth2:
+      state-expiration: ${OAUTH2_STATE_EXPIRATION}
+      google:
+        client-id: "${GOOGLE_CLIENT_ID}"
+        client-secret: "${GOOGLE_CLIENT_SECRET}"
+        redirect-path: "${GOOGLE_REDIRECT_PATH}"
+        scope:
+          - openid
+          - profile
+          - email

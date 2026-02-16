@@ -1,8 +1,10 @@
 package com.shyashyashya.refit.domain.interview.service.validator;
 
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_ACCESSIBLE;
+import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED;
 
 import com.shyashyashya.refit.domain.interview.model.Interview;
+import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
 import org.springframework.stereotype.Component;
@@ -11,9 +13,14 @@ import org.springframework.stereotype.Component;
 public class InterviewValidator {
 
     public void validateInterviewOwner(Interview interview, User user) {
-        if (interview.getUser().equals(user)) {
-            return;
+        if (!interview.getUser().equals(user)) {
+            throw new CustomException(INTERVIEW_NOT_ACCESSIBLE);
         }
-        throw new CustomException(INTERVIEW_NOT_ACCESSIBLE);
+    }
+
+    public void validateInterviewReviewStatus(Interview interview, InterviewReviewStatus reviewStatus) {
+        if (!interview.getReviewStatus().equals(reviewStatus)) {
+            throw new CustomException(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED);
+        }
     }
 }
