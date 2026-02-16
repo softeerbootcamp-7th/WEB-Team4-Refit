@@ -1,17 +1,21 @@
 package com.shyashyashya.refit.integration.qnaset;
 
+import static com.shyashyashya.refit.global.exception.ErrorCode.INDUSTRY_PARTIALLY_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_ACCESSIBLE;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED;
+import static com.shyashyashya.refit.global.exception.ErrorCode.JOB_CATEGORY_PARTIALLY_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.QNA_SET_NOT_FOUND;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON204;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
-import com.shyashyashya.refit.core.IntegrationTest;
+import com.shyashyashya.refit.integration.core.IntegrationTest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.QnaSetCreateRequest;
 import com.shyashyashya.refit.domain.interview.model.Interview;
@@ -37,8 +41,6 @@ import java.util.List;
 public class QnaSetIntegrationTest extends IntegrationTest {
 
     @Autowired
-    private InterviewRepository interviewRepository;
-    @Autowired
     private QnaSetRepository qnaSetRepository;
 
     private Long qnaSetDraftQnaSetId;
@@ -46,43 +48,43 @@ public class QnaSetIntegrationTest extends IntegrationTest {
     private Long qnaSetWithPdfHighlightingId;
     private Long otherUserQnaSetId;
 
-    @BeforeEach
-    void setUp() {
-        var interviewCreateRequest1 = new InterviewCreateRequest(
-                LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-        Interview qnaSetDraftInterview = createAndSaveInterview(interviewCreateRequest1, InterviewReviewStatus.QNA_SET_DRAFT);
-
-        var interviewCreateRequest2 = new InterviewCreateRequest(
-                LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-        Interview debriefCompletedInterview = createAndSaveInterview(interviewCreateRequest2, InterviewReviewStatus.DEBRIEF_COMPLETED);
-
-        var qnaSetCreateRequest1 = new QnaSetCreateRequest("test question text", "test answer text");
-        QnaSet qnaSetDraftQnaSet = createAndSaveQnaSet(qnaSetCreateRequest1, qnaSetDraftInterview, true);
-        qnaSetDraftQnaSetId = qnaSetDraftQnaSet.getId();
-
-        var qnaSetCreateRequest2 = new QnaSetCreateRequest("test question text", "test answer text");
-        QnaSet debriefCompletedQnaSet = createAndSaveQnaSet(qnaSetCreateRequest2, debriefCompletedInterview, true);
-        debriefCompletedQnaSetId = debriefCompletedQnaSet.getId();
-
-        var qnaSetCreateRequest3 = new QnaSetCreateRequest("this qna has pdf highlighting", "hello PDF");
-        QnaSet qnaSetWithPdfHighlighting = createAndSaveQnaSet(qnaSetCreateRequest3,qnaSetDraftInterview, false);
-        qnaSetWithPdfHighlightingId = qnaSetWithPdfHighlighting.getId();
-
-        var interviewCreateRequest4 = new InterviewCreateRequest(
-                LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-        User user = createAndSaveUser("other@example.com", "other", industry1, jobCategory1);
-        Interview otherUserInterview = createAndSaveInterview(interviewCreateRequest4, InterviewReviewStatus.NOT_LOGGED, user);
-
-        QnaSetCreateRequest qnaSetCreateRequest4 = new QnaSetCreateRequest("this qna is others", "hello stranger");
-        QnaSet otherUserQnaSet = createAndSaveQnaSet(qnaSetCreateRequest4, otherUserInterview, false);
-        otherUserQnaSetId = otherUserQnaSet.getId();
-
-        List<PdfHighlightingUpdateRequest> pdfHighlightUpdateRequest = createPdfHighlightUpdateRequest();
-        createAndSavePdfHighlighting(pdfHighlightUpdateRequest, qnaSetWithPdfHighlighting);
-    }
-
     @Nested
     class 질답_세트_생성_시 {
+
+        @BeforeEach
+        void setUp() {
+            var interviewCreateRequest1 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview qnaSetDraftInterview = createAndSaveInterview(interviewCreateRequest1, InterviewReviewStatus.QNA_SET_DRAFT);
+
+            var interviewCreateRequest2 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview debriefCompletedInterview = createAndSaveInterview(interviewCreateRequest2, InterviewReviewStatus.DEBRIEF_COMPLETED);
+
+            var qnaSetCreateRequest1 = new QnaSetCreateRequest("test question text", "test answer text");
+            QnaSet qnaSetDraftQnaSet = createAndSaveQnaSet(qnaSetCreateRequest1, qnaSetDraftInterview, true);
+            qnaSetDraftQnaSetId = qnaSetDraftQnaSet.getId();
+
+            var qnaSetCreateRequest2 = new QnaSetCreateRequest("test question text", "test answer text");
+            QnaSet debriefCompletedQnaSet = createAndSaveQnaSet(qnaSetCreateRequest2, debriefCompletedInterview, true);
+            debriefCompletedQnaSetId = debriefCompletedQnaSet.getId();
+
+            var qnaSetCreateRequest3 = new QnaSetCreateRequest("this qna has pdf highlighting", "hello PDF");
+            QnaSet qnaSetWithPdfHighlighting = createAndSaveQnaSet(qnaSetCreateRequest3,qnaSetDraftInterview, false);
+            qnaSetWithPdfHighlightingId = qnaSetWithPdfHighlighting.getId();
+
+            var interviewCreateRequest4 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            User user = createAndSaveUser("other@example.com", "other", industry1, jobCategory1);
+            Interview otherUserInterview = createAndSaveInterview(interviewCreateRequest4, InterviewReviewStatus.NOT_LOGGED, user);
+
+            QnaSetCreateRequest qnaSetCreateRequest4 = new QnaSetCreateRequest("this qna is others", "hello stranger");
+            QnaSet otherUserQnaSet = createAndSaveQnaSet(qnaSetCreateRequest4, otherUserInterview, false);
+            otherUserQnaSetId = otherUserQnaSet.getId();
+
+            List<PdfHighlightingUpdateRequest> pdfHighlightUpdateRequest = createPdfHighlightUpdateRequest();
+            createAndSavePdfHighlighting(pdfHighlightUpdateRequest, qnaSetWithPdfHighlighting);
+        }
 
         @Test
         void 인터뷰가_질답_세트_검토_중_상태이면_질답_세트_생성에_성공한다() {
@@ -140,6 +142,39 @@ public class QnaSetIntegrationTest extends IntegrationTest {
 
         @BeforeEach
         void setUp() {
+            var interviewCreateRequest1 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview qnaSetDraftInterview = createAndSaveInterview(interviewCreateRequest1, InterviewReviewStatus.QNA_SET_DRAFT);
+
+            var interviewCreateRequest2 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview debriefCompletedInterview = createAndSaveInterview(interviewCreateRequest2, InterviewReviewStatus.DEBRIEF_COMPLETED);
+
+            var qnaSetCreateRequest1 = new QnaSetCreateRequest("test question text", "test answer text");
+            QnaSet qnaSetDraftQnaSet = createAndSaveQnaSet(qnaSetCreateRequest1, qnaSetDraftInterview, true);
+            qnaSetDraftQnaSetId = qnaSetDraftQnaSet.getId();
+
+            var qnaSetCreateRequest2 = new QnaSetCreateRequest("test question text", "test answer text");
+            QnaSet debriefCompletedQnaSet = createAndSaveQnaSet(qnaSetCreateRequest2, debriefCompletedInterview, true);
+            debriefCompletedQnaSetId = debriefCompletedQnaSet.getId();
+
+            var qnaSetCreateRequest3 = new QnaSetCreateRequest("this qna has pdf highlighting", "hello PDF");
+            QnaSet qnaSetWithPdfHighlighting = createAndSaveQnaSet(qnaSetCreateRequest3,qnaSetDraftInterview, false);
+            qnaSetWithPdfHighlightingId = qnaSetWithPdfHighlighting.getId();
+
+            var interviewCreateRequest4 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            User user = createAndSaveUser("other@example.com", "other", industry1, jobCategory1);
+            Interview otherUserInterview = createAndSaveInterview(interviewCreateRequest4, InterviewReviewStatus.NOT_LOGGED, user);
+
+            QnaSetCreateRequest qnaSetCreateRequest4 = new QnaSetCreateRequest("this qna is others", "hello stranger");
+            QnaSet otherUserQnaSet = createAndSaveQnaSet(qnaSetCreateRequest4, otherUserInterview, false);
+            otherUserQnaSetId = otherUserQnaSet.getId();
+
+            List<PdfHighlightingUpdateRequest> pdfHighlightUpdateRequest = createPdfHighlightUpdateRequest();
+            createAndSavePdfHighlighting(pdfHighlightUpdateRequest, qnaSetWithPdfHighlighting);
+
+
             interview = createAndSaveInterview(
                     new InterviewCreateRequest(
                             LocalDateTime.of(2023, 1, 10, 10, 0, 0), InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
@@ -188,6 +223,41 @@ public class QnaSetIntegrationTest extends IntegrationTest {
 
     @Nested
     class 질답_세트_수정_시 {
+
+        @BeforeEach
+        void setUp() {
+            var interviewCreateRequest1 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview qnaSetDraftInterview = createAndSaveInterview(interviewCreateRequest1, InterviewReviewStatus.QNA_SET_DRAFT);
+
+            var interviewCreateRequest2 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview debriefCompletedInterview = createAndSaveInterview(interviewCreateRequest2, InterviewReviewStatus.DEBRIEF_COMPLETED);
+
+            var qnaSetCreateRequest1 = new QnaSetCreateRequest("test question text", "test answer text");
+            QnaSet qnaSetDraftQnaSet = createAndSaveQnaSet(qnaSetCreateRequest1, qnaSetDraftInterview, true);
+            qnaSetDraftQnaSetId = qnaSetDraftQnaSet.getId();
+
+            var qnaSetCreateRequest2 = new QnaSetCreateRequest("test question text", "test answer text");
+            QnaSet debriefCompletedQnaSet = createAndSaveQnaSet(qnaSetCreateRequest2, debriefCompletedInterview, true);
+            debriefCompletedQnaSetId = debriefCompletedQnaSet.getId();
+
+            var qnaSetCreateRequest3 = new QnaSetCreateRequest("this qna has pdf highlighting", "hello PDF");
+            QnaSet qnaSetWithPdfHighlighting = createAndSaveQnaSet(qnaSetCreateRequest3,qnaSetDraftInterview, false);
+            qnaSetWithPdfHighlightingId = qnaSetWithPdfHighlighting.getId();
+
+            var interviewCreateRequest4 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            User user = createAndSaveUser("other@example.com", "other", industry1, jobCategory1);
+            Interview otherUserInterview = createAndSaveInterview(interviewCreateRequest4, InterviewReviewStatus.NOT_LOGGED, user);
+
+            QnaSetCreateRequest qnaSetCreateRequest4 = new QnaSetCreateRequest("this qna is others", "hello stranger");
+            QnaSet otherUserQnaSet = createAndSaveQnaSet(qnaSetCreateRequest4, otherUserInterview, false);
+            otherUserQnaSetId = otherUserQnaSet.getId();
+
+            List<PdfHighlightingUpdateRequest> pdfHighlightUpdateRequest = createPdfHighlightUpdateRequest();
+            createAndSavePdfHighlighting(pdfHighlightUpdateRequest, qnaSetWithPdfHighlighting);
+        }
 
         @Test
         void 인터뷰가_질답_세트_검토_중_상태이면_질답_세트_수정에_성공한다() {
@@ -324,6 +394,41 @@ public class QnaSetIntegrationTest extends IntegrationTest {
     @Nested
     class 질답_세트_삭제_시 {
 
+        @BeforeEach
+        void setUp() {
+            var interviewCreateRequest1 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview qnaSetDraftInterview = createAndSaveInterview(interviewCreateRequest1, InterviewReviewStatus.QNA_SET_DRAFT);
+
+            var interviewCreateRequest2 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview debriefCompletedInterview = createAndSaveInterview(interviewCreateRequest2, InterviewReviewStatus.DEBRIEF_COMPLETED);
+
+            var qnaSetCreateRequest1 = new QnaSetCreateRequest("test question text", "test answer text");
+            QnaSet qnaSetDraftQnaSet = createAndSaveQnaSet(qnaSetCreateRequest1, qnaSetDraftInterview, true);
+            qnaSetDraftQnaSetId = qnaSetDraftQnaSet.getId();
+
+            var qnaSetCreateRequest2 = new QnaSetCreateRequest("test question text", "test answer text");
+            QnaSet debriefCompletedQnaSet = createAndSaveQnaSet(qnaSetCreateRequest2, debriefCompletedInterview, true);
+            debriefCompletedQnaSetId = debriefCompletedQnaSet.getId();
+
+            var qnaSetCreateRequest3 = new QnaSetCreateRequest("this qna has pdf highlighting", "hello PDF");
+            QnaSet qnaSetWithPdfHighlighting = createAndSaveQnaSet(qnaSetCreateRequest3,qnaSetDraftInterview, false);
+            qnaSetWithPdfHighlightingId = qnaSetWithPdfHighlighting.getId();
+
+            var interviewCreateRequest4 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            User user = createAndSaveUser("other@example.com", "other", industry1, jobCategory1);
+            Interview otherUserInterview = createAndSaveInterview(interviewCreateRequest4, InterviewReviewStatus.NOT_LOGGED, user);
+
+            QnaSetCreateRequest qnaSetCreateRequest4 = new QnaSetCreateRequest("this qna is others", "hello stranger");
+            QnaSet otherUserQnaSet = createAndSaveQnaSet(qnaSetCreateRequest4, otherUserInterview, false);
+            otherUserQnaSetId = otherUserQnaSet.getId();
+
+            List<PdfHighlightingUpdateRequest> pdfHighlightUpdateRequest = createPdfHighlightUpdateRequest();
+            createAndSavePdfHighlighting(pdfHighlightUpdateRequest, qnaSetWithPdfHighlighting);
+        }
+
         @Test
         void 인터뷰가_질답_세트_검토_중_상태이면_질답_세트_삭제에_성공한다() {
             // given
@@ -386,6 +491,41 @@ public class QnaSetIntegrationTest extends IntegrationTest {
 
     @Nested
     class PDF_하이라이팅_등록_수정_시 {
+
+        @BeforeEach
+        void setUp() {
+            var interviewCreateRequest1 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview qnaSetDraftInterview = createAndSaveInterview(interviewCreateRequest1, InterviewReviewStatus.QNA_SET_DRAFT);
+
+            var interviewCreateRequest2 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview debriefCompletedInterview = createAndSaveInterview(interviewCreateRequest2, InterviewReviewStatus.DEBRIEF_COMPLETED);
+
+            var qnaSetCreateRequest1 = new QnaSetCreateRequest("test question text", "test answer text");
+            QnaSet qnaSetDraftQnaSet = createAndSaveQnaSet(qnaSetCreateRequest1, qnaSetDraftInterview, true);
+            qnaSetDraftQnaSetId = qnaSetDraftQnaSet.getId();
+
+            var qnaSetCreateRequest2 = new QnaSetCreateRequest("test question text", "test answer text");
+            QnaSet debriefCompletedQnaSet = createAndSaveQnaSet(qnaSetCreateRequest2, debriefCompletedInterview, true);
+            debriefCompletedQnaSetId = debriefCompletedQnaSet.getId();
+
+            var qnaSetCreateRequest3 = new QnaSetCreateRequest("this qna has pdf highlighting", "hello PDF");
+            QnaSet qnaSetWithPdfHighlighting = createAndSaveQnaSet(qnaSetCreateRequest3,qnaSetDraftInterview, false);
+            qnaSetWithPdfHighlightingId = qnaSetWithPdfHighlighting.getId();
+
+            var interviewCreateRequest4 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            User user = createAndSaveUser("other@example.com", "other", industry1, jobCategory1);
+            Interview otherUserInterview = createAndSaveInterview(interviewCreateRequest4, InterviewReviewStatus.NOT_LOGGED, user);
+
+            QnaSetCreateRequest qnaSetCreateRequest4 = new QnaSetCreateRequest("this qna is others", "hello stranger");
+            QnaSet otherUserQnaSet = createAndSaveQnaSet(qnaSetCreateRequest4, otherUserInterview, false);
+            otherUserQnaSetId = otherUserQnaSet.getId();
+
+            List<PdfHighlightingUpdateRequest> pdfHighlightUpdateRequest = createPdfHighlightUpdateRequest();
+            createAndSavePdfHighlighting(pdfHighlightUpdateRequest, qnaSetWithPdfHighlighting);
+        }
 
         @Test
         void 인터뷰가_질답_세트_검토_중_상태이면_PDF_하이라이팅_등록에_성공한다() {
@@ -489,6 +629,41 @@ public class QnaSetIntegrationTest extends IntegrationTest {
     @Nested
     class PDF_하이라이팅_조회_시 {
 
+        @BeforeEach
+        void setUp() {
+            var interviewCreateRequest1 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview qnaSetDraftInterview = createAndSaveInterview(interviewCreateRequest1, InterviewReviewStatus.QNA_SET_DRAFT);
+
+            var interviewCreateRequest2 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview debriefCompletedInterview = createAndSaveInterview(interviewCreateRequest2, InterviewReviewStatus.DEBRIEF_COMPLETED);
+
+            var qnaSetCreateRequest1 = new QnaSetCreateRequest("test question text", "test answer text");
+            QnaSet qnaSetDraftQnaSet = createAndSaveQnaSet(qnaSetCreateRequest1, qnaSetDraftInterview, true);
+            qnaSetDraftQnaSetId = qnaSetDraftQnaSet.getId();
+
+            var qnaSetCreateRequest2 = new QnaSetCreateRequest("test question text", "test answer text");
+            QnaSet debriefCompletedQnaSet = createAndSaveQnaSet(qnaSetCreateRequest2, debriefCompletedInterview, true);
+            debriefCompletedQnaSetId = debriefCompletedQnaSet.getId();
+
+            var qnaSetCreateRequest3 = new QnaSetCreateRequest("this qna has pdf highlighting", "hello PDF");
+            QnaSet qnaSetWithPdfHighlighting = createAndSaveQnaSet(qnaSetCreateRequest3,qnaSetDraftInterview, false);
+            qnaSetWithPdfHighlightingId = qnaSetWithPdfHighlighting.getId();
+
+            var interviewCreateRequest4 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            User user = createAndSaveUser("other@example.com", "other", industry1, jobCategory1);
+            Interview otherUserInterview = createAndSaveInterview(interviewCreateRequest4, InterviewReviewStatus.NOT_LOGGED, user);
+
+            QnaSetCreateRequest qnaSetCreateRequest4 = new QnaSetCreateRequest("this qna is others", "hello stranger");
+            QnaSet otherUserQnaSet = createAndSaveQnaSet(qnaSetCreateRequest4, otherUserInterview, false);
+            otherUserQnaSetId = otherUserQnaSet.getId();
+
+            List<PdfHighlightingUpdateRequest> pdfHighlightUpdateRequest = createPdfHighlightUpdateRequest();
+            createAndSavePdfHighlighting(pdfHighlightUpdateRequest, qnaSetWithPdfHighlighting);
+        }
+
         @Test
         void 나의_빈_PDF_하이라이팅_정보_조회를_성공한다() {
             // given
@@ -544,6 +719,278 @@ public class QnaSetIntegrationTest extends IntegrationTest {
                     .body("code", equalTo(INTERVIEW_NOT_ACCESSIBLE.name()))
                     .body("message", equalTo(INTERVIEW_NOT_ACCESSIBLE.getMessage()))
                     .body("result", nullValue());
+        }
+    }
+
+    @Nested
+    class 자주_묻는_질문_조회_시 {
+
+        private static final String path = "/qna-set/frequent";
+
+        private Interview interview1;
+        private Interview interview2;
+        private Interview interview3;
+        private Interview interview4;
+
+        private QnaSet qnaSet1;
+        private QnaSet qnaSet2;
+        private QnaSet qnaSet3;
+        private QnaSet qnaSet4;
+        private QnaSet qnaSet5;
+        private QnaSet qnaSet6;
+
+        @BeforeEach
+        void setUp() {
+            var request1 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            interview1 = createAndSaveInterview(request1);
+
+            var request2 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 2L, 2L, "BE Developer");
+            interview2 = createAndSaveInterview(request2);
+
+            var request3 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 30, 10, 0, 0), InterviewType.FIRST, "카카오", 1L, 3L, "FE Developer");
+            interview3 = createAndSaveInterview(request3);
+
+            var request4 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 31, 10, 0, 0), InterviewType.FIRST, "네이버", 3L, 1L, "Android Developer");
+            interview4 = createAndSaveInterview(request4);
+
+
+            qnaSet1 = QnaSet.create("팀원과 갈등이 발생했을 때 해결한 경험을 알려주세요.", "답변1", true, interview1, null);
+            qnaSet2 = QnaSet.create("IoC 컨테이너에 대해 설명해주세요.", "답변2", true, interview1, null);
+            qnaSet3 = QnaSet.create("자신의 장점과 단점에 대해 말해주세요.", "답변3", false, interview2, null);
+            qnaSet4 = QnaSet.create("지원 동기를 말씀해주세요.", "답변4", false, interview2, null);
+            qnaSet5 = QnaSet.create("MSA에 대해 아는 대로 설명해주세요.", "답변5", true, interview3, null);
+            qnaSet6 = QnaSet.create("DI에 대해 설명해주세요.", "답변6", true, interview4, null);
+
+            qnaSetRepository.saveAll(List.of(qnaSet1, qnaSet2, qnaSet3, qnaSet4, qnaSet5, qnaSet6));
+        }
+
+        @Test
+        void 산업군과_직무를_하나씩_지정했을_때_조회에_성공한다() {
+            // when & then
+            given(spec)
+                    .queryParam("industryIds", 1L)
+                    .queryParam("jobCategoryIds", 1L)
+            .when()
+                    .get(path)
+            .then()
+                    .assertThat().statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result.content", hasSize(2))
+                    .body("result.totalElements", equalTo(2))
+                    .body("result.content[0].industryName", equalTo(interview1.getIndustry().getName()))
+                    .body("result.content[0].jobCategoryName", equalTo(interview1.getJobCategory().getName()))
+                    .body("result.content[0].interviewType", equalTo(interview1.getInterviewType().toString()))
+                    .body("result.content[0].interviewStartAt", equalTo(interview1.getStartAt().format(TIME_FORMATTER)))
+                    .body("result.content[0].question", equalTo(qnaSet1.getQuestionText()))
+                    .body("result.content[1].industryName", equalTo(interview1.getIndustry().getName()))
+                    .body("result.content[1].jobCategoryName", equalTo(interview1.getJobCategory().getName()))
+                    .body("result.content[1].interviewType", equalTo(interview1.getInterviewType().toString()))
+                    .body("result.content[1].interviewStartAt", equalTo(interview1.getStartAt().format(TIME_FORMATTER)))
+                    .body("result.content[1].question", equalTo(qnaSet2.getQuestionText()));
+        }
+
+        @Test
+        void 산업군과_직무를_여러개_지정했을_때_조회에_성공한다() {
+            // when & then
+            given(spec)
+                    .queryParam("industryIds", 1L, 2L)
+                    .queryParam("jobCategoryIds", 1L, 2L)
+            .when()
+                    .get(path)
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result.content", hasSize(4))
+                    .body("result.totalElements", equalTo(4))
+                    .body("result.content*.question", containsInAnyOrder(
+                            qnaSet1.getQuestionText(),
+                            qnaSet2.getQuestionText(),
+                            qnaSet3.getQuestionText(),
+                            qnaSet4.getQuestionText()
+                    ));
+        }
+
+        @Test
+        void 아무런_필터링_조건도_제공하지_않았을_때_모든_자주_묻는_질문을_조회한다() {
+            // when & then
+            given(spec)
+            .when()
+                    .get(path)
+            .then()
+                    .assertThat().statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result.content", hasSize(6))
+                    .body("result.totalElements", equalTo(6))
+                    .body("result.content*.question", containsInAnyOrder(
+                            qnaSet1.getQuestionText(),
+                            qnaSet2.getQuestionText(),
+                            qnaSet3.getQuestionText(),
+                            qnaSet4.getQuestionText(),
+                            qnaSet5.getQuestionText(),
+                            qnaSet6.getQuestionText()
+                    ));
+        }
+
+        @Test
+        void 산업군만_지정했을_때_자주_묻는_질문_조회에_성공한다() {
+            // when & then
+            given(spec)
+                    .queryParam("industryIds", 1L)
+            .when()
+                    .get(path)
+            .then()
+                    .assertThat().statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result.content", hasSize(3))
+                    .body("result.totalElements", equalTo(3))
+                    .body("result.content*.question", containsInAnyOrder(
+                            qnaSet1.getQuestionText(),
+                            qnaSet2.getQuestionText(),
+                            qnaSet5.getQuestionText()
+                    ));
+        }
+
+        @Test
+        void 산업군_ID가_중복되어도_자주_묻는_질문_조회에_성공한다() {
+            // when & then
+            given(spec)
+                    .queryParam("industryIds", 1L, 1L, 1L)
+            .when()
+                    .get(path)
+            .then()
+                    .assertThat().statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result.content", hasSize(3))
+                    .body("result.totalElements", equalTo(3))
+                    .body("result.content*.question", containsInAnyOrder(
+                            qnaSet1.getQuestionText(),
+                            qnaSet2.getQuestionText(),
+                            qnaSet5.getQuestionText()
+                    ));
+        }
+
+        @Test
+        void 직무만_지정했을_때_자주_묻는_질문_조회에_성공한다() {
+            // when & then
+            given(spec)
+                    .queryParam("jobCategoryIds", 1L)
+            .when()
+                    .get(path)
+            .then()
+                    .assertThat().statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result.content", hasSize(3))
+                    .body("result.totalElements", equalTo(3))
+                    .body("result.content*.question", containsInAnyOrder(
+                            qnaSet1.getQuestionText(),
+                            qnaSet2.getQuestionText(),
+                            qnaSet6.getQuestionText())
+                    );
+        }
+
+        @Test
+        void 직무_ID가_중복되어도_자주_묻는_질문_조회에_성공한다() {
+            // when & then
+            given(spec)
+                    .queryParam("jobCategoryIds", 1L, 1L, 1L)
+            .when()
+                    .get(path)
+            .then()
+                    .assertThat().statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result.content", hasSize(3))
+                    .body("result.totalElements", equalTo(3))
+                    .body("result.content*.question", containsInAnyOrder(
+                            qnaSet1.getQuestionText(),
+                            qnaSet2.getQuestionText(),
+                            qnaSet6.getQuestionText())
+                    );
+        }
+
+        @Test
+        void 존재하지_않는_산업군_ID로_조회했을_때_404_에러가_발생한다() {
+            // when & then
+            given(spec)
+                    .queryParam("industryIds", 999L)
+            .when()
+                    .get(path)
+            .then()
+                    .assertThat().statusCode(INDUSTRY_PARTIALLY_NOT_FOUND.getHttpStatus().value())
+                    .body("code", equalTo(INDUSTRY_PARTIALLY_NOT_FOUND.name()))
+                    .body("message", equalTo(INDUSTRY_PARTIALLY_NOT_FOUND.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @Test
+        void 존재하지_않는_직무_ID로_조회했을_때_404_에러가_발생한다() {
+            // when & then
+            given(spec)
+                    .queryParam("jobCategoryIds", 999L)
+            .when()
+                    .get(path)
+            .then()
+                    .assertThat().statusCode(JOB_CATEGORY_PARTIALLY_NOT_FOUND.getHttpStatus().value())
+                    .body("code", equalTo(JOB_CATEGORY_PARTIALLY_NOT_FOUND.name()))
+                    .body("message", equalTo(JOB_CATEGORY_PARTIALLY_NOT_FOUND.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @Test
+        void 산업군에_존재하는_ID와_존재하지_않는_ID를_혼합하여_조회했을_때_404에러가_발생한다() {
+            // when & then
+            given(spec)
+                    .queryParam("industryIds", 1L, 999L)
+                    .queryParam("jobCategoryIds", 1L)
+            .when()
+                    .get(path)
+            .then()
+                    .assertThat().statusCode(INDUSTRY_PARTIALLY_NOT_FOUND.getHttpStatus().value())
+                    .body("code", equalTo(INDUSTRY_PARTIALLY_NOT_FOUND.name()))
+                    .body("message", equalTo(INDUSTRY_PARTIALLY_NOT_FOUND.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @Test
+        void 직군에_존재하는_ID와_존재하지_않는_ID를_혼합하여_조회했을_때_404에러가_발생한다() {
+            // when & then
+            given(spec)
+                    .queryParam("industryIds", 1L)
+                    .queryParam("jobCategoryIds", 1L, 999L)
+            .when()
+                    .get(path)
+            .then()
+                    .assertThat().statusCode(JOB_CATEGORY_PARTIALLY_NOT_FOUND.getHttpStatus().value())
+                    .body("code", equalTo(JOB_CATEGORY_PARTIALLY_NOT_FOUND.name()))
+                    .body("message", equalTo(JOB_CATEGORY_PARTIALLY_NOT_FOUND.getMessage()))
+                    .body("result", nullValue());
+        }
+
+        @Test
+        void 질문이_없을_경우_빈_리스트를_반환한다() {
+            // given
+            qnaSetRepository.deleteAll();
+
+            // when & then
+            given(spec)
+            .when()
+                    .get(path)
+            .then()
+                    .assertThat().statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result", notNullValue())
+                    .body("result.content", hasSize(0));
         }
     }
 
