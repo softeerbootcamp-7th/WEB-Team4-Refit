@@ -43,7 +43,6 @@ import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.aws.S3Util;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.property.S3FolderNameProperty;
-import com.shyashyashya.refit.global.property.S3Property;
 import com.shyashyashya.refit.global.util.HangulUtil;
 import com.shyashyashya.refit.global.util.RequestUserContext;
 import java.time.LocalDateTime;
@@ -191,13 +190,13 @@ public class InterviewService {
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
-        if (interview.getPdfUrl() != null) {
+        if (interview.getPdfResourceKey() != null) {
             throw new CustomException(INTERVIEW_PDF_ALREADY_EXITS);
         }
 
         String key = s3FolderNameProperty.interviewPdf() + UUID.randomUUID() + ".pdf";
         PresignedUrlDto response = s3Util.createResourceUploadUrl(key, MediaType.APPLICATION_PDF);
-        interview.updatePdfUrl(response.key());
+        interview.updatePdfResourceKey(response.key());
         return response;
     }
 
@@ -208,11 +207,11 @@ public class InterviewService {
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
-        if (interview.getPdfUrl() == null) {
+        if (interview.getPdfResourceKey() == null) {
             throw new CustomException(INTERVIEW_PDF_NOT_FOUND);
         }
 
-        String key = interview.getPdfUrl();
+        String key = interview.getPdfResourceKey();
         return s3Util.createResourceDownloadUrl(key);
     }
 
@@ -223,14 +222,14 @@ public class InterviewService {
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
-        String key = interview.getPdfUrl();
+        String key = interview.getPdfResourceKey();
         if (key == null) {
             throw new CustomException(INTERVIEW_PDF_NOT_FOUND);
         }
 
         s3Util.deleteFile(key);
         deleteAllPdfHighlighting(interview);
-        interview.deletePdfUrl();
+        interview.deletePdfResourceKey();
     }
 
     public Page<InterviewSimpleDto> getMyInterviewDrafts(InterviewDraftType draftType, Pageable pageable) {

@@ -28,7 +28,7 @@ public record InterviewFullDto(
         @NotNull Long jobCategoryId,
         String jobRole,
         @NotNull LocalDateTime updatedAt,
-        String pdfUrl,
+        String pdfResourceKey,
         @NotNull List<QnaSetDto> qnaSets,
         InterviewSelfReviewDto interviewSelfReview) {
     public static InterviewFullDto fromInterviewWithEmptyQnaSets(Interview interview) {
@@ -43,7 +43,7 @@ public record InterviewFullDto(
                 .jobCategoryId(interview.getJobCategory().getId())
                 .jobRole(interview.getJobRole())
                 .updatedAt(interview.getUpdatedAt())
-                .pdfUrl(interview.getPdfUrl())
+                .pdfResourceKey(interview.getPdfResourceKey())
                 .qnaSets(List.of())
                 .build();
     }
@@ -76,7 +76,7 @@ public record InterviewFullDto(
                 .jobCategoryId(interview.getJobCategory().getId())
                 .jobRole(interview.getJobRole())
                 .updatedAt(interview.getUpdatedAt())
-                .pdfUrl(interview.getPdfUrl())
+                .pdfResourceKey(interview.getPdfResourceKey())
                 .qnaSets(qnaSetDtos)
                 .interviewSelfReview(interviewSelfReviewDto)
                 .build();
