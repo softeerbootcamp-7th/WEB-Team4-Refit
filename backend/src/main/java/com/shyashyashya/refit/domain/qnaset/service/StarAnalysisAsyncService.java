@@ -1,8 +1,8 @@
 package com.shyashyashya.refit.domain.qnaset.service;
 
 import static com.shyashyashya.refit.domain.qnaset.constant.StarAnalysisConstant.STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC;
+import static com.shyashyashya.refit.global.exception.ErrorCode.GEMINI_RESPONSE_PARSING_FAILED;
 import static com.shyashyashya.refit.global.exception.ErrorCode.STAR_ANALYSIS_CREATE_FAILED;
-import static com.shyashyashya.refit.global.exception.ErrorCode.STAR_ANALYSIS_PARSING_FAILED;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -68,7 +68,7 @@ public class StarAnalysisAsyncService {
             Long starAnalysisId, Long qnaSetId, GeminiGenerateResponse geminiResponse) {
         log.info("Receive star analysis generate response from gemini. qnaSetId: {} \n{}", qnaSetId, geminiResponse);
         String jsonText =
-                geminiResponse.firstText().orElseThrow(() -> new CustomException(STAR_ANALYSIS_PARSING_FAILED));
+                geminiResponse.firstJsonText().orElseThrow(() -> new CustomException(GEMINI_RESPONSE_PARSING_FAILED));
         StarAnalysisGeminiResponse starAnalysisGeminiResponse = parseStarAnalysisGeminiResponse(jsonText);
         StarAnalysis updated = starAnalysisService.updateStarAnalysis(starAnalysisId, starAnalysisGeminiResponse);
         return StarAnalysisDto.from(updated);
@@ -76,15 +76,9 @@ public class StarAnalysisAsyncService {
 
     private StarAnalysisGeminiResponse parseStarAnalysisGeminiResponse(String text) {
         try {
-            if (text.startsWith("```json\n")) {
-                text = text.substring("```json\n".length());
-            }
-            if (text.endsWith("```")) {
-                text = text.substring(0, text.length() - "```".length());
-            }
             return objectMapper.readValue(text, StarAnalysisGeminiResponse.class);
         } catch (JsonProcessingException e) {
-            throw new CustomException(STAR_ANALYSIS_PARSING_FAILED);
+            throw new CustomException(GEMINI_RESPONSE_PARSING_FAILED);
         }
     }
 }
