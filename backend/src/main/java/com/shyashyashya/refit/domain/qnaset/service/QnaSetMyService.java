@@ -56,29 +56,15 @@ public class QnaSetMyService {
         User requestUser = requestUserContext.getRequestUser();
 
         return qnaSetRepository
-                .searchMyQnaSet(
-                        requestUser,
-                        request.keyword(),
-                        request.searchFilter().hasStarAnalysis(),
-                        request.searchFilter().sInclusionLevels(),
-                        request.searchFilter().tInclusionLevels(),
-                        request.searchFilter().aInclusionLevels(),
-                        request.searchFilter().rInclusionLevels(),
-                        pageable)
-                .map(QnaSetSearchResponse::from);
-    }
-
-    private List<FrequentQnaSetCategoryResponse> getPageContent(
-            Pageable pageable, Map<QnaSetCategory, Long> qnaSetCategoryCounts) {
-        var sortedList = qnaSetCategoryCounts.entrySet().stream()
-                .sorted(Map.Entry.<QnaSetCategory, Long>comparingByValue(Comparator.reverseOrder())
-                        .thenComparing(entry -> entry.getKey().getCategoryName()))
-                .map((entry) -> FrequentQnaSetCategoryResponse.of(entry.getKey(), entry.getValue()))
-                .toList();
-
-        int start = (int) pageable.getOffset();
-        int end = Math.min(start + pageable.getPageSize(), sortedList.size());
-
-        return sortedList.subList(start, end);
+            .searchMyQnaSet(
+                    requestUser,
+                    request.keyword(),
+                    request.searchFilter().hasStarAnalysis(),
+                    request.searchFilter().sInclusionLevels(),
+                    request.searchFilter().tInclusionLevels(),
+                    request.searchFilter().aInclusionLevels(),
+                    request.searchFilter().rInclusionLevels(),
+                    pageable)
+            .map(QnaSetSearchResponse::from);
     }
 }
