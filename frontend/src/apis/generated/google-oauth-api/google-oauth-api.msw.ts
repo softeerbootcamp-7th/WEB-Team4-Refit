@@ -14,11 +14,11 @@ import type { RequestHandlerOptions } from 'msw'
 export const getBuildOAuth2LoginUrlResponseMock = (
   overrideResponse: Partial<ApiResponseOAuth2LoginUrlResponse> = {},
 ): ApiResponseOAuth2LoginUrlResponse => ({
-  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
+  isSuccess: faker.datatype.boolean(),
+  code: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  message: faker.string.alpha({ length: { min: 10, max: 20 } }),
   result: faker.helpers.arrayElement([
-    { oAuth2LoginUrl: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]) },
+    { oAuth2LoginUrl: faker.string.alpha({ length: { min: 10, max: 20 } }) },
     undefined,
   ]),
   ...overrideResponse,

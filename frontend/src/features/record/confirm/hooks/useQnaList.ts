@@ -1,43 +1,79 @@
 import { useState } from 'react'
-import { useUpdateQnaSet } from '@/apis/generated/qna-set-api/qna-set-api'
-import type { SimpleQnaType } from '@/types/interview'
+import { useQueryClient } from '@tanstack/react-query'
+import { getGetInterviewFullQueryKey, useCreateQnaSet } from '@/apis/generated/interview-api/interview-api'
+import { useDeleteQnaSet, useUpdateQnaSet } from '@/apis/generated/qna-set-api/qna-set-api'
+
+const ERROR_MESSAGES = {
+  EDIT: '질문/답변 저장에 실패했습니다. 잠시 후 다시 시도해주세요.',
+  DELETE: '질문 삭제에 실패했습니다. 잠시 후 다시 시도해주세요.',
+  ADD: '질문 추가에 실패했습니다. 잠시 후 다시 시도해주세요.',
+} as const
 
 type UseQnaListOptions = {
-  onEdit?: (qnaSetId: number, question: string, answer: string) => void
-  onDelete?: (qnaSetId: number) => void
-  onAdd?: (question: string, answer: string) => void
+  interviewId: number
 }
 
-export function useQnaList(initialList: SimpleQnaType[], options: UseQnaListOptions = {}) {
-  const [qnaList, setQnaList] = useState<SimpleQnaType[]>(initialList)
+export function useQnaList(options: UseQnaListOptions) {
+  const queryClient = useQueryClient()
   const [isAddMode, setIsAddMode] = useState(false)
-  const { mutate: updateQnaSet } = useUpdateQnaSet()
+  const [actionError, setActionError] = useState<string | null>(null)
+  const { mutateAsync: updateQnaSet, isPending: isEditing } = useUpdateQnaSet()
+  const { mutateAsync: createQnaSet, isPending: isCreating } = useCreateQnaSet()
+  const { mutateAsync: deleteQnaSet, isPending: isDeleting } = useDeleteQnaSet()
 
-  const handleEdit = (qnaSetId: number, question: string, answer: string) => {
-    setQnaList((prev) =>
-      prev.map((item) => (item.qnaSetId === qnaSetId ? { ...item, questionText: question, answerText: answer } : item)),
-    )
-    updateQnaSet({ qnaSetId, data: { questionText: question, answerText: answer } })
-    options.onEdit?.(qnaSetId, question, answer)
-  }
-
-  const handleDelete = (qnaSetId: number) => {
-    setQnaList((prev) => prev.filter((item) => item.qnaSetId !== qnaSetId))
-    options.onDelete?.(qnaSetId)
-  }
-
-  const handleAddSave = (question: string, answer: string) => {
-    setQnaList((prev) => {
-      // TODO: API 연동 시 서버 응답의 ID로 교체
-      const nextId = prev.length > 0 ? Math.max(...prev.map((item) => item.qnaSetId)) + 1 : 1
-      return [...prev, { qnaSetId: nextId, questionText: question, answerText: answer }]
+  const invalidateInterviewFull = () =>
+    queryClient.invalidateQueries({
+      queryKey: getGetInterviewFullQueryKey(options.interviewId),
     })
-    setIsAddMode(false)
-    options.onAdd?.(question, answer)
+
+  const handleEdit = async (qnaSetId: number, question: string, answer: string) => {
+    setActionError(null)
+    try {
+      await updateQnaSet({ qnaSetId, data: { questionText: question, answerText: answer } })
+      void invalidateInterviewFull()
+    } catch {
+      setActionError(ERROR_MESSAGES.EDIT)
+    }
+  }
+
+  const handleDelete = async (qnaSetId: number) => {
+    if (isDeleting) return
+    setActionError(null)
+    try {
+      await deleteQnaSet({ qnaSetId })
+      void invalidateInterviewFull()
+    } catch {
+      setActionError(ERROR_MESSAGES.DELETE)
+    }
+  }
+
+  const handleAddSave = async (question: string, answer: string) => {
+    setActionError(null)
+    try {
+      await createQnaSet({ interviewId: options.interviewId, data: { questionText: question, answerText: answer } })
+      setIsAddMode(false)
+      void invalidateInterviewFull()
+    } catch {
+      setActionError(ERROR_MESSAGES.ADD)
+    }
   }
 
   const startAddMode = () => setIsAddMode(true)
-  const cancelAddMode = () => setIsAddMode(false)
+  const cancelAddMode = () => {
+    if (isCreating) return
+    setIsAddMode(false)
+  }
 
-  return { qnaList, isAddMode, handleEdit, handleDelete, handleAddSave, startAddMode, cancelAddMode }
+  return {
+    isAddMode,
+    isCreating,
+    isEditing,
+    isDeleting,
+    actionError,
+    handleEdit,
+    handleDelete,
+    handleAddSave,
+    startAddMode,
+    cancelAddMode,
+  }
 }

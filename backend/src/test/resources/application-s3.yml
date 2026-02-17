@@ -3,4 +3,5 @@ spring:
     region: "dummy"
     bucket: "dummy"
     prefix: "dummy"
-    presign-expire-seconds: 0
+    folder-names:
+      interview-pdf: "interview-pdf/"

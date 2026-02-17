@@ -8,6 +8,9 @@ import { QnaListSection } from './QnaListSection'
 type RecordSectionProps = {
   qnaList: SimpleQnaType[]
   isAddMode: boolean
+  isCreating: boolean
+  isDeleting: boolean
+  actionError: string | null
   onEdit: (qnaSetId: number, question: string, answer: string) => void
   onDelete: (qnaSetId: number) => void
   onAddSave: (question: string, answer: string) => void
@@ -20,6 +23,9 @@ type RecordSectionProps = {
 export function RecordSection({
   qnaList,
   isAddMode,
+  isCreating,
+  isDeleting,
+  actionError,
   onEdit,
   onDelete,
   onAddSave,
@@ -37,6 +43,8 @@ export function RecordSection({
       <QnaListSection
         qnaList={qnaList}
         isAddMode={isAddMode}
+        isCreating={isCreating}
+        isDeleting={isDeleting}
         onEdit={onEdit}
         onDelete={onDelete}
         onAddSave={onAddSave}
@@ -45,6 +53,7 @@ export function RecordSection({
         setRef={setRef}
         scrollContainerRef={scrollContainerRef}
       />
+      {actionError ? <p className="body-s-medium text-red-400">{actionError}</p> : null}
       <div className="flex shrink-0 justify-end gap-3">
         <Button variant="fill-orange-500" size="md" className="w-60" onClick={goToRecordLinkPage}>
           다음 단계

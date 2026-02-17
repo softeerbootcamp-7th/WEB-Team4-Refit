@@ -7,22 +7,29 @@
 import { faker } from '@faker-js/faker'
 
 import { HttpResponse, http } from 'msw'
-import type { ApiResponseVoid } from '../refit-api.schemas'
+import type { ApiResponseTokenReissueResponse } from '../refit-api.schemas'
 import type { RequestHandlerOptions } from 'msw'
 
 
-export const getReissueResponseMock = (overrideResponse: Partial<ApiResponseVoid> = {}): ApiResponseVoid => ({
-  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  result: faker.helpers.arrayElement([{}, undefined]),
+export const getReissueResponseMock = (
+  overrideResponse: Partial<ApiResponseTokenReissueResponse> = {},
+): ApiResponseTokenReissueResponse => ({
+  isSuccess: faker.datatype.boolean(),
+  code: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  message: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  result: faker.helpers.arrayElement([
+    { isReissueProcessed: faker.datatype.boolean(), isNeedSignUp: faker.datatype.boolean() },
+    undefined,
+  ]),
   ...overrideResponse,
 })
 
 export const getReissueMockHandler = (
   overrideResponse?:
-    | ApiResponseVoid
-    | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ApiResponseVoid> | ApiResponseVoid),
+    | ApiResponseTokenReissueResponse
+    | ((
+        info: Parameters<Parameters<typeof http.get>[1]>[0],
+      ) => Promise<ApiResponseTokenReissueResponse> | ApiResponseTokenReissueResponse),
   options?: RequestHandlerOptions,
 ) => {
   return http.get(

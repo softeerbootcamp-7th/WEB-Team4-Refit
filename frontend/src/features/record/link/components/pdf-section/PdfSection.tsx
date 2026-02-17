@@ -13,7 +13,7 @@ export function PdfSection() {
 
   const navigateWithId = useInterviewNavigate()
   const goToConfirmPage = () => navigateWithId(ROUTES.RECORD_CONFIRM)
-  const goToRetroPage = () => navigateWithId(ROUTES.RETRO_QUESTION)
+  const goToRetroPage = () => navigateWithId(ROUTES.RETRO)
 
   useEffect(() => {
     return () => {

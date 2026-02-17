@@ -14,6 +14,9 @@ import com.shyashyashya.refit.domain.qnaset.service.QnaSetService;
 import com.shyashyashya.refit.domain.qnaset.service.StarAnalysisAsyncService;
 import com.shyashyashya.refit.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.Explode;
+import io.swagger.v3.oas.annotations.enums.ParameterStyle;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -49,8 +52,10 @@ public class QnaSetController {
             description = "지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다. 지정하지 않은 필드에 대해서는 전체를 대상으로 조회합니다.")
     @GetMapping("/frequent")
     public ResponseEntity<ApiResponse<Page<FrequentQnaSetResponse>>> getFrequentQuestions(
-            @RequestParam(required = false) Set<Long> industryIds,
-            @RequestParam(required = false) Set<Long> jobCategoryIds,
+            @Parameter(style = ParameterStyle.FORM, explode = Explode.TRUE) @RequestParam(required = false)
+                    Set<Long> industryIds,
+            @Parameter(style = ParameterStyle.FORM, explode = Explode.TRUE) @RequestParam(required = false)
+                    Set<Long> jobCategoryIds,
             @ParameterObject Pageable pageable) {
         var body = qnaSetService.getFrequentQuestions(industryIds, jobCategoryIds, pageable);
         var response = ApiResponse.success(COMMON200, body);
