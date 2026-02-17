@@ -45,17 +45,6 @@ function formatDateTime(dateString: string): string {
   return `${datePart} ${timePart}`.trim()
 }
 
-function formatDate(dateString: string): string {
-  const date = new Date(dateString)
-  if (!isValidDate(date)) return '-'
-
-  return date.toLocaleDateString('ko-KR', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  })
-}
-
 function formatUpdatedTime(dateString: string): string {
   const date = new Date(dateString)
   if (!isValidDate(date)) return ''
@@ -80,14 +69,6 @@ function mapUpcomingInterview(item: DashboardUpcomingInterviewResponse): Upcomin
     recentQuestions: (item.frequentlyAskedQuestions ?? []).map((question, index) => ({
       id: index + 1,
       text: question,
-    })),
-    similarInterviews: (item.relatedInterviews ?? []).map((relatedInterview) => ({
-      id: relatedInterview.interviewId,
-      date: formatDate(relatedInterview.interviewStartAt),
-      companyName: relatedInterview.companyName,
-      industry: '',
-      jobCategory: relatedInterview.jobCategoryName,
-      interviewType: toInterviewTypeLabel(relatedInterview.interviewType),
     })),
   }
 }

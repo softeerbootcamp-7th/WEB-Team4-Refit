@@ -13,11 +13,11 @@ export default function DashboardPage() {
   return (
     <ScheduleModalProvider>
       <div className="flex w-full min-w-0 flex-col justify-center gap-10">
-        <div className="flex w-full items-start gap-6">
-          <div className="flex w-225 flex-1 flex-col gap-10">
+        <div className="flex w-full items-stretch gap-6">
+          <div className="flex w-225 min-h-0 flex-1 flex-col gap-10">
             <DashboardBanner variant={variant} titleText={titleText} />
-            <UpcomingInterviewSection />
             <ReviewWaitingSection />
+            <UpcomingInterviewSection />
           </div>
           <div className="bg-gray-150 w-80 shrink-0 self-stretch overflow-hidden rounded-[20px] px-5 py-7">
             <InterviewCalendar />
