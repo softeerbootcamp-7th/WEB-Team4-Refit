@@ -1,4 +1,4 @@
-import { useMemo, type RefObject } from 'react'
+import type { RefObject } from 'react'
 import { CaretDownIcon } from '@/designs/assets'
 import { Button, PlainCombobox } from '@/designs/components'
 import { QnaCard } from '@/features/dashboard/my-interviews/components/questions'
@@ -48,19 +48,7 @@ export default function QnaCardListSection({
   errorMessage,
   emptyMessage = '아직 저장된 질문이 없어요.',
 }: QnaCardListSectionProps) {
-  const sortedItems = useMemo(() => {
-    const copiedItems = [...items]
-
-    if (sortOrder === 'latest') {
-      copiedItems.sort((a, b) => toSortableTimestamp(b.createdAt) - toSortableTimestamp(a.createdAt))
-      return copiedItems
-    }
-
-    copiedItems.sort((a, b) => toSortableTimestamp(a.createdAt) - toSortableTimestamp(b.createdAt))
-    return copiedItems
-  }, [items, sortOrder])
-
-  const hasItems = sortedItems.length > 0
+  const hasItems = items.length > 0
   const isSortDisabled = isLoading || Boolean(errorMessage) || !hasItems
 
   return (
@@ -87,7 +75,7 @@ export default function QnaCardListSection({
           {!isLoading &&
             !errorMessage &&
             hasItems &&
-            sortedItems.map((item) => (
+            items.map((item) => (
               <QnaCard
                 key={item.id}
                 resultStatus={item.resultStatus}
@@ -105,13 +93,6 @@ export default function QnaCardListSection({
       </div>
     </div>
   )
-}
-
-function toSortableTimestamp(value?: string): number {
-  if (!value) return 0
-
-  const timestamp = new Date(value).getTime()
-  return Number.isNaN(timestamp) ? 0 : timestamp
 }
 
 function StatusText({ text }: { text: string }) {
