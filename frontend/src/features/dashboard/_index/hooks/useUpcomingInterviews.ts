@@ -63,6 +63,7 @@ function mapUpcomingInterview(item: DashboardUpcomingInterviewResponse): Upcomin
     id: interview.interviewId,
     dDay: getDdayLabel(interview.interviewStartAt),
     companyName: interview.companyName,
+    jobCategoryName: interview.jobCategoryName,
     position: `${interview.jobCategoryName} ${toInterviewTypeLabel(interview.interviewType)}`,
     datetime: formatDateTime(interview.interviewStartAt),
     lastUpdated: formatUpdatedTime(interview.updatedAt),

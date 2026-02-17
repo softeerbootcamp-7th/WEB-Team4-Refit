@@ -9,6 +9,7 @@ export interface UpcomingInterviewData {
   id: number
   dDay: string
   companyName: string
+  jobCategoryName: string
   position: string
   datetime: string
   recentQuestions: InterviewQuestion[]
