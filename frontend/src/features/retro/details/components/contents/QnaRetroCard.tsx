@@ -1,6 +1,7 @@
 import { useRef, useState, type Ref } from 'react'
 import {
   useCreateStarAnalysis,
+  useDeletePdfHighlighting,
   useDeleteQnaSet,
   useGetScrapFoldersContainingQnaSet,
   useUpdateQnaSet,
@@ -8,8 +9,10 @@ import {
 } from '@/apis/generated/qna-set-api/qna-set-api'
 import { BookmarkIcon, MoreIcon } from '@/designs/assets'
 import { Border, Button } from '@/designs/components'
+import ConfirmModal from '@/designs/components/modal/ConfirmModal'
 import { QnaSetCard, QnaSetEditForm, StarAnalysisSection } from '@/features/_common/components/qna-set'
 import { useOnClickOutside } from '@/features/_common/hooks/useOnClickOutside'
+import { getApiErrorCode } from '@/features/_common/utils/error'
 import { RetroWriteCard, ScrapModal } from '@/features/retro/_common/components'
 import type { QnaSetType } from '@/types/interview'
 
@@ -23,12 +26,14 @@ type QnaRetroCardProps = {
 }
 
 const SCRAP_FOLDERS_STALE_TIME = 1000 * 60 * 30
+const QNA_DELETE_FAILED_PDF_HIGHLIGHTING_EXISTS = 'QNA_DELETE_FAILED_PDF_HIGHLIGHTING_EXISTS'
 
 export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChange, onDelete }: QnaRetroCardProps) {
   const { qnaSetId, questionText, answerText, qnaSetSelfReviewText, starAnalysis, isMarkedDifficult } = qnaSet
   const { mutate: updateQnaSet } = useUpdateQnaSet()
   const { mutate: updateQnaSetSelfReview } = useUpdateQnaSetSelfReview()
-  const { mutate: deleteQnaSet } = useDeleteQnaSet()
+  const { mutateAsync: deleteQnaSet, isPending: isDeletingQnaSet } = useDeleteQnaSet()
+  const { mutateAsync: deletePdfHighlighting, isPending: isDeletingPdfHighlighting } = useDeletePdfHighlighting()
   const { mutate: createStarAnalysis, isPending: isAnalyzing } = useCreateStarAnalysis()
 
   const { data: scrapFolderData } = useGetScrapFoldersContainingQnaSet(
@@ -46,6 +51,7 @@ export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChan
   const isBookmarked = currentMarkedDifficult || hasAnyScrapFolder
 
   const [isScrapModalOpen, setIsScrapModalOpen] = useState(false)
+  const [isDeleteWithHighlightConfirmOpen, setIsDeleteWithHighlightConfirmOpen] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
 
   const [editedQuestion, setEditedQuestion] = useState(questionText)
@@ -93,12 +99,26 @@ export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChan
 
   const handleDelete = () => {
     setIsMenuOpen(false)
-    deleteQnaSet(
-      { qnaSetId },
-      {
-        onSuccess: () => onDelete?.(qnaSetId),
-      },
-    )
+    void deleteQnaSet({ qnaSetId })
+      .then(() => {
+        onDelete?.(qnaSetId)
+      })
+      .catch((error) => {
+        if (getApiErrorCode(error) === QNA_DELETE_FAILED_PDF_HIGHLIGHTING_EXISTS) {
+          setIsDeleteWithHighlightConfirmOpen(true)
+          return
+        }
+      })
+  }
+
+  const handleDeleteWithHighlight = () => {
+    void deletePdfHighlighting({ qnaSetId })
+      .then(() => deleteQnaSet({ qnaSetId }))
+      .then(() => {
+        setIsDeleteWithHighlightConfirmOpen(false)
+        onDelete?.(qnaSetId)
+      })
+      .catch(() => {})
   }
 
   const handleScrap = () => {
@@ -212,6 +232,17 @@ export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChan
         qnaSetId={qnaSetId}
         isMarkedDifficult={currentMarkedDifficult}
         onDifficultMarkedChange={setCurrentMarkedDifficult}
+      />
+      <ConfirmModal
+        open={isDeleteWithHighlightConfirmOpen}
+        onClose={() => setIsDeleteWithHighlightConfirmOpen(false)}
+        title={`자기소개서 하이라이트\n연결 정보가 존재하는 항목입니다.\n정말 삭제하시겠습니까?`}
+        hasCancelButton={true}
+        cancelText="취소"
+        okText="삭제하기"
+        okButtonVariant="fill-gray-800"
+        okButtonLoading={isDeletingQnaSet || isDeletingPdfHighlighting}
+        onOk={handleDeleteWithHighlight}
       />
     </div>
   )
