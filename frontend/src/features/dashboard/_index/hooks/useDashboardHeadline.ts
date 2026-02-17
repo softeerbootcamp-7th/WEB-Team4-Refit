@@ -40,11 +40,12 @@ function buildBannerTitleText(headline?: DashboardHeadlineResponse): string {
 }
 
 export function useDashboardHeadline() {
-  const { data: response } = useGetDashboardHeadline()
+  const { data: response, isLoading } = useGetDashboardHeadline()
   const headline = response?.result
 
   return {
     variant: headline ? HEADLINE_VARIANT_MAP[headline.headlineType] : ('no_schedule' as const),
     titleText: buildBannerTitleText(headline),
+    isLoading,
   }
 }
