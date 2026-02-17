@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
+import { useCompleteSelfReview } from '@/apis/generated/interview-api/interview-api'
 import type { RetroListItem } from '@/constants/example'
 import { FadeScrollArea } from '@/designs/components'
 import { KptWriteCard } from '@/features/retro/_common/components'
@@ -34,6 +35,7 @@ export function RetroSection({
 }: RetroSectionProps) {
   const navigate = useNavigate()
   const [isCompleteConfirmOpen, setIsCompleteConfirmOpen] = useState(false)
+  const { mutateAsync: completeSelfReview } = useCompleteSelfReview()
   const retro = useRetroSectionController({
     interviewId,
     currentItem,
@@ -53,11 +55,13 @@ export function RetroSection({
       setIsCompleteConfirmOpen(true)
       return
     }
+    await completeSelfReview({ interviewId })
     navigate(ROUTES.DASHBOARD)
   }
 
-  const handleConfirmComplete = () => {
+  const handleConfirmComplete = async () => {
     setIsCompleteConfirmOpen(false)
+    await completeSelfReview({ interviewId })
     navigate(ROUTES.DASHBOARD)
   }
 
