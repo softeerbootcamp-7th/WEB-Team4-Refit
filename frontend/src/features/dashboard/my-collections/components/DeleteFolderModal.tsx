@@ -35,10 +35,7 @@ const DeleteFolderModal = ({
         <>
           <span className="font-bold text-gray-900">'{folderName}'</span> 폴더를 삭제하시겠습니까?
           {errorMessage && (
-            <>
-              <br />
-              <span className="body-s-medium text-red-500">{errorMessage}</span>
-            </>
+            <span className="body-s-medium mt-2 block text-red-500">{errorMessage}</span>
           )}
         </>
       }
