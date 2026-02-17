@@ -1,6 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query'
 import {
   getGetDashboardCalendarInterviewsQueryKey,
+  getGetDashboardHeadlineQueryKey,
   getGetDebriefIncompletedInterviewsQueryKey,
   getGetUpcomingInterviewsQueryKey,
   InterviewCreateRequestInterviewType,
@@ -29,6 +30,7 @@ export default function InterviewScheduleModal() {
     mutation: {
       onSuccess: () => {
         void queryClient.invalidateQueries({ queryKey: getGetDashboardCalendarInterviewsQueryKey() })
+        void queryClient.invalidateQueries({ queryKey: getGetDashboardHeadlineQueryKey() })
         void queryClient.invalidateQueries({ queryKey: getGetDebriefIncompletedInterviewsQueryKey() })
         void queryClient.invalidateQueries({ queryKey: getGetUpcomingInterviewsQueryKey() })
         modalContext?.closeModal()
