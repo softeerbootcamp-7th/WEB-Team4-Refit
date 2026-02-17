@@ -1,4 +1,4 @@
-package com.shyashyashya.refit.domain.interview.constant;
+package com.shyashyashya.refit.domain.interview.util;
 
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.global.property.GeminiProperty;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class QnaSetPromptGenerator {
+public class RawTextConvertPromptUtil {
 
     public static final String PROMPT_FILE_NAME = "qna_set_generate_prompt";
 

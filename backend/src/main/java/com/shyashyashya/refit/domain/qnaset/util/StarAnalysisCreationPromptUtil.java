@@ -1,4 +1,4 @@
-package com.shyashyashya.refit.domain.qnaset.constant;
+package com.shyashyashya.refit.domain.qnaset.util;
 
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.global.property.GeminiProperty;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class StarAnalysisPromptGenerator {
+public class StarAnalysisCreationPromptUtil {
 
     public static final String PROMPT_HEADER_FILE_NAME = "star_analysis_header.txt";
     public static final String PROMPT_TAIL_FILE_NAME = "star_analysis_tail.txt";

@@ -5,7 +5,7 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.STAR_ANALYSIS_CR
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.shyashyashya.refit.domain.qnaset.constant.StarAnalysisPromptGenerator;
+import com.shyashyashya.refit.domain.qnaset.util.StarAnalysisCreationPromptUtil;
 import com.shyashyashya.refit.domain.qnaset.dto.StarAnalysisDto;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.StarAnalysis;
@@ -29,7 +29,7 @@ public class StarAnalysisAsyncService {
     private final QnaSetService qnaSetService;
     private final StarAnalysisService starAnalysisService;
     private final GeminiClient geminiClient;
-    private final StarAnalysisPromptGenerator starAnalysisPromptGenerator;
+    private final StarAnalysisCreationPromptUtil starAnalysisPromptGenerator;
     private final Executor geminiPostProcessExecutor;
     private final ObjectMapper objectMapper;
 

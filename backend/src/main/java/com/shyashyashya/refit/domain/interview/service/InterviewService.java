@@ -13,7 +13,7 @@ import com.shyashyashya.refit.domain.company.model.Company;
 import com.shyashyashya.refit.domain.company.repository.CompanyRepository;
 import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
-import com.shyashyashya.refit.domain.interview.constant.QnaSetPromptGenerator;
+import com.shyashyashya.refit.domain.interview.util.RawTextConvertPromptUtil;
 import com.shyashyashya.refit.domain.interview.dto.InterviewDto;
 import com.shyashyashya.refit.domain.interview.dto.InterviewFullDto;
 import com.shyashyashya.refit.domain.interview.dto.InterviewSimpleDto;
@@ -86,7 +86,7 @@ public class InterviewService {
 
     private final InterviewValidator interviewValidator;
     private final RequestUserContext requestUserContext;
-    private final QnaSetPromptGenerator qnaSetPromptGenerator;
+    private final RawTextConvertPromptUtil qnaSetPromptGenerator;
     private final GeminiClient geminiClient;
     private final S3FolderNameProperty s3FolderNameProperty;
     private final S3Util s3Util;
