@@ -1,2 +1,2 @@
-export { RetroActionBar } from './RetroActionBar'
+export { RetroActionBar } from './action-bar/RetroActionBar'
 export { RetroSection } from './RetroSection'
