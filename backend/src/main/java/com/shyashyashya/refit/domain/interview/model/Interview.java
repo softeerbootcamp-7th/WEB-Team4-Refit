@@ -60,8 +60,8 @@ public class Interview extends BaseEntity {
     @Column(name = "interview_raw_text", columnDefinition = "text")
     private String rawText;
 
-    @Column(columnDefinition = "varchar(2048)")
-    private String pdfUrl;
+    @Column(columnDefinition = "varchar(200)")
+    private String pdfResourceKey;
 
     @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
