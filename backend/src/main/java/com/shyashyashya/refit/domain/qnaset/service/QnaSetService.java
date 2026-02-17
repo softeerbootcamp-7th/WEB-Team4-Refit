@@ -1,6 +1,6 @@
 package com.shyashyashya.refit.domain.qnaset.service;
 
-import static com.shyashyashya.refit.global.exception.ErrorCode.QNA_DELETE_FAILED;
+import static com.shyashyashya.refit.global.exception.ErrorCode.QNA_DELETE_FAILED_PDF_HIGHLIGHTING_EXISTS;
 import static com.shyashyashya.refit.global.exception.ErrorCode.QNA_SET_NOT_FOUND;
 
 import com.shyashyashya.refit.domain.industry.service.validator.IndustryValidator;
@@ -89,7 +89,7 @@ public class QnaSetService {
         interviewValidator.validateInterviewReviewStatus(qnaSet.getInterview(), InterviewReviewStatus.QNA_SET_DRAFT);
 
         if (pdfHighlightingRepository.existsByQnaSet(qnaSet)) {
-            throw new CustomException(QNA_DELETE_FAILED);
+            throw new CustomException(QNA_DELETE_FAILED_PDF_HIGHLIGHTING_EXISTS);
         }
 
         qnaSetRepository.delete(qnaSet);

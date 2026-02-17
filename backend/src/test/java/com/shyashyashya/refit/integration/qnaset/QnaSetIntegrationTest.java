@@ -4,7 +4,7 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.INDUSTRY_PARTIAL
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_ACCESSIBLE;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED;
 import static com.shyashyashya.refit.global.exception.ErrorCode.JOB_CATEGORY_PARTIALLY_NOT_FOUND;
-import static com.shyashyashya.refit.global.exception.ErrorCode.QNA_DELETE_FAILED;
+import static com.shyashyashya.refit.global.exception.ErrorCode.QNA_DELETE_FAILED_PDF_HIGHLIGHTING_EXISTS;
 import static com.shyashyashya.refit.global.exception.ErrorCode.QNA_SET_NOT_FOUND;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON204;
@@ -22,7 +22,6 @@ import com.shyashyashya.refit.domain.interview.dto.request.QnaSetCreateRequest;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
-import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
 import com.shyashyashya.refit.domain.qnaset.dto.PdfHighlightingRectDto;
 import com.shyashyashya.refit.domain.qnaset.dto.request.PdfHighlightingUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetReviewUpdateRequest;
@@ -505,8 +504,8 @@ public class QnaSetIntegrationTest extends IntegrationTest {
                     .delete("/qna-set/" + qnaSetWithPdfHighlightingId)
             .then()
                     .statusCode(400)
-                    .body("code", equalTo(QNA_DELETE_FAILED.name()))
-                    .body("message", equalTo(QNA_DELETE_FAILED.getMessage()))
+                    .body("code", equalTo(QNA_DELETE_FAILED_PDF_HIGHLIGHTING_EXISTS.name()))
+                    .body("message", equalTo(QNA_DELETE_FAILED_PDF_HIGHLIGHTING_EXISTS.getMessage()))
                     .body("result", nullValue());
         }
     }

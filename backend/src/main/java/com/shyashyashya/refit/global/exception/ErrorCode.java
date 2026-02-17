@@ -25,7 +25,7 @@ public enum ErrorCode {
     INTERVIEW_PDF_ALREADY_EXITS(BAD_REQUEST, "인터뷰에 PDF 파일이 이미 존재합니다. 파일을 삭제하고 업로드 URL을 요청해주세요."),
 
     QNA_SET_CATEGORY_NOT_FOUND(NOT_FOUND, "질문 카테고리가 존재하지 않습니다."),
-    QNA_DELETE_FAILED(BAD_REQUEST, "질답 세트를 삭제할 수 없습니다. 연관된 PDF 하이라이팅이 존재합니다."),
+    QNA_DELETE_FAILED_PDF_HIGHLIGHTING_EXISTS(BAD_REQUEST, "질답 세트를 삭제할 수 없습니다. 연관된 PDF 하이라이팅이 존재합니다."),
 
     INDUSTRY_NOT_FOUND(NOT_FOUND, "산업군이 존재하지 않습니다."),
     INDUSTRY_PARTIALLY_NOT_FOUND(NOT_FOUND, "요청한 산업군 중 일부 산업군이 존재하지 않습니다."),
