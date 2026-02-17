@@ -19,7 +19,7 @@ export default function InterviewListSection({ filter }: InterviewListSectionPro
     if (!hasItems) {
       return <StatusText message={emptyMessage} />
     }
-    return items.map((item, i) => <InterviewCard key={i} {...item} />)
+    return items.map((item) => <InterviewCard key={item.interviewId} {...item} />)
   }
 
   return (
