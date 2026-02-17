@@ -1,6 +1,8 @@
+import { useNavigate } from 'react-router'
 import { CalendarStarIcon, NoteIcon, SmallLogoIcon } from '@/designs/assets'
 import { Badge } from '@/designs/components'
 import Button from '@/designs/components/button'
+import { ROUTES } from '@/routes/routes'
 import type { UpcomingInterviewData } from './types'
 
 interface UpcomingInterviewCardProps {
@@ -11,6 +13,8 @@ const DefaultCompanyLogo = () => <SmallLogoIcon className="h-6 w-6 text-gray-400
 const DefaultMiniLogo = () => <SmallLogoIcon className="h-4 w-4 text-gray-400" />
 
 export default function UpcomingInterviewCard({ data }: UpcomingInterviewCardProps) {
+  const navigate = useNavigate()
+
   return (
     <div className="flex w-full flex-col gap-5 rounded-2xl bg-white p-6">
       <div className="flex items-start gap-4">
@@ -46,7 +50,12 @@ export default function UpcomingInterviewCard({ data }: UpcomingInterviewCardPro
           ))}
         </div>
 
-        <Button variant="outline-gray-white" size="sm" className="w-full">
+        <Button
+          variant="outline-gray-white"
+          size="sm"
+          className="w-full"
+          onClick={() => navigate(ROUTES.DASHBOARD_TREND_QUESTIONS)}
+        >
           비슷한 면접 질문 더 보러가기
         </Button>
       </div>
