@@ -13,7 +13,7 @@ import com.shyashyashya.refit.domain.interview.dto.request.QnaSetCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.response.GuideQuestionResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.InterviewCreateResponse;
-import com.shyashyashya.refit.domain.interview.dto.response.PresignedUrlResponse;
+import com.shyashyashya.refit.domain.interview.dto.response.PresignedUrlDto;
 import com.shyashyashya.refit.domain.interview.dto.response.QnaSetCreateResponse;
 import com.shyashyashya.refit.domain.interview.service.GuideQuestionService;
 import com.shyashyashya.refit.domain.interview.service.InterviewService;
@@ -158,7 +158,7 @@ public class InterviewController {
 
     @Operation(summary = "면접 PDF 파일 업로드를 위한 Pre-Signed URL을 요청합니다.")
     @GetMapping("/{interviewId}/pdf/upload-url")
-    public ResponseEntity<ApiResponse<PresignedUrlResponse>> createUploadUrl(@PathVariable Long interviewId) {
+    public ResponseEntity<ApiResponse<PresignedUrlDto>> createPdfUploadUrl(@PathVariable Long interviewId) {
         var body = interviewService.createPdfUploadUrl(interviewId);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
@@ -166,9 +166,19 @@ public class InterviewController {
 
     @Operation(summary = "면접 PDF 파일 다운로드를 위한 Pre-Signed URL을 요청합니다.")
     @GetMapping("/{interviewId}/pdf/download-url")
-    public ResponseEntity<ApiResponse<PresignedUrlResponse>> createDownloadUrl(@PathVariable Long interviewId) {
+    public ResponseEntity<ApiResponse<PresignedUrlDto>> createPdfDownloadUrl(@PathVariable Long interviewId) {
         var body = interviewService.createPdfDownloadUrl(interviewId);
         var response = ApiResponse.success(COMMON200, body);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "면접 PDF 파일을 삭제합니다.", description = """
+            연관된 하이라이팅은 모두 삭제됩니다.
+            """)
+    @DeleteMapping("/{interviewId}/pdf")
+    public ResponseEntity<ApiResponse<Void>> deleteInterviewPdf(@PathVariable Long interviewId) {
+        interviewService.deletePdf(interviewId);
+        var response = ApiResponse.success(COMMON204);
         return ResponseEntity.ok(response);
     }
 }
