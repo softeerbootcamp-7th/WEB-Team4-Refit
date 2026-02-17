@@ -36,7 +36,9 @@ export default function FrequentQuestionsSection() {
         <h2 className="body-l-semibold text-gray-900">빈출 카테고리 질문 TOP 5</h2>
       </div>
       {categories.length === 0 ? (
-        <div className="body-m-medium text-gray-400">아직 빈출 카테고리 데이터가 없어요.</div>
+        <div className="body-m-medium flex min-h-28 items-center justify-center text-center text-gray-400">
+          아직 빈출 카테고리 데이터가 없어요.
+        </div>
       ) : (
         <div className="flex flex-col gap-4">
           {categories.map((item, i) => (

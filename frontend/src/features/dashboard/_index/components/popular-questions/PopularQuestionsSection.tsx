@@ -20,7 +20,9 @@ export default function PopularQuestionsSection() {
         </button>
       </div>
       {data.length === 0 ? (
-        <div className="body-m-medium py-4 text-gray-400">아직 빈출 질문 데이터가 없어요.</div>
+        <div className="body-m-medium flex min-h-32 items-center justify-center text-center text-gray-400">
+          아직 빈출 질문 데이터가 없어요.
+        </div>
       ) : (
         <div className="overflow-hidden rounded-xl">
           {data.map((item, i) => (
