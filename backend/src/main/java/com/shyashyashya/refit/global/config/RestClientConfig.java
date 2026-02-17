@@ -1,6 +1,6 @@
 package com.shyashyashya.refit.global.config;
 
-import com.shyashyashya.refit.domain.interview.constant.QnaSetPromptConstant;
+import com.shyashyashya.refit.domain.interview.constant.QnaSetGenerationConstant;
 import java.net.http.HttpClient;
 import java.time.Duration;
 import org.springframework.context.annotation.Bean;
@@ -20,8 +20,8 @@ public class RestClientConfig {
 
     @Bean(name = "geminiApiRestClient")
     public RestClient geminiApiRestClient() {
-        Duration connectTimeout = Duration.ofSeconds(QnaSetPromptConstant.GEMINI_CONNECT_TIMEOUT_SEC);
-        Duration readTimeout = Duration.ofSeconds(QnaSetPromptConstant.GEMINI_READ_TIMEOUT_SEC);
+        Duration connectTimeout = Duration.ofSeconds(QnaSetGenerationConstant.GEMINI_CONNECT_TIMEOUT_SEC);
+        Duration readTimeout = Duration.ofSeconds(QnaSetGenerationConstant.GEMINI_READ_TIMEOUT_SEC);
 
         HttpClient httpClient =
                 HttpClient.newBuilder().connectTimeout(connectTimeout).build();

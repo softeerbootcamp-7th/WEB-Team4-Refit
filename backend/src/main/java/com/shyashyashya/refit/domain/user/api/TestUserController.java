@@ -1,6 +1,6 @@
 package com.shyashyashya.refit.domain.user.api;
 
-import static com.shyashyashya.refit.domain.qnaset.constant.StarAnalysisConstant.STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC;
+import static com.shyashyashya.refit.domain.qnaset.constant.StarAnalysisGenerationConstant.STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC;
 import static com.shyashyashya.refit.global.exception.ErrorCode.TEXT_EMBEDDING_CREATE_FAILED;
 import static com.shyashyashya.refit.global.exception.ErrorCode.USER_NOT_FOUND;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
