@@ -46,6 +46,7 @@ public interface QnaSetRepository extends JpaRepository<QnaSet, Long>, QnaSetCus
           FROM QnaSet q
          WHERE q.interview.user = :user
            AND q.isMarkedDifficult = TRUE
+         ORDER BY q.interview.startAt DESC
     """)
     Page<QnaSet> findAllDifficultByUser(User user, Pageable pageable);
 }
