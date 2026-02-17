@@ -34,7 +34,7 @@ export default function UpcomingInterviewCard({ data }: UpcomingInterviewCardPro
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5">
             <CalendarStarIcon className="h-6 w-6 text-gray-400" />
-            <span className="body-l-semibold text-gray-800">최근 등록된 {data.companyName} 면접질문</span>
+            <span className="body-l-semibold text-gray-800">최근 등록된 관심 산업군 및 직군의 면접질문</span>
           </div>
         </div>
         <div className="flex flex-col gap-2">
