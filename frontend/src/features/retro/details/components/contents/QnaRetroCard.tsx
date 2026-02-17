@@ -11,7 +11,7 @@ import { Border, Button } from '@/designs/components'
 import { QnaSetCard, QnaSetEditForm, StarAnalysisSection } from '@/features/_common/components/qna-set'
 import { useOnClickOutside } from '@/features/_common/hooks/useOnClickOutside'
 import { RetroWriteCard, ScrapModal } from '@/features/retro/_common/components'
-import type { QnaSetType, StarAnalysisResult } from '@/types/interview'
+import type { QnaSetType } from '@/types/interview'
 
 type QnaRetroCardProps = {
   ref?: Ref<HTMLDivElement>
@@ -110,7 +110,7 @@ export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChan
       { qnaSetId },
       {
         onSuccess: (res) => {
-          setCurrentStarAnalysis(res.result as StarAnalysisResult)
+          setCurrentStarAnalysis(res.result)
         },
       },
     )
