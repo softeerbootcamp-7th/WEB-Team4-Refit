@@ -1,6 +1,7 @@
 package com.shyashyashya.refit.domain.interview.dto;
 
 import com.shyashyashya.refit.domain.company.model.Company;
+import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewResultStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
@@ -17,12 +18,14 @@ public record InterviewDto(
         @NotNull InterviewReviewStatus interviewReviewStatus,
         String interviewRawText,
         @NotNull String companyName,
+        @NotNull Long industryId,
         @NotNull Long jobCategoryId,
         @NotNull String jobCategoryName,
         @NotNull LocalDateTime updatedAt,
         @NotNull LocalDateTime createdAt) {
     public static InterviewDto from(Interview interview) {
         Company company = interview.getCompany();
+        Industry industry = interview.getIndustry();
         JobCategory jobCategory = interview.getJobCategory();
 
         return new InterviewDto(
@@ -33,6 +36,7 @@ public record InterviewDto(
                 interview.getReviewStatus(),
                 interview.getRawText(),
                 company.getName(),
+                industry.getId(),
                 jobCategory.getId(),
                 jobCategory.getName(),
                 interview.getUpdatedAt(),
