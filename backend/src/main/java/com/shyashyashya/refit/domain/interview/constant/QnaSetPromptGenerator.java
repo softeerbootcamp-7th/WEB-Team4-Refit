@@ -1,7 +1,5 @@
 package com.shyashyashya.refit.domain.interview.constant;
 
-import static com.shyashyashya.refit.domain.interview.constant.QnaSetPromptConstant.PROMPT_FILE_NAME;
-
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.global.property.GeminiProperty;
 import jakarta.annotation.PostConstruct;
@@ -15,6 +13,8 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class QnaSetPromptGenerator {
+
+    public static final String PROMPT_FILE_NAME = "qna_set_generate_prompt";
 
     private final GeminiProperty geminiProperty;
     private String promptTemplate;

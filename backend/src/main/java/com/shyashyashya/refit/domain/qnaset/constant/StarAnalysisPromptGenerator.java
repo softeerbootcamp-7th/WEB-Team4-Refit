@@ -1,8 +1,5 @@
 package com.shyashyashya.refit.domain.qnaset.constant;
 
-import static com.shyashyashya.refit.domain.qnaset.constant.StarAnalysisConstant.PROMPT_HEADER_FILE_NAME;
-import static com.shyashyashya.refit.domain.qnaset.constant.StarAnalysisConstant.PROMPT_TAIL_FILE_NAME;
-
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.global.property.GeminiProperty;
 import jakarta.annotation.PostConstruct;
@@ -18,6 +15,9 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Slf4j
 public class StarAnalysisPromptGenerator {
+
+    public static final String PROMPT_HEADER_FILE_NAME = "star_analysis_header.txt";
+    public static final String PROMPT_TAIL_FILE_NAME = "star_analysis_tail.txt";
 
     private final GeminiProperty geminiProperty;
     private String promptTemplateHeader;
