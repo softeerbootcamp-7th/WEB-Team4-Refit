@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
@@ -58,18 +57,14 @@ public class GeminiClient {
     }
 
     public GeminiGenerateResponse sendTextGenerateRequest(GeminiGenerateRequest requestBody, GenerateModel model) {
-        try {
-            return restClient
-                    .post()
-                    .uri(model.endpoint())
-                    .header("x-goog-api-key", geminiProperty.apiKey())
-                    .accept(MediaType.APPLICATION_JSON)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(requestBody)
-                    .retrieve()
-                    .body(GeminiGenerateResponse.class);
-        } catch (RestClientException e) {
-            throw e;
-        }
+        return restClient
+                .post()
+                .uri(model.endpoint())
+                .header("x-goog-api-key", geminiProperty.apiKey())
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(requestBody)
+                .retrieve()
+                .body(GeminiGenerateResponse.class);
     }
 }
