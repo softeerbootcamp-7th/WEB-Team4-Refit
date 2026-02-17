@@ -96,7 +96,7 @@ function transformInterviewData(res: Awaited<ReturnType<typeof getInterviewFull>
     answerText: q.answerText ?? '',
     qnaSetSelfReviewText: q.qnaSetSelfReviewText ?? '',
     isMarkedDifficult: q.isMarkedDifficult ?? false,
-    starAnalysis: q.starAnalysis as QnaSetType['starAnalysis'],
+    starAnalysis: q.starAnalysis,
   }))
 
   const interviewSelfReview: KptTextsType = {
@@ -107,5 +107,11 @@ function transformInterviewData(res: Awaited<ReturnType<typeof getInterviewFull>
 
   const interviewResultStatus = interviewFull.interviewResultStatus ?? 'WAIT'
 
-  return { interviewId: interviewFull.interviewId ?? 0, interviewInfo, interviewResultStatus, qnaSets, interviewSelfReview }
+  return {
+    interviewId: interviewFull.interviewId ?? 0,
+    interviewInfo,
+    interviewResultStatus,
+    qnaSets,
+    interviewSelfReview,
+  }
 }
