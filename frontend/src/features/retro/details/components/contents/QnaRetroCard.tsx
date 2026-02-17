@@ -22,6 +22,8 @@ type QnaRetroCardProps = {
   onDelete?: (qnaSetId: number) => void
 }
 
+const SCRAP_FOLDERS_STALE_TIME = 1000 * 60 * 30
+
 export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChange, onDelete }: QnaRetroCardProps) {
   const { qnaSetId, questionText, answerText, qnaSetSelfReviewText, starAnalysis, isMarkedDifficult } = qnaSet
   const { mutate: updateQnaSet } = useUpdateQnaSet()
@@ -35,10 +37,7 @@ export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChan
     {
       query: {
         enabled: qnaSetId > 0,
-        staleTime: 1000 * 60 * 5,
-        gcTime: 1000 * 60 * 30,
-        refetchOnWindowFocus: false,
-        refetchOnReconnect: false,
+        staleTime: SCRAP_FOLDERS_STALE_TIME,
       },
     },
   )
