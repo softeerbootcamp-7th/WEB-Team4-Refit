@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import type { RetroListItem } from '@/constants/example'
 import { useRetroBookmarkState } from './useRetroBookmarkState'
 import { useRetroStarAnalysis } from './useRetroStarAnalysis'
 import { useRetroStepDrafts } from './useRetroStepDrafts'
 import { useRetroStepSave } from './useRetroStepSave'
+import type { RetroListItem } from '../types'
 import type { KptTexts, RetroQuestionStepActions, RetroQuestionStepViewModel } from '../types'
 
 type UseRetroSectionControllerParams = {

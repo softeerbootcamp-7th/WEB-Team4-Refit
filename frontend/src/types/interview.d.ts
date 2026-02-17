@@ -21,7 +21,7 @@ export type QnaSetType = {
   questionText: string
   answerText: string
   qnaSetSelfReviewText: string
-  starAnalysis: StarAnalysisResult
+  starAnalysis?: StarAnalysisResult
   isMarkedDifficult: boolean
 }
 
