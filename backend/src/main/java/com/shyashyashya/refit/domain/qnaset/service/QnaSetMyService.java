@@ -37,9 +37,9 @@ public class QnaSetMyService {
         User requestUser = requestUserContext.getRequestUser();
 
         // TODO : 로직 고도화 (쿼리로 한번에 조회할 수 있도록)
-        List<QnaSet> qna = qnaSetRepository.findAllByUser(requestUser);
-        Map<QnaSetCategory, Long> qnaSetCategoryCounts =
-                qna.stream().collect(Collectors.groupingBy(QnaSet::getQnaSetCategory, Collectors.counting()));
+        Map<QnaSetCategory, Long> qnaSetCategoryCounts = qnaSetRepository.findAllByUser(requestUser).stream()
+                .filter(qnaSet -> qnaSet.getQnaSetCategory() != null)
+                .collect(Collectors.groupingBy(QnaSet::getQnaSetCategory, Collectors.counting()));
 
         List<FrequentQnaSetCategoryResponse> pageContent = getPageContent(pageable, qnaSetCategoryCounts);
 
