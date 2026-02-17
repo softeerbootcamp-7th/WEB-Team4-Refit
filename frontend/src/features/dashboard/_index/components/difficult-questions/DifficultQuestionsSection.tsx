@@ -16,6 +16,20 @@ export default function DifficultQuestionsSection() {
       intervalMs: AUTO_ADVANCE_MS,
     })
 
+  if (data.length === 0) {
+    return (
+      <section className="flex min-h-0 flex-col rounded-2xl bg-white p-6">
+        <div className="mb-4 flex shrink-0 items-center gap-2">
+          <MeltIcon className="h-6 w-6 shrink-0 text-gray-400" />
+          <h2 className="body-l-semibold text-gray-900">어렵게 느꼈던 면접 질문</h2>
+        </div>
+        <div className="body-m-medium flex flex-1 items-center justify-center text-gray-400">
+          아직 어려웠던 질문 데이터가 없어요.
+        </div>
+      </section>
+    )
+  }
+
   return (
     <section className="flex min-h-0 flex-col rounded-2xl bg-white p-6">
       <div className="mb-4 flex shrink-0 items-center gap-2">
