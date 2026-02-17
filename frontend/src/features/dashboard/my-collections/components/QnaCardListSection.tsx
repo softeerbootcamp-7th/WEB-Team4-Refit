@@ -69,29 +69,64 @@ export default function QnaCardListSection({
           />
         </div>
         <div className="flex flex-1 flex-col gap-4 overflow-y-auto px-10 pb-6">
-          {isLoading && <QnaCardListSkeleton />}
-          {!isLoading && errorMessage && <StatusText text={errorMessage} />}
-          {!isLoading && !errorMessage && !hasItems && <StatusText text={emptyMessage} />}
-          {!isLoading &&
-            !errorMessage &&
-            hasItems &&
-            items.map((item) => (
-              <QnaCard
-                key={item.id}
-                resultStatus={item.resultStatus}
-                date={item.date}
-                company={item.company}
-                jobRole={item.job}
-                interviewType={item.interviewType}
-                question={item.question}
-                answer={item.answer ?? ''}
-              />
-            ))}
-          {!isLoading && !errorMessage && hasItems && hasNextPage && <div ref={loadMoreRef} className="h-8 w-full" aria-hidden />}
-          {!isLoading && !errorMessage && hasItems && isFetchingNext && <QnaCardFetchMoreSkeleton />}
+          <QnaCardListContent
+            isLoading={isLoading}
+            errorMessage={errorMessage}
+            hasItems={hasItems}
+            emptyMessage={emptyMessage}
+            items={items}
+            hasNextPage={hasNextPage}
+            isFetchingNext={isFetchingNext}
+            loadMoreRef={loadMoreRef}
+          />
         </div>
       </div>
     </div>
+  )
+}
+
+type QnaCardListContentProps = {
+  isLoading: boolean
+  errorMessage?: string
+  hasItems: boolean
+  emptyMessage: string
+  items: QnaCardListItem[]
+  hasNextPage: boolean
+  isFetchingNext: boolean
+  loadMoreRef?: RefObject<HTMLDivElement | null>
+}
+
+function QnaCardListContent({
+  isLoading,
+  errorMessage,
+  hasItems,
+  emptyMessage,
+  items,
+  hasNextPage,
+  isFetchingNext,
+  loadMoreRef,
+}: QnaCardListContentProps) {
+  if (isLoading) return <QnaCardListSkeleton />
+  if (errorMessage) return <StatusText text={errorMessage} />
+  if (!hasItems) return <StatusText text={emptyMessage} />
+
+  return (
+    <>
+      {items.map((item) => (
+        <QnaCard
+          key={item.id}
+          resultStatus={item.resultStatus}
+          date={item.date}
+          company={item.company}
+          jobRole={item.job}
+          interviewType={item.interviewType}
+          question={item.question}
+          answer={item.answer ?? ''}
+        />
+      ))}
+      {hasNextPage && <div ref={loadMoreRef} className="h-8 w-full" aria-hidden />}
+      {isFetchingNext && <QnaCardFetchMoreSkeleton />}
+    </>
   )
 }
 
