@@ -26,7 +26,7 @@ export type InterviewCardModel = {
 
 export function mapDraftInterviewRow(item: InterviewSimpleDto): DraftInterviewRowModel {
   return {
-    interviewId: item.interviewId ?? 0,
+    interviewId: item.interviewId!,
     interviewReviewStatus: item.interviewReviewStatus,
     interviewStartAt: `${formatDate(item.interviewStartAt)} 응시`,
     company: item.companyInfo?.companyName ?? '',
