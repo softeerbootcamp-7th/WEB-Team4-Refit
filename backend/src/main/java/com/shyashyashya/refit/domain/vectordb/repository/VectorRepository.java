@@ -22,5 +22,7 @@ public interface VectorRepository<K, V extends VectorDocumentBase<K>> {
 
     Stream<V> findAll();
 
+    Stream<V> findAll(int batchSize);
+
     void updatePayload(K id, Map<String, Object> payload);
 }
