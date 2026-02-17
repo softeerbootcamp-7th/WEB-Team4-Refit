@@ -100,25 +100,24 @@ public class QnaSetMyIntegrationTest extends IntegrationTest {
                             LocalDateTime.of(2023, 1, 10, 10, 0, 0), InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
                     ), InterviewReviewStatus.DEBRIEF_COMPLETED);
 
-            // category가 null인 qnaSet 존재하면 NPE 발생
-            // QnaSet qnaSet1 = createAndSaveQnaSet(new QnaSetCreateRequest("q text", "a text"), interview);
+            createAndSaveQnaSet(new QnaSetCreateRequest("q text", "a text"), interview);
 
-            QnaSet qnaSet2 = createAndSaveQnaSet(
+            createAndSaveQnaSet(
                     new QnaSetCreateRequest("q text2", "a text"),
                     interview,
                     qnaSetCategory1);
 
-            QnaSet qnaSet3 = createAndSaveQnaSet(
+            createAndSaveQnaSet(
                     new QnaSetCreateRequest("q text3", "a text"),
                     interview,
                     qnaSetCategory1);
 
-            QnaSet qnaSet4 = createAndSaveQnaSet(
+            createAndSaveQnaSet(
                     new QnaSetCreateRequest("q text3", "a text"),
                     interview,
                     qnaSetCategory1);
 
-            QnaSet qnaSet5 = createAndSaveQnaSet(
+            createAndSaveQnaSet(
                     new QnaSetCreateRequest("q text3", "a text"),
                     interview,
                     qnaSetCategory3);
