@@ -24,8 +24,7 @@ export type QnaSetType = {
   isMarkedDifficult: boolean
 }
 
-// TODO: 회고 페이지에서 StarLevel로 변경
-export type StarStatus = 'present' | 'insufficient' | 'absent'
+export type StarStatus = 'PRESENT' | 'INSUFFICIENT' | 'ABSENT' | 'NULL'
 
 export type StarAnalysisResult = {
   sInclusionLevel: StarStatus

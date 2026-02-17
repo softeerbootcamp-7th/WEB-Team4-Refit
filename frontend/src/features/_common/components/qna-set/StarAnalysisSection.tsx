@@ -3,16 +3,19 @@ import { Badge, Button } from '@/designs/components'
 import type { StarAnalysisResult } from '@/types/interview'
 
 type StarAnalysisSectionProps = {
-  starAnalysis: StarAnalysisResult
+  starAnalysis?: StarAnalysisResult
+  isAnalyzing?: boolean
   onAnalyze: () => void
 }
 
-export function StarAnalysisSection({ starAnalysis, onAnalyze }: StarAnalysisSectionProps) {
+export function StarAnalysisSection({ starAnalysis, isAnalyzing = false, onAnalyze }: StarAnalysisSectionProps) {
   const hasAnalysis = !!starAnalysis
   return (
     <>
       {hasAnalysis ? (
         <StarAnalysisResultSection starAnalysis={starAnalysis} />
+      ) : isAnalyzing ? (
+        <StarAnalysisSkeleton />
       ) : (
         onAnalyze && (
           <div className="flex items-center justify-end">
@@ -29,6 +32,8 @@ export function StarAnalysisSection({ starAnalysis, onAnalyze }: StarAnalysisSec
 type StarAnalysisResultSectionProps = Pick<StarAnalysisSectionProps, 'starAnalysis'>
 
 function StarAnalysisResultSection({ starAnalysis }: StarAnalysisResultSectionProps) {
+  if (!starAnalysis) return null
+
   return (
     <div className="flex flex-col gap-2.5">
       <div className="flex items-center gap-2">
@@ -49,6 +54,24 @@ function StarAnalysisResultSection({ starAnalysis }: StarAnalysisResultSectionPr
           })}
         </div>
         <p className="body-s-medium">{starAnalysis.overallSummary}</p>
+      </div>
+    </div>
+  )
+}
+
+function StarAnalysisSkeleton() {
+  return (
+    <div className="flex flex-col gap-2.5">
+      <div className="flex items-center gap-2">
+        <span className="body-l-semibold">답변 STAR 분석 중...</span>
+      </div>
+      <div className="rounded-lg bg-gray-100 p-4">
+        <div className="mb-3 flex flex-wrap gap-2">
+          {['S', 'T', 'A', 'R'].map((label) => (
+            <div key={label} className="h-7 w-24 animate-pulse rounded-full bg-gray-200" />
+          ))}
+        </div>
+        <div className="h-4 w-2/3 animate-pulse rounded bg-gray-200" />
       </div>
     </div>
   )
