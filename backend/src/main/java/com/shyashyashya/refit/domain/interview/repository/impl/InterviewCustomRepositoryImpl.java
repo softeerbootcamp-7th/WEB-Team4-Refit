@@ -8,11 +8,13 @@ import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewResultStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
 import com.shyashyashya.refit.domain.interview.repository.InterviewCustomRepository;
+import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
 import java.time.LocalDate;
@@ -83,6 +85,20 @@ public class InterviewCustomRepositoryImpl implements InterviewCustomRepository 
                         interview.reviewStatus.eq(InterviewReviewStatus.NOT_LOGGED),
                         interview.startAt.between(now.minusMonths(1), now))
                 .orderBy(interview.startAt.desc())
+                .fetch();
+    }
+
+    @Override
+    public List<Interview> findAllSimilarInterviewsByUser(User user, Industry industry, JobCategory jobCategory) {
+        return jpaQueryFactory
+                .selectFrom(interview)
+                .where(
+                        interview.user.eq(user),
+                        interview.industry.eq(industry),
+                        interview.jobCategory.eq(jobCategory),
+                        interview.reviewStatus.eq(InterviewReviewStatus.DEBRIEF_COMPLETED))
+                .orderBy(interview.startAt.desc(), interview.company.name.asc())
+                .limit(2)
                 .fetch();
     }
 

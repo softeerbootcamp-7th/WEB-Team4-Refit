@@ -34,15 +34,6 @@ public interface InterviewRepository extends JpaRepository<Interview, Long>, Int
         SELECT i
           FROM Interview i
          WHERE i.user = :user
-           AND i.industry = :industry
-           AND i.jobCategory = :jobCategory
-    """)
-    List<Interview> findAllSimilarInterviewsByUser(User user, Industry industry, JobCategory jobCategory);
-
-    @Query("""
-        SELECT i
-          FROM Interview i
-         WHERE i.user = :user
            AND i.startAt BETWEEN :monthStart AND :monthEnd
          ORDER BY i.startAt
     """)
