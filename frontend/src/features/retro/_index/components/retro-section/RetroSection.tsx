@@ -45,6 +45,10 @@ export function RetroSection({
     onRegisterSaveHandler,
   })
 
+  const handlePrev = async () => {
+    await onIndexChange(currentIndex - 1)
+  }
+
   const handleNext = async () => {
     await onIndexChange(currentIndex + 1)
   }
@@ -82,6 +86,7 @@ export function RetroSection({
       <RetroActionBar
         currentIndex={currentIndex}
         totalCount={totalCount}
+        onPrev={handlePrev}
         onNext={handleNext}
         onComplete={handleComplete}
         isSaving={retro.flow.isSaving}
