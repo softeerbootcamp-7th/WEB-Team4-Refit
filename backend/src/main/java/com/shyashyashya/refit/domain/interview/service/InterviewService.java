@@ -21,7 +21,7 @@ import com.shyashyashya.refit.domain.interview.dto.request.KptSelfReviewUpdateRe
 import com.shyashyashya.refit.domain.interview.dto.request.QnaSetCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.response.InterviewCreateResponse;
-import com.shyashyashya.refit.domain.interview.dto.response.PresignedUrlResponse;
+import com.shyashyashya.refit.domain.interview.dto.response.PresignedUrlDto;
 import com.shyashyashya.refit.domain.interview.dto.response.QnaSetCreateResponse;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
@@ -42,10 +42,12 @@ import com.shyashyashya.refit.domain.qnaset.repository.StarAnalysisRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.aws.S3Util;
 import com.shyashyashya.refit.global.exception.CustomException;
+import com.shyashyashya.refit.global.property.S3FolderNameProperty;
 import com.shyashyashya.refit.global.util.RequestUserContext;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -53,6 +55,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -74,6 +77,7 @@ public class InterviewService {
     private final InterviewValidator interviewValidator;
     private final RequestUserContext requestUserContext;
     private final S3Util s3Util;
+    private final S3FolderNameProperty s3FolderNameProperty;
 
     @Transactional(readOnly = true)
     public InterviewDto getInterview(Long interviewId) {
@@ -178,7 +182,7 @@ public class InterviewService {
     }
 
     @Transactional
-    public PresignedUrlResponse createPdfUploadUrl(Long interviewId) {
+    public PresignedUrlDto createPdfUploadUrl(Long interviewId) {
         User requestUser = requestUserContext.getRequestUser();
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
@@ -188,13 +192,14 @@ public class InterviewService {
             throw new CustomException(INTERVIEW_PDF_ALREADY_EXITS);
         }
 
-        PresignedUrlResponse response = s3Util.createPdfUploadUrl();
+        String key = s3FolderNameProperty.interviewPdf() + UUID.randomUUID() + ".pdf";
+        PresignedUrlDto response = s3Util.createResourceUploadUrl(key, MediaType.APPLICATION_PDF);
         interview.updatePdfUrl(response.key());
         return response;
     }
 
     @Transactional(readOnly = true)
-    public PresignedUrlResponse createPdfDownloadUrl(Long interviewId) {
+    public PresignedUrlDto createPdfDownloadUrl(Long interviewId) {
         User requestUser = requestUserContext.getRequestUser();
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
@@ -205,7 +210,7 @@ public class InterviewService {
         }
 
         String key = interview.getPdfUrl();
-        return s3Util.createPdfDownloadUrl(key);
+        return s3Util.createResourceDownloadUrl(key);
     }
 
     @Transactional
