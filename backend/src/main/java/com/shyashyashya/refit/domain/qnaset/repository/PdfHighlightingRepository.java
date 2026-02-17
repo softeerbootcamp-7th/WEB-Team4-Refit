@@ -13,4 +13,6 @@ public interface PdfHighlightingRepository extends JpaRepository<PdfHighlighting
     List<PdfHighlighting> findAllByQnaSetIn(List<QnaSet> qnaSets);
 
     void deleteAllByQnaSet(QnaSet qnaSet);
+
+    boolean existsByQnaSet(QnaSet qnaSet);
 }
