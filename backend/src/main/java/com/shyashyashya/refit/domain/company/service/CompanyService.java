@@ -16,7 +16,6 @@ public class CompanyService {
     private final HangulUtil hangulUtil;
 
     public Page<CompanyResponse> findCompanies(String query, Pageable pageable) {
-        query = (query == null || query.isBlank()) ? "" : hangulUtil.decompose(query);
-        return companyRepository.findAllBySearchQuery(query, pageable);
+        return companyRepository.findAllBySearchQuery(hangulUtil.decompose(query), pageable);
     }
 }

@@ -29,7 +29,7 @@ public class Company {
     private String name;
 
     @Column(name = "search_name", columnDefinition = "varchar(80)")
-    private String searchName;
+    private String decomposedName;
 
     @Column(name = "company_logo_url", columnDefinition = "varchar(2048)")
     private String logoUrl;
@@ -44,19 +44,19 @@ public class Company {
     /*
      Factory Method
     */
-    public static Company create(String name, String searchName, String logoUrl) {
+    public static Company create(String name, String decomposedName, String logoUrl) {
         return Company.builder()
                 .name(name)
-                .searchName(searchName)
+                .decomposedName(decomposedName)
                 .logoUrl(logoUrl)
                 .isSearchAllowed(false)
                 .build();
     }
 
     @Builder(access = AccessLevel.PRIVATE)
-    private Company(String name, String searchName, String logoUrl, boolean isSearchAllowed) {
+    private Company(String name, String decomposedName, String logoUrl, boolean isSearchAllowed) {
         this.name = name;
-        this.searchName = searchName;
+        this.decomposedName = decomposedName;
         this.logoUrl = logoUrl;
         this.isSearchAllowed = isSearchAllowed;
     }

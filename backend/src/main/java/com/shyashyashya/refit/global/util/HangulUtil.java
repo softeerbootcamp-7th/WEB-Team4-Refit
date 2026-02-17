@@ -22,6 +22,10 @@ public class HangulUtil {
     };
 
     public String decompose(String input) {
+        if (input == null || input.isBlank()) {
+            return "";
+        }
+
         StringBuilder result = new StringBuilder();
 
         for (char c : input.toCharArray()) {

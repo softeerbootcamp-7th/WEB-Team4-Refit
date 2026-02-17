@@ -1,9 +1,9 @@
-package com.shyashyashya.refit.global.util;
+package com.shyashyashya.refit.unit.global.util;
 
+import com.shyashyashya.refit.global.util.HangulUtil;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class HangulUtilTest {
 
@@ -134,13 +134,15 @@ class HangulUtilTest {
     }
 
     @Test
-    void 입력값이_Null이면_NullPointerException이_발생한다() {
+    void 입력값이_Null이면_빈_문자열이_반환된다() {
         // given
         String input = null;
 
-        // when & then
-        assertThatThrownBy(() -> hangulUtil.decompose(input))
-                .isInstanceOf(NullPointerException.class);
+        // when
+        String result = hangulUtil.decompose(input);
+
+        // then
+        assertThat(result).isEqualTo("");
     }
 
     @Test
@@ -154,5 +156,17 @@ class HangulUtilTest {
         assertThat(hangulUtil.isHangleSyllable(valid)).isTrue();
         assertThat(hangulUtil.isHangleSyllable(invalid1)).isFalse();
         assertThat(hangulUtil.isHangleSyllable(invalid2)).isFalse();
+    }
+
+    @Test
+    void 한글_영어_특수문자_공백이_모두_포함된_문자열을_분리한다() {
+        // given
+        String input = "운명의 Destiny, 2024!@#, 시작!";
+
+        // when
+        String result = hangulUtil.decompose(input);
+
+        // then
+        assertThat(result).isEqualTo("ㅇㅜㄴㅁㅕㅇㅇㅢ Destiny, 2024!@#, ㅅㅣㅈㅏㄱ!");
     }
 }

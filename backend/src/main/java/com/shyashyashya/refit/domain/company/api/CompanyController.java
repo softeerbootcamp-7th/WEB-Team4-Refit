@@ -28,8 +28,8 @@ public class CompanyController {
     @GetMapping
     @Operation(summary = "회사 목록을 검색합니다.", description = "회사 목록을 검색합니다. 한글의 일부가 완성되어도 검새이 가능합니다.")
     public ResponseEntity<ApiResponse<Page<CompanyResponse>>> findCompanies(
-            @RequestParam(required = false) String q, @ParameterObject Pageable pageable) {
-        var response = companyService.findCompanies(q, pageable);
+            @RequestParam(required = false) String query, @ParameterObject Pageable pageable) {
+        var response = companyService.findCompanies(query, pageable);
         var body = ApiResponse.success(COMMON200, response);
         return ResponseEntity.ok(body);
     }
