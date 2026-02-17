@@ -5,12 +5,13 @@ import { useDashboardBanner } from '@/features/dashboard/_index/hooks/useDashboa
 
 interface DashboardBannerProps {
   variant: DashboardBannerVariant
+  titleText?: string
 }
 
-export default function DashboardBanner({ variant }: DashboardBannerProps) {
+export default function DashboardBanner({ variant, titleText }: DashboardBannerProps) {
   const config = DASHBOARD_BANNER_VARIANTS[variant]
   const { handleBannerClick } = useDashboardBanner()
-  const displayTitle = config.titleText
+  const displayTitle = titleText ?? config.titleText
 
   return (
     <button
