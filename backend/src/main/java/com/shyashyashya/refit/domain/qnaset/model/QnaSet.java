@@ -47,6 +47,7 @@ public class QnaSet extends BaseEntity {
     /*
      * Static Factory Method
      */
+    // TODO create를 없애고 createNew->create
     public static QnaSet create(
             String questionText,
             String answerText,
