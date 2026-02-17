@@ -32,7 +32,9 @@ export default function FrequentQuestionsSection() {
     return (
       <section className="flex flex-col gap-3">
         <h2 className="title-s-bold">{nickname}님이 자주 받은 질문들</h2>
-        <div className="bg-gray-white flex gap-5 rounded-lg p-5">{DATA_EMPTY_MESSAGE.questions}</div>
+        <div className="bg-gray-white body-m-medium flex justify-center gap-5 rounded-lg p-5 py-10 text-gray-400">
+          {DATA_EMPTY_MESSAGE.questions}
+        </div>
       </section>
     )
   }
