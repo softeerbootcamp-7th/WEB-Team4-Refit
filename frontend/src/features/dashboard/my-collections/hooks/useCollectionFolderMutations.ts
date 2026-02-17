@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react'
-import type { NavigateFunction } from 'react-router'
 import { useQueryClient } from '@tanstack/react-query'
 import {
   getGetMyScrapFoldersQueryKey,
@@ -7,7 +6,9 @@ import {
   useDeleteScrapFolder,
   useUpdateScrapFolderName,
 } from '@/apis'
+import { HttpError } from '@/apis/custom-fetch'
 import { DIFFICULT_FOLDER_ID, type CollectionFolderItem } from '@/features/dashboard/my-collections/mappers'
+import type { NavigateFunction } from 'react-router'
 
 type FolderModalType = 'create' | 'edit' | 'delete' | null
 
@@ -48,8 +49,8 @@ export function useCollectionFolderMutations({ folders, folderId, navigate }: Us
       await createScrapFolder({ data: { scrapFolderName: name } })
       await refreshFolderList()
       return true
-    } catch {
-      setMutationError('폴더를 생성하지 못했어요. 잠시 후 다시 시도해 주세요.')
+    } catch (error) {
+      setMutationError(getApiErrorMessage(error) ?? '폴더를 생성하지 못했어요. 잠시 후 다시 시도해 주세요.')
       return false
     }
   }
@@ -64,8 +65,8 @@ export function useCollectionFolderMutations({ folders, folderId, navigate }: Us
       })
       await refreshFolderList()
       return true
-    } catch {
-      setMutationError('폴더 이름을 수정하지 못했어요. 잠시 후 다시 시도해 주세요.')
+    } catch (error) {
+      setMutationError(getApiErrorMessage(error) ?? '폴더 이름을 수정하지 못했어요. 잠시 후 다시 시도해 주세요.')
       return false
     }
   }
@@ -82,8 +83,8 @@ export function useCollectionFolderMutations({ folders, folderId, navigate }: Us
       }
 
       return true
-    } catch {
-      setMutationError('폴더를 삭제하지 못했어요. 잠시 후 다시 시도해 주세요.')
+    } catch (error) {
+      setMutationError(getApiErrorMessage(error) ?? '폴더를 삭제하지 못했어요. 잠시 후 다시 시도해 주세요.')
       return false
     }
   }
@@ -127,4 +128,15 @@ export function useCollectionFolderMutations({ folders, folderId, navigate }: Us
       handleDeleteFolder,
     },
   }
+}
+
+function getApiErrorMessage(error: unknown): string | null {
+  if (error instanceof HttpError && error.payload && typeof error.payload === 'object') {
+    const message = (error.payload as { message?: unknown }).message
+    if (typeof message === 'string' && message.trim().length > 0) {
+      return message
+    }
+  }
+
+  return null
 }

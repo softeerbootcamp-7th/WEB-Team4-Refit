@@ -10,6 +10,7 @@ interface FolderModalProps {
   initialName?: string
   title: string
   submitLabel: string
+  errorMessage?: string | null
   isSubmitting?: boolean
 }
 
@@ -20,6 +21,7 @@ const FolderModal = ({
   initialName = '',
   title,
   submitLabel,
+  errorMessage,
   isSubmitting = false,
 }: FolderModalProps) => {
   const [name, setName] = useState(initialName)
@@ -46,6 +48,7 @@ const FolderModal = ({
             required
           />
           <p className="body-s-medium text-right text-gray-400">최대 10자</p>
+          {errorMessage && <p className="body-s-medium text-red-500">{errorMessage}</p>}
         </div>
         <Button
           type="submit"

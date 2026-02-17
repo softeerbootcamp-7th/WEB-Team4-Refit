@@ -62,9 +62,10 @@ export default function MyCollectionsPage() {
           </div>
 
           {isFoldersError && (
-            <p className="body-s-medium mt-3 px-2 text-red-500">폴더 목록을 불러오지 못했어요. 잠시 후 다시 시도해 주세요.</p>
+            <p className="body-s-medium mt-3 px-2 text-red-500">
+              폴더 목록을 불러오지 못했어요. 잠시 후 다시 시도해 주세요.
+            </p>
           )}
-          {modal.mutationError && <p className="body-s-medium mt-3 px-2 text-red-500">{modal.mutationError}</p>}
         </div>
       </aside>
 
@@ -78,7 +79,8 @@ export default function MyCollectionsPage() {
         onClose={actions.closeModal}
         onSubmit={actions.handleCreateFolder}
         title="폴더 생성"
-        submitLabel="만들기"
+        submitLabel="생성하기"
+        errorMessage={modal.activeModal === 'create' ? modal.mutationError : null}
         isSubmitting={pending.isCreatePending}
       />
 
@@ -90,6 +92,7 @@ export default function MyCollectionsPage() {
         initialName={modal.folderToEdit?.name}
         title="폴더 이름 변경"
         submitLabel="수정하기"
+        errorMessage={modal.activeModal === 'edit' ? modal.mutationError : null}
         isSubmitting={pending.isUpdatePending}
       />
 
@@ -98,6 +101,7 @@ export default function MyCollectionsPage() {
         onClose={actions.closeModal}
         onConfirm={actions.handleDeleteFolder}
         folderName={modal.folderToEdit?.name ?? ''}
+        errorMessage={modal.activeModal === 'delete' ? modal.mutationError : null}
         isSubmitting={pending.isDeletePending}
       />
     </div>

@@ -5,10 +5,18 @@ interface DeleteFolderModalProps {
   onClose: () => void
   onConfirm: () => void | boolean | Promise<void | boolean>
   folderName: string
+  errorMessage?: string | null
   isSubmitting?: boolean
 }
 
-const DeleteFolderModal = ({ isOpen, onClose, onConfirm, folderName, isSubmitting = false }: DeleteFolderModalProps) => {
+const DeleteFolderModal = ({
+  isOpen,
+  onClose,
+  onConfirm,
+  folderName,
+  errorMessage,
+  isSubmitting = false,
+}: DeleteFolderModalProps) => {
   const handleConfirm = async () => {
     const shouldClose = await onConfirm()
     if (shouldClose === false) return
@@ -26,6 +34,12 @@ const DeleteFolderModal = ({ isOpen, onClose, onConfirm, folderName, isSubmittin
       description={
         <>
           <span className="font-bold text-gray-900">'{folderName}'</span> 폴더를 삭제하시겠습니까?
+          {errorMessage && (
+            <>
+              <br />
+              <span className="body-s-medium text-red-500">{errorMessage}</span>
+            </>
+          )}
         </>
       }
       okText="삭제하기"
