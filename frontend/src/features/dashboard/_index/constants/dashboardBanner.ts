@@ -2,6 +2,8 @@ import type { ValueOf } from '@/types/utils'
 
 export const DASHBOARD_BANNER_ACTION = {
   OPEN_ADD_SCHEDULE_MODAL: 'open_add_schedule_modal',
+  NAVIGATE_TO_TREND_QUESTIONS: 'navigate_to_trend_questions',
+  NAVIGATE_TO_MY_INTERVIEWS: 'navigate_to_my_interviews',
   /** 추후 추가: navigate_to_prep, navigate_to_review, navigate_to_history */
 } as const
 
@@ -35,6 +37,7 @@ export const DASHBOARD_BANNER_VARIANTS: Record<DashboardBannerVariant, Dashboard
     textColor: 'text-[#361E13]',
     titleText: '정윤님, 3일 후에 예정된 면접이 있어요<br/>기출 질문으로 면접에 대비해 보세요',
     btnText: '면접 대비하기',
+    action: DASHBOARD_BANNER_ACTION.NAVIGATE_TO_TREND_QUESTIONS,
   },
   review: {
     bg: 'bg-[#DEF6E1]',
@@ -51,5 +54,6 @@ export const DASHBOARD_BANNER_VARIANTS: Record<DashboardBannerVariant, Dashboard
     textColor: 'text-[#39162C]',
     titleText: '정윤님, 이번주에는 예정된 면접이 없어요<br/>면접 히스토리를 미리 확인해 보세요!',
     btnText: '면접 히스토리 확인하기',
+    action: DASHBOARD_BANNER_ACTION.NAVIGATE_TO_MY_INTERVIEWS,
   },
 }
