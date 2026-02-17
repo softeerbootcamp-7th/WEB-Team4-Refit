@@ -14,12 +14,11 @@ import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
 import com.shyashyashya.refit.domain.interview.repository.InterviewCustomRepository;
 import com.shyashyashya.refit.domain.user.model.User;
+import com.shyashyashya.refit.global.exception.CustomException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
-
-import com.shyashyashya.refit.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -40,8 +39,8 @@ public class InterviewCustomRepositoryImpl implements InterviewCustomRepository 
             LocalDate startDate,
             LocalDate endDate,
             Pageable pageable) {
-        BooleanExpression[] searchConditions = getSearchConditions(user, keyword, interviewTypes, interviewResultStatuses, startDate, endDate);
-
+        BooleanExpression[] searchConditions =
+                getSearchConditions(user, keyword, interviewTypes, interviewResultStatuses, startDate, endDate);
 
         List<Interview> interviews = jpaQueryFactory
                 .selectFrom(interview)
@@ -71,8 +70,7 @@ public class InterviewCustomRepositoryImpl implements InterviewCustomRepository 
         return sort.stream()
                 .map(order -> new OrderSpecifier<>(
                         order.isAscending() ? Order.ASC : Order.DESC,
-                        convertSortPropertyToExpression(order.getProperty())
-                ))
+                        convertSortPropertyToExpression(order.getProperty())))
                 .toArray(OrderSpecifier[]::new);
     }
 
@@ -97,20 +95,21 @@ public class InterviewCustomRepositoryImpl implements InterviewCustomRepository 
         };
     }
 
-    private BooleanExpression[] getSearchConditions(User user,
-                                                    String keyword,
-                                                    Set<InterviewType> interviewTypes,
-                                                    Set<InterviewResultStatus> interviewResultStatuses,
-                                                    LocalDate startDate,
-                                                    LocalDate endDate) {
+    private BooleanExpression[] getSearchConditions(
+            User user,
+            String keyword,
+            Set<InterviewType> interviewTypes,
+            Set<InterviewResultStatus> interviewResultStatuses,
+            LocalDate startDate,
+            LocalDate endDate) {
         return new BooleanExpression[] {
-                interview.user.eq(user),
-                interview.reviewStatus.eq(InterviewReviewStatus.DEBRIEF_COMPLETED),
-                companyNameContains(keyword),
-                interviewTypesIn(interviewTypes),
-                interviewResultStatusIn(interviewResultStatuses),
-                interviewDateIsAfter(startDate),
-                interviewDateIsBefore(endDate)
+            interview.user.eq(user),
+            interview.reviewStatus.eq(InterviewReviewStatus.DEBRIEF_COMPLETED),
+            companyNameContains(keyword),
+            interviewTypesIn(interviewTypes),
+            interviewResultStatusIn(interviewResultStatuses),
+            interviewDateIsAfter(startDate),
+            interviewDateIsBefore(endDate)
         };
     }
 

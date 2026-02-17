@@ -56,11 +56,16 @@ public class QnaSetMyController {
     }
 
     @Operation(summary = "나의 면접 질문들을 검색합니다.", description = "나의 면접 질문들을 검색합니다. 조건을 넣지 않으면 전체 데이터를 조회합니다.")
-    @Parameters(value = {
-            @Parameter(name = "page", description = "페이지 번호 (0..N)"),
-            @Parameter(name = "size", description = "페이지 크기 (기본값 20)"),
-            @Parameter(name = "sort", description = "정렬 기준 (형식: field,asc / field,desc)<br>지원하는 정렬 필드:<br>- interviewStartAt (면접일)<br>- updatedAt (수정일)", array = @ArraySchema(schema = @Schema(type = "string")))
-    })
+    @Parameters(
+            value = {
+                @Parameter(name = "page", description = "페이지 번호 (0..N)"),
+                @Parameter(name = "size", description = "페이지 크기 (기본값 20)"),
+                @Parameter(
+                        name = "sort",
+                        description =
+                                "정렬 기준 (형식: field,asc / field,desc)<br>지원하는 정렬 필드:<br>- interviewStartAt (면접일)<br>- updatedAt (수정일)",
+                        array = @ArraySchema(schema = @Schema(type = "string")))
+            })
     @PostMapping("/search")
     public ResponseEntity<ApiResponse<Page<QnaSetSearchResponse>>> searchMyQnaSet(
             @Valid @RequestBody QnaSetSearchRequest request, @Parameter(hidden = true) Pageable pageable) {

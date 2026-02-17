@@ -2,7 +2,6 @@ package com.shyashyashya.refit.domain.qnaset.repository.impl;
 
 import static com.shyashyashya.refit.domain.qnaset.model.QQnaSet.qnaSet;
 import static com.shyashyashya.refit.domain.qnaset.model.QStarAnalysis.starAnalysis;
-
 import static com.shyashyashya.refit.global.exception.ErrorCode.SORTING_PROPERTY_NOT_EXISTS;
 
 import com.querydsl.core.BooleanBuilder;
@@ -74,14 +73,7 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
             Pageable pageable) {
 
         BooleanExpression[] searchConditions = getSearchConditions(
-                user,
-                keyword,
-                hasStarAnalysis,
-                sInclusionLevels,
-                tInclusionLevels,
-                aInclusionLevels,
-                rInclusionLevels
-        );
+                user, keyword, hasStarAnalysis, sInclusionLevels, tInclusionLevels, aInclusionLevels, rInclusionLevels);
 
         List<QnaSet> contents = queryFactory
                 .selectFrom(qnaSet)
@@ -114,10 +106,10 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
             Set<StarInclusionLevel> aInclusionLevels,
             Set<StarInclusionLevel> rInclusionLevels) {
         return new BooleanExpression[] {
-                qnaSet.interview.user.eq(user),
-                containsKeyword(keyword),
-                starInclusionLevelsConditions(
-                        hasStarAnalysis, sInclusionLevels, tInclusionLevels, aInclusionLevels, rInclusionLevels)
+            qnaSet.interview.user.eq(user),
+            containsKeyword(keyword),
+            starInclusionLevelsConditions(
+                    hasStarAnalysis, sInclusionLevels, tInclusionLevels, aInclusionLevels, rInclusionLevels)
         };
     }
 
@@ -131,8 +123,7 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
         return sort.stream()
                 .map(order -> new OrderSpecifier<>(
                         order.isAscending() ? Order.ASC : Order.DESC,
-                        convertSortPropertyToExpression(order.getProperty())
-                ))
+                        convertSortPropertyToExpression(order.getProperty())))
                 .toArray(OrderSpecifier[]::new);
     }
 
