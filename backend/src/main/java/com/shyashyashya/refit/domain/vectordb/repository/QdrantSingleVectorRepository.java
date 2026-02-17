@@ -70,32 +70,6 @@ public abstract class QdrantSingleVectorRepository implements VectorRepository<L
         createQdrantCollection(context);
     }
 
-    private void validateQdrantCollectionContext(QdrantCollectionContext qdrantCollectionContext) {
-        if (qdrantCollectionContext == null) {
-            log.error("Qdrant Collection Context '{}' is missing", getCollectionContextName());
-            throw new IllegalStateException("Qdrant collection context is missing");
-        }
-    }
-
-    private void createQdrantCollection(QdrantCollectionContext qdrantCollectionContext) {
-        log.info("Creating Qdrant Collection: {}", collectionName);
-        Collections.VectorParams vectorParams = Collections.VectorParams.newBuilder()
-                .setSize(qdrantCollectionContext.vectorDimension())
-                .setDistance(qdrantCollectionContext.distance())
-                .build();
-
-        Collections.CreateCollection createCollectionRequest = Collections.CreateCollection.newBuilder()
-                .setCollectionName(collectionName)
-                .setVectorsConfig(Collections.VectorsConfig.newBuilder()
-                        .setParams(vectorParams)
-                        .build())
-                .setOnDiskPayload(true) // Payload를 디스크에 저장하여 RAM 사용량 최적화
-                .build();
-
-        block(qdrantClient.createCollectionAsync(createCollectionRequest, timeout), "create collection");
-        log.info("Qdrant Collection '{}' created successfully.", collectionName);
-    }
-
     @Override
     public void save(SingleVectorDocument<Long> document) {
         saveAll(List.of(document));
@@ -228,6 +202,32 @@ public abstract class QdrantSingleVectorRepository implements VectorRepository<L
                     "Qdrant operation failed during: {} (Reason: {})", operationDescription, cause.getMessage(), cause);
             throw new RuntimeException("Qdrant operation failed [" + operationDescription + "]", cause);
         }
+    }
+
+    private void validateQdrantCollectionContext(QdrantCollectionContext qdrantCollectionContext) {
+        if (qdrantCollectionContext == null) {
+            log.error("Qdrant Collection Context '{}' is missing", getCollectionContextName());
+            throw new IllegalStateException("Qdrant collection context is missing");
+        }
+    }
+
+    private void createQdrantCollection(QdrantCollectionContext qdrantCollectionContext) {
+        log.info("Creating Qdrant Collection: {}", collectionName);
+        Collections.VectorParams vectorParams = Collections.VectorParams.newBuilder()
+                .setSize(qdrantCollectionContext.vectorDimension())
+                .setDistance(qdrantCollectionContext.distance())
+                .build();
+
+        Collections.CreateCollection createCollectionRequest = Collections.CreateCollection.newBuilder()
+                .setCollectionName(collectionName)
+                .setVectorsConfig(Collections.VectorsConfig.newBuilder()
+                        .setParams(vectorParams)
+                        .build())
+                .setOnDiskPayload(true) // Payload를 디스크에 저장하여 RAM 사용량 최적화
+                .build();
+
+        block(qdrantClient.createCollectionAsync(createCollectionRequest, timeout), "create collection");
+        log.info("Qdrant Collection '{}' created successfully.", collectionName);
     }
 
     // point.getVectors().getVector().getDataList()가 deprecated 되었는데, 대체 메서드를 찾지 못해서 그대로 사용함.

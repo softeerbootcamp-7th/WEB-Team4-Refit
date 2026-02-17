@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
 
-public class QdrantScrollIterator<T, R> implements Iterator<T> {
+public class QdrantScrollIterator<T> implements Iterator<T> {
 
     private final QdrantClient qdrantClient;
     private final String collectionName;
