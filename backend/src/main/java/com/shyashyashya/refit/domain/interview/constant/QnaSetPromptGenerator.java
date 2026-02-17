@@ -1,22 +1,19 @@
 package com.shyashyashya.refit.domain.interview.constant;
 
+import static com.shyashyashya.refit.domain.interview.constant.QnaSetPromptConstant.PROMPT_FILE_NAME;
+
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.global.property.GeminiProperty;
 import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
-import static com.shyashyashya.refit.domain.interview.constant.QnaSetPromptConstant.PROMPT_FILE_NAME;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j
 public class QnaSetPromptGenerator {
 
     private final GeminiProperty geminiProperty;
@@ -31,9 +28,7 @@ public class QnaSetPromptGenerator {
     }
 
     public String buildPrompt(Interview interview) {
-        return promptTemplate + "\n"
-                + interview.getRawText() + "\n"
-                + "\"\"\"";
+        return promptTemplate + "\n" + interview.getRawText() + "\n" + "\"\"\"";
     }
 
     private String readTextFile(Path path) {
