@@ -46,6 +46,7 @@ export const DASHBOARD_BANNER_VARIANTS: Record<DashboardBannerVariant, Dashboard
     textColor: 'text-[#102D1D]',
     titleText: '정윤님, 아직 완료되지 않은 작업이 있어요!<br/>다음 면접을 위해 지난 면접을 복기해 보세요',
     btnText: '면접 복기 시작하기',
+    action: DASHBOARD_BANNER_ACTION.NAVIGATE_TO_MY_INTERVIEWS,
   },
   no_weekly: {
     bg: 'bg-[#FFEAF7]',
