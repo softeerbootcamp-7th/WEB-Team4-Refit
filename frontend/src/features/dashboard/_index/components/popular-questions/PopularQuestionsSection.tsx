@@ -2,14 +2,14 @@ import { ArrowRightIcon, NoteIcon } from '@/designs/assets'
 import { usePopularQuestions, type PopularQuestionItem } from '../../hooks/usePopularQuestions'
 
 export default function PopularQuestionsSection() {
-  const { data } = usePopularQuestions()
+  const { data, nickname } = usePopularQuestions()
 
   return (
     <section className="flex flex-col rounded-2xl bg-white p-6">
       <div className="mb-5 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <NoteIcon className="h-6 w-6 text-gray-400" />
-          <h2 className="body-l-semibold text-gray-900">정윤님의 관심 산업 및 직군에서 많이 나온 질문 TOP 10</h2>
+          <h2 className="body-l-semibold text-gray-900">{nickname}님의 관심 산업 및 직군에서 많이 나온 질문 TOP 10</h2>
         </div>
         <button
           type="button"
@@ -19,11 +19,17 @@ export default function PopularQuestionsSection() {
           <ArrowRightIcon className="shrink-0" />
         </button>
       </div>
-      <div className="overflow-hidden rounded-xl">
-        {data.map((item, i) => (
-          <PopularQuestionRow key={item.id} item={item} index={i} />
-        ))}
-      </div>
+      {data.length === 0 ? (
+        <div className="body-m-medium flex min-h-32 items-center justify-center text-center text-gray-400">
+          아직 빈출 질문 데이터가 없어요.
+        </div>
+      ) : (
+        <div className="overflow-hidden rounded-xl">
+          {data.map((item, i) => (
+            <PopularQuestionRow key={item.id} item={item} index={i} />
+          ))}
+        </div>
+      )}
     </section>
   )
 }

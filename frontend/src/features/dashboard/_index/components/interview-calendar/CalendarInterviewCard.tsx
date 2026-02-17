@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom'
 import {
   deleteInterview as deleteInterviewApi,
   getGetDashboardCalendarInterviewsQueryKey,
+  getGetDashboardHeadlineQueryKey,
   getGetDebriefIncompletedInterviewsQueryKey,
   getGetUpcomingInterviewsQueryKey,
 } from '@/apis'
@@ -49,6 +50,7 @@ export function CalendarInterviewCard({ interview, onItemClick }: CalendarInterv
     onSuccess: () => {
       setIsDeleteConfirmOpen(false)
       void queryClient.invalidateQueries({ queryKey: getGetDashboardCalendarInterviewsQueryKey() })
+      void queryClient.invalidateQueries({ queryKey: getGetDashboardHeadlineQueryKey() })
       void queryClient.invalidateQueries({ queryKey: getGetDebriefIncompletedInterviewsQueryKey() })
       void queryClient.invalidateQueries({ queryKey: getGetUpcomingInterviewsQueryKey() })
     },
