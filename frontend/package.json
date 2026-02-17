@@ -39,6 +39,7 @@
     "globals": "^16.5.0",
     "msw": "^2.12.7",
     "orval": "^8.4.0",
+    "markdown-it": "14.1.1",
     "prettier": "^3.8.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "typescript": "~5.9.3",
