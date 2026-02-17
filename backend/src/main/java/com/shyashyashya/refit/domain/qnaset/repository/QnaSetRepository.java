@@ -48,4 +48,6 @@ public interface QnaSetRepository extends JpaRepository<QnaSet, Long>, QnaSetCus
            AND q.isMarkedDifficult = TRUE
     """)
     Page<QnaSet> findAllDifficultByUser(User user, Pageable pageable);
+
+    void deleteAllByInterview(Interview interview);
 }

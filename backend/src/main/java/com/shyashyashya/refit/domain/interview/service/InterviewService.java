@@ -34,6 +34,7 @@ import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepositor
 import com.shyashyashya.refit.domain.qnaset.dto.StarAnalysisDto;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetSelfReview;
+import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetSelfReviewRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.StarAnalysisRepository;
@@ -79,6 +80,7 @@ public class InterviewService {
     private final RequestUserContext requestUserContext;
     private final S3Presigner s3Presigner;
     private final S3Property s3Property;
+    private final PdfHighlightingRepository pdfHighlightingRepository;
 
     @Transactional(readOnly = true)
     public InterviewDto getInterview(Long interviewId) {
@@ -149,9 +151,13 @@ public class InterviewService {
 
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
-
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
+        interviewSelfReviewRepository.deleteByInterview(interview);
+        pdfHighlightingRepository.deleteAllByInterview(interview);
+        starAnalysisRepository.deleteAllByInterview(interview);
+        qnaSetSelfReviewRepository.deleteAllByInterview(interview);
+        qnaSetRepository.deleteAllByInterview(interview);
         interviewRepository.delete(interview);
     }
 
