@@ -107,7 +107,7 @@ public class QnaSetController {
     @Operation(
             summary = "지정한 질문 답변 세트에 대해 PDF 하이라이팅 정보를 등록/수정합니다.",
             description = "PDF 하이라이팅 정보 등록/수정은 질답 세트 검토 중 상태에서만 가능합니다.")
-    @PutMapping("/{qnaSetId}/pdf-highlightings")
+    @PutMapping("/{qnaSetId}/pdf-highlighting")
     public ResponseEntity<ApiResponse<Void>> updatePdfHighlighting(
             @PathVariable Long qnaSetId, @Valid @RequestBody List<PdfHighlightingUpdateRequest> request) {
         qnaSetService.updatePdfHighlighting(qnaSetId, request);
@@ -116,7 +116,7 @@ public class QnaSetController {
     }
 
     @Operation(summary = "지정한 질문 답변 세트에 대해 등록된 PDF 하이라이팅 정보를 조회합니다.")
-    @GetMapping("/{qnaSetId}/pdf-highlightings")
+    @GetMapping("/{qnaSetId}/pdf-highlighting")
     public ResponseEntity<ApiResponse<List<PdfHighlightingDto>>> getPdfHighlightings(@PathVariable Long qnaSetId) {
         var body = qnaSetService.getPdfHighlightings(qnaSetId);
         var response = ApiResponse.success(COMMON200, body);
@@ -124,7 +124,7 @@ public class QnaSetController {
     }
 
     @Operation(summary = "지정한 질문 답변 세트의 PDF 하이라이팅을 모두 삭제합니다.")
-    @DeleteMapping("/{qnaSetId}/pdf-highlightings")
+    @DeleteMapping("/{qnaSetId}/pdf-highlighting")
     public ResponseEntity<ApiResponse<Void>> deletePdfHighlighting(@PathVariable Long qnaSetId) {
         qnaSetService.deletePdfHighlighting(qnaSetId);
         var response = ApiResponse.success(COMMON204);
