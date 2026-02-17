@@ -5,10 +5,10 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.STAR_ANALYSIS_CR
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.shyashyashya.refit.domain.qnaset.util.StarAnalysisCreationPromptUtil;
 import com.shyashyashya.refit.domain.qnaset.dto.StarAnalysisDto;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.StarAnalysis;
+import com.shyashyashya.refit.domain.qnaset.util.StarAnalysisCreationPromptUtil;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.gemini.GeminiClient;
 import com.shyashyashya.refit.global.gemini.GeminiGenerateRequest;
