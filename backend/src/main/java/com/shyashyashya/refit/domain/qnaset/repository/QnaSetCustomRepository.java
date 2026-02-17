@@ -1,5 +1,6 @@
 package com.shyashyashya.refit.domain.qnaset.repository;
 
+import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetCategoryResponse;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.StarInclusionLevel;
 import com.shyashyashya.refit.domain.user.model.User;
@@ -20,4 +21,6 @@ public interface QnaSetCustomRepository {
             Set<StarInclusionLevel> aInclusionLevels,
             Set<StarInclusionLevel> rInclusionLevels,
             Pageable pageable);
+
+    Page<FrequentQnaSetCategoryResponse> findFrequentQnaSetCategoryByUser(User user, Pageable pageable);
 }

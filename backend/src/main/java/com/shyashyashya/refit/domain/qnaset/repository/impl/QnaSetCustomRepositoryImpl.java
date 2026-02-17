@@ -11,6 +11,9 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
+import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetCategoryResponse;
+import com.shyashyashya.refit.domain.qnaset.dto.response.QFrequentQnaSetCategoryResponse;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.StarInclusionLevel;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetCustomRepository;
@@ -95,6 +98,40 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
         count = count == null ? 0L : count;
 
         return new PageImpl<>(contents, pageable, count);
+    }
+
+    @Override
+    public Page<FrequentQnaSetCategoryResponse> findFrequentQnaSetCategoryByUser(User user, Pageable pageable) {
+        var pageContent = queryFactory
+                .select(new QFrequentQnaSetCategoryResponse(
+                        qnaSet.qnaSetCategory.id,
+                        qnaSet.qnaSetCategory.categoryName,
+                        qnaSet.count(),
+                        qnaSet.qnaSetCategory.cohesion))
+                .from(qnaSet)
+                .where(
+                        qnaSet.interview.user.eq(user),
+                        qnaSet.interview.reviewStatus.eq(InterviewReviewStatus.DEBRIEF_COMPLETED),
+                        qnaSet.qnaSetCategory.isNotNull())
+                .groupBy(qnaSet.qnaSetCategory)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long count = queryFactory
+                .select(qnaSet.qnaSetCategory.countDistinct())
+                .from(qnaSet)
+                .where(
+                        qnaSet.interview.user.eq(user),
+                        qnaSet.interview.reviewStatus.eq(InterviewReviewStatus.DEBRIEF_COMPLETED),
+                        qnaSet.qnaSetCategory.isNotNull())
+                .groupBy(qnaSet.qnaSetCategory)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchOne();
+        count = count == null ? 0L : count;
+
+        return new PageImpl<>(pageContent, pageable, count);
     }
 
     private BooleanExpression[] getSearchConditions(
