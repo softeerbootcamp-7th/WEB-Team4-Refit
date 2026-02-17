@@ -1,4 +1,5 @@
 import { useRef, useState, type Ref } from 'react'
+import { useUpdateQnaSet, useUpdateQnaSetSelfReview } from '@/apis/generated/qna-set-api/qna-set-api'
 import { BookmarkIcon, MoreIcon } from '@/designs/assets'
 import { Border, Button } from '@/designs/components'
 import { QnaSetCard, QnaSetEditForm, StarAnalysisSection } from '@/features/_common/components/qna-set'
@@ -16,6 +17,8 @@ type QnaRetroCardProps = {
 
 export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChange }: QnaRetroCardProps) {
   const { qnaSetId, questionText, answerText, qnaSetSelfReviewText, starAnalysis } = qnaSet
+  const { mutate: updateQnaSet } = useUpdateQnaSet()
+  const { mutate: updateQnaSetSelfReview } = useUpdateQnaSetSelfReview()
 
   const [isEditing, setIsEditing] = useState(false)
 
@@ -45,8 +48,14 @@ export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChan
   const handleSave = (question: string, answer: string) => {
     setEditedQuestion(question)
     setEditedAnswer(answer)
-    // editedRetro는 onChange로 이미 업데이트됨
-    // TODO: API 호출 (question, answer, editedRetro 한꺼번에 전송)
+    updateQnaSet({
+      qnaSetId,
+      data: {
+        questionText: question,
+        answerText: answer,
+      },
+    })
+    updateQnaSetSelfReview({ qnaSetId, data: { selfReviewText: editedRetro } })
     stopEditing()
   }
 

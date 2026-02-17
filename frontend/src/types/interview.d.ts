@@ -1,3 +1,11 @@
+import type {
+  InterviewSearchRequest,
+  QnaSetSearchRequest,
+  QnaSearchFilterAInclusionLevelsItem,
+  QnaSearchFilterRInclusionLevelsItem,
+  QnaSearchFilterSInclusionLevelsItem,
+  QnaSearchFilterTInclusionLevelsItem,
+} from '@/apis/generated/refit-api.schemas'
 import type { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
 
 export type SimpleQnaType = {
@@ -17,7 +25,7 @@ export type QnaSetType = {
   isMarkedDifficult: boolean
 }
 
-export type StarStatus = 'present' | 'insufficient' | 'absent'
+export type StarStatus = 'PRESENT' | 'INSUFFICIENT' | 'ABSENT' | 'NULL'
 
 export type StarAnalysisResult = {
   sInclusionLevel: StarStatus
@@ -48,8 +56,8 @@ type InterviewFullType = {
 
 export type InterviewFilter = {
   keyword: string
-  interviewType: string[]
-  resultStatus: string[]
+  interviewType: NonNullable<InterviewSearchRequest['searchFilter']['interviewType']>
+  resultStatus: NonNullable<InterviewSearchRequest['searchFilter']['interviewResultStatus']>
   startDate: string
   endDate: string
   sort: string
@@ -61,4 +69,22 @@ type KptTextsType = {
   keepText: string
   problemText: string
   tryText: string
+}
+
+export type StarLevel =
+  | QnaSearchFilterSInclusionLevelsItem
+  | QnaSearchFilterTInclusionLevelsItem
+  | QnaSearchFilterAInclusionLevelsItem
+  | QnaSearchFilterRInclusionLevelsItem
+
+type ApiQuestionSearchFilter = NonNullable<QnaSetSearchRequest['searchFilter']>
+
+export type QuestionFilter = {
+  keyword: string
+  sort: string
+  hasStarAnalysis: ApiQuestionSearchFilter['hasStarAnalysis'] | null
+  sInclusionLevels: NonNullable<ApiQuestionSearchFilter['sInclusionLevels']>
+  tInclusionLevels: NonNullable<ApiQuestionSearchFilter['tInclusionLevels']>
+  aInclusionLevels: NonNullable<ApiQuestionSearchFilter['aInclusionLevels']>
+  rInclusionLevels: NonNullable<ApiQuestionSearchFilter['rInclusionLevels']>
 }

@@ -21,13 +21,15 @@ export const STAR_LABELS = [
 ] as const
 
 export const STAR_VALUES: Record<StarStatus, string> = {
-  present: '충분',
-  insufficient: '부족',
-  absent: '없음',
+  PRESENT: '충분',
+  INSUFFICIENT: '부족',
+  ABSENT: '없음',
+  NULL: '',
 }
 
 export const STATUS_THEME: Record<StarStatus, BadgeTheme> = {
-  present: 'green-50-outline',
-  insufficient: 'orange-50-outline',
-  absent: 'red-50-outline',
+  PRESENT: 'green-50-outline',
+  INSUFFICIENT: 'orange-50-outline',
+  ABSENT: 'red-50-outline',
+  NULL: 'gray-100',
 }

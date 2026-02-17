@@ -6,4 +6,5 @@ spring:
     include:
       - auth
       - gemini
+      - vectorstore
       - s3

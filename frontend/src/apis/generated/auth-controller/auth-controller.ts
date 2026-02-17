@@ -6,7 +6,7 @@
  */
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { customFetch } from '../../custom-fetch'
-import type { ApiResponseVoid, ReissueParams } from '../refit-api.schemas'
+import type { ApiResponseTokenReissueResponse, ReissueParams } from '../refit-api.schemas'
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -43,8 +43,11 @@ export const getReissueUrl = (params?: ReissueParams) => {
   return stringifiedParams.length > 0 ? `/auth/reissue?${stringifiedParams}` : `/auth/reissue`
 }
 
-export const reissue = async (params?: ReissueParams, options?: RequestInit): Promise<ApiResponseVoid> => {
-  return customFetch<ApiResponseVoid>(getReissueUrl(params), {
+export const reissue = async (
+  params?: ReissueParams,
+  options?: RequestInit,
+): Promise<ApiResponseTokenReissueResponse> => {
+  return customFetch<ApiResponseTokenReissueResponse>(getReissueUrl(params), {
     ...options,
     method: 'GET',
   })

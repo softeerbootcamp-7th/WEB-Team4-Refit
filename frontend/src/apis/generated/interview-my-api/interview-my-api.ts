@@ -7,6 +7,7 @@
 import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { customFetch } from '../../custom-fetch'
 import type {
+  ApiResponseListInterviewSimpleDto,
   ApiResponsePageInterviewDto,
   ApiResponsePageInterviewSimpleDto,
   GetMyInterviewDraftsParams,
@@ -39,7 +40,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
 
  * @summary 내가 복기 완료한 면접을 검색합니다.
  */
-export const getSearchInterviewsUrl = (params: SearchInterviewsParams) => {
+export const getSearchInterviewsUrl = (params?: SearchInterviewsParams) => {
   const normalizedParams = new URLSearchParams()
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -55,7 +56,7 @@ export const getSearchInterviewsUrl = (params: SearchInterviewsParams) => {
 
 export const searchInterviews = async (
   interviewSearchRequest: InterviewSearchRequest,
-  params: SearchInterviewsParams,
+  params?: SearchInterviewsParams,
   options?: RequestInit,
 ): Promise<ApiResponsePageInterviewDto> => {
   return customFetch<ApiResponsePageInterviewDto>(getSearchInterviewsUrl(params), {
@@ -70,14 +71,14 @@ export const getSearchInterviewsMutationOptions = <TError = unknown, TContext = 
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof searchInterviews>>,
     TError,
-    { data: InterviewSearchRequest; params: SearchInterviewsParams },
+    { data: InterviewSearchRequest; params?: SearchInterviewsParams },
     TContext
   >
   request?: SecondParameter<typeof customFetch>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof searchInterviews>>,
   TError,
-  { data: InterviewSearchRequest; params: SearchInterviewsParams },
+  { data: InterviewSearchRequest; params?: SearchInterviewsParams },
   TContext
 > => {
   const mutationKey = ['searchInterviews']
@@ -89,7 +90,7 @@ export const getSearchInterviewsMutationOptions = <TError = unknown, TContext = 
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof searchInterviews>>,
-    { data: InterviewSearchRequest; params: SearchInterviewsParams }
+    { data: InterviewSearchRequest; params?: SearchInterviewsParams }
   > = (props) => {
     const { data, params } = props ?? {}
 
@@ -111,7 +112,7 @@ export const useSearchInterviews = <TError = unknown, TContext = unknown>(
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof searchInterviews>>,
       TError,
-      { data: InterviewSearchRequest; params: SearchInterviewsParams },
+      { data: InterviewSearchRequest; params?: SearchInterviewsParams },
       TContext
     >
     request?: SecondParameter<typeof customFetch>
@@ -120,11 +121,204 @@ export const useSearchInterviews = <TError = unknown, TContext = unknown>(
 ): UseMutationResult<
   Awaited<ReturnType<typeof searchInterviews>>,
   TError,
-  { data: InterviewSearchRequest; params: SearchInterviewsParams },
+  { data: InterviewSearchRequest; params?: SearchInterviewsParams },
   TContext
 > => {
   return useMutation(getSearchInterviewsMutationOptions(options), queryClient)
 }
+/**
+ *         현재일 기준 최근 한 달동안 본 면접 데이터 중 상태가 '기록전' 상태인 면접을 면접일 기준 내림차순으로 조회합니다.
+        모바일 화면에서 기록할 면접을 조회할 때 사용됩니다.
+
+ * @summary 아직 기록하지 않은 나의 면접들을 조회합니다.
+ */
+export const getGetMyNotLoggedInterviewsUrl = () => {
+  return `/interview/my/not-logged`
+}
+
+export const getMyNotLoggedInterviews = async (options?: RequestInit): Promise<ApiResponseListInterviewSimpleDto> => {
+  return customFetch<ApiResponseListInterviewSimpleDto>(getGetMyNotLoggedInterviewsUrl(), {
+    ...options,
+    method: 'GET',
+  })
+}
+
+export const getGetMyNotLoggedInterviewsQueryKey = () => {
+  return [`/interview/my/not-logged`] as const
+}
+
+export const getGetMyNotLoggedInterviewsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMyNotLoggedInterviews>>,
+  TError = unknown,
+>(options?: {
+  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyNotLoggedInterviews>>, TError, TData>>
+  request?: SecondParameter<typeof customFetch>
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getGetMyNotLoggedInterviewsQueryKey()
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyNotLoggedInterviews>>> = ({ signal }) =>
+    getMyNotLoggedInterviews({ signal, ...requestOptions })
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getMyNotLoggedInterviews>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetMyNotLoggedInterviewsQueryResult = NonNullable<Awaited<ReturnType<typeof getMyNotLoggedInterviews>>>
+export type GetMyNotLoggedInterviewsQueryError = unknown
+
+export function useGetMyNotLoggedInterviews<
+  TData = Awaited<ReturnType<typeof getMyNotLoggedInterviews>>,
+  TError = unknown,
+>(
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyNotLoggedInterviews>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMyNotLoggedInterviews>>,
+          TError,
+          Awaited<ReturnType<typeof getMyNotLoggedInterviews>>
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMyNotLoggedInterviews<
+  TData = Awaited<ReturnType<typeof getMyNotLoggedInterviews>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyNotLoggedInterviews>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMyNotLoggedInterviews>>,
+          TError,
+          Awaited<ReturnType<typeof getMyNotLoggedInterviews>>
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMyNotLoggedInterviews<
+  TData = Awaited<ReturnType<typeof getMyNotLoggedInterviews>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyNotLoggedInterviews>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 아직 기록하지 않은 나의 면접들을 조회합니다.
+ */
+
+export function useGetMyNotLoggedInterviews<
+  TData = Awaited<ReturnType<typeof getMyNotLoggedInterviews>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyNotLoggedInterviews>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetMyNotLoggedInterviewsQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  return { ...query, queryKey: queryOptions.queryKey }
+}
+
+export const getGetMyNotLoggedInterviewsSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMyNotLoggedInterviews>>,
+  TError = unknown,
+>(options?: {
+  query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyNotLoggedInterviews>>, TError, TData>>
+  request?: SecondParameter<typeof customFetch>
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getGetMyNotLoggedInterviewsQueryKey()
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyNotLoggedInterviews>>> = ({ signal }) =>
+    getMyNotLoggedInterviews({ signal, ...requestOptions })
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getMyNotLoggedInterviews>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetMyNotLoggedInterviewsSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getMyNotLoggedInterviews>>
+>
+export type GetMyNotLoggedInterviewsSuspenseQueryError = unknown
+
+export function useGetMyNotLoggedInterviewsSuspense<
+  TData = Awaited<ReturnType<typeof getMyNotLoggedInterviews>>,
+  TError = unknown,
+>(
+  options: {
+    query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyNotLoggedInterviews>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMyNotLoggedInterviewsSuspense<
+  TData = Awaited<ReturnType<typeof getMyNotLoggedInterviews>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyNotLoggedInterviews>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMyNotLoggedInterviewsSuspense<
+  TData = Awaited<ReturnType<typeof getMyNotLoggedInterviews>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyNotLoggedInterviews>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 아직 기록하지 않은 나의 면접들을 조회합니다.
+ */
+
+export function useGetMyNotLoggedInterviewsSuspense<
+  TData = Awaited<ReturnType<typeof getMyNotLoggedInterviews>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyNotLoggedInterviews>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetMyNotLoggedInterviewsSuspenseQueryOptions(options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as UseSuspenseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  return { ...query, queryKey: queryOptions.queryKey }
+}
+
 /**
  * interviewReviewStatus 에는 LOG_DRAFT (기록 중), SELF_REVIEW_DRAFT (회고 중) 값만 들어갈 수 있습니다.
 이외의 값에 대해서는 400 에러를 응답합니다.

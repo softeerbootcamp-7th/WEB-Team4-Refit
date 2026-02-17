@@ -5,12 +5,20 @@ import { useDashboardBanner } from '@/features/dashboard/_index/hooks/useDashboa
 
 interface DashboardBannerProps {
   variant: DashboardBannerVariant
+  titleText?: string
+  isLoading?: boolean
 }
 
-export default function DashboardBanner({ variant }: DashboardBannerProps) {
+export default function DashboardBanner({ variant, titleText, isLoading = false }: DashboardBannerProps) {
   const config = DASHBOARD_BANNER_VARIANTS[variant]
   const { handleBannerClick } = useDashboardBanner()
-  const displayTitle = config.titleText
+  const displayTitle = titleText ?? config.titleText
+
+  if (isLoading) {
+    return (
+      <div className="bg-gray-150 relative flex h-30 w-full animate-pulse items-center justify-between overflow-hidden rounded-[20px] pr-6 pl-10"></div>
+    )
+  }
 
   return (
     <button

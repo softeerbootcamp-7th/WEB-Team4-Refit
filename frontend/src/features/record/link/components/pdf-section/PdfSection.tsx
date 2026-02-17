@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
+import { useParams } from 'react-router'
+import { useCompleteQnaSetDraft } from '@/apis/generated/interview-api/interview-api'
 import { FilePlusIcon } from '@/designs/assets'
 import { Button } from '@/designs/components'
 import { useInterviewNavigate } from '@/features/_common/hooks/useInterviewNavigation'
@@ -7,13 +9,25 @@ import { ROUTES } from '@/routes/routes'
 import { PdfViewer } from './PdfViewer'
 
 export function PdfSection() {
+  const { interviewId } = useParams()
+  const id = Number(interviewId)
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { linkingQnaSetId, setHasPdf, clearAllHighlights } = useHighlightContext()
+  const { mutate: completeQnaSetDraft, isPending: isCompletingQnaSetDraft } = useCompleteQnaSetDraft()
 
   const navigateWithId = useInterviewNavigate()
   const goToConfirmPage = () => navigateWithId(ROUTES.RECORD_CONFIRM)
-  const goToRetroPage = () => navigateWithId(ROUTES.RETRO_QUESTION)
+  const goToRetroPage = () => {
+    completeQnaSetDraft(
+      { interviewId: id },
+      {
+        onSuccess: () => {
+          navigateWithId(ROUTES.RETRO)
+        },
+      },
+    )
+  }
 
   useEffect(() => {
     return () => {
@@ -75,7 +89,13 @@ export function PdfSection() {
         <Button variant="outline-gray-white" size="md" onClick={goToConfirmPage}>
           뒤로 가기
         </Button>
-        <Button variant="fill-orange-500" size="md" className="w-60" onClick={goToRetroPage}>
+        <Button
+          variant="fill-orange-500"
+          size="md"
+          className="w-60"
+          onClick={goToRetroPage}
+          disabled={isCompletingQnaSetDraft}
+        >
           회고 하러 가기
         </Button>
       </div>

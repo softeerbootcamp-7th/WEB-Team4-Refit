@@ -1,4 +1,4 @@
-import { Suspense, useState } from 'react'
+import { Suspense, useRef, useState } from 'react'
 import { useParams } from 'react-router'
 import { getInterviewFull, useGetInterviewFullSuspense } from '@/apis/generated/interview-api/interview-api'
 import type { RetroListItem } from '@/constants/example'
@@ -24,30 +24,41 @@ function RetroQuestionContent() {
   const id = Number(interviewId)
   const { data } = useGetInterviewFullSuspense(id, { query: { select: transformInterviewData } })
 
-  const { interviewInfo, retroList } = data
+  const { interviewInfo, qnaSets } = data
   const { company, interviewType } = interviewInfo
 
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isPdfOpen, setIsPdfOpen] = useState(false)
+  const saveCurrentStepRef = useRef<() => Promise<void>>(async () => {})
 
-  const kptItem: RetroListItem = { qnaSetId: -1, questionText: '최종 KPT 회고', answerText: '', isKpt: true }
-  const totalCount = retroList.length + 1
-  const currentItem: RetroListItem = currentIndex < retroList.length ? retroList[currentIndex] : kptItem
+  const totalCount = qnaSets.length + 1
+  const isKptStep = currentIndex === qnaSets.length
+  const currentItem: RetroListItem | undefined = isKptStep ? undefined : qnaSets[currentIndex]
   const togglePdf = () => setIsPdfOpen((v) => !v)
 
-  const interviewTypeLabel = INTERVIEW_TYPE_LABEL[interviewType as keyof typeof INTERVIEW_TYPE_LABEL]
+  const registerSaveHandler = (saveHandler: () => Promise<void>) => {
+    saveCurrentStepRef.current = saveHandler
+  }
+
+  const handleIndexChange = async (nextIndex: number) => {
+    if (nextIndex === currentIndex || nextIndex < 0 || nextIndex >= totalCount) return
+    await saveCurrentStepRef.current()
+    setCurrentIndex(nextIndex)
+  }
+
+  const interviewTypeLabel = INTERVIEW_TYPE_LABEL[interviewType]
   const title = `${company} ${interviewTypeLabel} 회고 작성`
 
   const sidebarItems = [
-    ...retroList.map(({ qnaSetId, questionText }, index) => ({
+    ...qnaSets.map(({ qnaSetId, questionText }, index) => ({
       id: qnaSetId,
       label: `${index + 1}. ${questionText}`,
     })),
-    { id: -1, label: `${retroList.length + 1}. 최종 KPT 회고` },
+    { id: -1, label: `${qnaSets.length + 1}. 최종 KPT 회고` },
   ]
 
   const minimizedItems = [
-    ...retroList.map(({ qnaSetId }, index) => ({
+    ...qnaSets.map(({ qnaSetId }, index) => ({
       id: qnaSetId,
       label: `${index + 1}번`,
     })),
@@ -71,15 +82,22 @@ function RetroQuestionContent() {
           interviewInfo={interviewInfo}
           items={sidebarItems}
           activeIndex={currentIndex}
-          onItemClick={setCurrentIndex}
+          onItemClick={(nextIndex) => {
+            void handleIndexChange(nextIndex)
+          }}
         />
         <div className="flex h-full flex-col gap-5 overflow-hidden p-6">
           {header}
           <RetroSection
+            interviewId={id}
             currentIndex={currentIndex}
             currentItem={currentItem}
+            retroItems={qnaSets}
+            isKptStep={isKptStep}
             totalCount={totalCount}
-            onIndexChange={setCurrentIndex}
+            onIndexChange={handleIndexChange}
+            onRegisterSaveHandler={registerSaveHandler}
+            initialKptTexts={data.interviewSelfReview}
           />
         </div>
       </div>
@@ -88,14 +106,25 @@ function RetroQuestionContent() {
 
   return (
     <div className="grid h-full grid-cols-[80px_1fr_1fr]">
-      <RetroMinimizedSidebar items={minimizedItems} activeIndex={currentIndex} onItemClick={setCurrentIndex} />
+      <RetroMinimizedSidebar
+        items={minimizedItems}
+        activeIndex={currentIndex}
+        onItemClick={(nextIndex) => {
+          void handleIndexChange(nextIndex)
+        }}
+      />
       <div className="flex h-full flex-col gap-5 overflow-hidden p-6">
         {header}
         <RetroSection
+          interviewId={id}
           currentIndex={currentIndex}
           currentItem={currentItem}
+          retroItems={qnaSets}
+          isKptStep={isKptStep}
           totalCount={totalCount}
-          onIndexChange={setCurrentIndex}
+          onIndexChange={handleIndexChange}
+          onRegisterSaveHandler={registerSaveHandler}
+          initialKptTexts={data.interviewSelfReview}
         />
       </div>
       <RetroPdfPanel />
@@ -114,11 +143,22 @@ function transformInterviewData(res: Awaited<ReturnType<typeof getInterviewFull>
     interviewStartAt: interviewFull.interviewStartAt ?? '',
   }
 
-  const retroList = (interviewFull.qnaSets ?? []).map((q) => ({
+  const qnaSets = (interviewFull.qnaSets ?? []).map((q) => ({
     qnaSetId: q.qnaSetId ?? 0,
     questionText: q.questionText ?? '',
     answerText: q.answerText ?? '',
+    qnaSetSelfReviewText: q.qnaSetSelfReviewText ?? '',
+    isMarkedDifficult: q.isMarkedDifficult ?? false,
+    starAnalysis: q.starAnalysis,
   }))
 
-  return { interviewInfo, retroList }
+  return {
+    interviewInfo,
+    qnaSets,
+    interviewSelfReview: {
+      keepText: interviewFull.interviewSelfReview?.keepText ?? '',
+      problemText: interviewFull.interviewSelfReview?.problemText ?? '',
+      tryText: interviewFull.interviewSelfReview?.tryText ?? '',
+    },
+  }
 }
