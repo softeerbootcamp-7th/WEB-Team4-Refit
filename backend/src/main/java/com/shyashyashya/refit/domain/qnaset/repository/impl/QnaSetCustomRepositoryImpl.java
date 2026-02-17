@@ -3,7 +3,12 @@ package com.shyashyashya.refit.domain.qnaset.repository.impl;
 import static com.shyashyashya.refit.domain.qnaset.model.QQnaSet.qnaSet;
 import static com.shyashyashya.refit.domain.qnaset.model.QStarAnalysis.starAnalysis;
 
+import static com.shyashyashya.refit.global.exception.ErrorCode.SORTING_PROPERTY_NOT_EXISTS;
+
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -11,12 +16,14 @@ import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.StarInclusionLevel;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetCustomRepository;
 import com.shyashyashya.refit.domain.user.model.User;
+import com.shyashyashya.refit.global.exception.CustomException;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 @RequiredArgsConstructor
 public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
@@ -65,18 +72,23 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
             Set<StarInclusionLevel> aInclusionLevels,
             Set<StarInclusionLevel> rInclusionLevels,
             Pageable pageable) {
-        BooleanExpression[] searchConditions = {
-            qnaSet.interview.user.eq(user),
-            containsKeyword(keyword),
-            starInclusionLevelsConditions(
-                    hasStarAnalysis, sInclusionLevels, tInclusionLevels, aInclusionLevels, rInclusionLevels)
-        };
+
+        BooleanExpression[] searchConditions = getSearchConditions(
+                user,
+                keyword,
+                hasStarAnalysis,
+                sInclusionLevels,
+                tInclusionLevels,
+                aInclusionLevels,
+                rInclusionLevels
+        );
 
         List<QnaSet> contents = queryFactory
                 .selectFrom(qnaSet)
                 .leftJoin(starAnalysis)
                 .on(starAnalysis.qnaSet.eq(qnaSet))
                 .where(searchConditions)
+                .orderBy(getSortingConditions(pageable))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -91,6 +103,45 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
         count = count == null ? 0L : count;
 
         return new PageImpl<>(contents, pageable, count);
+    }
+
+    private BooleanExpression[] getSearchConditions(
+            User user,
+            String keyword,
+            Boolean hasStarAnalysis,
+            Set<StarInclusionLevel> sInclusionLevels,
+            Set<StarInclusionLevel> tInclusionLevels,
+            Set<StarInclusionLevel> aInclusionLevels,
+            Set<StarInclusionLevel> rInclusionLevels) {
+        return new BooleanExpression[] {
+                qnaSet.interview.user.eq(user),
+                containsKeyword(keyword),
+                starInclusionLevelsConditions(
+                        hasStarAnalysis, sInclusionLevels, tInclusionLevels, aInclusionLevels, rInclusionLevels)
+        };
+    }
+
+    private OrderSpecifier<?>[] getSortingConditions(Pageable pageable) {
+        Sort sort = pageable.getSort();
+
+        if (sort.isUnsorted()) {
+            return new OrderSpecifier[] {};
+        }
+
+        return sort.stream()
+                .map(order -> new OrderSpecifier<>(
+                        order.isAscending() ? Order.ASC : Order.DESC,
+                        convertSortPropertyToExpression(order.getProperty())
+                ))
+                .toArray(OrderSpecifier[]::new);
+    }
+
+    private Expression convertSortPropertyToExpression(String property) {
+        return switch (property) {
+            case "interviewStartAt" -> qnaSet.interview.startAt;
+            case "updatedAt" -> qnaSet.updatedAt;
+            default -> throw new CustomException(SORTING_PROPERTY_NOT_EXISTS);
+        };
     }
 
     private BooleanExpression containsIndustryIds(Set<Long> industryIds) {
