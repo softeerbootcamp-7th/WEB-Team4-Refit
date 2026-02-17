@@ -74,9 +74,9 @@ public class StarAnalysisAsyncService {
         return StarAnalysisDto.from(updated);
     }
 
-    private StarAnalysisGeminiResponse parseStarAnalysisGeminiResponse(String text) {
+    private StarAnalysisGeminiResponse parseStarAnalysisGeminiResponse(String jsonText) {
         try {
-            return objectMapper.readValue(text, StarAnalysisGeminiResponse.class);
+            return objectMapper.readValue(jsonText, StarAnalysisGeminiResponse.class);
         } catch (JsonProcessingException e) {
             throw new CustomException(GEMINI_RESPONSE_PARSING_FAILED);
         }
