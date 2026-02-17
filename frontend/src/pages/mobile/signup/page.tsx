@@ -1,11 +1,25 @@
-import { INDUSTRY_OPTIONS, JOB_OPTIONS } from '@/constants/signup'
 import { Button, Input, NativeCombobox } from '@/designs/components'
 import { useSignupForm } from '@/features/_common/auth'
 import { ROUTES } from '@/routes/routes'
 
 export default function MobileSignupPage() {
-  const { nickname, setNickname, industry, setIndustry, job, setJob, isFormValid, isPending, handleSubmit } =
-    useSignupForm({ redirectTo: ROUTES.MOBILE_UNRECORDED })
+  const {
+    nickname,
+    setNickname,
+    industry,
+    setIndustry,
+    industryOptions,
+    isIndustryOptionsLoading,
+    job,
+    setJob,
+    jobOptions,
+    isJobOptionsLoading,
+    isFormValid,
+    isOptionsLoading,
+    isPending,
+    handleSubmit,
+  } = useSignupForm({ redirectTo: ROUTES.MOBILE_UNRECORDED })
+  const isFormLocked = isPending
 
   return (
     <div className="flex h-full flex-col px-5 pb-9">
@@ -17,24 +31,27 @@ export default function MobileSignupPage() {
             label="닉네임"
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
-            placeholder="5글자 이내로 입력해주세요"
-            maxLength={5}
+            placeholder="20자 이내로 입력해주세요"
+            maxLength={20}
+            disabled={isFormLocked}
             required
           />
           <NativeCombobox
             label="관심 산업군"
             value={industry}
             onChange={(e) => setIndustry(e.target.value)}
-            options={INDUSTRY_OPTIONS}
-            placeholder="주로 지원하시는 산업군을 알려주세요"
+            options={industryOptions}
+            placeholder={isIndustryOptionsLoading ? '산업군 목록 불러오는 중...' : '주로 지원하는 산업군'}
+            disabled={isIndustryOptionsLoading || isFormLocked}
             required
           />
           <NativeCombobox
             label="관심 직군"
             value={job}
             onChange={(e) => setJob(e.target.value)}
-            options={JOB_OPTIONS}
-            placeholder="주로 지원하시는 직군을 알려주세요"
+            options={jobOptions}
+            placeholder={isJobOptionsLoading ? '직군 목록 불러오는 중...' : '주로 지원하는 직군'}
+            disabled={isJobOptionsLoading || isFormLocked}
             required
           />
         </div>
@@ -45,7 +62,7 @@ export default function MobileSignupPage() {
           variant="fill-orange-500"
           size="md"
           className="w-full"
-          disabled={!isFormValid || isPending}
+          disabled={!isFormValid || isOptionsLoading || isPending}
           isLoading={isPending}
           onClick={handleSubmit}
         >

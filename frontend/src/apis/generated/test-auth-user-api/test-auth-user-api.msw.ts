@@ -14,19 +14,16 @@ import type { RequestHandlerOptions } from 'msw'
 export const getPublishTokenResponseMock = (
   overrideResponse: Partial<ApiResponseTestPublishTokenResponse> = {},
 ): ApiResponseTestPublishTokenResponse => ({
-  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
+  isSuccess: faker.datatype.boolean(),
+  code: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  message: faker.string.alpha({ length: { min: 10, max: 20 } }),
   result: faker.helpers.arrayElement([
     {
-      isNeedSignUp: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-      tokens: faker.helpers.arrayElement([
-        {
-          accessToken: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-          refreshToken: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-        },
-        undefined,
-      ]),
+      isNeedSignUp: faker.datatype.boolean(),
+      tokens: {
+        accessToken: faker.string.alpha({ length: { min: 10, max: 20 } }),
+        refreshToken: faker.string.alpha({ length: { min: 10, max: 20 } }),
+      },
     },
     undefined,
   ]),
@@ -36,47 +33,28 @@ export const getPublishTokenResponseMock = (
 export const getPublishTokenByUserIdResponseMock = (
   overrideResponse: Partial<ApiResponseTestPublishTokenResponse> = {},
 ): ApiResponseTestPublishTokenResponse => ({
-  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
+  isSuccess: faker.datatype.boolean(),
+  code: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  message: faker.string.alpha({ length: { min: 10, max: 20 } }),
   result: faker.helpers.arrayElement([
     {
-      isNeedSignUp: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-      tokens: faker.helpers.arrayElement([
-        {
-          accessToken: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-          refreshToken: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-        },
-        undefined,
-      ]),
+      isNeedSignUp: faker.datatype.boolean(),
+      tokens: {
+        accessToken: faker.string.alpha({ length: { min: 10, max: 20 } }),
+        refreshToken: faker.string.alpha({ length: { min: 10, max: 20 } }),
+      },
     },
     undefined,
   ]),
   ...overrideResponse,
 })
 
-export const getDeleteUserByEmailResponseMock = (overrideResponse: Partial<ApiResponseVoid> = {}): ApiResponseVoid => ({
-  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  result: faker.helpers.arrayElement([{}, undefined]),
-  ...overrideResponse,
-})
-
-export const getDeleteUserByIdResponseMock = (overrideResponse: Partial<ApiResponseVoid> = {}): ApiResponseVoid => ({
-  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  result: faker.helpers.arrayElement([{}, undefined]),
-  ...overrideResponse,
-})
-
 export const getDeleteTokenCookiesResponseMock = (
   overrideResponse: Partial<ApiResponseVoid> = {},
 ): ApiResponseVoid => ({
-  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
+  isSuccess: faker.datatype.boolean(),
+  code: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  message: faker.string.alpha({ length: { min: 10, max: 20 } }),
   result: faker.helpers.arrayElement([{}, undefined]),
   ...overrideResponse,
 })
@@ -133,54 +111,6 @@ export const getPublishTokenByUserIdMockHandler = (
   )
 }
 
-export const getDeleteUserByEmailMockHandler = (
-  overrideResponse?:
-    | ApiResponseVoid
-    | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<ApiResponseVoid> | ApiResponseVoid),
-  options?: RequestHandlerOptions,
-) => {
-  return http.delete(
-    '*/test/user',
-    async (info) => {
-      return new HttpResponse(
-        JSON.stringify(
-          overrideResponse !== undefined
-            ? typeof overrideResponse === 'function'
-              ? await overrideResponse(info)
-              : overrideResponse
-            : getDeleteUserByEmailResponseMock(),
-        ),
-        { status: 200, headers: { 'Content-Type': 'application/json' } },
-      )
-    },
-    options,
-  )
-}
-
-export const getDeleteUserByIdMockHandler = (
-  overrideResponse?:
-    | ApiResponseVoid
-    | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<ApiResponseVoid> | ApiResponseVoid),
-  options?: RequestHandlerOptions,
-) => {
-  return http.delete(
-    '*/test/user/:userId',
-    async (info) => {
-      return new HttpResponse(
-        JSON.stringify(
-          overrideResponse !== undefined
-            ? typeof overrideResponse === 'function'
-              ? await overrideResponse(info)
-              : overrideResponse
-            : getDeleteUserByIdResponseMock(),
-        ),
-        { status: 200, headers: { 'Content-Type': 'application/json' } },
-      )
-    },
-    options,
-  )
-}
-
 export const getDeleteTokenCookiesMockHandler = (
   overrideResponse?:
     | ApiResponseVoid
@@ -207,7 +137,5 @@ export const getDeleteTokenCookiesMockHandler = (
 export const getTestAuthUserApiMock = () => [
   getPublishTokenMockHandler(),
   getPublishTokenByUserIdMockHandler(),
-  getDeleteUserByEmailMockHandler(),
-  getDeleteUserByIdMockHandler(),
   getDeleteTokenCookiesMockHandler(),
 ]

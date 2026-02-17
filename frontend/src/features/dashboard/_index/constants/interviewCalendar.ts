@@ -23,7 +23,7 @@ export const EVENT_COLOR_CLASS: Record<EventColor, string> = {
 export const DATE_CELL_STYLE = {
   default: 'text-gray-700 group-hover:bg-gray-50',
   selected: 'bg-orange-500 text-white shadow-sm',
-  today: 'bg-orange-100 text-orange-500',
+  today: 'bg-white text-orange-500 ring-1 ring-orange-200',
   otherMonth: 'text-gray-300',
 } as const
 

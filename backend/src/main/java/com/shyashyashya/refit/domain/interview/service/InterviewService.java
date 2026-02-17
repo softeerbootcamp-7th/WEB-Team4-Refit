@@ -43,6 +43,8 @@ import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.aws.S3Util;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.property.S3FolderNameProperty;
+import com.shyashyashya.refit.global.property.S3Property;
+import com.shyashyashya.refit.global.util.HangulUtil;
 import com.shyashyashya.refit.global.util.RequestUserContext;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -78,6 +80,7 @@ public class InterviewService {
     private final RequestUserContext requestUserContext;
     private final S3Util s3Util;
     private final S3FolderNameProperty s3FolderNameProperty;
+    private final HangulUtil hangulUtil;
 
     @Transactional(readOnly = true)
     public InterviewDto getInterview(Long interviewId) {
@@ -354,7 +357,8 @@ public class InterviewService {
         return companyRepository.findByName(request.companyName()).orElseGet(() -> {
             try {
                 // TODO 회사 디폴트 이미지 url로 변경
-                Company newCompany = Company.create(request.companyName(), null, false);
+                Company newCompany =
+                        Company.create(request.companyName(), hangulUtil.decompose(request.companyName()), null);
                 return companyRepository.save(newCompany);
             } catch (DataIntegrityViolationException e) {
                 // Race condition

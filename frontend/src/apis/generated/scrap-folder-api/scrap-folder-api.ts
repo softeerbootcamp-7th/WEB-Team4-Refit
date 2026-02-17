@@ -37,10 +37,168 @@ import type {
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
 
 /**
+ * 이미 추가된 상태인 경우 아무 일도 발생하지 않습니다.
+ * @summary 주어진 스크랩 폴더에 지정한 질문 답변 세트를 추가합니다.
+ */
+export const getAddQnaSetToScrapFolderUrl = (scrapFolderId: number, qnaSetId: number) => {
+  return `/scrap-folder/${scrapFolderId}/qna-set/${qnaSetId}`
+}
+
+export const addQnaSetToScrapFolder = async (
+  scrapFolderId: number,
+  qnaSetId: number,
+  options?: RequestInit,
+): Promise<ApiResponseVoid> => {
+  return customFetch<ApiResponseVoid>(getAddQnaSetToScrapFolderUrl(scrapFolderId, qnaSetId), {
+    ...options,
+    method: 'PUT',
+  })
+}
+
+export const getAddQnaSetToScrapFolderMutationOptions = <TError = unknown, TContext = unknown>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof addQnaSetToScrapFolder>>,
+    TError,
+    { scrapFolderId: number; qnaSetId: number },
+    TContext
+  >
+  request?: SecondParameter<typeof customFetch>
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof addQnaSetToScrapFolder>>,
+  TError,
+  { scrapFolderId: number; qnaSetId: number },
+  TContext
+> => {
+  const mutationKey = ['addQnaSetToScrapFolder']
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof addQnaSetToScrapFolder>>,
+    { scrapFolderId: number; qnaSetId: number }
+  > = (props) => {
+    const { scrapFolderId, qnaSetId } = props ?? {}
+
+    return addQnaSetToScrapFolder(scrapFolderId, qnaSetId, requestOptions)
+  }
+
+  return { mutationFn, ...mutationOptions }
+}
+
+export type AddQnaSetToScrapFolderMutationResult = NonNullable<Awaited<ReturnType<typeof addQnaSetToScrapFolder>>>
+
+export type AddQnaSetToScrapFolderMutationError = unknown
+
+/**
+ * @summary 주어진 스크랩 폴더에 지정한 질문 답변 세트를 추가합니다.
+ */
+export const useAddQnaSetToScrapFolder = <TError = unknown, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof addQnaSetToScrapFolder>>,
+      TError,
+      { scrapFolderId: number; qnaSetId: number },
+      TContext
+    >
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof addQnaSetToScrapFolder>>,
+  TError,
+  { scrapFolderId: number; qnaSetId: number },
+  TContext
+> => {
+  return useMutation(getAddQnaSetToScrapFolderMutationOptions(options), queryClient)
+}
+/**
+ * 이미 제거된 상태인 경우 아무 일도 발생하지 않습니다.
+ * @summary 주어진 스크랩 폴더에서 지정한 질문 답변 세트를 제거합니다.
+ */
+export const getRemoveQnaSetFromScrapFolderUrl = (scrapFolderId: number, qnaSetId: number) => {
+  return `/scrap-folder/${scrapFolderId}/qna-set/${qnaSetId}`
+}
+
+export const removeQnaSetFromScrapFolder = async (
+  scrapFolderId: number,
+  qnaSetId: number,
+  options?: RequestInit,
+): Promise<ApiResponseVoid> => {
+  return customFetch<ApiResponseVoid>(getRemoveQnaSetFromScrapFolderUrl(scrapFolderId, qnaSetId), {
+    ...options,
+    method: 'DELETE',
+  })
+}
+
+export const getRemoveQnaSetFromScrapFolderMutationOptions = <TError = unknown, TContext = unknown>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof removeQnaSetFromScrapFolder>>,
+    TError,
+    { scrapFolderId: number; qnaSetId: number },
+    TContext
+  >
+  request?: SecondParameter<typeof customFetch>
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof removeQnaSetFromScrapFolder>>,
+  TError,
+  { scrapFolderId: number; qnaSetId: number },
+  TContext
+> => {
+  const mutationKey = ['removeQnaSetFromScrapFolder']
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof removeQnaSetFromScrapFolder>>,
+    { scrapFolderId: number; qnaSetId: number }
+  > = (props) => {
+    const { scrapFolderId, qnaSetId } = props ?? {}
+
+    return removeQnaSetFromScrapFolder(scrapFolderId, qnaSetId, requestOptions)
+  }
+
+  return { mutationFn, ...mutationOptions }
+}
+
+export type RemoveQnaSetFromScrapFolderMutationResult = NonNullable<
+  Awaited<ReturnType<typeof removeQnaSetFromScrapFolder>>
+>
+
+export type RemoveQnaSetFromScrapFolderMutationError = unknown
+
+/**
+ * @summary 주어진 스크랩 폴더에서 지정한 질문 답변 세트를 제거합니다.
+ */
+export const useRemoveQnaSetFromScrapFolder = <TError = unknown, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof removeQnaSetFromScrapFolder>>,
+      TError,
+      { scrapFolderId: number; qnaSetId: number },
+      TContext
+    >
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof removeQnaSetFromScrapFolder>>,
+  TError,
+  { scrapFolderId: number; qnaSetId: number },
+  TContext
+> => {
+  return useMutation(getRemoveQnaSetFromScrapFolderMutationOptions(options), queryClient)
+}
+/**
  * 스크랩 폴더 리스트에 '나의 어려웠던 질문' 폴더는 포함하지 않습니다. 해당 폴더의 내용은 어려웠던 질문을 조회하는 API로 조회합니다.
  * @summary 나의 스크랩 폴더 리스트를 조회합니다.
  */
-export const getGetMyScrapFoldersUrl = (params: GetMyScrapFoldersParams) => {
+export const getGetMyScrapFoldersUrl = (params?: GetMyScrapFoldersParams) => {
   const normalizedParams = new URLSearchParams()
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -55,7 +213,7 @@ export const getGetMyScrapFoldersUrl = (params: GetMyScrapFoldersParams) => {
 }
 
 export const getMyScrapFolders = async (
-  params: GetMyScrapFoldersParams,
+  params?: GetMyScrapFoldersParams,
   options?: RequestInit,
 ): Promise<ApiResponsePageScrapFolderResponse> => {
   return customFetch<ApiResponsePageScrapFolderResponse>(getGetMyScrapFoldersUrl(params), {
@@ -72,7 +230,7 @@ export const getGetMyScrapFoldersQueryOptions = <
   TData = Awaited<ReturnType<typeof getMyScrapFolders>>,
   TError = unknown,
 >(
-  params: GetMyScrapFoldersParams,
+  params?: GetMyScrapFoldersParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyScrapFolders>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -96,7 +254,7 @@ export type GetMyScrapFoldersQueryResult = NonNullable<Awaited<ReturnType<typeof
 export type GetMyScrapFoldersQueryError = unknown
 
 export function useGetMyScrapFolders<TData = Awaited<ReturnType<typeof getMyScrapFolders>>, TError = unknown>(
-  params: GetMyScrapFoldersParams,
+  params: undefined | GetMyScrapFoldersParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyScrapFolders>>, TError, TData>> &
       Pick<
@@ -112,7 +270,7 @@ export function useGetMyScrapFolders<TData = Awaited<ReturnType<typeof getMyScra
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetMyScrapFolders<TData = Awaited<ReturnType<typeof getMyScrapFolders>>, TError = unknown>(
-  params: GetMyScrapFoldersParams,
+  params?: GetMyScrapFoldersParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyScrapFolders>>, TError, TData>> &
       Pick<
@@ -128,7 +286,7 @@ export function useGetMyScrapFolders<TData = Awaited<ReturnType<typeof getMyScra
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetMyScrapFolders<TData = Awaited<ReturnType<typeof getMyScrapFolders>>, TError = unknown>(
-  params: GetMyScrapFoldersParams,
+  params?: GetMyScrapFoldersParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyScrapFolders>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -140,7 +298,7 @@ export function useGetMyScrapFolders<TData = Awaited<ReturnType<typeof getMyScra
  */
 
 export function useGetMyScrapFolders<TData = Awaited<ReturnType<typeof getMyScrapFolders>>, TError = unknown>(
-  params: GetMyScrapFoldersParams,
+  params?: GetMyScrapFoldersParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyScrapFolders>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -160,7 +318,7 @@ export const getGetMyScrapFoldersSuspenseQueryOptions = <
   TData = Awaited<ReturnType<typeof getMyScrapFolders>>,
   TError = unknown,
 >(
-  params: GetMyScrapFoldersParams,
+  params?: GetMyScrapFoldersParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyScrapFolders>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -184,7 +342,7 @@ export type GetMyScrapFoldersSuspenseQueryResult = NonNullable<Awaited<ReturnTyp
 export type GetMyScrapFoldersSuspenseQueryError = unknown
 
 export function useGetMyScrapFoldersSuspense<TData = Awaited<ReturnType<typeof getMyScrapFolders>>, TError = unknown>(
-  params: GetMyScrapFoldersParams,
+  params: undefined | GetMyScrapFoldersParams,
   options: {
     query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyScrapFolders>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -192,7 +350,7 @@ export function useGetMyScrapFoldersSuspense<TData = Awaited<ReturnType<typeof g
   queryClient?: QueryClient,
 ): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetMyScrapFoldersSuspense<TData = Awaited<ReturnType<typeof getMyScrapFolders>>, TError = unknown>(
-  params: GetMyScrapFoldersParams,
+  params?: GetMyScrapFoldersParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyScrapFolders>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -200,7 +358,7 @@ export function useGetMyScrapFoldersSuspense<TData = Awaited<ReturnType<typeof g
   queryClient?: QueryClient,
 ): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetMyScrapFoldersSuspense<TData = Awaited<ReturnType<typeof getMyScrapFolders>>, TError = unknown>(
-  params: GetMyScrapFoldersParams,
+  params?: GetMyScrapFoldersParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyScrapFolders>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -212,7 +370,7 @@ export function useGetMyScrapFoldersSuspense<TData = Awaited<ReturnType<typeof g
  */
 
 export function useGetMyScrapFoldersSuspense<TData = Awaited<ReturnType<typeof getMyScrapFolders>>, TError = unknown>(
-  params: GetMyScrapFoldersParams,
+  params?: GetMyScrapFoldersParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyScrapFolders>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -389,7 +547,7 @@ export const useUpdateScrapFolderName = <TError = unknown, TContext = unknown>(
  * '나의 어려웠던 질문' 폴더는 포함하지 않습니다. 해당 폴더의 내용은 어려웠던 질문을 조회하는 API로 조회합니다.
  * @summary 나의 스크랩 폴더 내 질문 답변 세트 리스트를 조회합니다.
  */
-export const getGetQnaSetsInScrapFolderUrl = (scrapFolderId: number, params: GetQnaSetsInScrapFolderParams) => {
+export const getGetQnaSetsInScrapFolderUrl = (scrapFolderId: number, params?: GetQnaSetsInScrapFolderParams) => {
   const normalizedParams = new URLSearchParams()
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -407,7 +565,7 @@ export const getGetQnaSetsInScrapFolderUrl = (scrapFolderId: number, params: Get
 
 export const getQnaSetsInScrapFolder = async (
   scrapFolderId: number,
-  params: GetQnaSetsInScrapFolderParams,
+  params?: GetQnaSetsInScrapFolderParams,
   options?: RequestInit,
 ): Promise<ApiResponsePageScrapFolderQnaSetResponse> => {
   return customFetch<ApiResponsePageScrapFolderQnaSetResponse>(getGetQnaSetsInScrapFolderUrl(scrapFolderId, params), {
@@ -425,7 +583,7 @@ export const getGetQnaSetsInScrapFolderQueryOptions = <
   TError = unknown,
 >(
   scrapFolderId: number,
-  params: GetQnaSetsInScrapFolderParams,
+  params?: GetQnaSetsInScrapFolderParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -453,7 +611,7 @@ export function useGetQnaSetsInScrapFolder<
   TError = unknown,
 >(
   scrapFolderId: number,
-  params: GetQnaSetsInScrapFolderParams,
+  params: undefined | GetQnaSetsInScrapFolderParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>, TError, TData>> &
       Pick<
@@ -473,7 +631,7 @@ export function useGetQnaSetsInScrapFolder<
   TError = unknown,
 >(
   scrapFolderId: number,
-  params: GetQnaSetsInScrapFolderParams,
+  params?: GetQnaSetsInScrapFolderParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>, TError, TData>> &
       Pick<
@@ -493,7 +651,7 @@ export function useGetQnaSetsInScrapFolder<
   TError = unknown,
 >(
   scrapFolderId: number,
-  params: GetQnaSetsInScrapFolderParams,
+  params?: GetQnaSetsInScrapFolderParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -509,7 +667,7 @@ export function useGetQnaSetsInScrapFolder<
   TError = unknown,
 >(
   scrapFolderId: number,
-  params: GetQnaSetsInScrapFolderParams,
+  params?: GetQnaSetsInScrapFolderParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -530,7 +688,7 @@ export const getGetQnaSetsInScrapFolderSuspenseQueryOptions = <
   TError = unknown,
 >(
   scrapFolderId: number,
-  params: GetQnaSetsInScrapFolderParams,
+  params?: GetQnaSetsInScrapFolderParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -560,7 +718,7 @@ export function useGetQnaSetsInScrapFolderSuspense<
   TError = unknown,
 >(
   scrapFolderId: number,
-  params: GetQnaSetsInScrapFolderParams,
+  params: undefined | GetQnaSetsInScrapFolderParams,
   options: {
     query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -572,7 +730,7 @@ export function useGetQnaSetsInScrapFolderSuspense<
   TError = unknown,
 >(
   scrapFolderId: number,
-  params: GetQnaSetsInScrapFolderParams,
+  params?: GetQnaSetsInScrapFolderParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -584,7 +742,7 @@ export function useGetQnaSetsInScrapFolderSuspense<
   TError = unknown,
 >(
   scrapFolderId: number,
-  params: GetQnaSetsInScrapFolderParams,
+  params?: GetQnaSetsInScrapFolderParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>
@@ -600,7 +758,7 @@ export function useGetQnaSetsInScrapFolderSuspense<
   TError = unknown,
 >(
   scrapFolderId: number,
-  params: GetQnaSetsInScrapFolderParams,
+  params?: GetQnaSetsInScrapFolderParams,
   options?: {
     query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getQnaSetsInScrapFolder>>, TError, TData>>
     request?: SecondParameter<typeof customFetch>

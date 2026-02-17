@@ -13,6 +13,7 @@ import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.gemini.GeminiClient;
 import com.shyashyashya.refit.global.gemini.GeminiEmbeddingRequest;
 import com.shyashyashya.refit.global.gemini.GeminiEmbeddingResponse;
+import com.shyashyashya.refit.global.property.GeminiProperty;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Email;
@@ -42,6 +43,7 @@ public class TestUserController {
     private final RefreshTokenRepository refreshTokenRepository;
     private final GeminiClient geminiClient;
     private final Executor geminiPostProcessExecutor;
+    private final GeminiProperty geminiProperty;
 
     @Operation(summary = "(테스트용) 유저를 이메일로 찾아 삭제합니다.")
     @DeleteMapping

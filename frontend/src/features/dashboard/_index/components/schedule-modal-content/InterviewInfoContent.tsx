@@ -1,53 +1,27 @@
+import { useMemo } from 'react'
+import { useGetAllJobCategories, useGetIndustries } from '@/apis'
 import { SearchableCombobox } from '@/designs/components'
 import Button from '@/designs/components/button'
 
-const INDUSTRY_OPTIONS: { value: string; label: string }[] = [
-  { value: 'it', label: 'IT / 소프트웨어' },
-  { value: 'finance', label: '금융' },
-  { value: 'manufacturing', label: '제조' },
-  { value: 'ecommerce', label: '이커머스' },
-  { value: 'media', label: '미디어' },
-  { value: 'healthcare', label: '의료 / 헬스케어' },
-  { value: 'education', label: '교육' },
-  { value: 'other', label: '기타' },
-]
+const FORM_OPTIONS_STALE_TIME = 60 * 60 * 1000
 
-const COMPANY_WITH_INDUSTRY: {
-  value: string
-  label: string
-  industryValue: string
-  industryLabel: string
-}[] = [
-  { value: 'kakao', label: '카카오', industryValue: 'it', industryLabel: 'IT / 소프트웨어' },
-  { value: 'naver', label: '네이버', industryValue: 'it', industryLabel: 'IT / 소프트웨어' },
-  { value: 'coupang', label: '쿠팡', industryValue: 'ecommerce', industryLabel: '이커머스' },
-  { value: 'toss', label: '토스', industryValue: 'finance', industryLabel: '금융' },
-  { value: 'line', label: '라인', industryValue: 'it', industryLabel: 'IT / 소프트웨어' },
-  { value: 'samsung', label: '삼성전자', industryValue: 'manufacturing', industryLabel: '제조' },
-  { value: 'hyundai', label: '현대자동차', industryValue: 'manufacturing', industryLabel: '제조' },
-  { value: 'lg', label: 'LG전자', industryValue: 'manufacturing', industryLabel: '제조' },
-  { value: 'sk', label: 'SK', industryValue: 'manufacturing', industryLabel: '제조' },
-  { value: 'other', label: '기타', industryValue: 'other', industryLabel: '기타' },
-]
-
-const COMPANY_OPTIONS = COMPANY_WITH_INDUSTRY.map(({ value, label }) => ({ value, label }))
-
-const JOB_TITLE_OPTIONS: { value: string; label: string }[] = [
-  { value: 'frontend', label: '프론트엔드 개발' },
-  { value: 'backend', label: '백엔드 개발' },
-  { value: 'fullstack', label: '풀스택 개발' },
-  { value: 'mobile', label: '모바일 개발' },
-  { value: 'design', label: '디자인' },
-  { value: 'product', label: '프로덕트' },
-  { value: 'marketing', label: '마케팅' },
-  { value: 'data', label: '데이터' },
-  { value: 'other', label: '기타' },
+const COMPANY_OPTIONS: { value: string; label: string }[] = [
+  { value: '카카오', label: '카카오' },
+  { value: '네이버', label: '네이버' },
+  { value: '쿠팡', label: '쿠팡' },
+  { value: '토스', label: '토스' },
+  { value: '라인', label: '라인' },
+  { value: '삼성전자', label: '삼성전자' },
+  { value: '현대자동차', label: '현대자동차' },
+  { value: 'LG전자', label: 'LG전자' },
+  { value: 'SK', label: 'SK' },
 ]
 
 export interface InterviewInfoFormValues {
   companyName: string
-  industry: string
-  jobTitle: string
+  industryId: string
+  jobCategoryId: string
+  jobRole: string
 }
 
 export interface InterviewInfoContentProps {
@@ -57,20 +31,42 @@ export interface InterviewInfoContentProps {
 }
 
 export function InterviewInfoContent({ values, onChange, onNext }: InterviewInfoContentProps) {
-  const { companyName, industry, jobTitle } = values
+  const { companyName, industryId, jobCategoryId } = values
 
-  const handleCompanyChange = (e: { target: { value: string } }) => {
-    const value = e.target.value
-    const pair = COMPANY_WITH_INDUSTRY.find((c) => c.value === value)
+  const { data: industries, isLoading: isIndustriesLoading } = useGetIndustries({
+    query: { staleTime: FORM_OPTIONS_STALE_TIME },
+  })
+  const { data: jobCategories, isLoading: isJobCategoriesLoading } = useGetAllJobCategories({
+    query: { staleTime: FORM_OPTIONS_STALE_TIME },
+  })
+
+  const industryOptions = useMemo(
+    () =>
+      (industries?.result ?? []).map((item) => ({
+        value: String(item.industryId),
+        label: item.industryName,
+      })),
+    [industries?.result],
+  )
+  const jobCategoryOptions = useMemo(
+    () =>
+      (jobCategories?.result ?? []).map((item) => ({
+        value: String(item.jobCategoryId),
+        label: item.jobCategoryName,
+      })),
+    [jobCategories?.result],
+  )
+
+  const handleJobCategoryChange = (nextJobCategoryId: string) => {
+    const selected = jobCategoryOptions.find((option) => option.value === nextJobCategoryId)
     onChange({
       ...values,
-      companyName: value,
-      industry: pair ? pair.industryValue : '',
+      jobCategoryId: nextJobCategoryId,
+      jobRole: selected?.label ?? '',
     })
   }
 
-  const isIndustryFromList = COMPANY_WITH_INDUSTRY.some((c) => c.value === companyName)
-  const isFormValid = companyName.trim() !== '' && industry.trim() !== '' && jobTitle.trim() !== ''
+  const isFormValid = companyName.trim() !== '' && industryId !== '' && jobCategoryId !== ''
 
   return (
     <>
@@ -80,7 +76,7 @@ export function InterviewInfoContent({ values, onChange, onNext }: InterviewInfo
           placeholder="회사명을 선택해 주세요"
           options={COMPANY_OPTIONS}
           value={companyName}
-          onChange={handleCompanyChange}
+          onChange={(e: { target: { value: string } }) => onChange({ ...values, companyName: e.target.value })}
           required
           searchPlaceholder="Search"
           creatable
@@ -88,21 +84,22 @@ export function InterviewInfoContent({ values, onChange, onNext }: InterviewInfo
         <SearchableCombobox
           label="산업군"
           placeholder="산업군을 선택해 주세요"
-          options={INDUSTRY_OPTIONS}
-          value={industry}
-          onChange={(e: { target: { value: string } }) => onChange({ ...values, industry: e.target.value })}
+          options={industryOptions}
+          value={industryId}
+          onChange={(e: { target: { value: string } }) => onChange({ ...values, industryId: e.target.value })}
           required
           searchPlaceholder="검색"
-          disabled={isIndustryFromList}
+          disabled={isIndustriesLoading}
         />
         <SearchableCombobox
           label="직무"
           placeholder="직무를 선택해 주세요"
-          options={JOB_TITLE_OPTIONS}
-          value={jobTitle}
-          onChange={(e: { target: { value: string } }) => onChange({ ...values, jobTitle: e.target.value })}
+          options={jobCategoryOptions}
+          value={jobCategoryId}
+          onChange={(e: { target: { value: string } }) => handleJobCategoryChange(e.target.value)}
           required
           searchPlaceholder="검색"
+          disabled={isJobCategoriesLoading}
         />
       </div>
       <Button

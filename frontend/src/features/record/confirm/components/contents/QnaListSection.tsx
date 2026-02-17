@@ -8,6 +8,8 @@ import { QnaSetContainer } from './QnaSetContainer'
 type QnaListSectionProps = {
   qnaList: SimpleQnaType[]
   isAddMode: boolean
+  isCreating: boolean
+  isDeleting: boolean
   onEdit: (qnaSetId: number, question: string, answer: string) => void
   onDelete: (qnaSetId: number) => void
   onAddSave: (question: string, answer: string) => void
@@ -20,6 +22,8 @@ type QnaListSectionProps = {
 export function QnaListSection({
   qnaList,
   isAddMode,
+  isCreating,
+  isDeleting,
   onEdit,
   onDelete,
   onAddSave,
@@ -42,16 +46,17 @@ export function QnaListSection({
           qnaData={qnaData}
           idx={idx + 1}
           isOtherEditing={isOtherEditing(qnaData.qnaSetId)}
+          isDeleting={isDeleting}
           onEdit={onEdit}
           onDelete={onDelete}
           onEditingIdChange={setEditingId}
         />
       ))}
       {isAddMode ? (
-        <QnaSetEditForm idx={nextIdx} onSave={onAddSave} onCancel={onCancelAdd} />
+        <QnaSetEditForm idx={nextIdx} onSave={onAddSave} onCancel={onCancelAdd} isSaving={isCreating} />
       ) : (
         <div className="flex justify-center">
-          <Button variant="outline-orange-100" size="sm" radius="full" onClick={onStartAdd}>
+          <Button variant="outline-orange-100" size="sm" radius="full" onClick={onStartAdd} disabled={isCreating}>
             <CirclePlusIcon className="text-orange-500" />
             질문 추가하기
           </Button>

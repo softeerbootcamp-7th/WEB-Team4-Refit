@@ -6,7 +6,7 @@ export const isMobileDevice = (): boolean => {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 }
 
-export async function RedirectToMobileMiddleware(_args: { request: Request }, next: () => Promise<unknown>) {
+export async function HandleMobileRouting(_args: { request: Request }, next: () => Promise<unknown>) {
   if (isMobileDevice()) {
     throw redirect(ROUTES.MOBILE)
   }

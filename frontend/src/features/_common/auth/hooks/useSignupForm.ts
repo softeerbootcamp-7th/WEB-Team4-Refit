@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
-import { useSignUp } from '@/apis'
-import { INDUSTRY_OPTIONS, JOB_OPTIONS } from '@/constants/signup'
+import { useGetAllJobCategories, useGetIndustries, useSignUp } from '@/apis'
+import { markAuthenticated } from '@/routes/middleware/auth-session'
 
 type SignupLocationState = { nickname?: string; profileImageUrl?: string } | null
+const SIGNUP_OPTIONS_STALE_TIME = 60 * 60 * 1000
 
 type UseSignupFormOptions = {
   redirectTo: string
@@ -19,28 +20,57 @@ export function useSignupForm(options: UseSignupFormOptions) {
   const [industry, setIndustry] = useState('')
   const [job, setJob] = useState('')
 
+  const { data: industries, isLoading: isIndustriesLoading } = useGetIndustries({
+    query: { staleTime: SIGNUP_OPTIONS_STALE_TIME },
+  })
+  const { data: jobCategories, isLoading: isJobCategoriesLoading } = useGetAllJobCategories({
+    query: { staleTime: SIGNUP_OPTIONS_STALE_TIME },
+  })
+
+  const industryOptions = useMemo(
+    () =>
+      (industries?.result ?? []).map((item) => ({
+        value: String(item.industryId),
+        label: item.industryName,
+      })),
+    [industries?.result],
+  )
+
+  const jobOptions = useMemo(
+    () =>
+      (jobCategories?.result ?? []).map((item) => ({
+        value: String(item.jobCategoryId),
+        label: item.jobCategoryName,
+      })),
+    [jobCategories?.result],
+  )
+  const isIndustryOptionsLoading = isIndustriesLoading
+  const isJobOptionsLoading = isJobCategoriesLoading
+  const isOptionsLoading = isIndustryOptionsLoading || isJobOptionsLoading
+
   const { mutate: signUp, isPending } = useSignUp({
     mutation: {
       onSuccess: () => {
+        markAuthenticated()
         navigate(redirectTo)
       },
     },
   })
 
-  const isFormValid = nickname.length > 0 && nickname.length <= 5 && industry !== '' && job !== ''
+  const isFormValid = nickname.length > 0 && nickname.length <= 20 && industry !== '' && job !== ''
 
   const handleSubmit = () => {
     if (!isFormValid) return
-    const industryOption = INDUSTRY_OPTIONS.find((o) => o.value === industry)
-    const jobOption = JOB_OPTIONS.find((o) => o.value === job)
-    if (!industryOption || !jobOption) return
+    const industryId = Number(industry)
+    const jobCategoryId = Number(job)
+    if (Number.isNaN(industryId) || Number.isNaN(jobCategoryId)) return
     signUp({
       params: { originType: import.meta.env.VITE_APP_ENV },
       data: {
         nickname,
         profileImageUrl: state?.profileImageUrl ?? '',
-        industryId: industryOption.id,
-        jobCategoryId: jobOption.id,
+        industryId,
+        jobCategoryId,
       },
     })
   }
@@ -50,9 +80,14 @@ export function useSignupForm(options: UseSignupFormOptions) {
     setNickname,
     industry,
     setIndustry,
+    industryOptions,
+    isIndustryOptionsLoading,
     job,
     setJob,
+    jobOptions,
+    isJobOptionsLoading,
     isFormValid,
+    isOptionsLoading,
     isPending,
     handleSubmit,
   }

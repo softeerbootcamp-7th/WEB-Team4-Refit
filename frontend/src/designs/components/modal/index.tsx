@@ -3,11 +3,12 @@ import { createPortal } from 'react-dom'
 import { CloseIcon } from '@/designs/assets'
 import { useOnClickOutside } from '@/features/_common/hooks/useOnClickOutside'
 
-type ModalSize = 'sm' | 'md'
+type ModalSize = 'sm' | 'md' | 'lg'
 
 const SIZE_CLASS: Record<ModalSize, string> = {
   sm: 'p-5 pt-6 max-w-96.5',
   md: 'px-6 py-8 max-w-120',
+  lg: 'px-8 py-10 max-w-200',
 }
 
 export interface ModalProps {
