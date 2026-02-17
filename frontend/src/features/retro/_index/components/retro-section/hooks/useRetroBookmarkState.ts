@@ -1,0 +1,40 @@
+import { useState } from 'react'
+import { useGetScrapFoldersContainingQnaSet } from '@/apis/generated/qna-set-api/qna-set-api'
+
+const SCRAP_FOLDERS_STALE_TIME = 1000 * 60 * 5
+const SCRAP_FOLDERS_GC_TIME = 1000 * 60 * 30
+
+type UseRetroBookmarkStateParams = {
+  qnaSetId: number
+  isKptStep: boolean
+  initialMarkedDifficult: boolean
+}
+
+export function useRetroBookmarkState({ qnaSetId, isKptStep, initialMarkedDifficult }: UseRetroBookmarkStateParams) {
+  const [markedDifficultByQnaSetId, setMarkedDifficultByQnaSetId] = useState<Record<number, boolean>>({})
+  const currentMarkedDifficult = markedDifficultByQnaSetId[qnaSetId] ?? initialMarkedDifficult
+
+  const folderQueryParams = { page: 0, size: 10 }
+  const { data: scrapFolderData } = useGetScrapFoldersContainingQnaSet(qnaSetId, folderQueryParams, {
+    query: {
+      enabled: !isKptStep && qnaSetId > 0,
+      staleTime: SCRAP_FOLDERS_STALE_TIME,
+      gcTime: SCRAP_FOLDERS_GC_TIME,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
+  })
+  const hasAnyScrapFolder = (scrapFolderData?.result?.content ?? []).some((folder) => folder.contains)
+  const isBookmarked = currentMarkedDifficult || hasAnyScrapFolder
+
+  const handleDifficultMarkedChange = (isMarked: boolean) => {
+    if (qnaSetId <= 0) return
+    setMarkedDifficultByQnaSetId((prev) => ({ ...prev, [qnaSetId]: isMarked }))
+  }
+
+  return {
+    isBookmarked,
+    currentMarkedDifficult,
+    handleDifficultMarkedChange,
+  }
+}
