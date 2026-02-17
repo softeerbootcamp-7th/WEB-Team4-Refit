@@ -1,15 +1,21 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
+import { useGetDashboardCalendarInterviews } from '@/apis'
+import type { InterviewDto } from '@/apis'
 import type { EventColor } from '@/features/dashboard/_index/constants/interviewCalendar'
 
-// 면접이 있는 날짜 (key: 'YYYY-M-D')
-// EventColor: orange = 기록 안 함(다가오는 면접 포함), gray = 기록 함
-const MOCK_EVENTS: Partial<Record<string, EventColor>> = {
-  '2026-2-3': 'orange',
-  '2026-2-10': 'orange',
-  '2026-2-15': 'gray',
+type CalendarDay = { day: number; isCurrentMonth: boolean }
+type CalendarDateEntry = {
+  year: number
+  month: number
+  day: number
+  dDay: number
+  interviews: InterviewDto[]
 }
 
-type CalendarDay = { day: number; isCurrentMonth: boolean }
+export interface CalendarInterviewItem {
+  dDay: number
+  interview: InterviewDto
+}
 
 const createCalendarDay = (day: number, isCurrentMonth: boolean): CalendarDay => ({ day, isCurrentMonth })
 
@@ -28,6 +34,11 @@ function getCalendarDays(year: number, month: number): CalendarDay[] {
   return [...prevDays, ...currentDays, ...nextDays]
 }
 
+function parseCalendarDate(date: string) {
+  const [year, month, day] = date.split('T')[0].split('-').map(Number)
+  return { year, month, day }
+}
+
 export const useInterviewCalendar = () => {
   const [today] = useState(() => new Date())
   const [viewDate, setViewDate] = useState(() => ({
@@ -40,8 +51,51 @@ export const useInterviewCalendar = () => {
     day: today.getDate(),
   }))
 
+  const { data: calendarResponse, isLoading, isError } = useGetDashboardCalendarInterviews({
+    year: viewDate.year,
+    month: viewDate.month + 1,
+  })
+
   const calendarDays = getCalendarDays(viewDate.year, viewDate.month)
   const monthLabel = `${viewDate.year}년 ${viewDate.month + 1}월`
+
+  const calendarEntries = useMemo<CalendarDateEntry[]>(() => {
+    return (calendarResponse?.result ?? [])
+      .map((entry) => {
+        const { year, month, day } = parseCalendarDate(entry.date)
+        if (Number.isNaN(year) || Number.isNaN(month) || Number.isNaN(day)) return null
+        return {
+          year,
+          month,
+          day,
+          dDay: entry.dDay,
+          interviews: entry.interviews ?? [],
+        }
+      })
+      .filter((entry): entry is CalendarDateEntry => entry !== null)
+  }, [calendarResponse?.result])
+
+  const eventColorByDay = useMemo(() => {
+    const mapped: Partial<Record<number, EventColor>> = {}
+
+    calendarEntries.forEach((entry) => {
+      if (entry.year !== viewDate.year || entry.month !== viewDate.month + 1) return
+
+      const hasPendingReview = entry.interviews.some((interview) => interview.interviewReviewStatus !== 'DEBRIEF_COMPLETED')
+      mapped[entry.day] = hasPendingReview ? 'orange' : 'gray'
+    })
+
+    return mapped
+  }, [calendarEntries, viewDate.month, viewDate.year])
+
+  const selectedDateInterviews = useMemo<CalendarInterviewItem[]>(() => {
+    const selectedEntry = calendarEntries.find(
+      (entry) =>
+        entry.year === selectedDate.year && entry.month === selectedDate.month + 1 && entry.day === selectedDate.day,
+    )
+    if (!selectedEntry) return []
+    return selectedEntry.interviews.map((interview) => ({ dDay: selectedEntry.dDay, interview }))
+  }, [calendarEntries, selectedDate.day, selectedDate.month, selectedDate.year])
 
   const prevMonth = () => {
     setViewDate((d) => (d.month === 0 ? { year: d.year - 1, month: 11 } : { year: d.year, month: d.month - 1 }))
@@ -57,10 +111,7 @@ export const useInterviewCalendar = () => {
       day,
     })
   }
-  const getEventColor = (day: number): EventColor | undefined => {
-    const key = `${viewDate.year}-${viewDate.month + 1}-${day}`
-    return MOCK_EVENTS[key]
-  }
+  const getEventColor = (day: number): EventColor | undefined => eventColorByDay[day]
 
   return {
     today,
@@ -68,6 +119,9 @@ export const useInterviewCalendar = () => {
     selectedDate,
     calendarDays,
     monthLabel,
+    isLoading,
+    isError,
+    selectedDateInterviews,
     prevMonth,
     nextMonth,
     handleDateClick,

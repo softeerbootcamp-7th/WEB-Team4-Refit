@@ -15,9 +15,9 @@ export interface MyProfileUpdateRequest {
 }
 
 export interface ApiResponseVoid {
-  isSuccess?: boolean
-  code?: string
-  message?: string
+  isSuccess: boolean
+  code: string
+  message: string
   result?: unknown
 }
 
@@ -28,6 +28,9 @@ export interface QnaSetUpdateRequest {
    */
   questionText?: string
   answerText?: string
+}
+
+export interface QnaSetReviewUpdateRequest {
   /**
    * @minLength 0
    * @maxLength 500
@@ -36,11 +39,11 @@ export interface QnaSetUpdateRequest {
 }
 
 export interface PdfHighlightingRectDto {
-  x?: number
-  y?: number
-  width?: number
-  height?: number
-  pageNumber?: number
+  x: number
+  y: number
+  width: number
+  height: number
+  pageNumber: number
 }
 
 export interface PdfHighlightingUpdateRequest {
@@ -93,6 +96,21 @@ export interface UserSignUpRequest {
   jobCategoryId: number
 }
 
+export interface Embedding {
+  values?: number[]
+}
+
+export interface GeminiEmbeddingResponse {
+  embedding?: Embedding
+}
+
+export interface ApiResponseGeminiEmbeddingResponse {
+  isSuccess: boolean
+  code: string
+  message: string
+  result?: GeminiEmbeddingResponse
+}
+
 export interface ScrapFolderCreateRequest {
   /**
    * @minLength 0
@@ -142,17 +160,17 @@ export const StarAnalysisDtoRInclusionLevel = {
 } as const
 
 export interface StarAnalysisDto {
-  sInclusionLevel?: StarAnalysisDtoSInclusionLevel
-  tInclusionLevel?: StarAnalysisDtoTInclusionLevel
-  aInclusionLevel?: StarAnalysisDtoAInclusionLevel
-  rInclusionLevel?: StarAnalysisDtoRInclusionLevel
-  overallSummary?: string
+  sInclusionLevel: StarAnalysisDtoSInclusionLevel
+  tInclusionLevel: StarAnalysisDtoTInclusionLevel
+  aInclusionLevel: StarAnalysisDtoAInclusionLevel
+  rInclusionLevel: StarAnalysisDtoRInclusionLevel
+  overallSummary: string
 }
 
 export interface ApiResponseStarAnalysisDto {
-  isSuccess?: boolean
-  code?: string
-  message?: string
+  isSuccess: boolean
+  code: string
+  message: string
   result?: StarAnalysisDto
 }
 
@@ -206,15 +224,7 @@ export interface QnaSearchFilter {
 
 export interface QnaSetSearchRequest {
   keyword?: string
-  searchFilter?: QnaSearchFilter
-}
-
-export interface Pageable {
-  /** @minimum 0 */
-  page?: number
-  /** @minimum 1 */
-  size?: number
-  sort?: string[]
+  searchFilter: QnaSearchFilter
 }
 
 export type InterviewDtoInterviewType = (typeof InterviewDtoInterviewType)[keyof typeof InterviewDtoInterviewType]
@@ -240,28 +250,40 @@ export const InterviewDtoInterviewResultStatus = {
   PASS: 'PASS',
 } as const
 
+export type InterviewDtoInterviewReviewStatus =
+  (typeof InterviewDtoInterviewReviewStatus)[keyof typeof InterviewDtoInterviewReviewStatus]
+
+export const InterviewDtoInterviewReviewStatus = {
+  NOT_LOGGED: 'NOT_LOGGED',
+  LOG_DRAFT: 'LOG_DRAFT',
+  QNA_SET_DRAFT: 'QNA_SET_DRAFT',
+  SELF_REVIEW_DRAFT: 'SELF_REVIEW_DRAFT',
+  DEBRIEF_COMPLETED: 'DEBRIEF_COMPLETED',
+} as const
+
 export interface InterviewDto {
-  interviewId?: number
-  interviewType?: InterviewDtoInterviewType
-  interviewStartAt?: string
-  interviewResultStatus?: InterviewDtoInterviewResultStatus
+  interviewId: number
+  interviewType: InterviewDtoInterviewType
+  interviewStartAt: string
+  interviewResultStatus: InterviewDtoInterviewResultStatus
+  interviewReviewStatus: InterviewDtoInterviewReviewStatus
   interviewRawText?: string
-  companyName?: string
-  jobCategoryId?: number
-  jobCategoryName?: string
-  updatedAt?: string
-  createdAt?: string
+  companyName: string
+  jobCategoryId: number
+  jobCategoryName: string
+  updatedAt: string
+  createdAt: string
 }
 
 export interface QnaSetSimpleDto {
-  qnaSetId?: number
-  questionText?: string
-  answerText?: string
+  qnaSetId: number
+  questionText: string
+  answerText: string
 }
 
 export interface QnaSetSearchResponse {
-  interviewInfo?: InterviewDto
-  qnaSetInfo?: QnaSetSimpleDto
+  interviewInfo: InterviewDto
+  qnaSetInfo: QnaSetSimpleDto
 }
 
 export interface SortObject {
@@ -294,9 +316,9 @@ export interface PageQnaSetSearchResponse {
 }
 
 export interface ApiResponsePageQnaSetSearchResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
+  isSuccess: boolean
+  code: string
+  message: string
   result?: PageQnaSetSearchResponse
 }
 
@@ -324,6 +346,17 @@ export interface InterviewCreateRequest {
   jobRole: string
 }
 
+export interface InterviewCreateResponse {
+  interviewId: number
+}
+
+export interface ApiResponseInterviewCreateResponse {
+  isSuccess: boolean
+  code: string
+  message: string
+  result?: InterviewCreateResponse
+}
+
 export interface QnaSetCreateRequest {
   /**
    * @minLength 0
@@ -335,13 +368,13 @@ export interface QnaSetCreateRequest {
 }
 
 export interface QnaSetCreateResponse {
-  qnaSetId?: number
+  qnaSetId: number
 }
 
 export interface ApiResponseQnaSetCreateResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
+  isSuccess: boolean
+  code: string
+  message: string
   result?: QnaSetCreateResponse
 }
 
@@ -396,9 +429,9 @@ export interface PageInterviewDto {
 }
 
 export interface ApiResponsePageInterviewDto {
-  isSuccess?: boolean
-  code?: string
-  message?: string
+  isSuccess: boolean
+  code: string
+  message: string
   result?: PageInterviewDto
 }
 
@@ -424,40 +457,41 @@ export interface InterviewResultStatusUpdateRequest {
 }
 
 export interface MyProfileResponse {
-  nickname?: string
-  industryId?: number
-  jobCategoryId?: number
-  profileImageUrl?: string
+  nickname: string
+  industryId: number
+  jobCategoryId: number
+  profileImageUrl: string
+  isAgreedToTerms: boolean
 }
 
 export interface ApiResponseMyProfileResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
+  isSuccess: boolean
+  code: string
+  message: string
   result?: MyProfileResponse
 }
 
 export interface TokenPairDto {
-  accessToken?: string
-  refreshToken?: string
+  accessToken: string
+  refreshToken: string
 }
 
 export interface TestPublishTokenResponse {
-  isNeedSignUp?: boolean
-  tokens?: TokenPairDto
+  isNeedSignUp: boolean
+  tokens: TokenPairDto
 }
 
 export interface ApiResponseTestPublishTokenResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
+  isSuccess: boolean
+  code: string
+  message: string
   result?: TestPublishTokenResponse
 }
 
 export interface ScrapFolderResponse {
-  scrapFolderId?: number
-  scrapFolderName?: string
-  qnaSetCount?: number
+  scrapFolderId: number
+  scrapFolderName: string
+  qnaSetCount: number
 }
 
 export interface PageScrapFolderResponse {
@@ -475,15 +509,15 @@ export interface PageScrapFolderResponse {
 }
 
 export interface ApiResponsePageScrapFolderResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
+  isSuccess: boolean
+  code: string
+  message: string
   result?: PageScrapFolderResponse
 }
 
 export interface ScrapFolderQnaSetResponse {
-  interview?: InterviewDto
-  qnaSet?: QnaSetSimpleDto
+  interview: InterviewDto
+  qnaSet: QnaSetSimpleDto
 }
 
 export interface PageScrapFolderQnaSetResponse {
@@ -501,16 +535,16 @@ export interface PageScrapFolderQnaSetResponse {
 }
 
 export interface ApiResponsePageScrapFolderQnaSetResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
+  isSuccess: boolean
+  code: string
+  message: string
   result?: PageScrapFolderQnaSetResponse
 }
 
 export interface QnaSetScrapFolderResponse {
-  scrapFolderId?: number
-  scrapFolderName?: string
-  contains?: boolean
+  scrapFolderId: number
+  scrapFolderName: string
+  contains: boolean
 }
 
 export interface PageQnaSetScrapFolderResponse {
@@ -528,30 +562,30 @@ export interface PageQnaSetScrapFolderResponse {
 }
 
 export interface ApiResponsePageQnaSetScrapFolderResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
+  isSuccess: boolean
+  code: string
+  message: string
   result?: PageQnaSetScrapFolderResponse
 }
 
 export interface PdfHighlightingDto {
-  pdfHighlightingId?: number
-  highlightingText?: string
-  rects?: PdfHighlightingRectDto[]
+  pdfHighlightingId: number
+  highlightingText: string
+  rects: PdfHighlightingRectDto[]
 }
 
 export interface ApiResponseListPdfHighlightingDto {
-  isSuccess?: boolean
-  code?: string
-  message?: string
+  isSuccess: boolean
+  code: string
+  message: string
   result?: PdfHighlightingDto[]
 }
 
 export interface FrequentQnaSetCategoryResponse {
-  categoryId?: number
-  categoryName?: string
-  frequentCount?: number
-  cohesion?: number
+  categoryId: number
+  categoryName: string
+  frequentCount: number
+  cohesion: number
 }
 
 export interface PageFrequentQnaSetCategoryResponse {
@@ -569,9 +603,9 @@ export interface PageFrequentQnaSetCategoryResponse {
 }
 
 export interface ApiResponsePageFrequentQnaSetCategoryResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
+  isSuccess: boolean
+  code: string
+  message: string
   result?: PageFrequentQnaSetCategoryResponse
 }
 
@@ -590,24 +624,36 @@ export const InterviewSimpleDtoInterviewType = {
   PSEUDO: 'PSEUDO',
 } as const
 
+export type InterviewSimpleDtoInterviewReviewStatus =
+  (typeof InterviewSimpleDtoInterviewReviewStatus)[keyof typeof InterviewSimpleDtoInterviewReviewStatus]
+
+export const InterviewSimpleDtoInterviewReviewStatus = {
+  NOT_LOGGED: 'NOT_LOGGED',
+  LOG_DRAFT: 'LOG_DRAFT',
+  QNA_SET_DRAFT: 'QNA_SET_DRAFT',
+  SELF_REVIEW_DRAFT: 'SELF_REVIEW_DRAFT',
+  DEBRIEF_COMPLETED: 'DEBRIEF_COMPLETED',
+} as const
+
 export interface CompanyDto {
-  companyId?: number
-  companyName?: string
+  companyId: number
+  companyName: string
   companyLogoUrl?: string
 }
 
 export interface InterviewSimpleDto {
-  interviewId?: number
-  interviewType?: InterviewSimpleDtoInterviewType
-  interviewStartAt?: string
-  companyInfo?: CompanyDto
-  jobCategoryName?: string
-  updatedAt?: string
+  interviewId: number
+  interviewType: InterviewSimpleDtoInterviewType
+  interviewReviewStatus: InterviewSimpleDtoInterviewReviewStatus
+  interviewStartAt: string
+  companyInfo: CompanyDto
+  jobCategoryName: string
+  updatedAt: string
 }
 
 export interface FrequentQnaSetCategoryQuestionResponse {
-  question?: string
-  interviewInfo?: InterviewSimpleDto
+  question: string
+  interviewInfo: InterviewSimpleDto
 }
 
 export interface PageFrequentQnaSetCategoryQuestionResponse {
@@ -625,9 +671,9 @@ export interface PageFrequentQnaSetCategoryQuestionResponse {
 }
 
 export interface ApiResponsePageFrequentQnaSetCategoryQuestionResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
+  isSuccess: boolean
+  code: string
+  message: string
   result?: PageFrequentQnaSetCategoryQuestionResponse
 }
 
@@ -647,11 +693,11 @@ export const FrequentQnaSetResponseInterviewType = {
 } as const
 
 export interface FrequentQnaSetResponse {
-  industryName?: string
-  jobCategoryName?: string
-  interviewType?: FrequentQnaSetResponseInterviewType
-  interviewStartAt?: string
-  question?: string
+  industryName: string
+  jobCategoryName: string
+  interviewType: FrequentQnaSetResponseInterviewType
+  interviewStartAt: string
+  question: string
 }
 
 export interface PageFrequentQnaSetResponse {
@@ -669,28 +715,28 @@ export interface PageFrequentQnaSetResponse {
 }
 
 export interface ApiResponsePageFrequentQnaSetResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
+  isSuccess: boolean
+  code: string
+  message: string
   result?: PageFrequentQnaSetResponse
 }
 
 export interface JobCategoryResponse {
-  jobCategoryId?: number
-  jobCategoryName?: string
+  jobCategoryId: number
+  jobCategoryName: string
 }
 
 export interface ApiResponseListJobCategoryResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
+  isSuccess: boolean
+  code: string
+  message: string
   result?: JobCategoryResponse[]
 }
 
 export interface ApiResponseInterviewDto {
-  isSuccess?: boolean
-  code?: string
-  message?: string
+  isSuccess: boolean
+  code: string
+  message: string
   result?: InterviewDto
 }
 
@@ -709,6 +755,17 @@ export const InterviewFullDtoInterviewType = {
   PSEUDO: 'PSEUDO',
 } as const
 
+export type InterviewFullDtoInterviewReviewStatus =
+  (typeof InterviewFullDtoInterviewReviewStatus)[keyof typeof InterviewFullDtoInterviewReviewStatus]
+
+export const InterviewFullDtoInterviewReviewStatus = {
+  NOT_LOGGED: 'NOT_LOGGED',
+  LOG_DRAFT: 'LOG_DRAFT',
+  QNA_SET_DRAFT: 'QNA_SET_DRAFT',
+  SELF_REVIEW_DRAFT: 'SELF_REVIEW_DRAFT',
+  DEBRIEF_COMPLETED: 'DEBRIEF_COMPLETED',
+} as const
+
 export type InterviewFullDtoInterviewResultStatus =
   (typeof InterviewFullDtoInterviewResultStatus)[keyof typeof InterviewFullDtoInterviewResultStatus]
 
@@ -719,52 +776,73 @@ export const InterviewFullDtoInterviewResultStatus = {
 } as const
 
 export interface QnaSetDto {
-  qnaSetId?: number
-  interviewId?: number
-  questionText?: string
-  answerText?: string
-  qnaSetSelfReviewText?: string
+  qnaSetId: number
+  interviewId: number
+  questionText: string
+  answerText: string
+  qnaSetSelfReviewText: string
   starAnalysis?: StarAnalysisDto
-  isMarkedDifficult?: boolean
+  isMarkedDifficult: boolean
 }
 
 export interface InterviewSelfReviewDto {
-  keepText?: string
-  problemText?: string
-  tryText?: string
+  keepText: string
+  problemText: string
+  tryText: string
 }
 
 export interface InterviewFullDto {
-  interviewId?: number
-  interviewType?: InterviewFullDtoInterviewType
-  interviewStartAt?: string
-  interviewResultStatus?: InterviewFullDtoInterviewResultStatus
-  company?: string
-  industryId?: number
-  jobCategoryId?: number
+  interviewId: number
+  interviewType: InterviewFullDtoInterviewType
+  interviewStartAt: string
+  interviewReviewStatus: InterviewFullDtoInterviewReviewStatus
+  interviewResultStatus: InterviewFullDtoInterviewResultStatus
+  company: string
+  industryId: number
+  jobCategoryId: number
   jobRole?: string
-  updatedAt?: string
+  updatedAt: string
   pdfUrl?: string
-  qnaSets?: QnaSetDto[]
+  qnaSets: QnaSetDto[]
   interviewSelfReview?: InterviewSelfReviewDto
 }
 
 export interface ApiResponseInterviewFullDto {
-  isSuccess?: boolean
-  code?: string
-  message?: string
+  isSuccess: boolean
+  code: string
+  message: string
   result?: InterviewFullDto
 }
 
+export interface PresignedUrlResponse {
+  url: string
+  key: string
+  expireSeconds: number
+}
+
+export interface ApiResponsePresignedUrlResponse {
+  isSuccess: boolean
+  code: string
+  message: string
+  result?: PresignedUrlResponse
+}
+
 export interface GuideQuestionResponse {
-  guideQuestion?: string
+  guideQuestion: string
 }
 
 export interface ApiResponseGuideQuestionResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
+  isSuccess: boolean
+  code: string
+  message: string
   result?: GuideQuestionResponse
+}
+
+export interface ApiResponseListInterviewSimpleDto {
+  isSuccess: boolean
+  code: string
+  message: string
+  result?: InterviewSimpleDto[]
 }
 
 export interface PageInterviewSimpleDto {
@@ -782,27 +860,27 @@ export interface PageInterviewSimpleDto {
 }
 
 export interface ApiResponsePageInterviewSimpleDto {
-  isSuccess?: boolean
-  code?: string
-  message?: string
+  isSuccess: boolean
+  code: string
+  message: string
   result?: PageInterviewSimpleDto
 }
 
 export interface IndustryResponse {
-  industryId?: number
-  industryName?: string
+  industryId: number
+  industryName: string
 }
 
 export interface ApiResponseListIndustryResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
+  isSuccess: boolean
+  code: string
+  message: string
   result?: IndustryResponse[]
 }
 
 export interface DashboardMyDifficultQuestionResponse {
-  question?: string
-  interview?: InterviewDto
+  question: string
+  interview: InterviewDto
 }
 
 export interface PageDashboardMyDifficultQuestionResponse {
@@ -820,16 +898,16 @@ export interface PageDashboardMyDifficultQuestionResponse {
 }
 
 export interface ApiResponsePageDashboardMyDifficultQuestionResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
+  isSuccess: boolean
+  code: string
+  message: string
   result?: PageDashboardMyDifficultQuestionResponse
 }
 
 export interface DashboardUpcomingInterviewResponse {
-  upcomingInterview?: InterviewDto
-  frequentlyAskedQuestions?: string[]
-  relatedInterviews?: InterviewDto[]
+  upcomingInterview: InterviewDto
+  frequentlyAskedQuestions: string[]
+  relatedInterviews: InterviewDto[]
 }
 
 export interface PageDashboardUpcomingInterviewResponse {
@@ -847,15 +925,15 @@ export interface PageDashboardUpcomingInterviewResponse {
 }
 
 export interface ApiResponsePageDashboardUpcomingInterviewResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
+  isSuccess: boolean
+  code: string
+  message: string
   result?: PageDashboardUpcomingInterviewResponse
 }
 
 export interface DashboardDebriefIncompletedInterviewResponse {
-  interview?: InterviewDto
-  passedDays?: number
+  interview: InterviewDto
+  passedDays: number
 }
 
 export interface PageDashboardDebriefIncompletedInterviewResponse {
@@ -873,9 +951,9 @@ export interface PageDashboardDebriefIncompletedInterviewResponse {
 }
 
 export interface ApiResponsePageDashboardDebriefIncompletedInterviewResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
+  isSuccess: boolean
+  code: string
+  message: string
   result?: PageDashboardDebriefIncompletedInterviewResponse
 }
 
@@ -890,39 +968,51 @@ export const DashboardHeadlineResponseHeadlineType = {
 } as const
 
 export interface DashboardHeadlineResponse {
-  headlineType?: DashboardHeadlineResponseHeadlineType
-  nickname?: string
+  headlineType: DashboardHeadlineResponseHeadlineType
+  nickname: string
   upcomingInterviewDday?: number
 }
 
 export interface ApiResponseDashboardHeadlineResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
+  isSuccess: boolean
+  code: string
+  message: string
   result?: DashboardHeadlineResponse
 }
 
 export interface DashboardCalendarResponse {
-  date?: string
-  dDay?: number
-  interviews?: InterviewDto[]
+  date: string
+  dDay: number
+  interviews: InterviewDto[]
 }
 
 export interface ApiResponseListDashboardCalendarResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
+  isSuccess: boolean
+  code: string
+  message: string
   result?: DashboardCalendarResponse[]
 }
 
+export interface TokenReissueResponse {
+  isReissueProcessed: boolean
+  isNeedSignUp: boolean
+}
+
+export interface ApiResponseTokenReissueResponse {
+  isSuccess: boolean
+  code: string
+  message: string
+  result?: TokenReissueResponse
+}
+
 export interface OAuth2LoginUrlResponse {
-  oAuth2LoginUrl?: string
+  oAuth2LoginUrl: string
 }
 
 export interface ApiResponseOAuth2LoginUrlResponse {
-  isSuccess?: boolean
-  code?: string
-  message?: string
+  isSuccess: boolean
+  code: string
+  message: string
   result?: OAuth2LoginUrlResponse
 }
 
@@ -931,23 +1021,53 @@ export type SignUpParams = {
 }
 
 export type GetMyScrapFoldersParams = {
-  pageable?: Pageable
+  /**
+   * Zero-based page index (0..N)
+   * @minimum 0
+   */
   page?: number
+  /**
+   * The size of the page to be returned
+   * @minimum 1
+   */
   size?: number
+  /**
+   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   */
   sort?: string[]
 }
 
 export type SearchMyQnaSetParams = {
-  pageable?: Pageable
+  /**
+   * Zero-based page index (0..N)
+   * @minimum 0
+   */
   page?: number
+  /**
+   * The size of the page to be returned
+   * @minimum 1
+   */
   size?: number
+  /**
+   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   */
   sort?: string[]
 }
 
 export type SearchInterviewsParams = {
-  pageable?: Pageable
+  /**
+   * Zero-based page index (0..N)
+   * @minimum 0
+   */
   page?: number
+  /**
+   * The size of the page to be returned
+   * @minimum 1
+   */
   size?: number
+  /**
+   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   */
   sort?: string[]
 }
 
@@ -961,78 +1081,166 @@ export type PublishTokenByUserIdParams = {
 }
 
 export type GetQnaSetsInScrapFolderParams = {
-  pageable?: Pageable
+  /**
+   * Zero-based page index (0..N)
+   * @minimum 0
+   */
   page?: number
+  /**
+   * The size of the page to be returned
+   * @minimum 1
+   */
   size?: number
+  /**
+   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   */
   sort?: string[]
 }
 
 export type GetScrapFoldersContainingQnaSetParams = {
-  pageable?: Pageable
+  /**
+   * Zero-based page index (0..N)
+   * @minimum 0
+   */
   page?: number
+  /**
+   * The size of the page to be returned
+   * @minimum 1
+   */
   size?: number
+  /**
+   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   */
   sort?: string[]
 }
 
 export type GetMyFrequentQnaSetCategoriesParams = {
-  pageable?: Pageable
+  /**
+   * Zero-based page index (0..N)
+   * @minimum 0
+   */
   page?: number
+  /**
+   * The size of the page to be returned
+   * @minimum 1
+   */
   size?: number
+  /**
+   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   */
   sort?: string[]
 }
 
 export type GetMyFrequentQnaSetCategoryQuestionsParams = {
-  pageable?: Pageable
+  /**
+   * Zero-based page index (0..N)
+   * @minimum 0
+   */
   page?: number
+  /**
+   * The size of the page to be returned
+   * @minimum 1
+   */
   size?: number
+  /**
+   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   */
   sort?: string[]
 }
 
 export type GetFrequentQuestionsParams = {
   industryIds?: number[]
   jobCategoryIds?: number[]
-  pageable?: Pageable
+  /**
+   * Zero-based page index (0..N)
+   * @minimum 0
+   */
   page?: number
+  /**
+   * The size of the page to be returned
+   * @minimum 1
+   */
   size?: number
+  /**
+   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   */
   sort?: string[]
 }
 
 export type GetMyInterviewDraftsParams = {
-  interviewReviewStatus: GetMyInterviewDraftsInterviewReviewStatus
-  pageable?: Pageable
+  interviewDraftType: GetMyInterviewDraftsInterviewDraftType
+  /**
+   * Zero-based page index (0..N)
+   * @minimum 0
+   */
   page?: number
+  /**
+   * The size of the page to be returned
+   * @minimum 1
+   */
   size?: number
+  /**
+   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   */
   sort?: string[]
 }
 
-export type GetMyInterviewDraftsInterviewReviewStatus =
-  (typeof GetMyInterviewDraftsInterviewReviewStatus)[keyof typeof GetMyInterviewDraftsInterviewReviewStatus]
+export type GetMyInterviewDraftsInterviewDraftType =
+  (typeof GetMyInterviewDraftsInterviewDraftType)[keyof typeof GetMyInterviewDraftsInterviewDraftType]
 
-export const GetMyInterviewDraftsInterviewReviewStatus = {
-  NOT_LOGGED: 'NOT_LOGGED',
-  LOG_DRAFT: 'LOG_DRAFT',
-  SELF_REVIEW_DRAFT: 'SELF_REVIEW_DRAFT',
-  DEBRIEF_COMPLETED: 'DEBRIEF_COMPLETED',
+export const GetMyInterviewDraftsInterviewDraftType = {
+  LOGGING: 'LOGGING',
+  REVIEWING: 'REVIEWING',
 } as const
 
 export type GetMyDifficultQnaSetsParams = {
-  pageable?: Pageable
+  /**
+   * Zero-based page index (0..N)
+   * @minimum 0
+   */
   page?: number
+  /**
+   * The size of the page to be returned
+   * @minimum 1
+   */
   size?: number
+  /**
+   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   */
   sort?: string[]
 }
 
 export type GetUpcomingInterviewsParams = {
-  pageable?: Pageable
+  /**
+   * Zero-based page index (0..N)
+   * @minimum 0
+   */
   page?: number
+  /**
+   * The size of the page to be returned
+   * @minimum 1
+   */
   size?: number
+  /**
+   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   */
   sort?: string[]
 }
 
 export type GetDebriefIncompletedInterviewsParams = {
-  pageable?: Pageable
+  /**
+   * Zero-based page index (0..N)
+   * @minimum 0
+   */
   page?: number
+  /**
+   * The size of the page to be returned
+   * @minimum 1
+   */
   size?: number
+  /**
+   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   */
   sort?: string[]
 }
 

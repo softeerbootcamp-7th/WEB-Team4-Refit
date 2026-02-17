@@ -22,7 +22,7 @@ import com.shyashyashya.refit.domain.interview.dto.request.KptSelfReviewUpdateRe
 import com.shyashyashya.refit.domain.interview.dto.request.QnaSetCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.response.InterviewCreateResponse;
-import com.shyashyashya.refit.domain.interview.dto.response.PresignedUrlResponse;
+import com.shyashyashya.refit.domain.interview.dto.response.PresignedUrlDto;
 import com.shyashyashya.refit.domain.interview.dto.response.QnaSetCreateResponse;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
@@ -33,20 +33,23 @@ import com.shyashyashya.refit.domain.interview.service.validator.InterviewValida
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
 import com.shyashyashya.refit.domain.qnaset.dto.StarAnalysisDto;
+import com.shyashyashya.refit.domain.qnaset.model.PdfHighlighting;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetSelfReview;
+import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetSelfReviewRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.StarAnalysisRepository;
 import com.shyashyashya.refit.domain.user.model.User;
+import com.shyashyashya.refit.global.aws.S3Util;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.gemini.GeminiClient;
 import com.shyashyashya.refit.global.gemini.GeminiGenerateRequest;
 import com.shyashyashya.refit.global.gemini.GeminiGenerateResponse;
 import com.shyashyashya.refit.global.gemini.GenerateModel;
-import com.shyashyashya.refit.global.property.S3Property;
+import com.shyashyashya.refit.global.property.S3FolderNameProperty;
+import com.shyashyashya.refit.global.util.HangulUtil;
 import com.shyashyashya.refit.global.util.RequestUserContext;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -58,15 +61,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import software.amazon.awssdk.services.s3.model.GetObjectRequest;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.presigner.S3Presigner;
-import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
-import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
-import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
-import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -79,15 +76,17 @@ public class InterviewService {
     private final JobCategoryRepository jobCategoryRepository;
     private final QnaSetRepository qnaSetRepository;
     private final QnaSetSelfReviewRepository qnaSetSelfReviewRepository;
+    private final PdfHighlightingRepository pdfHighlightingRepository;
     private final StarAnalysisRepository starAnalysisRepository;
     private final InterviewSelfReviewRepository interviewSelfReviewRepository;
 
     private final InterviewValidator interviewValidator;
     private final RequestUserContext requestUserContext;
-    private final S3Presigner s3Presigner;
-    private final S3Property s3Property;
     private final QnaSetPromptGenerator qnaSetPromptGenerator;
     private final GeminiClient geminiClient;
+    private final S3FolderNameProperty s3FolderNameProperty;
+    private final S3Util s3Util;
+    private final HangulUtil hangulUtil;
 
     @Transactional(readOnly = true)
     public InterviewDto getInterview(Long interviewId) {
@@ -192,59 +191,52 @@ public class InterviewService {
     }
 
     @Transactional
-    public PresignedUrlResponse createPdfUploadUrl(Long interviewId) {
+    public PresignedUrlDto createPdfUploadUrl(Long interviewId) {
         User requestUser = requestUserContext.getRequestUser();
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
-        if (interview.getPdfUrl() != null) {
+        if (interview.getPdfResourceKey() != null) {
             throw new CustomException(INTERVIEW_PDF_ALREADY_EXITS);
         }
 
-        String extension = ".pdf";
-        String key = s3Property.prefix() + UUID.randomUUID() + extension;
-        interview.updatePdfUrl(key);
-
-        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                .bucket(s3Property.bucket())
-                .key(key)
-                .contentType("application/pdf")
-                .build();
-
-        PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
-                .signatureDuration(Duration.ofSeconds(s3Property.presignExpireSeconds()))
-                .putObjectRequest(putObjectRequest)
-                .build();
-
-        PresignedPutObjectRequest presigned = s3Presigner.presignPutObject(presignRequest);
-
-        return new PresignedUrlResponse(presigned.url().toString(), key, s3Property.presignExpireSeconds());
+        String key = s3FolderNameProperty.interviewPdf() + UUID.randomUUID() + ".pdf";
+        PresignedUrlDto response = s3Util.createResourceUploadUrl(key, MediaType.APPLICATION_PDF);
+        interview.updatePdfResourceKey(response.key());
+        return response;
     }
 
     @Transactional(readOnly = true)
-    public PresignedUrlResponse createPdfDownloadUrl(Long interviewId) {
+    public PresignedUrlDto createPdfDownloadUrl(Long interviewId) {
         User requestUser = requestUserContext.getRequestUser();
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
-        if (interview.getPdfUrl() == null) {
+        if (interview.getPdfResourceKey() == null) {
             throw new CustomException(INTERVIEW_PDF_NOT_FOUND);
         }
 
-        String key = interview.getPdfUrl();
-        GetObjectRequest getObjectRequest =
-                GetObjectRequest.builder().bucket(s3Property.bucket()).key(key).build();
+        String key = interview.getPdfResourceKey();
+        return s3Util.createResourceDownloadUrl(key);
+    }
 
-        GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
-                .signatureDuration(Duration.ofSeconds(s3Property.presignExpireSeconds()))
-                .getObjectRequest(getObjectRequest)
-                .build();
+    @Transactional
+    public void deletePdf(Long interviewId) {
+        User requestUser = requestUserContext.getRequestUser();
+        Interview interview =
+                interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
+        interviewValidator.validateInterviewOwner(interview, requestUser);
 
-        PresignedGetObjectRequest presigned = s3Presigner.presignGetObject(presignRequest);
+        String key = interview.getPdfResourceKey();
+        if (key == null) {
+            throw new CustomException(INTERVIEW_PDF_NOT_FOUND);
+        }
 
-        return new PresignedUrlResponse(presigned.url().toString(), key, s3Property.presignExpireSeconds());
+        s3Util.deleteFile(key);
+        deleteAllPdfHighlighting(interview);
+        interview.deletePdfResourceKey();
     }
 
     public Page<InterviewSimpleDto> getMyInterviewDrafts(InterviewDraftType draftType, Pageable pageable) {
@@ -377,7 +369,8 @@ public class InterviewService {
         return companyRepository.findByName(request.companyName()).orElseGet(() -> {
             try {
                 // TODO 회사 디폴트 이미지 url로 변경
-                Company newCompany = Company.create(request.companyName(), null, false);
+                Company newCompany =
+                        Company.create(request.companyName(), hangulUtil.decompose(request.companyName()), null);
                 return companyRepository.save(newCompany);
             } catch (DataIntegrityViolationException e) {
                 // Race condition
@@ -396,5 +389,15 @@ public class InterviewService {
         return interviewRepository.findInterviewsNotLoggedRecentOneMonth(requestUser, now).stream()
                 .map(InterviewSimpleDto::from)
                 .toList();
+    }
+
+    private void deleteAllPdfHighlighting(Interview interview) {
+        List<QnaSet> qnaSets = qnaSetRepository.findAllByInterview(interview);
+        if (qnaSets.isEmpty()) return;
+
+        List<PdfHighlighting> highlightings = pdfHighlightingRepository.findAllByQnaSetIn(qnaSets);
+        if (highlightings.isEmpty()) return;
+
+        pdfHighlightingRepository.deleteAllInBatch(highlightings);
     }
 }

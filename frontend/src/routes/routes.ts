@@ -22,6 +22,5 @@ export const ROUTES = {
   RECORD_LINK: '/record/:interviewId/link',
 
   RETRO: '/retro/:interviewId',
-  RETRO_QUESTION: '/retro/:interviewId',
   RETRO_DETAILS: '/retro/:interviewId/details',
 } as const

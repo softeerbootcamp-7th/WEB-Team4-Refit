@@ -25,6 +25,7 @@ public enum ErrorCode {
     INTERVIEW_PDF_ALREADY_EXITS(BAD_REQUEST, "인터뷰에 PDF 파일이 이미 존재합니다. 파일을 삭제하고 업로드 URL을 요청해주세요."),
 
     QNA_SET_CATEGORY_NOT_FOUND(NOT_FOUND, "질문 카테고리가 존재하지 않습니다."),
+    QNA_DELETE_FAILED_PDF_HIGHLIGHTING_EXISTS(BAD_REQUEST, "질답 세트를 삭제할 수 없습니다. 연관된 PDF 하이라이팅이 존재합니다."),
 
     INDUSTRY_NOT_FOUND(NOT_FOUND, "산업군이 존재하지 않습니다."),
     INDUSTRY_PARTIALLY_NOT_FOUND(NOT_FOUND, "요청한 산업군 중 일부 산업군이 존재하지 않습니다."),
@@ -59,6 +60,7 @@ public enum ErrorCode {
     STAR_ANALYSIS_COMPLETE_FAILED(INTERNAL_SERVER_ERROR, "스타 분석 업데이트 중 오류가 발생하였습니다."),
     STAR_ANALYSIS_DELETE_NOT_ALLOWED_STATUS(BAD_REQUEST, "진행 중(IN_PROGRESS)인 스타 분석만 삭제할 수 있습니다."),
 
+    S3_RESOURCE_DELETE_FAILED(INTERNAL_SERVER_ERROR, "S3 리소스 삭제 중 오류가 발생했습니다."),
     TEXT_EMBEDDING_CREATE_FAILED(INTERNAL_SERVER_ERROR, "임베딩 생성에 실패하였습니다.");
 
     private final HttpStatus httpStatus;

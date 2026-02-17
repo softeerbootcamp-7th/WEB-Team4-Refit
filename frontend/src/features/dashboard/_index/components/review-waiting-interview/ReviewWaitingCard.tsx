@@ -1,12 +1,15 @@
 import { useNavigate } from 'react-router'
+import type { InterviewDto } from '@/apis'
+import type { InterviewReviewStatusLabel } from '@/constants/interviewReviewStatus'
+import { getInterviewNavigationPath } from '@/constants/interviewReviewStatusRoutes'
 import { SmallLogoIcon } from '@/designs/assets'
 import { Badge } from '@/designs/components'
 import Button from '@/designs/components/button'
-import { ROUTES } from '@/routes/routes'
 
 export interface ReviewWaitingData {
   id: number
-  status: '기록 전' | '기록 중'
+  reviewStatus: InterviewDto['interviewReviewStatus']
+  status: InterviewReviewStatusLabel
   elapsedText: string
   companyName: string
   industry: string
@@ -22,7 +25,7 @@ export default function ReviewWaitingCard({ data }: ReviewWaitingCardProps) {
   const navigate = useNavigate()
 
   const handleNavigate = () => {
-    navigate(ROUTES.RECORD.replace(':interviewId', String(data.id)))
+    navigate(getInterviewNavigationPath(data.id, data.reviewStatus))
   }
 
   return (

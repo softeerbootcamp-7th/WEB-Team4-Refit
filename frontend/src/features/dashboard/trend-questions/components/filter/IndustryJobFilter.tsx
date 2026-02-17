@@ -1,21 +1,20 @@
 import { useState } from 'react'
-import { INDUSTRIES, JOB_CATEGORIES } from '@/constants/interviews'
 import type { IndustryJobFilterState } from '@/features/dashboard/trend-questions/hooks/useIndustryJobFilter'
-import FilterCard from './FilterCard'
+import FilterCard from './filter-section/FilterCard'
 
 type IndustryJobFilterProps = {
   filter: IndustryJobFilterState
 }
 
 export default function IndustryJobFilter({ filter }: IndustryJobFilterProps) {
-  const { industryIds, toggleIndustry, jobCategoryIds, toggleJobCategory } = filter
+  const { industryIds, toggleIndustry, jobCategoryIds, toggleJobCategory, industryItems, jobCategoryItems } = filter
   const [industrySearch, setIndustrySearch] = useState('')
   const [jobSearch, setJobSearch] = useState('')
 
-  const filteredIndustries = INDUSTRIES.filter((item) =>
+  const filteredIndustries = industryItems.filter((item) =>
     item.label.toLowerCase().includes(industrySearch.toLowerCase()),
   )
-  const filteredJobs = JOB_CATEGORIES.filter((item) => item.label.toLowerCase().includes(jobSearch.toLowerCase()))
+  const filteredJobs = jobCategoryItems.filter((item) => item.label.toLowerCase().includes(jobSearch.toLowerCase()))
 
   return (
     <div className="flex flex-col gap-4">

@@ -1,10 +1,16 @@
 import { useEffect } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
-import { useBuildOAuth2LoginUrl } from '@/apis'
+import {
+  getGetAllJobCategoriesQueryOptions,
+  getGetIndustriesQueryOptions,
+  useBuildOAuth2LoginUrl,
+} from '@/apis'
 
 const POPUP_NAME = 'google-oauth-login'
 const POPUP_WIDTH = 500
 const POPUP_HEIGHT = 600
+const SIGNUP_OPTIONS_STALE_TIME = 60 * 60 * 1000
 
 type UseGoogleOAuthLoginOptions = {
   redirectTo: { signUp: string; success: string }
@@ -12,11 +18,27 @@ type UseGoogleOAuthLoginOptions = {
 
 export function useGoogleOAuthLogin(options: UseGoogleOAuthLoginOptions) {
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const { signUp: signUpPath, success: successPath } = options.redirectTo
   const { refetch, isFetching } = useBuildOAuth2LoginUrl(
     { originType: import.meta.env.VITE_APP_ENV },
     { query: { enabled: false } },
   )
+
+  useEffect(() => {
+    void Promise.allSettled([
+      queryClient.prefetchQuery(
+        getGetIndustriesQueryOptions({
+          query: { staleTime: SIGNUP_OPTIONS_STALE_TIME },
+        }),
+      ),
+      queryClient.prefetchQuery(
+        getGetAllJobCategoriesQueryOptions({
+          query: { staleTime: SIGNUP_OPTIONS_STALE_TIME },
+        }),
+      ),
+    ])
+  }, [queryClient])
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {

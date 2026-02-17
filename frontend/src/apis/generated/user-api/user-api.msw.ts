@@ -14,15 +14,16 @@ import type { RequestHandlerOptions } from 'msw'
 export const getGetMyProfileInfoResponseMock = (
   overrideResponse: Partial<ApiResponseMyProfileResponse> = {},
 ): ApiResponseMyProfileResponse => ({
-  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
+  isSuccess: faker.datatype.boolean(),
+  code: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  message: faker.string.alpha({ length: { min: 10, max: 20 } }),
   result: faker.helpers.arrayElement([
     {
-      nickname: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-      industryId: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-      jobCategoryId: faker.helpers.arrayElement([faker.number.int({ min: undefined, max: undefined }), undefined]),
-      profileImageUrl: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
+      nickname: faker.string.alpha({ length: { min: 10, max: 20 } }),
+      industryId: faker.number.int({ min: undefined, max: undefined }),
+      jobCategoryId: faker.number.int({ min: undefined, max: undefined }),
+      profileImageUrl: faker.string.alpha({ length: { min: 10, max: 20 } }),
+      isAgreedToTerms: faker.datatype.boolean(),
     },
     undefined,
   ]),
@@ -30,17 +31,17 @@ export const getGetMyProfileInfoResponseMock = (
 })
 
 export const getUpdateMyProfileResponseMock = (overrideResponse: Partial<ApiResponseVoid> = {}): ApiResponseVoid => ({
-  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
+  isSuccess: faker.datatype.boolean(),
+  code: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  message: faker.string.alpha({ length: { min: 10, max: 20 } }),
   result: faker.helpers.arrayElement([{}, undefined]),
   ...overrideResponse,
 })
 
 export const getAgreeToTermsResponseMock = (overrideResponse: Partial<ApiResponseVoid> = {}): ApiResponseVoid => ({
-  isSuccess: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
-  message: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
+  isSuccess: faker.datatype.boolean(),
+  code: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  message: faker.string.alpha({ length: { min: 10, max: 20 } }),
   result: faker.helpers.arrayElement([{}, undefined]),
   ...overrideResponse,
 })

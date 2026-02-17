@@ -23,12 +23,13 @@ export interface InterviewScheduleContentProps {
   onChange: (values: InterviewScheduleFormValues) => void
   onPrev: () => void
   onNext: () => void
+  isSubmitting?: boolean
 }
 
 const inputBaseClass =
   'body-l-medium border-gray-150 w-full rounded-[8px] border px-4 py-3 text-gray-900 outline-none placeholder:text-gray-300 focus:border-orange-500'
 
-export function InterviewScheduleContent({ values, onChange, onPrev, onNext }: InterviewScheduleContentProps) {
+export function InterviewScheduleContent({ values, onChange, onPrev, onNext, isSubmitting }: InterviewScheduleContentProps) {
   const { interviewType, interviewDate, interviewTime } = values
   const defaultDate = getTodayDateString()
   const displayDate = interviewDate || defaultDate
@@ -44,7 +45,7 @@ export function InterviewScheduleContent({ values, onChange, onPrev, onNext }: I
         ...(needsTime && { interviewTime: DEFAULT_INTERVIEW_TIME }),
       })
     }
-  }, [])
+  }, [defaultDate, interviewDate, interviewTime, onChange, values])
 
   const isFormValid = interviewType !== '' && interviewDate.trim() !== '' && interviewTime.trim() !== ''
 
@@ -60,8 +61,9 @@ export function InterviewScheduleContent({ values, onChange, onPrev, onNext }: I
                 <button
                   key={option.value}
                   type="button"
+                  disabled={isSubmitting}
                   onClick={() => onChange({ ...values, interviewType: option.value })}
-                  className={`body-l-medium cursor-pointer rounded-[10px] p-4 transition-colors ${
+                  className={`body-l-medium rounded-[10px] p-4 transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
                     isSelected ? 'bg-orange-500 text-white' : 'border-gray-150 border bg-white text-gray-600'
                   }`}
                 >
@@ -77,12 +79,14 @@ export function InterviewScheduleContent({ values, onChange, onPrev, onNext }: I
             <input
               type="date"
               value={displayDate}
+              disabled={isSubmitting}
               onChange={(e) => onChange({ ...values, interviewDate: e.target.value })}
               className={inputBaseClass}
             />
             <input
               type="time"
               value={displayTime}
+              disabled={isSubmitting}
               onChange={(e) => onChange({ ...values, interviewTime: e.target.value })}
               className={inputBaseClass}
             />
@@ -90,7 +94,7 @@ export function InterviewScheduleContent({ values, onChange, onPrev, onNext }: I
         </div>
       </div>
       <div className="mt-8 flex gap-3">
-        <Button type="button" variant="fill-gray-150" size="md" className="flex-1" onClick={onPrev}>
+        <Button type="button" variant="fill-gray-150" size="md" className="flex-1" onClick={onPrev} disabled={isSubmitting}>
           이전
         </Button>
         <Button
@@ -98,6 +102,7 @@ export function InterviewScheduleContent({ values, onChange, onPrev, onNext }: I
           variant="fill-gray-800"
           size="md"
           className="flex-1"
+          isLoading={isSubmitting}
           disabled={!isFormValid}
           onClick={onNext}
         >

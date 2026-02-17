@@ -1,28 +1,43 @@
 import { Suspense, useState } from 'react'
-import { useParams } from 'react-router'
-import { useUpdateRawText } from '@/apis'
+import { useNavigate, useParams } from 'react-router'
+import { useConvertRawTextToQnaSet, useUpdateRawText } from '@/apis'
 import SidebarLayoutSkeleton from '@/features/_common/components/sidebar/SidebarLayoutSkeleton'
 import { RecordPageContent } from '@/features/record/_index'
+import { useRecordAutoSave } from '@/features/record/_index/hooks/useRecordAutoSave'
 import { useRecordPageData } from '@/features/record/_index/hooks/useRecordPageData'
+import { ROUTES } from '@/routes/routes'
 
 export default function RecordPage() {
+  const { interviewId } = useParams<{ interviewId: string }>()
+
   return (
     <Suspense fallback={<SidebarLayoutSkeleton />}>
-      <RecordPageContentContainer />
+      <RecordPageContentContainer key={interviewId ?? 'unknown'} interviewId={interviewId} />
     </Suspense>
   )
 }
 
-function RecordPageContentContainer() {
-  const { interviewId } = useParams<{ interviewId: string }>()
-  const [text, setText] = useState('')
+type RecordPageContentContainerProps = {
+  interviewId?: string
+}
+
+function RecordPageContentContainer({ interviewId }: RecordPageContentContainerProps) {
+  const navigate = useNavigate()
   const [realtimeText, setRealtimeText] = useState('')
+  const [isCompleting, setIsCompleting] = useState(false)
   const { data } = useRecordPageData(Number(interviewId))
-  const { mutate: updateRawText, isPending } = useUpdateRawText()
+  const isLoggingDraft = data.interviewReviewStatus === 'LOG_DRAFT'
+  const { text, onTextChange, appendText, autoSaveStatus, ensureLoggingStarted } = useRecordAutoSave({
+    interviewId,
+    startLoggingRequired: data.interviewReviewStatus === 'NOT_LOGGED',
+    initialText: isLoggingDraft ? data.interviewRawText : '',
+  })
+  const { mutateAsync: completeRawText } = useUpdateRawText()
+  const { mutateAsync: convertRawTextToQnaSet } = useConvertRawTextToQnaSet()
 
   const handleRecordComplete = () => {
     if (realtimeText) {
-      setText((prev) => prev + ' ' + realtimeText)
+      appendText(realtimeText)
       setRealtimeText('')
     }
   }
@@ -31,12 +46,30 @@ function RecordPageContentContainer() {
     setRealtimeText('')
   }
 
-  const handleSave = () => {
+  const handleComplete = () => {
     if (!interviewId) return
-    updateRawText({
-      interviewId: Number(interviewId),
-      data: { rawText: text },
-    })
+
+    const mergedText = `${text}${realtimeText ? `${text ? ' ' : ''}${realtimeText}` : ''}`.trim()
+    if (!mergedText) return
+    setIsCompleting(true)
+    void (async () => {
+      const isLoggingStarted = await ensureLoggingStarted()
+      if (!isLoggingStarted) {
+        setIsCompleting(false)
+        return
+      }
+
+      try {
+        await completeRawText({
+          interviewId: Number(interviewId),
+          data: { rawText: mergedText },
+        })
+        await convertRawTextToQnaSet({ interviewId: Number(interviewId) })
+        navigate(ROUTES.RECORD_CONFIRM.replace(':interviewId', interviewId))
+      } catch {
+        setIsCompleting(false)
+      }
+    })()
   }
 
   return (
@@ -44,13 +77,14 @@ function RecordPageContentContainer() {
       interviewInfo={data.interviewInfo}
       text={text}
       realtimeText={realtimeText}
-      onTextChange={setText}
+      onTextChange={onTextChange}
       onRealtimeTranscript={setRealtimeText}
       onRecordComplete={handleRecordComplete}
       onRecordCancel={handleRecordCancel}
-      onSave={handleSave}
-      isSavePending={isPending}
+      onComplete={handleComplete}
+      isCompletePending={isCompleting}
       canSave={Boolean(interviewId)}
+      autoSaveStatus={autoSaveStatus}
     />
   )
 }
