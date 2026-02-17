@@ -33,6 +33,7 @@ import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
 import com.shyashyashya.refit.global.auth.service.JwtEncoder;
 import com.shyashyashya.refit.global.constant.AuthConstant;
+import com.shyashyashya.refit.global.util.HangulUtil;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
@@ -88,6 +89,9 @@ public abstract class IntegrationTest {
     private JwtEncoder jwtEncoder;
 
     @Autowired
+    private HangulUtil hangulUtil;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -125,9 +129,9 @@ public abstract class IntegrationTest {
         jobCategory1 = jobCategoryRepository.save(JobCategory.create("BE Developer"));
         jobCategory2 = jobCategoryRepository.save(JobCategory.create("FE Developer"));
         jobCategory3 = jobCategoryRepository.save(JobCategory.create("Designer"));
-        company1 = companyRepository.save(Company.create("현대자동차", "logo1", true));
-        company2 = companyRepository.save(Company.create("카카오", "logo2", true));
-        company3 = companyRepository.save(Company.create("네이버", "logo3", true));
+        company1 = createAndSaveCompany("현대자동차", "logo1.jpg");
+        company2 = createAndSaveCompany("카카오", "logo2.png");
+        company3 = createAndSaveCompany("네이버", "logo3.svg");
         qnaSetCategory1 = qnaSetCategoryRepository.save(QnaSetCategory.create("리더십 질문", "당신은 리더십있는 사람입니까?", 3.141592));
         qnaSetCategory2 = qnaSetCategoryRepository.save(QnaSetCategory.create("인성 질문", "당신은 인성이 좋은 사람입니까?", 2.145));
         qnaSetCategory3 = qnaSetCategoryRepository.save(QnaSetCategory.create("기술 질문", "당신은 기술 있는 사람입니까?", 0.001));
@@ -222,7 +226,14 @@ public abstract class IntegrationTest {
     }
 
     protected Company createAndSaveCompany(String companyName) {
-        Company company = Company.create(companyName, "logo.url", true);
+        Company company = Company.create(companyName, hangulUtil.decompose(companyName), "logo.url");
+        company.allowSearch();
+        return companyRepository.save(company);
+    }
+
+    protected Company createAndSaveCompany(String companyName, String logoUrl) {
+        Company company = Company.create(companyName, hangulUtil.decompose(companyName), logoUrl);
+        company.allowSearch();
         return companyRepository.save(company);
     }
 
