@@ -86,7 +86,7 @@ public class TestUserController {
             @RequestBody @NotBlank String text) {
 
         GeminiEmbeddingRequest requestBody = GeminiEmbeddingRequest.of(
-                text, GeminiEmbeddingRequest.TaskType.CLUSTERING, geminiProperty.embeddingDimension());
+                text, GeminiEmbeddingRequest.TaskType.CLUSTERING, GeminiEmbeddingRequest.OutputDimensionality.D128);
 
         CompletableFuture<GeminiEmbeddingResponse> reqFuture =
                 geminiClient.sendAsyncEmbeddingRequest(requestBody, STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC);

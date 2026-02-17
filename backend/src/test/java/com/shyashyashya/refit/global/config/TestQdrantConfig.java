@@ -6,7 +6,6 @@ import io.qdrant.client.grpc.Collections;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 
 import java.util.List;
 
@@ -17,7 +16,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 public class TestQdrantConfig {
 
     @Bean
-    @Primary
     public QdrantClient qdrantClient() {
         QdrantClient mockClient = Mockito.mock(QdrantClient.class);
 
