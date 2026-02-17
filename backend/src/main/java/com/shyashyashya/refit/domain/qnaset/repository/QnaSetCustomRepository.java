@@ -23,4 +23,6 @@ public interface QnaSetCustomRepository {
             Pageable pageable);
 
     Page<FrequentQnaSetCategoryResponse> findFrequentQnaSetCategoryByUser(User user, Pageable pageable);
+
+    Page<QnaSet> findAllDifficultByUser(User user, Pageable pageable);
 }

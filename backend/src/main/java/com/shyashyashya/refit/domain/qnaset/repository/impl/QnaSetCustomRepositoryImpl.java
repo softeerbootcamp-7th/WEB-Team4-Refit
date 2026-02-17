@@ -134,6 +134,24 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
         return new PageImpl<>(pageContent, pageable, count);
     }
 
+    @Override
+    public Page<QnaSet> findAllDifficultByUser(User user, Pageable pageable) {
+        List<QnaSet> contents = queryFactory
+                .selectFrom(qnaSet)
+                .where(
+                        qnaSet.interview.user.eq(user),
+                        qnaSet.isMarkedDifficult.isTrue(),
+                        qnaSet.interview.reviewStatus.eq(InterviewReviewStatus.DEBRIEF_COMPLETED))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long count = queryFactory.select(qnaSet.count()).from(qnaSet).fetchOne();
+        count = count == null ? 0L : count;
+
+        return new PageImpl<>(contents, pageable, count);
+    }
+
     private BooleanExpression[] getSearchConditions(
             User user,
             String keyword,
