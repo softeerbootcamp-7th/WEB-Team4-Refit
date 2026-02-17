@@ -10,6 +10,7 @@ import com.shyashyashya.refit.domain.company.model.Company;
 import com.shyashyashya.refit.domain.company.repository.CompanyRepository;
 import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
+import com.shyashyashya.refit.domain.interview.constant.QnaSetPromptGenerator;
 import com.shyashyashya.refit.domain.interview.dto.InterviewDto;
 import com.shyashyashya.refit.domain.interview.dto.InterviewFullDto;
 import com.shyashyashya.refit.domain.interview.dto.InterviewSimpleDto;
@@ -39,6 +40,10 @@ import com.shyashyashya.refit.domain.qnaset.repository.QnaSetSelfReviewRepositor
 import com.shyashyashya.refit.domain.qnaset.repository.StarAnalysisRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
+import com.shyashyashya.refit.global.gemini.GeminiClient;
+import com.shyashyashya.refit.global.gemini.GeminiGenerateRequest;
+import com.shyashyashya.refit.global.gemini.GeminiGenerateResponse;
+import com.shyashyashya.refit.global.gemini.GenerateModel;
 import com.shyashyashya.refit.global.property.S3Property;
 import com.shyashyashya.refit.global.util.RequestUserContext;
 import java.time.Duration;
@@ -49,6 +54,7 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -64,6 +70,7 @@ import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignReques
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class InterviewService {
 
     private final InterviewRepository interviewRepository;
@@ -79,6 +86,8 @@ public class InterviewService {
     private final RequestUserContext requestUserContext;
     private final S3Presigner s3Presigner;
     private final S3Property s3Property;
+    private final QnaSetPromptGenerator qnaSetPromptGenerator;
+    private final GeminiClient geminiClient;
 
     @Transactional(readOnly = true)
     public InterviewDto getInterview(Long interviewId) {
@@ -278,9 +287,15 @@ public class InterviewService {
         interviewValidator.validateInterviewOwner(interview, requestUser);
         interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.LOG_DRAFT);
 
-        // TODO : 실제로는 서비스가 아닌 LLM 요청 성공에 따른 콜백으로 상태 변화 처리
-        // convert logic
-        interview.completeLogging();
+        String prompt = qnaSetPromptGenerator.buildPrompt(interview);
+        GeminiGenerateRequest requestBody = GeminiGenerateRequest.from(prompt);
+        log.info("Send qna set generate request to gemini. interviewId: {}", interviewId);
+        log.info("Prompt: \n{}", prompt);
+        GeminiGenerateResponse response =
+                geminiClient.sendTextGenerateRequest(requestBody, GenerateModel.GEMMA_3_27B_IT);
+        log.info("Received qna set generate response from gemini.");
+        log.info("Result: \n{}", response);
+        // interview.completeLogging();
     }
 
     @Transactional
