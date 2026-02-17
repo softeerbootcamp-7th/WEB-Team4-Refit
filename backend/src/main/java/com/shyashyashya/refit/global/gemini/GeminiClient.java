@@ -26,7 +26,7 @@ public class GeminiClient {
     }
 
     public CompletableFuture<GeminiGenerateResponse> sendAsyncTextGenerateRequest(
-            GeminiGenerateRequest requestBody, GenerateModel model, Long timeoutSec) {
+            GeminiGenerateRequest requestBody, GenerateModel model) {
         return webClient
                 .post()
                 .uri(model.endpoint())
@@ -35,15 +35,14 @@ public class GeminiClient {
                 .bodyValue(requestBody)
                 .retrieve()
                 .bodyToMono(GeminiGenerateResponse.class)
-                .timeout(Duration.ofSeconds(timeoutSec))
+                .timeout(Duration.ofSeconds(geminiProperty.webClientRequestTimeoutSec()))
                 .toFuture();
     }
 
     private static final String EMBEDDING_ENDPOINT =
             "https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent";
 
-    public CompletableFuture<GeminiEmbeddingResponse> sendAsyncEmbeddingRequest(
-            GeminiEmbeddingRequest requestBody, Long timeoutSec) {
+    public CompletableFuture<GeminiEmbeddingResponse> sendAsyncEmbeddingRequest(GeminiEmbeddingRequest requestBody) {
         return webClient
                 .post()
                 .uri(EMBEDDING_ENDPOINT)
@@ -52,7 +51,7 @@ public class GeminiClient {
                 .bodyValue(requestBody)
                 .retrieve()
                 .bodyToMono(GeminiEmbeddingResponse.class)
-                .timeout(Duration.ofSeconds(timeoutSec))
+                .timeout(Duration.ofSeconds(geminiProperty.webClientRequestTimeoutSec()))
                 .toFuture();
     }
 

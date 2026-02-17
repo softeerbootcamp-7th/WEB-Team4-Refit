@@ -1,6 +1,5 @@
 package com.shyashyashya.refit.domain.qnaset.service;
 
-import static com.shyashyashya.refit.domain.qnaset.constant.StarAnalysisGenerationConstant.STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC;
 import static com.shyashyashya.refit.global.exception.ErrorCode.GEMINI_RESPONSE_PARSING_FAILED;
 import static com.shyashyashya.refit.global.exception.ErrorCode.STAR_ANALYSIS_CREATE_FAILED;
 
@@ -46,8 +45,7 @@ public class StarAnalysisAsyncService {
         CompletableFuture<GeminiGenerateResponse> reqFuture =
                 // geminiClient.sendAsyncRequest(requestBody, GenerateModel.GEMINI_2_5_FLASH_LITE,
                 // STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC);
-                geminiClient.sendAsyncTextGenerateRequest(
-                        requestBody, GenerateModel.GEMMA_3_27B_IT, STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC);
+                geminiClient.sendAsyncTextGenerateRequest(requestBody, GenerateModel.GEMMA_3_27B_IT);
 
         return reqFuture
                 .thenApplyAsync(
