@@ -53,22 +53,6 @@ public abstract class QdrantSingleVectorRepository implements VectorRepository<L
         <T> T block(ListenableFuture<T> future, String description);
     }
 
-    private <T> T block(ListenableFuture<T> future, String operationDescription) {
-        try {
-            return future.get();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            log.error("Thread interrupted while: {}", operationDescription, e);
-            throw new RuntimeException("Thread interrupted while: " + operationDescription, e);
-
-        } catch (ExecutionException e) {
-            Throwable cause = e.getCause();
-            log.error(
-                    "Qdrant operation failed during: {} (Reason: {})", operationDescription, cause.getMessage(), cause);
-            throw new RuntimeException("Qdrant operation failed [" + operationDescription + "]", cause);
-        }
-    }
-
     @PostConstruct
     public void postConstruct() {
         QdrantCollectionContext context = qdrantProperty.collections().get(getCollectionContextName());
@@ -230,9 +214,25 @@ public abstract class QdrantSingleVectorRepository implements VectorRepository<L
         block(qdrantClient.setPayloadAsync(request, timeout), "update payload for point ID: " + id);
     }
 
+    private <T> T block(ListenableFuture<T> future, String operationDescription) {
+        try {
+            return future.get();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            log.error("Thread interrupted while: {}", operationDescription, e);
+            throw new RuntimeException("Thread interrupted while: " + operationDescription, e);
+
+        } catch (ExecutionException e) {
+            Throwable cause = e.getCause();
+            log.error(
+                    "Qdrant operation failed during: {} (Reason: {})", operationDescription, cause.getMessage(), cause);
+            throw new RuntimeException("Qdrant operation failed [" + operationDescription + "]", cause);
+        }
+    }
+
     // point.getVectors().getVector().getDataList()가 deprecated 되었는데, 대체 메서드를 찾지 못해서 그대로 사용함.
     @SuppressWarnings("deprecation")
-    public SingleVectorDocument<Long> convertToDocument(Points.RetrievedPoint point) {
+    private SingleVectorDocument<Long> convertToDocument(Points.RetrievedPoint point) {
         Long id = point.getId().getNum();
 
         Map<String, Object> payload = point.getPayloadMap().entrySet().stream()
@@ -245,7 +245,7 @@ public abstract class QdrantSingleVectorRepository implements VectorRepository<L
         return SingleVectorDocument.of(id, payload, vector);
     }
 
-    public Points.PointStruct convertToPointStruct(SingleVectorDocument<Long> doc) {
+    private Points.PointStruct convertToPointStruct(SingleVectorDocument<Long> doc) {
         Map<String, JsonWithInt.Value> payload = doc.getPayload().entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> toQdrantValue(entry.getValue())));
 
@@ -256,7 +256,7 @@ public abstract class QdrantSingleVectorRepository implements VectorRepository<L
                 .build();
     }
 
-    public Object fromQdrantValue(JsonWithInt.Value value) {
+    private Object fromQdrantValue(JsonWithInt.Value value) {
         if (value.hasNullValue()) return null;
         if (value.hasStringValue()) return value.getStringValue();
         if (value.hasIntegerValue()) return value.getIntegerValue(); // Long 타입 반환됨
@@ -278,7 +278,7 @@ public abstract class QdrantSingleVectorRepository implements VectorRepository<L
         return value.toString();
     }
 
-    public JsonWithInt.Value toQdrantValue(Object v) {
+    private JsonWithInt.Value toQdrantValue(Object v) {
         if (v == null) return ValueFactory.nullValue();
         if (v instanceof String s) return ValueFactory.value(s);
         if (v instanceof Integer i) return ValueFactory.value(i);
