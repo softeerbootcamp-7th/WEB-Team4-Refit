@@ -12,7 +12,7 @@ public class QnaSetQuestionVectorRepository extends QdrantSingleVectorRepository
     }
 
     @Override
-    protected String getCollectionContext() {
+    protected String getCollectionContextName() {
         return "qna-set-question";
     }
 }

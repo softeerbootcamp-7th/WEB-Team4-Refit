@@ -42,7 +42,7 @@ public abstract class QdrantSingleVectorRepository implements VectorRepository<L
     /**
      * Abstract method
      */
-    protected abstract String getCollectionContext();
+    protected abstract String getCollectionContextName();
 
     /**
      * QdrantClient의 비동기 API를 동기적으로 호출하기 위한 헬퍼 메서드
@@ -71,7 +71,7 @@ public abstract class QdrantSingleVectorRepository implements VectorRepository<L
 
     @PostConstruct
     public void postConstruct() {
-        QdrantCollectionContext context = qdrantProperty.collections().get(getCollectionContext());
+        QdrantCollectionContext context = qdrantProperty.collections().get(getCollectionContextName());
         validateQdrantCollectionContext(context);
         this.collectionName = context.name();
         this.timeout = qdrantProperty.timeout();
@@ -88,7 +88,7 @@ public abstract class QdrantSingleVectorRepository implements VectorRepository<L
 
     private void validateQdrantCollectionContext(QdrantCollectionContext qdrantCollectionContext) {
         if (qdrantCollectionContext == null) {
-            log.error("Qdrant Collection Context '{}' is missing", getCollectionContext());
+            log.error("Qdrant Collection Context '{}' is missing", getCollectionContextName());
             throw new IllegalStateException("Qdrant collection context is missing");
         }
     }
