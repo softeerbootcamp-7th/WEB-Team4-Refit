@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { getMyDifficultQnaSets } from '@/apis'
+import type { CollectionSortOrder } from '@/features/dashboard/my-collections/components/QnaCardListSection'
 import QnaCardListSection from '@/features/dashboard/my-collections/components/QnaCardListSection'
 import { DIFFICULT_FOLDER_NAME, mapDifficultQnaToCardItem } from '@/features/dashboard/my-collections/mappers'
 
@@ -8,15 +9,18 @@ const DIFFICULT_QNA_PAGE_SIZE = 10
 const OBSERVER_ROOT_MARGIN = '200px'
 
 export default function DifficultQuestionPage() {
+  const [sortOrder, setSortOrder] = useState<CollectionSortOrder>('latest')
   const loadMoreRef = useRef<HTMLDivElement | null>(null)
+  const sort = useMemo(() => toDifficultSortParam(sortOrder), [sortOrder])
 
   const { data, isPending, isError, hasNextPage, fetchNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ['my-collections', 'difficult-qna'],
+    queryKey: ['my-collections', 'difficult-qna', sortOrder],
     initialPageParam: 0,
     queryFn: ({ pageParam }) =>
       getMyDifficultQnaSets({
         page: pageParam,
         size: DIFFICULT_QNA_PAGE_SIZE,
+        sort,
       }),
     getNextPageParam: (lastPage, _allPages, lastPageParam) => {
       const totalPages = lastPage.result?.totalPages ?? 0
@@ -52,6 +56,8 @@ export default function DifficultQuestionPage() {
     <QnaCardListSection
       title={DIFFICULT_FOLDER_NAME}
       items={items}
+      sortOrder={sortOrder}
+      onSortChange={setSortOrder}
       isLoading={isPending}
       isFetchingNext={isFetchingNextPage}
       hasNextPage={Boolean(hasNextPage)}
@@ -60,4 +66,9 @@ export default function DifficultQuestionPage() {
       emptyMessage="아직 어려웠던 질문으로 저장된 항목이 없어요."
     />
   )
+}
+
+function toDifficultSortParam(sortOrder: CollectionSortOrder): string[] {
+  if (sortOrder === 'latest') return ['interviewStartAt,desc']
+  return ['interviewStartAt,asc']
 }

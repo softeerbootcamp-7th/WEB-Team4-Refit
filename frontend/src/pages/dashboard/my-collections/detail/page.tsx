@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { useOutletContext, useParams } from 'react-router'
 import { getQnaSetsInScrapFolder } from '@/apis'
+import type { CollectionSortOrder } from '@/features/dashboard/my-collections/components/QnaCardListSection'
 import QnaCardListSection from '@/features/dashboard/my-collections/components/QnaCardListSection'
 import { mapScrapFolderQnaToCardItem } from '@/features/dashboard/my-collections/mappers'
 
@@ -15,20 +16,23 @@ interface CollectionDetailContext {
 export default function CollectionDetailPage() {
   const { folderId } = useParams()
   const { folderName } = useOutletContext<CollectionDetailContext>()
+  const [sortOrder, setSortOrder] = useState<CollectionSortOrder>('latest')
 
   const numericFolderId = Number(folderId)
   const scrapFolderId = Number.isInteger(numericFolderId) ? numericFolderId : 0
 
   const loadMoreRef = useRef<HTMLDivElement | null>(null)
+  const sort = useMemo(() => toScrapSortParam(sortOrder), [sortOrder])
 
   const { data, isPending, isError, hasNextPage, fetchNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ['my-collections', 'folder-qna', scrapFolderId],
+    queryKey: ['my-collections', 'folder-qna', scrapFolderId, sortOrder],
     initialPageParam: 0,
     enabled: scrapFolderId > 0,
     queryFn: ({ pageParam }) =>
       getQnaSetsInScrapFolder(scrapFolderId, {
         page: pageParam,
         size: SCRAP_FOLDER_QNA_PAGE_SIZE,
+        sort,
       }),
     getNextPageParam: (lastPage, _allPages, lastPageParam) => {
       const totalPages = lastPage.result?.totalPages ?? 0
@@ -60,6 +64,8 @@ export default function CollectionDetailPage() {
     <QnaCardListSection
       title={folderName || '질문 리스트'}
       items={items}
+      sortOrder={sortOrder}
+      onSortChange={setSortOrder}
       isLoading={isPending}
       isFetchingNext={isFetchingNextPage}
       hasNextPage={Boolean(hasNextPage)}
@@ -68,4 +74,9 @@ export default function CollectionDetailPage() {
       emptyMessage="스크랩된 질문이 아직 없어요."
     />
   )
+}
+
+function toScrapSortParam(sortOrder: CollectionSortOrder): string[] {
+  if (sortOrder === 'latest') return ['interviewStartAt,desc']
+  return ['interviewStartAt,asc']
 }

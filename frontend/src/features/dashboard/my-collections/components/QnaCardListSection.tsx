@@ -1,4 +1,4 @@
-import { useMemo, useState, type RefObject } from 'react'
+import { useMemo, type RefObject } from 'react'
 import { CaretDownIcon } from '@/designs/assets'
 import { Button, PlainCombobox } from '@/designs/components'
 import { QnaCard } from '@/features/dashboard/my-interviews/components/questions'
@@ -18,14 +18,16 @@ export type QnaCardListItem = {
 }
 
 const SORT_OPTIONS = [
-  { label: '최신 추가순', value: 'latest' },
-  { label: '오래된 추가순', value: 'oldest' },
-  { label: '이름순', value: 'name' },
+  { label: '면접 일시 최신순', value: 'latest' },
+  { label: '면접 일시 오래된순', value: 'oldest' },
 ] as const
+export type CollectionSortOrder = (typeof SORT_OPTIONS)[number]['value']
 
 type QnaCardListSectionProps = {
   title: string
   items: QnaCardListItem[]
+  sortOrder: CollectionSortOrder
+  onSortChange: (value: CollectionSortOrder) => void
   isLoading?: boolean
   isFetchingNext?: boolean
   hasNextPage?: boolean
@@ -37,6 +39,8 @@ type QnaCardListSectionProps = {
 export default function QnaCardListSection({
   title,
   items,
+  sortOrder,
+  onSortChange,
   isLoading = false,
   isFetchingNext = false,
   hasNextPage = false,
@@ -44,7 +48,6 @@ export default function QnaCardListSection({
   errorMessage,
   emptyMessage = '아직 저장된 질문이 없어요.',
 }: QnaCardListSectionProps) {
-  const [sortOrder, setSortOrder] = useState('latest')
   const sortedItems = useMemo(() => {
     const copiedItems = [...items]
 
@@ -53,12 +56,7 @@ export default function QnaCardListSection({
       return copiedItems
     }
 
-    if (sortOrder === 'oldest') {
-      copiedItems.sort((a, b) => toSortableTimestamp(a.createdAt) - toSortableTimestamp(b.createdAt))
-      return copiedItems
-    }
-
-    copiedItems.sort((a, b) => a.question.localeCompare(b.question, 'ko-KR'))
+    copiedItems.sort((a, b) => toSortableTimestamp(a.createdAt) - toSortableTimestamp(b.createdAt))
     return copiedItems
   }, [items, sortOrder])
 
@@ -73,7 +71,7 @@ export default function QnaCardListSection({
           <PlainCombobox
             options={[...SORT_OPTIONS]}
             value={sortOrder}
-            onChange={setSortOrder}
+            onChange={(value) => onSortChange(value as CollectionSortOrder)}
             trigger={
               <Button size="xs" variant="fill-gray-150" disabled={isSortDisabled}>
                 {SORT_OPTIONS.find((o) => o.value === sortOrder)?.label ?? SORT_OPTIONS[0].label}
