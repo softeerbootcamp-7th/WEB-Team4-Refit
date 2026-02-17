@@ -17,7 +17,7 @@ public class QdrantConfig {
 
     @Bean(destroyMethod = "close")
     public QdrantClient qdrantClient() {
-        return new QdrantClient(QdrantGrpcClient.newBuilder(qdrantProperty.host(), qdrantProperty.port())
+        return new QdrantClient(QdrantGrpcClient.newBuilder(qdrantProperty.host(), qdrantProperty.port(), false)
                 .build());
     }
 }
