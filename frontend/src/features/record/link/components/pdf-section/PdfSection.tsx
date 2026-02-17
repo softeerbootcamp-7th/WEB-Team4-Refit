@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
-import { useMutation } from '@tanstack/react-query'
+import { useEffect, useRef } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useParams } from 'react-router'
 import {
   createPdfUploadUrl,
@@ -14,10 +14,20 @@ import { useHighlightContext } from '@/features/record/link/contexts'
 import { ROUTES } from '@/routes/routes'
 import { PdfViewer } from './PdfViewer'
 
+const PDF_DOWNLOAD_URL_STALE_TIME = 1000 * 60 * 5
+const PDF_OBJECT_URL_GC_TIME = 1000 * 60 * 30
+
 export function PdfSection() {
   const { interviewId: interviewIdParam } = useParams()
   const interviewId = Number(interviewIdParam)
-  const [pdfObjectUrl, setPdfObjectUrl] = useState<string | null>(null)
+  const queryClient = useQueryClient()
+  const pdfObjectUrlQueryKey = ['interview', interviewId, 'pdf-object-url'] as const
+  const { data: pdfObjectUrl } = useQuery<string | null>({
+    queryKey: pdfObjectUrlQueryKey,
+    queryFn: () => null,
+    staleTime: Infinity,
+    gcTime: PDF_OBJECT_URL_GC_TIME,
+  })
   const pdfObjectUrlRef = useRef<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { hasPdf, linkingQnaSetId, setHasPdf, clearAllHighlights } = useHighlightContext()
@@ -43,14 +53,12 @@ export function PdfSection() {
     if (prev) URL.revokeObjectURL(prev)
 
     pdfObjectUrlRef.current = next
-    setPdfObjectUrl(next)
+    queryClient.setQueryData(pdfObjectUrlQueryKey, next)
   }
 
   useEffect(() => {
-    return () => {
-      if (pdfObjectUrlRef.current) URL.revokeObjectURL(pdfObjectUrlRef.current)
-    }
-  }, [])
+    pdfObjectUrlRef.current = pdfObjectUrl ?? null
+  }, [pdfObjectUrl])
 
   const {
     data: downloadUrl,
@@ -59,6 +67,7 @@ export function PdfSection() {
   } = useCreatePdfDownloadUrl<string>(interviewId, {
     query: {
       enabled: hasPdf && !pdfObjectUrl && Number.isFinite(interviewId) && interviewId > 0,
+      staleTime: PDF_DOWNLOAD_URL_STALE_TIME,
       select: (res) => {
         const downloadUrl = res.result?.url
         if (!downloadUrl) throw new Error('다운로드 URL이 없습니다.')
