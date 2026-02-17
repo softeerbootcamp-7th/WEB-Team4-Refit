@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { getMyDifficultQnaSets } from '@/apis'
-import type { ApiResponsePageDashboardMyDifficultQuestionResponse } from '@/apis/generated/refit-api.schemas'
 import QnaCardListSection from '@/features/dashboard/my-collections/components/QnaCardListSection'
 import { DIFFICULT_FOLDER_NAME, mapDifficultQnaToCardItem } from '@/features/dashboard/my-collections/mappers'
 
@@ -11,13 +10,7 @@ const OBSERVER_ROOT_MARGIN = '200px'
 export default function DifficultQuestionPage() {
   const loadMoreRef = useRef<HTMLDivElement | null>(null)
 
-  const { data, isPending, isError, hasNextPage, fetchNextPage, isFetchingNextPage } = useInfiniteQuery<
-    ApiResponsePageDashboardMyDifficultQuestionResponse,
-    unknown,
-    ApiResponsePageDashboardMyDifficultQuestionResponse,
-    readonly [string, string],
-    number
-  >({
+  const { data, isPending, isError, hasNextPage, fetchNextPage, isFetchingNextPage } = useInfiniteQuery({
     queryKey: ['my-collections', 'difficult-qna'],
     initialPageParam: 0,
     queryFn: ({ pageParam }) =>

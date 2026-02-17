@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef } from 'react'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { useOutletContext, useParams } from 'react-router'
 import { getQnaSetsInScrapFolder } from '@/apis'
-import type { ApiResponsePageScrapFolderQnaSetResponse } from '@/apis/generated/refit-api.schemas'
 import QnaCardListSection from '@/features/dashboard/my-collections/components/QnaCardListSection'
 import { mapScrapFolderQnaToCardItem } from '@/features/dashboard/my-collections/mappers'
 
@@ -22,13 +21,7 @@ export default function CollectionDetailPage() {
 
   const loadMoreRef = useRef<HTMLDivElement | null>(null)
 
-  const { data, isPending, isError, hasNextPage, fetchNextPage, isFetchingNextPage } = useInfiniteQuery<
-    ApiResponsePageScrapFolderQnaSetResponse,
-    unknown,
-    ApiResponsePageScrapFolderQnaSetResponse,
-    readonly [string, string, number],
-    number
-  >({
+  const { data, isPending, isError, hasNextPage, fetchNextPage, isFetchingNextPage } = useInfiniteQuery({
     queryKey: ['my-collections', 'folder-qna', scrapFolderId],
     initialPageParam: 0,
     enabled: scrapFolderId > 0,
