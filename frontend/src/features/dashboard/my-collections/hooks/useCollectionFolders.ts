@@ -46,7 +46,7 @@ export function useCollectionFolders() {
 
     observer.observe(target)
     return () => observer.disconnect()
-  })
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage, isFoldersPending])
 
   const folders = useMemo<CollectionFolderItem[]>(() => {
     const normalFolders = (data?.pages ?? []).flatMap((page) =>
