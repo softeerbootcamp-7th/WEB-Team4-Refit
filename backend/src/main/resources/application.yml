@@ -11,6 +11,7 @@ spring:
       - s3
       - auth
       - gemini
+      - vectorstore
 
 server:
   tomcat:
