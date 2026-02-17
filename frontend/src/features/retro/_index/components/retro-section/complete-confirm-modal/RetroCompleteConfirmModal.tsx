@@ -3,6 +3,7 @@ import ConfirmModal from '@/designs/components/modal/ConfirmModal'
 type RetroCompleteConfirmModalProps = {
   open: boolean
   missingRetroNumbers: number[]
+  missingKptItems: string[]
   onCancel: () => void
   onConfirm: () => void
 }
@@ -10,10 +11,18 @@ type RetroCompleteConfirmModalProps = {
 export function RetroCompleteConfirmModal({
   open,
   missingRetroNumbers,
+  missingKptItems,
   onCancel,
   onConfirm,
 }: RetroCompleteConfirmModalProps) {
-  const description = `${missingRetroNumbers.map((num) => `${num}번`).join(', ')} 회고가 작성되지 않았습니다.\n그래도 완료하시겠습니까?`
+  const parts: string[] = []
+  if (missingRetroNumbers.length > 0) {
+    parts.push(missingRetroNumbers.map((num) => `${num}번`).join(', ') + ' 회고')
+  }
+  if (missingKptItems.length > 0) {
+    parts.push(`KPT ${missingKptItems.join(', ')}` + ' 회고')
+  }
+  const description = `${parts.join(', ')}가\n작성되지 않았습니다.\n그래도 완료하시겠습니까?`
 
   return (
     <ConfirmModal

@@ -39,6 +39,7 @@ export function useRetroSectionController({
     markQuestionSaved,
     markKptSaved,
     missingRetroNumbers,
+    missingKptItems,
     handleRetroTextChange,
   } = useRetroStepDrafts({
     currentItem,
@@ -110,6 +111,7 @@ export function useRetroSectionController({
       saveError,
       isSaving,
       missingRetroNumbers,
+      missingKptItems,
     },
   }
 }

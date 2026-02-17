@@ -47,6 +47,14 @@ export function useRetroStepDrafts({ currentItem, retroItems, initialKptTexts }:
     [retroItems, retroTexts],
   )
 
+  const missingKptItems = useMemo(() => {
+    const items: string[] = []
+    if (!kptTexts.keepText?.trim()) items.push('Keep')
+    if (!kptTexts.problemText?.trim()) items.push('Problem')
+    if (!kptTexts.tryText?.trim()) items.push('Try')
+    return items
+  }, [kptTexts])
+
   const handleRetroTextChange = (text: string) => {
     if (qnaSetId <= 0) return
     setRetroTexts((prev) => ({ ...prev, [qnaSetId]: text }))
@@ -88,6 +96,7 @@ export function useRetroStepDrafts({ currentItem, retroItems, initialKptTexts }:
     markQuestionSaved,
     markKptSaved,
     missingRetroNumbers,
+    missingKptItems,
     handleRetroTextChange,
   }
 }

@@ -51,7 +51,7 @@ export function RetroSection({
 
   const handleComplete = async () => {
     await retro.actions.saveCurrentStep()
-    if (retro.flow.missingRetroNumbers.length > 0) {
+    if (retro.flow.missingRetroNumbers.length > 0 || retro.flow.missingKptItems.length > 0) {
       setIsCompleteConfirmOpen(true)
       return
     }
@@ -89,6 +89,7 @@ export function RetroSection({
       <RetroCompleteConfirmModal
         open={isCompleteConfirmOpen}
         missingRetroNumbers={retro.flow.missingRetroNumbers}
+        missingKptItems={retro.flow.missingKptItems}
         onCancel={() => setIsCompleteConfirmOpen(false)}
         onConfirm={handleConfirmComplete}
       />
