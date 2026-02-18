@@ -1,10 +1,10 @@
 package com.shyashyashya.refit.global.vectordb.repository.qdrant;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import com.shyashyashya.refit.global.vectordb.model.SingleVectorDocument;
-import com.shyashyashya.refit.global.vectordb.repository.VectorRepository;
 import com.shyashyashya.refit.global.property.QdrantProperty;
 import com.shyashyashya.refit.global.property.QdrantProperty.QdrantCollectionContext;
+import com.shyashyashya.refit.global.vectordb.model.SingleVectorDocument;
+import com.shyashyashya.refit.global.vectordb.repository.VectorRepository;
 import io.qdrant.client.QdrantClient;
 import io.qdrant.client.ValueFactory;
 import io.qdrant.client.VectorsFactory;
