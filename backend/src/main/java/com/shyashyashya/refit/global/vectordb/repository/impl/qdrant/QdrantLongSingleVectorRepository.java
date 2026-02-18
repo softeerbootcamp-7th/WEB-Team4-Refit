@@ -1,8 +1,8 @@
-package com.shyashyashya.refit.global.vectordb.repository.qdrant;
+package com.shyashyashya.refit.global.vectordb.repository.impl.qdrant;
 
 import com.shyashyashya.refit.global.property.QdrantProperty;
 import com.shyashyashya.refit.global.vectordb.model.SingleVectorDocument;
-import com.shyashyashya.refit.global.vectordb.repository.qdrant.base.QdrantSingleVectorRepository;
+import com.shyashyashya.refit.global.vectordb.repository.impl.qdrant.base.QdrantSingleVectorRepository;
 import io.qdrant.client.PointIdFactory;
 import io.qdrant.client.QdrantClient;
 import io.qdrant.client.grpc.Common;

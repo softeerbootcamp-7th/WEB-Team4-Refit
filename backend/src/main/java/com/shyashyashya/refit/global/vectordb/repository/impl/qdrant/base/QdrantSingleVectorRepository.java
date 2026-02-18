@@ -1,4 +1,4 @@
-package com.shyashyashya.refit.global.vectordb.repository.qdrant.base;
+package com.shyashyashya.refit.global.vectordb.repository.impl.qdrant.base;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.shyashyashya.refit.global.property.QdrantProperty;
