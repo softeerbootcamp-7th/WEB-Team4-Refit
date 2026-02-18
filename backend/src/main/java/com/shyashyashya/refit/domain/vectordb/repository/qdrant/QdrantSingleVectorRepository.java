@@ -1,10 +1,10 @@
-package com.shyashyashya.refit.domain.vectordb.repository;
+package com.shyashyashya.refit.domain.vectordb.repository.qdrant;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.shyashyashya.refit.domain.vectordb.model.SingleVectorDocument;
+import com.shyashyashya.refit.domain.vectordb.repository.VectorRepository;
 import com.shyashyashya.refit.global.property.QdrantProperty;
 import com.shyashyashya.refit.global.property.QdrantProperty.QdrantCollectionContext;
-import io.qdrant.client.PointIdFactory;
 import io.qdrant.client.QdrantClient;
 import io.qdrant.client.ValueFactory;
 import io.qdrant.client.VectorsFactory;
@@ -32,7 +32,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 @Slf4j
-public abstract class QdrantSingleVectorRepository implements VectorRepository<Long, SingleVectorDocument<Long>> {
+public abstract class QdrantSingleVectorRepository<K, V extends SingleVectorDocument<K>>
+        implements VectorRepository<K, V> {
 
     private final QdrantClient qdrantClient;
     private final QdrantProperty qdrantProperty;
@@ -43,6 +44,12 @@ public abstract class QdrantSingleVectorRepository implements VectorRepository<L
      * Abstract method
      */
     protected abstract String getCollectionContextName();
+
+    protected abstract V createSingleVectorDocument(K id, Map<String, Object> payload, List<Float> vector);
+
+    protected abstract Common.PointId convertIdToPointId(K id);
+
+    protected abstract K convertPointIdToId(Common.PointId pointId);
 
     /**
      * QdrantClient의 비동기 API를 동기적으로 호출하기 위한 헬퍼 메서드
@@ -71,12 +78,12 @@ public abstract class QdrantSingleVectorRepository implements VectorRepository<L
     }
 
     @Override
-    public void save(SingleVectorDocument<Long> document) {
+    public void save(V document) {
         saveAll(List.of(document));
     }
 
     @Override
-    public void saveAll(List<SingleVectorDocument<Long>> documents) {
+    public void saveAll(List<V> documents) {
         if (documents.isEmpty()) {
             return;
         }
@@ -88,8 +95,8 @@ public abstract class QdrantSingleVectorRepository implements VectorRepository<L
     }
 
     @Override
-    public void deleteById(Long id) {
-        Common.PointId pointId = PointIdFactory.id(id);
+    public void deleteById(K id) {
+        Common.PointId pointId = convertIdToPointId(id);
         block(qdrantClient.deleteAsync(collectionName, List.of(pointId), timeout), "delete point by ID: " + id);
     }
 
@@ -113,7 +120,7 @@ public abstract class QdrantSingleVectorRepository implements VectorRepository<L
     }
 
     @Override
-    public List<Long> searchSimilar(List<Float> queryVector, int topK) {
+    public List<K> searchSimilar(List<Float> queryVector, int topK) {
         Points.SearchPoints searchPoints = Points.SearchPoints.newBuilder()
                 .setCollectionName(collectionName)
                 .addAllVector(queryVector)
@@ -125,12 +132,14 @@ public abstract class QdrantSingleVectorRepository implements VectorRepository<L
         List<Points.ScoredPoint> results =
                 block(qdrantClient.searchAsync(searchPoints, timeout), "search similar points (top " + topK + ")");
 
-        return results.stream().map(scoredPoint -> scoredPoint.getId().getNum()).collect(Collectors.toList());
+        return results.stream()
+                .map(scoredPoint -> convertPointIdToId(scoredPoint.getId()))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<SingleVectorDocument<Long>> findById(Long id) {
-        Common.PointId pointId = PointIdFactory.id(id);
+    public Optional<V> findById(K id) {
+        Common.PointId pointId = convertIdToPointId(id);
 
         List<Points.RetrievedPoint> results = block(
                 qdrantClient.retrieveAsync(
@@ -150,8 +159,8 @@ public abstract class QdrantSingleVectorRepository implements VectorRepository<L
     }
 
     @Override
-    public Stream<SingleVectorDocument<Long>> findAll(int batchSize) {
-        Iterator<SingleVectorDocument<Long>> iterator = new QdrantScrollIterator<>(
+    public Stream<V> findAll(int batchSize) {
+        Iterator<V> iterator = new QdrantScrollIterator<>(
                 collectionName, batchSize, timeout, qdrantClient, this::convertToDocument, this::block);
 
         return StreamSupport.stream(
@@ -159,12 +168,12 @@ public abstract class QdrantSingleVectorRepository implements VectorRepository<L
     }
 
     @Override
-    public Stream<SingleVectorDocument<Long>> findAll() {
+    public Stream<V> findAll() {
         return findAll(qdrantProperty.findAllDefaultBatchSize());
     }
 
     @Override
-    public void updatePayload(Long id, Map<String, Object> metadata) {
+    public void updatePayload(K id, Map<String, Object> metadata) {
         if (metadata == null || metadata.isEmpty()) {
             return;
         }
@@ -174,7 +183,7 @@ public abstract class QdrantSingleVectorRepository implements VectorRepository<L
 
         Points.PointsSelector pointsSelector = Points.PointsSelector.newBuilder()
                 .setPoints(Points.PointsIdsList.newBuilder()
-                        .addIds(PointIdFactory.id(id))
+                        .addIds(convertIdToPointId(id))
                         .build())
                 .build();
 
@@ -232,8 +241,8 @@ public abstract class QdrantSingleVectorRepository implements VectorRepository<L
 
     // point.getVectors().getVector().getDataList()가 deprecated 되었는데, 대체 메서드를 찾지 못해서 그대로 사용함.
     @SuppressWarnings("deprecation")
-    private SingleVectorDocument<Long> convertToDocument(Points.RetrievedPoint point) {
-        Long id = point.getId().getNum();
+    private V convertToDocument(Points.RetrievedPoint point) {
+        K id = convertPointIdToId(point.getId());
 
         Map<String, Object> payload = point.getPayloadMap().entrySet().stream()
                 .collect(
@@ -242,15 +251,15 @@ public abstract class QdrantSingleVectorRepository implements VectorRepository<L
                         HashMap::putAll);
 
         List<Float> vector = point.getVectors().getVector().getDataList();
-        return SingleVectorDocument.of(id, payload, vector);
+        return createSingleVectorDocument(id, payload, vector);
     }
 
-    private Points.PointStruct convertToPointStruct(SingleVectorDocument<Long> doc) {
+    private Points.PointStruct convertToPointStruct(V doc) {
         Map<String, JsonWithInt.Value> payload = doc.getPayload().entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> toQdrantValue(entry.getValue())));
 
         return Points.PointStruct.newBuilder()
-                .setId(PointIdFactory.id(doc.getId())) // id() 메서드는 Long -> PointId 변환 담당
+                .setId(convertIdToPointId(doc.getId()))
                 .setVectors(VectorsFactory.vectors(doc.getVector()))
                 .putAllPayload(payload)
                 .build();
