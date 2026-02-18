@@ -81,7 +81,11 @@ export function PdfPage({ pdf, pageNumber, containerSize }: PdfPageProps) {
     }
   }, [pdf, pageNumber, containerSize])
 
-  const savedRects = Array.from(highlights.values()).flatMap((h) => h.rects.filter((r) => r.pageNumber === pageNumber))
+  const savedRects = Array.from(highlights.entries()).flatMap(([qnaSetId, h]) =>
+    h.rects
+      .filter((r) => r.pageNumber === pageNumber)
+      .map((r, i) => ({ ...r, qnaSetId, rectIndex: i })),
+  )
   const pendingRects = pendingSelection?.rects.filter((r) => r.pageNumber === pageNumber) ?? []
 
   return (
