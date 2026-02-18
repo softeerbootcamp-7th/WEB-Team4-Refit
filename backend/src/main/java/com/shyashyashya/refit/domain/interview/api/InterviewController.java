@@ -6,7 +6,6 @@ import static com.shyashyashya.refit.global.model.ResponseCode.COMMON204;
 
 import com.shyashyashya.refit.domain.interview.dto.InterviewDto;
 import com.shyashyashya.refit.domain.interview.dto.InterviewFullDto;
-import com.shyashyashya.refit.domain.interview.dto.PresignedUrlDto;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatusUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.KptSelfReviewUpdateRequest;
