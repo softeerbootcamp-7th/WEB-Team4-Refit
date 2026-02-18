@@ -425,7 +425,7 @@ public class InterviewService {
         List<PdfHighlighting> highlightings = pdfHighlightingRepository.findAllByQnaSetIn(qnaSets);
         if (highlightings.isEmpty()) return;
 
-        pdfHighlightingRepository.deleteAllInBatch(highlightings);
+        pdfHighlightingRepository.deleteAll(highlightings);
     }
 
     private QnaSetsGeminiResponse parseQnaSetsGeminiResponse(String jsonText) {
