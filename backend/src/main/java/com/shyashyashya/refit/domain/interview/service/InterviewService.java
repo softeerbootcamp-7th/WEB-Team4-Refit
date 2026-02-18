@@ -25,6 +25,7 @@ import com.shyashyashya.refit.domain.interview.dto.request.KptSelfReviewUpdateRe
 import com.shyashyashya.refit.domain.interview.dto.request.QnaSetCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.response.InterviewCreateResponse;
+import com.shyashyashya.refit.domain.interview.dto.response.PdfFilePresignResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.QnaSetCreateResponse;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
@@ -196,7 +197,7 @@ public class InterviewService {
     }
 
     @Transactional
-    public PresignedUrlDto createPdfUploadUrl(Long interviewId) {
+    public PdfFilePresignResponse createPdfUploadUrl(Long interviewId) {
         User requestUser = requestUserContext.getRequestUser();
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
@@ -212,13 +213,14 @@ public class InterviewService {
             resourceKey = s3FolderNameProperty.interviewPdf() + UUID.randomUUID() + ".pdf";
         }
 
-        PresignedUrlDto response = s3Util.createResourceUploadUrl(resourceKey, MediaType.APPLICATION_PDF);
-        interview.updatePdfResourceKey(response.key());
-        return response;
+        PresignedUrlDto presignedUrlDto = s3Util.createResourceUploadUrl(resourceKey, MediaType.APPLICATION_PDF);
+        interview.updatePdfResourceKey(presignedUrlDto.key());
+        interview.updatePdfUploadTime();
+        return PdfFilePresignResponse.of(presignedUrlDto, interview.getPdfUploadedAt());
     }
 
     @Transactional(readOnly = true)
-    public PresignedUrlDto createPdfDownloadUrl(Long interviewId) {
+    public PdfFilePresignResponse createPdfDownloadUrl(Long interviewId) {
         User requestUser = requestUserContext.getRequestUser();
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
@@ -234,7 +236,8 @@ public class InterviewService {
         }
 
         String key = interview.getPdfResourceKey();
-        return s3Util.createResourceDownloadUrl(key);
+        PresignedUrlDto presignedUrlDto = s3Util.createResourceDownloadUrl(key);
+        return PdfFilePresignResponse.of(presignedUrlDto, interview.getPdfUploadedAt());
     }
 
     @Transactional
