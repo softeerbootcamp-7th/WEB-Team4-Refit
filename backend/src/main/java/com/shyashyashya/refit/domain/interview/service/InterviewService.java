@@ -16,6 +16,7 @@ import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
 import com.shyashyashya.refit.domain.interview.dto.InterviewDto;
 import com.shyashyashya.refit.domain.interview.dto.InterviewFullDto;
 import com.shyashyashya.refit.domain.interview.dto.InterviewSimpleDto;
+import com.shyashyashya.refit.domain.interview.dto.PresignedUrlDto;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewDraftType;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatusUpdateRequest;
@@ -24,7 +25,7 @@ import com.shyashyashya.refit.domain.interview.dto.request.KptSelfReviewUpdateRe
 import com.shyashyashya.refit.domain.interview.dto.request.QnaSetCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.response.InterviewCreateResponse;
-import com.shyashyashya.refit.domain.interview.dto.response.PresignedUrlDto;
+import com.shyashyashya.refit.domain.interview.dto.response.PdfFilePresignResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.QnaSetCreateResponse;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
@@ -196,35 +197,47 @@ public class InterviewService {
     }
 
     @Transactional
-    public PresignedUrlDto createPdfUploadUrl(Long interviewId) {
+    public PdfFilePresignResponse createPdfUploadUrl(Long interviewId) {
         User requestUser = requestUserContext.getRequestUser();
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
-        if (interview.getPdfResourceKey() != null) {
+        String resourceKey = interview.getPdfResourceKey();
+        if (resourceKey != null && s3Util.existsByResourceKey(resourceKey)) {
             throw new CustomException(INTERVIEW_PDF_ALREADY_EXITS);
         }
 
-        String key = s3FolderNameProperty.interviewPdf() + UUID.randomUUID() + ".pdf";
-        PresignedUrlDto response = s3Util.createResourceUploadUrl(key, MediaType.APPLICATION_PDF);
-        interview.updatePdfResourceKey(response.key());
-        return response;
+        // TODO Race Condition 해결: key가 null인 상태로 요청이 여러번 들어오면, 다른 UUID에 대한 업로드 url이 발행될 수 있음.
+        if (resourceKey == null) {
+            resourceKey = s3FolderNameProperty.interviewPdf() + UUID.randomUUID() + ".pdf";
+            interview.updatePdfResourceKey(resourceKey);
+        }
+
+        PresignedUrlDto presignedUrlDto = s3Util.createResourceUploadUrl(resourceKey, MediaType.APPLICATION_PDF);
+        interview.updatePdfUploadUrlPublishedTime(LocalDateTime.now());
+        return PdfFilePresignResponse.of(presignedUrlDto, interview.getPdfUploadUrlPublishedAt());
     }
 
     @Transactional(readOnly = true)
-    public PresignedUrlDto createPdfDownloadUrl(Long interviewId) {
+    public PdfFilePresignResponse createPdfDownloadUrl(Long interviewId) {
         User requestUser = requestUserContext.getRequestUser();
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
-        if (interview.getPdfResourceKey() == null) {
+        String resourceKey = interview.getPdfResourceKey();
+        if (resourceKey == null) {
+            throw new CustomException(INTERVIEW_PDF_NOT_FOUND);
+        }
+
+        if (!s3Util.existsByResourceKey(resourceKey)) {
             throw new CustomException(INTERVIEW_PDF_NOT_FOUND);
         }
 
         String key = interview.getPdfResourceKey();
-        return s3Util.createResourceDownloadUrl(key);
+        PresignedUrlDto presignedUrlDto = s3Util.createResourceDownloadUrl(key);
+        return PdfFilePresignResponse.of(presignedUrlDto, interview.getPdfUploadUrlPublishedAt());
     }
 
     @Transactional
@@ -235,7 +248,7 @@ public class InterviewService {
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
         String key = interview.getPdfResourceKey();
-        if (key == null) {
+        if (key == null || !s3Util.existsByResourceKey(key)) {
             throw new CustomException(INTERVIEW_PDF_NOT_FOUND);
         }
 
@@ -412,7 +425,7 @@ public class InterviewService {
         List<PdfHighlighting> highlightings = pdfHighlightingRepository.findAllByQnaSetIn(qnaSets);
         if (highlightings.isEmpty()) return;
 
-        pdfHighlightingRepository.deleteAllInBatch(highlightings);
+        pdfHighlightingRepository.deleteAll(highlightings);
     }
 
     private QnaSetsGeminiResponse parseQnaSetsGeminiResponse(String jsonText) {

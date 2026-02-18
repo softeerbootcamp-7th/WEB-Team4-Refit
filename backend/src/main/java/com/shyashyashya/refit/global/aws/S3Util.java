@@ -2,7 +2,7 @@ package com.shyashyashya.refit.global.aws;
 
 import static com.shyashyashya.refit.global.exception.ErrorCode.S3_RESOURCE_DELETE_FAILED;
 
-import com.shyashyashya.refit.domain.interview.dto.response.PresignedUrlDto;
+import com.shyashyashya.refit.domain.interview.dto.PresignedUrlDto;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.property.S3Property;
 import java.time.Duration;
@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
+import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
@@ -72,6 +74,22 @@ public class S3Util {
         } catch (S3Exception e) {
             log.error(e.getMessage(), e);
             throw new CustomException(S3_RESOURCE_DELETE_FAILED);
+        }
+    }
+
+    public boolean existsByResourceKey(String resourceKey) {
+        try {
+            s3Client.headObject(HeadObjectRequest.builder()
+                    .bucket(s3Property.bucket())
+                    .key(resourceKey)
+                    .build());
+            return true;
+        } catch (NoSuchKeyException e) {
+            return false;
+        } catch (S3Exception e) {
+            // NoSuchKey 대신 S3Exception(404)로 올 수 있어서 statusCode로 방어
+            if (e.statusCode() == 404) return false;
+            throw e;
         }
     }
 }
