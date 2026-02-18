@@ -95,7 +95,6 @@ function DynamicRecordingIndicator({ canvasRef }: DynamicRecordingIndicatorProps
 function StaticRecordingIndicator() {
   return (
     <div className="flex w-full min-w-0 items-center justify-center rounded-[100px] bg-gray-800 px-5 py-2">
-      <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-orange-500" aria-hidden />
       <span className="caption-l-semibold px-3 tracking-[0.22em] text-orange-500" aria-label="녹음 중">
         REC
       </span>
