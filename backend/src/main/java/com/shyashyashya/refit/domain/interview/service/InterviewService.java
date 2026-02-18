@@ -16,6 +16,7 @@ import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
 import com.shyashyashya.refit.domain.interview.dto.InterviewDto;
 import com.shyashyashya.refit.domain.interview.dto.InterviewFullDto;
 import com.shyashyashya.refit.domain.interview.dto.InterviewSimpleDto;
+import com.shyashyashya.refit.domain.interview.dto.PresignedUrlDto;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewDraftType;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatusUpdateRequest;
@@ -24,7 +25,6 @@ import com.shyashyashya.refit.domain.interview.dto.request.KptSelfReviewUpdateRe
 import com.shyashyashya.refit.domain.interview.dto.request.QnaSetCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.response.InterviewCreateResponse;
-import com.shyashyashya.refit.domain.interview.dto.response.PresignedUrlDto;
 import com.shyashyashya.refit.domain.interview.dto.response.QnaSetCreateResponse;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;

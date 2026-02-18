@@ -2,7 +2,7 @@ package com.shyashyashya.refit.global.aws;
 
 import static com.shyashyashya.refit.global.exception.ErrorCode.S3_RESOURCE_DELETE_FAILED;
 
-import com.shyashyashya.refit.domain.interview.dto.response.PresignedUrlDto;
+import com.shyashyashya.refit.domain.interview.dto.PresignedUrlDto;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.property.S3Property;
 import java.time.Duration;
