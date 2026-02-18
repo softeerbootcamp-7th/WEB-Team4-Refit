@@ -11,13 +11,15 @@ type PdfLoadState = {
 }
 
 export function usePdfLoader(pdfUrl: string): PdfLoadState {
-  const [state, setState] = useState<PdfLoadState>({
+  const [state, setState] = useState<PdfLoadState>(() => ({
     pdf: null,
-    isLoading: true,
+    isLoading: !!pdfUrl,
     error: null,
-  })
+  }))
 
   useEffect(() => {
+    if (!pdfUrl) return
+
     let cancelled = false
 
     const loadPdf = async () => {

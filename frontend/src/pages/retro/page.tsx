@@ -5,7 +5,7 @@ import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
 import { FileIcon } from '@/designs/assets'
 import { Button } from '@/designs/components'
 import SidebarLayoutSkeleton from '@/features/_common/components/sidebar/SidebarLayoutSkeleton'
-import { RetroPdfPanel } from '@/features/retro/_index/components/pdf-panel/RetroPdfPanel'
+import { RetroPdfPanel } from '@/features/retro/_common/components/pdf-panel/RetroPdfPanel'
 import { RetroSection } from '@/features/retro/_index/components/retro-section/RetroSection'
 import type { RetroListItem } from '@/features/retro/_index/components/retro-section/types'
 import { RetroMinimizedSidebar, RetroSidebar } from '@/features/retro/_index/components/sidebar'
@@ -24,7 +24,7 @@ function RetroQuestionContent() {
   const id = Number(interviewId)
   const { data } = useGetInterviewFullSuspense(id, { query: { select: transformInterviewData } })
 
-  const { interviewInfo, qnaSets } = data
+  const { interviewInfo, qnaSets, hasPdfResourceKey } = data
   const { company, interviewType } = interviewInfo
 
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -127,7 +127,11 @@ function RetroQuestionContent() {
           initialKptTexts={data.interviewSelfReview}
         />
       </div>
-      <RetroPdfPanel />
+      <RetroPdfPanel
+        interviewId={id}
+        hasPdf={hasPdfResourceKey}
+        qnaSetIds={currentItem && currentItem.qnaSetId > 0 ? [currentItem.qnaSetId] : []}
+      />
     </div>
   )
 }
@@ -155,6 +159,7 @@ function transformInterviewData(res: Awaited<ReturnType<typeof getInterviewFull>
   return {
     interviewInfo,
     qnaSets,
+    hasPdfResourceKey: Boolean(interviewFull.pdfResourceKey),
     interviewSelfReview: {
       keepText: interviewFull.interviewSelfReview?.keepText ?? '',
       problemText: interviewFull.interviewSelfReview?.problemText ?? '',
