@@ -1,8 +1,8 @@
 import { useState, type Dispatch, type SetStateAction } from 'react'
 import { CloudSaveIcon, LoadingSpinner } from '@/designs/assets'
 import { Button } from '@/designs/components'
-import LiveAudioVisualizer from '@/features/_common/auth/components/LiveAudioVisualizer'
 import LoadingOverlay from '@/features/_common/loading/LoadingOverlay'
+import { LiveAudioVisualizer } from '@/features/_common/record/components'
 import { RecordSidebar } from '@/features/record/_index/components/RecordSidebar'
 import type { InterviewInfoType } from '@/types/interview'
 
@@ -99,13 +99,7 @@ export function RecordPageContent({
 
 function AutoSaveStatusBadge({ status }: { status: AutoSaveStatus }) {
   const label =
-    status === 'saving'
-      ? '저장 중...'
-      : status === 'saved'
-        ? '저장됨'
-        : status === 'error'
-          ? '저장 실패'
-          : '자동 저장'
+    status === 'saving' ? '저장 중...' : status === 'saved' ? '저장됨' : status === 'error' ? '저장 실패' : '자동 저장'
 
   const textColor = status === 'error' ? 'text-red-500' : 'text-gray-500'
 
