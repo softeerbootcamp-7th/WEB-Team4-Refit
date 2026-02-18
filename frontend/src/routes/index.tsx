@@ -1,26 +1,28 @@
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router'
+
 import { DashboardLayout, MobileLayout } from '@/layouts'
 import MainLayout from '@/layouts/MainLayout'
 import {
   AuthCallbackPage,
+  CollectionDetailPage,
   DashboardPage,
+  DifficultQuestionPage,
+  LandingPage,
+  MobilePage,
+  MobileRecordPage,
+  MobileSignupPage,
+  MobileUnrecordedPage,
+  MyCollectionsPage,
+  MyInterviewsPage,
+  NotFound,
   RecordConfirmPage,
   RecordLinkPage,
   RecordPage,
   RetroDetailPage,
   RetroQuestionPage,
-  NotFound,
   SharedComponentExample,
   SigninPage,
   SignupPage,
-  MobilePage,
-  MobileSignupPage,
-  MobileUnrecordedPage,
-  MobileRecordPage,
-  MyCollectionsPage,
-  CollectionDetailPage,
-  DifficultQuestionPage,
-  MyInterviewsPage,
   TrendQuestionsPage,
 } from '@/pages'
 import { handleAuthRouting, HandleMobileRouting } from '@/routes/middleware'
@@ -31,6 +33,10 @@ const getChildPath = (fullPath: string, rootPath: string): string => {
 }
 
 const router = createBrowserRouter([
+  {
+    path: ROUTES.LANDING,
+    Component: LandingPage,
+  },
   {
     middleware: [handleAuthRouting],
     children: [
