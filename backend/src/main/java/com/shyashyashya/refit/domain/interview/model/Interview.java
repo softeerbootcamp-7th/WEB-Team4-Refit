@@ -63,6 +63,9 @@ public class Interview extends BaseEntity {
     @Column(columnDefinition = "varchar(200)")
     private String pdfResourceKey;
 
+    @Column(name = "pdf_uploaded_at")
+    private LocalDateTime pdfUploadUrlPublishedAt;
+
     @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
@@ -177,5 +180,9 @@ public class Interview extends BaseEntity {
 
     public void deletePdfResourceKey() {
         this.pdfResourceKey = null;
+    }
+
+    public void updatePdfUploadUrlPublishedTime(LocalDateTime time) {
+        this.pdfUploadUrlPublishedAt = time;
     }
 }

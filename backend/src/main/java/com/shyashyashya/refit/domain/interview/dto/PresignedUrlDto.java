@@ -1,4 +1,4 @@
-package com.shyashyashya.refit.domain.interview.dto.response;
+package com.shyashyashya.refit.domain.interview.dto;
 
 import jakarta.validation.constraints.NotNull;
 
