@@ -1,35 +1,26 @@
-import { useEffect, useRef } from 'react'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useCallback, useRef } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useParams } from 'react-router'
 import {
   createPdfUploadUrl,
-  useCreatePdfDownloadUrl,
+  getCreatePdfDownloadUrlQueryKey,
   useCompleteQnaSetDraft,
   useDeleteInterviewPdf,
 } from '@/apis/generated/interview-api/interview-api'
-import { FilePlusIcon } from '@/designs/assets'
+import { FilePlusIcon, LoadingSpinner } from '@/designs/assets'
 import { Button } from '@/designs/components'
 import { useInterviewNavigate } from '@/features/_common/hooks/useInterviewNavigation'
 import { useHighlightContext } from '@/features/record/link/contexts'
 import { ROUTES } from '@/routes/routes'
 import { PdfViewer } from './PdfViewer'
-
-const PDF_DOWNLOAD_URL_STALE_TIME = 1000 * 60 * 5
-const PDF_OBJECT_URL_GC_TIME = 1000 * 60 * 30
+import { clearPdfObjectUrlCache, getPdfObjectUrlKey, usePdfCachedUrl } from './usePdfCachedUrl'
 
 export function PdfSection() {
   const { interviewId: interviewIdParam } = useParams()
   const interviewId = Number(interviewIdParam)
   const queryClient = useQueryClient()
-  const pdfObjectUrlQueryKey = ['interview', interviewId, 'pdf-object-url'] as const
-  const { data: pdfObjectUrl } = useQuery<string | null>({
-    queryKey: pdfObjectUrlQueryKey,
-    queryFn: () => null,
-    staleTime: Infinity,
-    gcTime: PDF_OBJECT_URL_GC_TIME,
-  })
-  const pdfObjectUrlRef = useRef<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const uploadAbortRef = useRef<AbortController | null>(null)
   const { hasPdf, linkingQnaSetId, setHasPdf, clearAllHighlights } = useHighlightContext()
   const { mutate: completeQnaSetDraft, isPending: isCompletingQnaSetDraft } = useCompleteQnaSetDraft()
 
@@ -46,62 +37,61 @@ export function PdfSection() {
     )
   }
 
-  const replacePdfObjectUrl = (next: string | null) => {
-    const prev = pdfObjectUrlRef.current
+  const handleDownloadSuccess = useCallback(() => {
+    setHasPdf(true)
+  }, [setHasPdf])
 
-    // 메모리 누수 방지
-    if (prev) URL.revokeObjectURL(prev)
+  const handleDownloadError = useCallback(() => {
+    setHasPdf(false)
+    clearAllHighlights()
+  }, [setHasPdf, clearAllHighlights])
 
-    pdfObjectUrlRef.current = next
-    queryClient.setQueryData(pdfObjectUrlQueryKey, next)
-  }
-
-  useEffect(() => {
-    pdfObjectUrlRef.current = pdfObjectUrl ?? null
-  }, [pdfObjectUrl])
-
-  const {
-    data: downloadUrl,
-    isFetching: isDownloadFetching,
-    isError: isDownloadError,
-  } = useCreatePdfDownloadUrl<string>(interviewId, {
-    query: {
-      enabled: hasPdf && !pdfObjectUrl && Number.isFinite(interviewId) && interviewId > 0,
-      staleTime: PDF_DOWNLOAD_URL_STALE_TIME,
-      select: (res) => {
-        const downloadUrl = res.result?.url
-        if (!downloadUrl) throw new Error('다운로드 URL이 없습니다.')
-        return downloadUrl
-      },
-    },
+  const { resolvedPdfUrl, isDownloadFetching } = usePdfCachedUrl({
+    interviewId,
+    hasPdf,
+    onDownloadSuccess: handleDownloadSuccess,
+    onDownloadError: handleDownloadError,
   })
 
   const {
     mutate: uploadPdf,
     isPending: isUploadPending,
     isError: isUploadError,
+    error: uploadError,
   } = useMutation({
     mutationFn: async (file: File) => {
-      const res = await createPdfUploadUrl(interviewId)
-      const uploadUrl = res.result?.url
-      if (!uploadUrl) throw new Error('업로드 URL이 없습니다.')
+      const abortController = new AbortController()
+      uploadAbortRef.current = abortController
+      const { signal } = abortController
 
+      // 업로드 시작 시마다 presigned upload URL을 새로 발급받는다.
+      const res = await createPdfUploadUrl(interviewId, { signal })
+      const uploadUrl = res.result?.presignedUrlDto?.url
+      const updatedAt = res.result?.pdfUploadUrlPublishedAt
+
+      if (!uploadUrl || !updatedAt) throw new Error('업로드 URL 또는 updatedAt이 없습니다.')
+
+      // 2. S3 업로드
       const putRes = await fetch(uploadUrl, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/pdf',
-        },
+        headers: { 'Content-Type': 'application/pdf' },
         body: file,
+        signal,
       })
 
       if (!putRes.ok) throw new Error(`S3 upload failed: ${putRes.status}`)
 
-      const objectUrl = URL.createObjectURL(file)
-      return objectUrl
+      return { objectUrl: URL.createObjectURL(file), updatedAt }
     },
-    onSuccess: (objectUrl) => {
-      replacePdfObjectUrl(objectUrl)
+    onSuccess: ({ objectUrl, updatedAt }) => {
+      // 업로드된 파일을 즉시 렌더링할 수 있도록 object URL을 버전 key에 저장한다.
+      clearPdfObjectUrlCache(queryClient, interviewId)
+      queryClient.setQueryData(getPdfObjectUrlKey(interviewId, updatedAt), objectUrl)
       setHasPdf(true)
+      void queryClient.invalidateQueries({ queryKey: getCreatePdfDownloadUrlQueryKey(interviewId) })
+    },
+    onSettled: () => {
+      uploadAbortRef.current = null
     },
   })
 
@@ -112,7 +102,9 @@ export function PdfSection() {
   } = useDeleteInterviewPdf({
     mutation: {
       onSuccess: () => {
-        replacePdfObjectUrl(null)
+        // 삭제 후엔 PDF 관련 캐시와 하이라이트 상태를 모두 초기화한다.
+        clearPdfObjectUrlCache(queryClient, interviewId)
+        queryClient.removeQueries({ queryKey: getCreatePdfDownloadUrlQueryKey(interviewId), exact: true })
         setHasPdf(false)
         clearAllHighlights()
         if (fileInputRef.current) fileInputRef.current.value = ''
@@ -126,18 +118,22 @@ export function PdfSection() {
     uploadPdf(file)
   }
 
+  const handleCancelUpload = () => {
+    uploadAbortRef.current?.abort()
+    uploadAbortRef.current = null
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
+
   const handleRemovePdf = () => {
-    if (!interviewId) return
     deletePdf({ interviewId })
   }
 
-  const resolvedPdfUrl = pdfObjectUrl ?? downloadUrl ?? null
   const isLinking = linkingQnaSetId !== null
   const isPdfBusy = isUploadPending || isDeletePending || isDownloadFetching
+  const isUploadAbortError = uploadError instanceof DOMException && uploadError.name === 'AbortError'
   const pdfError = (() => {
-    if (isUploadError) return 'PDF 업로드에 실패했습니다. 다시 시도해 주세요.'
+    if (isUploadError && !isUploadAbortError) return 'PDF 업로드에 실패했습니다. 다시 시도해 주세요.'
     if (isDeleteError) return 'PDF 업로드 해제에 실패했습니다.'
-    if (!resolvedPdfUrl && isDownloadError) return 'PDF를 불러오는 데 실패했습니다.'
     return null
   })()
 
@@ -161,15 +157,30 @@ export function PdfSection() {
 
       {resolvedPdfUrl ? (
         <PdfViewer pdfUrl={resolvedPdfUrl} />
+      ) : isPdfBusy ? (
+        <div className="title-s-bold flex flex-1 items-center justify-center rounded-xl border-2 border-dashed border-gray-200 text-gray-300">
+          <div className="flex flex-col items-center gap-1">
+            <LoadingSpinner className="h-10 w-10 animate-spin" />
+            <span className="mt-2">PDF 처리 중...</span>
+            {isUploadPending && (
+              <button
+                type="button"
+                onClick={handleCancelUpload}
+                className="body-s-regular mt-1 cursor-pointer text-gray-400 underline hover:text-gray-500"
+              >
+                업로드 취소
+              </button>
+            )}
+          </div>
+        </div>
       ) : (
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          disabled={isPdfBusy}
           className="title-s-bold flex flex-1 cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-gray-200 text-gray-300"
         >
           <div className="flex flex-col items-center gap-1">
-            {isPdfBusy ? 'PDF 처리 중...' : '자기소개서 불러오기'}
+            자기소개서 불러오기
             <FilePlusIcon className="h-14 w-14" />
           </div>
         </button>
