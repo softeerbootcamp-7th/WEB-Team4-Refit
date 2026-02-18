@@ -89,8 +89,7 @@ export function PdfSection() {
       const putRes = await fetch(uploadUrl, {
         method: 'PUT',
         headers: {
-          // TODO: 'application/pdf' 로 수정
-          'Content-Type': 'application',
+          'Content-Type': 'application/pdf',
         },
         body: file,
       })
