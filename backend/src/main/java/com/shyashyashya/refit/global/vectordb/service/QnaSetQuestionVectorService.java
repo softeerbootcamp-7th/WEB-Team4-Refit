@@ -7,6 +7,10 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+/**
+ * QnaSetQuestionVectorRepository를 주입받아서 어떻게 사용하는지 보여주는 예시 서비스
+ * 추후 삭제 가능
+ */
 @Service
 @RequiredArgsConstructor
 public class QnaSetQuestionVectorService {
@@ -14,10 +18,7 @@ public class QnaSetQuestionVectorService {
     private final QnaSetQuestionVectorRepository qnaSetQuestionVectorRepository;
 
     public void processAndSave(Long dbId, List<Float> embedding, String text) {
-        // 비즈니스 로직: 도메인 객체 생성
         SingleVectorDocument<Long> doc = SingleVectorDocument.of(dbId, Map.of("source", text), embedding);
-
-        // 저장: 실제 구현체가 무엇이든 상관없음
         qnaSetQuestionVectorRepository.save(doc);
     }
 }

@@ -54,7 +54,6 @@ public abstract class QdrantSingleVectorRepository<K, V extends SingleVectorDocu
     /**
      * QdrantClient의 비동기 API를 동기적으로 호출하기 위한 헬퍼 메서드
      */
-    // [신규] Iterator 등에서 block 메서드를 타입 안전하게 호출하기 위한 인터페이스
     @FunctionalInterface
     public interface QdrantBlocker {
         <T> T block(ListenableFuture<T> future, String description);
@@ -268,7 +267,7 @@ public abstract class QdrantSingleVectorRepository<K, V extends SingleVectorDocu
     private Object fromQdrantValue(JsonWithInt.Value value) {
         if (value.hasNullValue()) return null;
         if (value.hasStringValue()) return value.getStringValue();
-        if (value.hasIntegerValue()) return value.getIntegerValue(); // Long 타입 반환됨
+        if (value.hasIntegerValue()) return value.getIntegerValue();
         if (value.hasDoubleValue()) return value.getDoubleValue();
         if (value.hasBoolValue()) return value.getBoolValue();
         if (value.hasListValue()) {
@@ -293,7 +292,7 @@ public abstract class QdrantSingleVectorRepository<K, V extends SingleVectorDocu
         if (v instanceof Integer i) return ValueFactory.value(i);
         if (v instanceof Long l) return ValueFactory.value(l);
         if (v instanceof Double d) return ValueFactory.value(d);
-        if (v instanceof Float f) return ValueFactory.value(f.doubleValue()); // Float 지원 추가
+        if (v instanceof Float f) return ValueFactory.value(f.doubleValue());
         if (v instanceof Boolean b) return ValueFactory.value(b);
         if (v instanceof List<?> list) {
             List<JsonWithInt.Value> values =

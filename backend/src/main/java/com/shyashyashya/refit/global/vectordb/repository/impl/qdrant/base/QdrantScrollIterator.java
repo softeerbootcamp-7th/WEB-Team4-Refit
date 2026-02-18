@@ -66,7 +66,6 @@ public class QdrantScrollIterator<T> implements Iterator<T> {
             builder.setOffset(nextOffset);
         }
 
-        // Repository의 block 메서드를 사용하여 일관된 Timeout과 예외 처리 적용
         var response = blockFunction.block(
                 qdrantClient.scrollAsync(builder.build(), timeout), "scrolling batch from " + collectionName);
 
