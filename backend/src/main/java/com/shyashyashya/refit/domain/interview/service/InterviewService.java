@@ -202,12 +202,17 @@ public class InterviewService {
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
-        if (interview.getPdfResourceKey() != null) {
+        String resourceKey = interview.getPdfResourceKey();
+        if (resourceKey != null && s3Util.existsByResourceKey(resourceKey)) {
             throw new CustomException(INTERVIEW_PDF_ALREADY_EXITS);
         }
 
-        String key = s3FolderNameProperty.interviewPdf() + UUID.randomUUID() + ".pdf";
-        PresignedUrlDto response = s3Util.createResourceUploadUrl(key, MediaType.APPLICATION_PDF);
+        // TODO Race Condition 해결: key가 null인 상태로 요청이 여러번 들어오면, 다른 UUID에 대한 업로드 url이 발행될 수 있음.
+        if (resourceKey == null) {
+            resourceKey = s3FolderNameProperty.interviewPdf() + UUID.randomUUID() + ".pdf";
+        }
+
+        PresignedUrlDto response = s3Util.createResourceUploadUrl(resourceKey, MediaType.APPLICATION_PDF);
         interview.updatePdfResourceKey(response.key());
         return response;
     }
