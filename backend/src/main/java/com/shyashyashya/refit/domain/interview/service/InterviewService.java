@@ -245,7 +245,7 @@ public class InterviewService {
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
         String key = interview.getPdfResourceKey();
-        if (key == null) {
+        if (key == null || !s3Util.existsByResourceKey(key)) {
             throw new CustomException(INTERVIEW_PDF_NOT_FOUND);
         }
 
