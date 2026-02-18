@@ -31,7 +31,7 @@ function RecordLinkContent() {
   })
 
   return (
-    <HighlightProvider qnaSetIds={qnaSetIds} hasPdf={data.hasUploadedPdf}>
+    <HighlightProvider qnaSetIds={qnaSetIds} hasPdf={data.hasPdfResourceKey}>
       <div className="grid h-full grid-cols-[80px_1.2fr_1fr]">
         <RecordLinkSidebar items={sidebarItems} activeIndex={activeIndex} onItemClick={handleItemClick} />
         <div className="flex h-full flex-col gap-5 overflow-hidden py-6 pl-6">
@@ -59,6 +59,6 @@ function transformInterviewData(res: Awaited<ReturnType<typeof getInterviewFull>
 
   return {
     qnaList,
-    hasUploadedPdf: Boolean(interviewFull.pdfResourceKey),
+    hasPdfResourceKey: Boolean(interviewFull.pdfResourceKey),
   }
 }
