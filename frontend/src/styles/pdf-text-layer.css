@@ -76,15 +76,3 @@
 .textLayer.selecting .endOfContent {
   top: 0;
 }
-
-/* pdf.js 내부 텍스트 측정용 캔버스가 화면에 노출되지 않도록 숨김 처리 */
-.hiddenCanvasElement {
-  position: absolute;
-  top: 0;
-  left: -100000px;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-  pointer-events: none;
-  z-index: -1;
-}

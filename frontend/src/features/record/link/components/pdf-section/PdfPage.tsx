@@ -67,6 +67,7 @@ export function PdfPage({ pdf, pageNumber, containerSize }: PdfPageProps) {
       if (cancelled) return
       const hasText = textContent.items.some((item) => 'str' in item && item.str.trim().length > 0)
       setHasSelectableText(hasText)
+      if (!hasText) return
 
       textLayerInstance = new TextLayer({
         container: textLayerRef.current,
