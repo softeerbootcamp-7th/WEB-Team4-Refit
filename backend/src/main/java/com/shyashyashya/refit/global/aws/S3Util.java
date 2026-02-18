@@ -36,7 +36,7 @@ public class S3Util {
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(s3Property.bucket())
                 .key(resourceKey)
-                .contentType(mediaType.getType())
+                .contentType(mediaType.toString())
                 .build();
 
         PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()

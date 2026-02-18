@@ -300,11 +300,10 @@ public class InterviewIntegrationTest extends IntegrationTest {
             Interview interview = createAndSaveInterview(request);
             interviewId = interview.getId();
 
-            // Create QnaSetCategory
             qnaSetCategory = qnaSetCategoryRepository.save(
                     QnaSetCategory.create("기술 면접", "기술 관련 질문입니다.", 0.8));
 
-            // Create QnaSets and associate them with the Interview and QnaSetCategory
+
             QnaSet qnaSet1 = QnaSet.create("질문1", "답변1", false, interview, qnaSetCategory);
             QnaSet qnaSet2 = QnaSet.create("질문2", "답변2", true, interview, qnaSetCategory);
             qnaSets = qnaSetRepository.saveAll(List.of(qnaSet1, qnaSet2));
