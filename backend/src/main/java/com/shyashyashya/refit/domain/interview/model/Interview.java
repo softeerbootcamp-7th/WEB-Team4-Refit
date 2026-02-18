@@ -64,7 +64,7 @@ public class Interview extends BaseEntity {
     private String pdfResourceKey;
 
     @Column(name = "pdf_uploaded_at")
-    private LocalDateTime pdfUploadedAt;
+    private LocalDateTime pdfUploadUrlPublishedAt;
 
     @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -182,7 +182,7 @@ public class Interview extends BaseEntity {
         this.pdfResourceKey = null;
     }
 
-    public void updatePdfUploadTime() {
-        this.pdfUploadedAt = LocalDateTime.now();
+    public void updatePdfUploadUrlPublishedTime() {
+        this.pdfUploadUrlPublishedAt = LocalDateTime.now();
     }
 }

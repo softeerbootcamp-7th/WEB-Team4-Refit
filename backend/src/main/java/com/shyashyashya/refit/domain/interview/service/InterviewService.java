@@ -215,8 +215,8 @@ public class InterviewService {
 
         PresignedUrlDto presignedUrlDto = s3Util.createResourceUploadUrl(resourceKey, MediaType.APPLICATION_PDF);
         interview.updatePdfResourceKey(presignedUrlDto.key());
-        interview.updatePdfUploadTime();
-        return PdfFilePresignResponse.of(presignedUrlDto, interview.getPdfUploadedAt());
+        interview.updatePdfUploadUrlPublishedTime();
+        return PdfFilePresignResponse.of(presignedUrlDto, interview.getPdfUploadUrlPublishedAt());
     }
 
     @Transactional(readOnly = true)
@@ -237,7 +237,7 @@ public class InterviewService {
 
         String key = interview.getPdfResourceKey();
         PresignedUrlDto presignedUrlDto = s3Util.createResourceDownloadUrl(key);
-        return PdfFilePresignResponse.of(presignedUrlDto, interview.getPdfUploadedAt());
+        return PdfFilePresignResponse.of(presignedUrlDto, interview.getPdfUploadUrlPublishedAt());
     }
 
     @Transactional
