@@ -3,6 +3,8 @@ spring:
     qdrant:
       host: "localhost"
       port: 6334
+      timeout: 10s
+      find-all-default-batch-size: 100
       collections:
         qna-set-question:
           name: "collection_name"

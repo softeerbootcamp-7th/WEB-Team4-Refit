@@ -1,6 +1,6 @@
-package com.shyashyashya.refit.domain.vectordb.repository;
+package com.shyashyashya.refit.global.vectordb.repository;
 
-import com.shyashyashya.refit.domain.vectordb.model.VectorDocumentBase;
+import com.shyashyashya.refit.global.vectordb.model.VectorDocumentBase;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -21,6 +21,8 @@ public interface VectorRepository<K, V extends VectorDocumentBase<K>> {
     Optional<V> findById(K id);
 
     Stream<V> findAll();
+
+    Stream<V> findAll(int batchSize);
 
     void updatePayload(K id, Map<String, Object> payload);
 }

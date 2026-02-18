@@ -3,6 +3,8 @@ spring:
     qdrant:
       host: "${QDRANT_HOST}"
       port: ${QDRANT_PORT}
+      timeout: ${QDRANT_TIMEOUT}
+      find-all-default-batch-size: ${QDRANT_FIND_ALL_DEFAULT_BATCH_SIZE}
       collections:
         qna-set-question:
           name: "${QDRANT_QNA_SET_COLLECTION_NAME}"
