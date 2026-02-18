@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import type { RetroListItem } from '@/constants/example'
+import type { RetroListItem } from '../types'
 
 type KptTexts = { keepText?: string; problemText?: string; tryText?: string }
 

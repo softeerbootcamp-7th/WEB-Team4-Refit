@@ -37,3 +37,12 @@ export type RetroSectionFlowState = {
   isSaving: boolean
   missingRetroNumbers: number[]
 }
+
+export type RetroListItem = {
+  qnaSetId: number
+  questionText: string
+  answerText: string
+  qnaSetSelfReviewText: string
+  isMarkedDifficult: boolean
+  starAnalysis?: StarAnalysisResult
+}

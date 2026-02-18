@@ -5,16 +5,17 @@ import '@/styles/index.css'
 
 const queryClient = new QueryClient()
 
-async function enableMocking() {
-  if (import.meta.env.MODE !== 'development') return
-  const { worker } = await import('@/mocks/browser')
-  return worker.start({ onUnhandledRequest: 'bypass' })
-}
+/** Mock API 연결을 위한 로직 */
+// async function enableMocking() {
+//   if (import.meta.env.MODE !== 'development') return
+//   const { worker } = await import('@/mocks/browser')
+//   return worker.start({ onUnhandledRequest: 'bypass' })
+// }
 
-enableMocking().then(() => {
-  createRoot(document.getElementById('root')!).render(
-    <QueryClientProvider client={queryClient}>
-      <Router />
-    </QueryClientProvider>,
-  )
-})
+// enableMocking().then(() => {
+createRoot(document.getElementById('root')!).render(
+  <QueryClientProvider client={queryClient}>
+    <Router />
+  </QueryClientProvider>,
+)
+// })

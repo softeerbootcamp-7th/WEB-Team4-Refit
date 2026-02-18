@@ -31,7 +31,7 @@ export default function DashboardBanner({ variant, titleText, isLoading = false 
       />
       <div className="z-1">
         <Bubble className="absolute right-39 bottom-9" bubbleHex={config.bubbleHex} bubbleText={config.btnText} />
-        <PencilChickIcon className="group-hover:animate-wiggle-x absolute right-4 bottom-[-6px] origin-bottom transition-transform" />
+        <PencilChickIcon className="group-hover:animate-wiggle-x absolute right-4 -bottom-1.5 origin-bottom transition-transform" />
       </div>
 
       {/* Decorative Diamonds */}
@@ -52,7 +52,7 @@ function Bubble({ bubbleHex, bubbleText, className }: { bubbleHex: string; bubbl
       style={{ backgroundColor: bubbleHex }}
     >
       <span className="body-l-bold text-white">{bubbleText}</span>
-      <BubbleTailIcon className="absolute top-1/2 -right-[10px] -translate-y-1/2" style={{ color: bubbleHex }} />
+      <BubbleTailIcon className="absolute top-1/2 -right-2.5 -translate-y-1/2" style={{ color: bubbleHex }} />
     </div>
   )
 }

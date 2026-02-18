@@ -1,10 +1,16 @@
 import { useRef, useState, type Ref } from 'react'
-import { useUpdateQnaSet, useUpdateQnaSetSelfReview } from '@/apis/generated/qna-set-api/qna-set-api'
+import {
+  useCreateStarAnalysis,
+  useDeleteQnaSet,
+  useGetScrapFoldersContainingQnaSet,
+  useUpdateQnaSet,
+  useUpdateQnaSetSelfReview,
+} from '@/apis/generated/qna-set-api/qna-set-api'
 import { BookmarkIcon, MoreIcon } from '@/designs/assets'
 import { Border, Button } from '@/designs/components'
 import { QnaSetCard, QnaSetEditForm, StarAnalysisSection } from '@/features/_common/components/qna-set'
 import { useOnClickOutside } from '@/features/_common/hooks/useOnClickOutside'
-import { RetroWriteCard } from '@/features/retro/_common/components/RetroWriteCard'
+import { RetroWriteCard, ScrapModal } from '@/features/retro/_common/components'
 import type { QnaSetType } from '@/types/interview'
 
 type QnaRetroCardProps = {
@@ -13,20 +19,41 @@ type QnaRetroCardProps = {
   qnaSet: QnaSetType
   isOtherEditing?: boolean
   onEditingIdChange?: (editingId: string | null) => void
+  onDelete?: (qnaSetId: number) => void
 }
 
-export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChange }: QnaRetroCardProps) {
-  const { qnaSetId, questionText, answerText, qnaSetSelfReviewText, starAnalysis } = qnaSet
+const SCRAP_FOLDERS_STALE_TIME = 1000 * 60 * 30
+
+export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChange, onDelete }: QnaRetroCardProps) {
+  const { qnaSetId, questionText, answerText, qnaSetSelfReviewText, starAnalysis, isMarkedDifficult } = qnaSet
   const { mutate: updateQnaSet } = useUpdateQnaSet()
   const { mutate: updateQnaSetSelfReview } = useUpdateQnaSetSelfReview()
+  const { mutate: deleteQnaSet } = useDeleteQnaSet()
+  const { mutate: createStarAnalysis, isPending: isAnalyzing } = useCreateStarAnalysis()
 
+  const { data: scrapFolderData } = useGetScrapFoldersContainingQnaSet(
+    qnaSetId,
+    { page: 0, size: 10 },
+    {
+      query: {
+        enabled: qnaSetId > 0,
+        staleTime: SCRAP_FOLDERS_STALE_TIME,
+      },
+    },
+  )
+  const hasAnyScrapFolder = (scrapFolderData?.result?.content ?? []).some((folder) => folder.contains)
+  const [currentMarkedDifficult, setCurrentMarkedDifficult] = useState(isMarkedDifficult)
+  const isBookmarked = currentMarkedDifficult || hasAnyScrapFolder
+
+  const [isScrapModalOpen, setIsScrapModalOpen] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
 
   const [editedQuestion, setEditedQuestion] = useState(questionText)
   const [editedAnswer, setEditedAnswer] = useState(answerText)
   const [editedRetro, setEditedRetro] = useState(qnaSetSelfReviewText)
+  const [currentStarAnalysis, setCurrentStarAnalysis] = useState(starAnalysis)
 
-  const hasStarAnalysis = !!starAnalysis
+  const hasStarAnalysis = !!currentStarAnalysis
 
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
@@ -66,15 +93,27 @@ export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChan
 
   const handleDelete = () => {
     setIsMenuOpen(false)
-    console.log('삭제 요청', qnaSetId)
+    deleteQnaSet(
+      { qnaSetId },
+      {
+        onSuccess: () => onDelete?.(qnaSetId),
+      },
+    )
   }
 
   const handleScrap = () => {
-    console.log('스크랩', qnaSetId)
+    setIsScrapModalOpen(true)
   }
 
   const handleAnalyze = () => {
-    console.log('STAR 분석 요청', qnaSetId)
+    createStarAnalysis(
+      { qnaSetId },
+      {
+        onSuccess: (res) => {
+          setCurrentStarAnalysis(res.result)
+        },
+      },
+    )
   }
 
   const containerClassName = `transition-opacity ${isOtherEditing ? 'pointer-events-none opacity-30' : ''}`
@@ -85,9 +124,9 @@ export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChan
       <div className={cardClassName}>
         {!isEditing && (
           <div className="absolute top-6 right-4 z-10 flex items-center gap-2">
-            <button onClick={handleScrap} className="text-gray-400 hover:text-orange-500">
-              <BookmarkIcon className="h-5 w-5" />
-            </button>
+            <Button onClick={handleScrap} size="xs">
+              <BookmarkIcon className={`h-5 w-5 ${isBookmarked ? 'text-gray-400' : 'text-gray-white'}`} />
+            </Button>
             <div className="relative" ref={menuRef}>
               <button
                 onClick={() => setIsMenuOpen((prev) => !prev)}
@@ -131,7 +170,11 @@ export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChan
               </div>
             }
           >
-            <StarAnalysisSection starAnalysis={starAnalysis} onAnalyze={handleAnalyze} />
+            <StarAnalysisSection
+              starAnalysis={currentStarAnalysis}
+              isAnalyzing={isAnalyzing}
+              onAnalyze={handleAnalyze}
+            />
             <Border />
             <RetroWriteCard idx={idx} value={editedRetro} onChange={setEditedRetro} />
           </QnaSetCard>
@@ -149,7 +192,11 @@ export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChan
           </QnaSetEditForm>
         ) : (
           <QnaSetCard idx={idx} questionText={editedQuestion} answerText={editedAnswer} badgeTheme="gray-100">
-            <StarAnalysisSection starAnalysis={starAnalysis} onAnalyze={handleAnalyze} />
+            <StarAnalysisSection
+              starAnalysis={currentStarAnalysis}
+              isAnalyzing={isAnalyzing}
+              onAnalyze={handleAnalyze}
+            />
             {editedRetro && (
               <>
                 <Border />
@@ -159,6 +206,13 @@ export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChan
           </QnaSetCard>
         )}
       </div>
+      <ScrapModal
+        isOpen={isScrapModalOpen}
+        onClose={() => setIsScrapModalOpen(false)}
+        qnaSetId={qnaSetId}
+        isMarkedDifficult={currentMarkedDifficult}
+        onDifficultMarkedChange={setCurrentMarkedDifficult}
+      />
     </div>
   )
 }

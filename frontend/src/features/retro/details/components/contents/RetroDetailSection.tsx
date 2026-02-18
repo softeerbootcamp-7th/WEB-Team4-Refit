@@ -1,16 +1,18 @@
 import { Fragment, useState, type RefObject } from 'react'
 import { Border, FadeScrollArea } from '@/designs/components'
-import type { QnaSetType } from '@/types/interview'
+import type { KptTextsType, QnaSetType } from '@/types/interview'
 import { KptDetailCard } from './KptDetailCard'
 import { QnaRetroCard } from './QnaRetroCard'
 
 type RetroDetailSectionProps = {
+  interviewId: number
   qnaSets: QnaSetType[]
+  kptTexts: KptTextsType
   setRef: (index: number, el: HTMLDivElement | null) => void
   scrollContainerRef: RefObject<HTMLDivElement | null>
 }
 
-export function RetroDetailSection({ qnaSets, setRef, scrollContainerRef }: RetroDetailSectionProps) {
+export function RetroDetailSection({ interviewId, qnaSets, kptTexts, setRef, scrollContainerRef }: RetroDetailSectionProps) {
   const [editingId, setEditingId] = useState<string | null>(null)
 
   const isOtherEditing = (qnaSetId: number) => {
@@ -37,6 +39,8 @@ export function RetroDetailSection({ qnaSets, setRef, scrollContainerRef }: Retr
       ))}
       <KptDetailCard
         ref={(el) => setRef(kptIndex, el)}
+        interviewId={interviewId}
+        kptTexts={kptTexts}
         isOtherEditing={isKptOtherEditing}
         onEditingIdChange={setEditingId}
       />

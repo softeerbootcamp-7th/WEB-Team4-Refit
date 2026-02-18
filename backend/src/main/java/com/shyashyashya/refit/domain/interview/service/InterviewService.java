@@ -1,11 +1,14 @@
 package com.shyashyashya.refit.domain.interview.service;
 
+import static com.shyashyashya.refit.global.exception.ErrorCode.GEMINI_RESPONSE_PARSING_FAILED;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INDUSTRY_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_PDF_ALREADY_EXITS;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_PDF_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.JOB_CATEGORY_NOT_FOUND;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shyashyashya.refit.domain.company.model.Company;
 import com.shyashyashya.refit.domain.company.repository.CompanyRepository;
 import com.shyashyashya.refit.domain.industry.model.Industry;
@@ -29,6 +32,7 @@ import com.shyashyashya.refit.domain.interview.model.InterviewSelfReview;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
 import com.shyashyashya.refit.domain.interview.repository.InterviewSelfReviewRepository;
 import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
+import com.shyashyashya.refit.domain.interview.util.RawTextConvertPromptUtil;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
 import com.shyashyashya.refit.domain.qnaset.dto.StarAnalysisDto;
@@ -42,6 +46,11 @@ import com.shyashyashya.refit.domain.qnaset.repository.StarAnalysisRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.aws.S3Util;
 import com.shyashyashya.refit.global.exception.CustomException;
+import com.shyashyashya.refit.global.gemini.GeminiClient;
+import com.shyashyashya.refit.global.gemini.GeminiGenerateRequest;
+import com.shyashyashya.refit.global.gemini.GeminiGenerateResponse;
+import com.shyashyashya.refit.global.gemini.GenerateModel;
+import com.shyashyashya.refit.global.gemini.QnaSetsGeminiResponse;
 import com.shyashyashya.refit.global.property.S3FolderNameProperty;
 import com.shyashyashya.refit.global.util.HangulUtil;
 import com.shyashyashya.refit.global.util.RequestUserContext;
@@ -77,9 +86,12 @@ public class InterviewService {
 
     private final InterviewValidator interviewValidator;
     private final RequestUserContext requestUserContext;
-    private final S3Util s3Util;
+    private final RawTextConvertPromptUtil qnaSetPromptGenerator;
+    private final GeminiClient geminiClient;
     private final S3FolderNameProperty s3FolderNameProperty;
+    private final S3Util s3Util;
     private final HangulUtil hangulUtil;
+    private final ObjectMapper objectMapper;
 
     @Transactional(readOnly = true)
     public InterviewDto getInterview(Long interviewId) {
@@ -272,8 +284,23 @@ public class InterviewService {
         interviewValidator.validateInterviewOwner(interview, requestUser);
         interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.LOG_DRAFT);
 
-        // TODO : 실제로는 서비스가 아닌 LLM 요청 성공에 따른 콜백으로 상태 변화 처리
-        // convert logic
+        String prompt = qnaSetPromptGenerator.buildPrompt(interview);
+        GeminiGenerateRequest requestBody = GeminiGenerateRequest.from(prompt);
+        GeminiGenerateResponse response =
+                geminiClient.sendTextGenerateRequest(requestBody, GenerateModel.GEMMA_3_27B_IT);
+
+        String jsonText =
+                response.firstJsonText().orElseThrow(() -> new CustomException(GEMINI_RESPONSE_PARSING_FAILED));
+        QnaSetsGeminiResponse result = parseQnaSetsGeminiResponse(jsonText);
+        result.interactions().forEach(qnaSetAndReview -> {
+            QnaSet qnaSet = qnaSetRepository.save(
+                    QnaSet.createNew(qnaSetAndReview.question(), qnaSetAndReview.answer(), interview));
+
+            if (qnaSetAndReview.review() != null && !qnaSetAndReview.review().isEmpty()) {
+                qnaSetSelfReviewRepository.save(QnaSetSelfReview.create(qnaSetAndReview.review(), qnaSet));
+            }
+        });
+
         interview.completeLogging();
     }
 
@@ -386,5 +413,13 @@ public class InterviewService {
         if (highlightings.isEmpty()) return;
 
         pdfHighlightingRepository.deleteAllInBatch(highlightings);
+    }
+
+    private QnaSetsGeminiResponse parseQnaSetsGeminiResponse(String jsonText) {
+        try {
+            return objectMapper.readValue(jsonText, QnaSetsGeminiResponse.class);
+        } catch (JsonProcessingException e) {
+            throw new CustomException(GEMINI_RESPONSE_PARSING_FAILED);
+        }
     }
 }

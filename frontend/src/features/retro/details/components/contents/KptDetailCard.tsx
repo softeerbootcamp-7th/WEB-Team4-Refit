@@ -1,22 +1,24 @@
 import { useRef, useState, type Ref } from 'react'
-import { useParams } from 'react-router'
-import { MOCK_KPT_DATA } from '@/constants/example'
+import { useUpdateKptSelfReview } from '@/apis/generated/interview-api/interview-api'
 import { MoreIcon } from '@/designs/assets'
 import { Button } from '@/designs/components'
 import { useOnClickOutside } from '@/features/_common/hooks/useOnClickOutside'
 import { KptWriteCard } from '@/features/retro/_common/components/KptWriteCard'
+import type { KptTextsType } from '@/types/interview'
 
 type KptDetailCardProps = {
   ref?: Ref<HTMLDivElement>
+  interviewId: number
+  kptTexts: KptTextsType
   isOtherEditing?: boolean
   onEditingIdChange?: (editingId: string | null) => void
 }
 
-export function KptDetailCard({ ref, isOtherEditing, onEditingIdChange }: KptDetailCardProps) {
-  const { interviewId } = useParams<{ interviewId: string }>()
-  const kptData = MOCK_KPT_DATA
+export function KptDetailCard({ ref, interviewId, kptTexts, isOtherEditing, onEditingIdChange }: KptDetailCardProps) {
+  const { mutate: updateKptSelfReview } = useUpdateKptSelfReview()
 
   const [isEditing, setIsEditing] = useState(false)
+  const [editedKpt, setEditedKpt] = useState<KptTextsType>(kptTexts)
   const [resetKey, setResetKey] = useState(0)
 
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -31,14 +33,22 @@ export function KptDetailCard({ ref, isOtherEditing, onEditingIdChange }: KptDet
 
   const handleCancel = () => {
     setIsEditing(false)
+    setEditedKpt(kptTexts)
     setResetKey((prev) => prev + 1)
     onEditingIdChange?.(null)
   }
 
   const handleSave = () => {
+    updateKptSelfReview({
+      interviewId,
+      data: {
+        keepText: editedKpt.keepText,
+        problemText: editedKpt.problemText,
+        tryText: editedKpt.tryText,
+      },
+    })
     setIsEditing(false)
     onEditingIdChange?.(null)
-    console.log(interviewId)
   }
 
   const containerClassName = [
@@ -82,7 +92,7 @@ export function KptDetailCard({ ref, isOtherEditing, onEditingIdChange }: KptDet
           </div>
         )}
       </div>
-      <KptWriteCard key={resetKey} defaultValue={kptData} readOnly={!isEditing} />
+      <KptWriteCard key={resetKey} defaultValue={editedKpt} readOnly={!isEditing} onChange={setEditedKpt} />
     </div>
   )
 }

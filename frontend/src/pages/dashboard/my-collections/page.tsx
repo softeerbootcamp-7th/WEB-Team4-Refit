@@ -27,7 +27,7 @@ export default function MyCollectionsPage() {
 
   return (
     <div className="flex h-[calc(100vh-124px)] w-full overflow-hidden">
-      <aside className="border-gray-150 flex h-full w-[280px] shrink-0 flex-col rounded-2xl border-r bg-white">
+      <aside className="border-gray-150 flex h-full w-70 shrink-0 flex-col rounded-2xl border-r bg-white">
         <div className="flex h-full min-h-0 flex-col px-5 py-6">
           <button
             type="button"
