@@ -51,9 +51,6 @@ public abstract class QdrantSingleVectorRepository<K, V extends SingleVectorDocu
 
     protected abstract K convertPointIdToId(Common.PointId pointId);
 
-    /**
-     * QdrantClient의 비동기 API를 동기적으로 호출하기 위한 헬퍼 메서드
-     */
     @FunctionalInterface
     public interface QdrantBlocker {
         <T> T block(ListenableFuture<T> future, String description);
@@ -196,6 +193,9 @@ public abstract class QdrantSingleVectorRepository<K, V extends SingleVectorDocu
         block(qdrantClient.setPayloadAsync(request, timeout), "update payload for point ID: " + id);
     }
 
+    /**
+     * QdrantClient의 비동기 API를 동기적으로 호출하기 위한 헬퍼 메서드
+     */
     private <T> T block(ListenableFuture<T> future, String operationDescription) {
         try {
             return future.get();
