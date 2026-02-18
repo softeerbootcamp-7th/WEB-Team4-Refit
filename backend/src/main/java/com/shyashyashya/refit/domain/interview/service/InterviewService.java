@@ -211,10 +211,10 @@ public class InterviewService {
         // TODO Race Condition 해결: key가 null인 상태로 요청이 여러번 들어오면, 다른 UUID에 대한 업로드 url이 발행될 수 있음.
         if (resourceKey == null) {
             resourceKey = s3FolderNameProperty.interviewPdf() + UUID.randomUUID() + ".pdf";
+            interview.updatePdfResourceKey(resourceKey);
         }
 
         PresignedUrlDto presignedUrlDto = s3Util.createResourceUploadUrl(resourceKey, MediaType.APPLICATION_PDF);
-        interview.updatePdfResourceKey(presignedUrlDto.key());
         interview.updatePdfUploadUrlPublishedTime(LocalDateTime.now());
         return PdfFilePresignResponse.of(presignedUrlDto, interview.getPdfUploadUrlPublishedAt());
     }
