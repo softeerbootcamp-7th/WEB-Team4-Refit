@@ -224,7 +224,12 @@ public class InterviewService {
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
-        if (interview.getPdfResourceKey() == null) {
+        String resourceKey = interview.getPdfResourceKey();
+        if (resourceKey == null) {
+            throw new CustomException(INTERVIEW_PDF_NOT_FOUND);
+        }
+
+        if (!s3Util.existsByResourceKey(resourceKey)) {
             throw new CustomException(INTERVIEW_PDF_NOT_FOUND);
         }
 
