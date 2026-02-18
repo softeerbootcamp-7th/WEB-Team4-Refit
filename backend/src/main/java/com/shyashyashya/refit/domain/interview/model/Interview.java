@@ -182,7 +182,7 @@ public class Interview extends BaseEntity {
         this.pdfResourceKey = null;
     }
 
-    public void updatePdfUploadUrlPublishedTime() {
-        this.pdfUploadUrlPublishedAt = LocalDateTime.now();
+    public void updatePdfUploadUrlPublishedTime(LocalDateTime time) {
+        this.pdfUploadUrlPublishedAt = time;
     }
 }

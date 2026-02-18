@@ -215,7 +215,7 @@ public class InterviewService {
 
         PresignedUrlDto presignedUrlDto = s3Util.createResourceUploadUrl(resourceKey, MediaType.APPLICATION_PDF);
         interview.updatePdfResourceKey(presignedUrlDto.key());
-        interview.updatePdfUploadUrlPublishedTime();
+        interview.updatePdfUploadUrlPublishedTime(LocalDateTime.now());
         return PdfFilePresignResponse.of(presignedUrlDto, interview.getPdfUploadUrlPublishedAt());
     }
 
