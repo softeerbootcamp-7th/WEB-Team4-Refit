@@ -1,6 +1,6 @@
-package com.shyashyashya.refit.domain.vectordb.repository;
+package com.shyashyashya.refit.global.vectordb.repository;
 
-import com.shyashyashya.refit.domain.vectordb.model.VectorDocumentBase;
+import com.shyashyashya.refit.global.vectordb.model.VectorDocumentBase;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;

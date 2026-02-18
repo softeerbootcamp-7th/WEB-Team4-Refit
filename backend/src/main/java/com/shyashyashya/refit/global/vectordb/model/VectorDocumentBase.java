@@ -1,4 +1,4 @@
-package com.shyashyashya.refit.domain.vectordb.model;
+package com.shyashyashya.refit.global.vectordb.model;
 
 import java.util.Map;
 import lombok.Getter;

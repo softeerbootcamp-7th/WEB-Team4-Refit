@@ -1,7 +1,7 @@
-package com.shyashyashya.refit.domain.vectordb.service;
+package com.shyashyashya.refit.global.vectordb.service;
 
-import com.shyashyashya.refit.domain.vectordb.model.SingleVectorDocument;
-import com.shyashyashya.refit.domain.vectordb.repository.QnaSetQuestionVectorRepository;
+import com.shyashyashya.refit.global.vectordb.model.SingleVectorDocument;
+import com.shyashyashya.refit.global.vectordb.repository.QnaSetQuestionVectorRepository;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;

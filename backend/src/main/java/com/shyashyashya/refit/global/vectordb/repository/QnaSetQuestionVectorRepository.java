@@ -1,7 +1,7 @@
-package com.shyashyashya.refit.domain.vectordb.repository;
+package com.shyashyashya.refit.global.vectordb.repository;
 
-import com.shyashyashya.refit.domain.vectordb.model.SingleVectorDocument;
-import com.shyashyashya.refit.domain.vectordb.repository.qdrant.QdrantLongSingleVectorRepository;
+import com.shyashyashya.refit.global.vectordb.model.SingleVectorDocument;
+import com.shyashyashya.refit.global.vectordb.repository.qdrant.QdrantLongSingleVectorRepository;
 import com.shyashyashya.refit.global.property.QdrantProperty;
 import io.qdrant.client.QdrantClient;
 import java.util.List;

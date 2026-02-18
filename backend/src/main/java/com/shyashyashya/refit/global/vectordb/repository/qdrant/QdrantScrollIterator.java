@@ -1,4 +1,4 @@
-package com.shyashyashya.refit.domain.vectordb.repository;
+package com.shyashyashya.refit.global.vectordb.repository.qdrant;
 
 import io.qdrant.client.QdrantClient;
 import io.qdrant.client.grpc.Common;
