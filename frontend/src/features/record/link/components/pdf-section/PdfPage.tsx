@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { TextLayer } from 'pdfjs-dist'
 import { useHighlightContext } from '@/features/record/link/contexts'
 import { HighlightLayer } from './HighlightLayer'
@@ -17,6 +17,7 @@ export function PdfPage({ pdf, pageNumber, containerSize }: PdfPageProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const textLayerRef = useRef<HTMLDivElement>(null)
   const pdfContentRef = useRef<HTMLDivElement>(null) // PDF canvas + textLayer를 감싸는 ref
+  const [hasSelectableText, setHasSelectableText] = useState(true)
 
   const { linkingQnaSetId, pendingSelection, setPendingSelection, highlights } = useHighlightContext()
 
@@ -64,6 +65,9 @@ export function PdfPage({ pdf, pageNumber, containerSize }: PdfPageProps) {
 
       const textContent = await page.getTextContent()
       if (cancelled) return
+      const hasText = textContent.items.some((item) => 'str' in item && item.str.trim().length > 0)
+      setHasSelectableText(hasText)
+      if (!hasText) return
 
       textLayerInstance = new TextLayer({
         container: textLayerRef.current,
@@ -90,6 +94,11 @@ export function PdfPage({ pdf, pageNumber, containerSize }: PdfPageProps) {
         <canvas ref={canvasRef} />
         <div ref={textLayerRef} className="textLayer" />
         <HighlightLayer savedRects={savedRects} pendingRects={pendingRects} />
+        {!hasSelectableText && (
+          <p className="body-m-medium pointer-events-none absolute right-4 bottom-4 rounded-lg border border-orange-400 bg-white/85 px-2 py-1 text-gray-600">
+            이미지 기반 PDF라 텍스트 선택이 어려울 수 있어요.
+          </p>
+        )}
       </div>
     </div>
   )
