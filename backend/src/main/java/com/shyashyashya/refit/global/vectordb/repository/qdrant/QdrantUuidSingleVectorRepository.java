@@ -10,20 +10,20 @@ import java.util.UUID;
 /**
  * Id 타입이 UUID(String)인 Single Vector를 저장하는 QdrantRepository
  */
-public abstract class QdrantUuidSingleVectorRepository<V extends SingleVectorDocument<String>>
-        extends QdrantSingleVectorRepository<String, V> {
+public abstract class QdrantUuidSingleVectorRepository<V extends SingleVectorDocument<UUID>>
+        extends QdrantSingleVectorRepository<UUID, V> {
 
     public QdrantUuidSingleVectorRepository(QdrantClient qdrantClient, QdrantProperty qdrantProperty) {
         super(qdrantClient, qdrantProperty);
     }
 
     @Override
-    protected final Common.PointId convertIdToPointId(String id) {
-        return PointIdFactory.id(UUID.fromString(id));
+    protected final Common.PointId convertIdToPointId(UUID id) {
+        return PointIdFactory.id(UUID.fromString(id.toString()));
     }
 
     @Override
-    protected final String convertPointIdToId(Common.PointId pointId) {
-        return pointId.getUuid();
+    protected final UUID convertPointIdToId(Common.PointId pointId) {
+        return UUID.fromString(pointId.getUuid());
     }
 }
