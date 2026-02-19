@@ -29,16 +29,4 @@ public record GeminiGenerateResponse(List<Candidate> candidates) {
         }
         return Optional.of(text);
     }
-
-    public String getText() {
-        if (candidates == null || candidates.isEmpty()) return "";
-        var c0 = candidates.get(0);
-        if (c0 == null
-            || c0.content() == null
-            || c0.content().parts() == null
-            || c0.content().parts().isEmpty()
-            || c0.content().parts().get(0).text() == null) return "";
-
-        return c0.content().parts().get(0).text();
-    }
 }
