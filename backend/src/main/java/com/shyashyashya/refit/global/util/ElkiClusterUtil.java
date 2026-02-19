@@ -1,8 +1,7 @@
-package com.shyashyashya.refit.batch.util.impl;
+package com.shyashyashya.refit.global.util;
 
 import com.shyashyashya.refit.batch.model.CategoryVectorDocument;
 import com.shyashyashya.refit.batch.model.QuestionVectorDocument;
-import com.shyashyashya.refit.batch.util.ClusterUtil;
 import com.shyashyashya.refit.global.vectordb.model.SingleVectorDocument;
 import elki.clustering.ClusteringAlgorithm;
 import elki.clustering.hierarchical.HDBSCANLinearMemory;

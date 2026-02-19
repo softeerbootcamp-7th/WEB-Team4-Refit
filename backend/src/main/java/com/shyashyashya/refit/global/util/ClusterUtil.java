@@ -1,4 +1,4 @@
-package com.shyashyashya.refit.batch.util;
+package com.shyashyashya.refit.global.util;
 
 import com.shyashyashya.refit.batch.model.CategoryVectorDocument;
 import com.shyashyashya.refit.batch.model.QuestionVectorDocument;
