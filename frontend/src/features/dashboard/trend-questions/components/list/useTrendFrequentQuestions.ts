@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { getGetFrequentQuestionsUrl } from '@/apis'
-import { customFetchWithSerializedQuery } from '@/apis/custom-fetch'
-import type { ApiResponsePageFrequentQnaSetResponse, FrequentQnaSetResponse } from '@/apis/generated/refit-api.schemas'
+import { getFrequentQuestions } from '@/apis/generated/qna-set-api/qna-set-api'
+import type { FrequentQnaSetResponse } from '@/apis/generated/refit-api.schemas'
 
 type UseTrendFrequentQuestionsParams = {
   industryIds: number[]
@@ -28,7 +27,7 @@ export function useTrendFrequentQuestions({ industryIds, jobCategoryIds, isBlurr
     queryKey: ['trend-questions', 'frequent', baseParams],
     initialPageParam: 0,
     queryFn: ({ pageParam }) =>
-      fetchFrequentQuestionsWithRepeatedParams({
+      getFrequentQuestions({
         industryIds: baseParams.industryIds ?? [],
         jobCategoryIds: baseParams.jobCategoryIds ?? [],
         page: pageParam,
@@ -67,19 +66,4 @@ export function useTrendFrequentQuestions({ industryIds, jobCategoryIds, isBlurr
     isPending,
     isFetchingNextPage,
   }
-}
-
-type FrequentQuestionsQueryParams = {
-  industryIds: number[]
-  jobCategoryIds: number[]
-  page: number
-  size: number
-}
-
-async function fetchFrequentQuestionsWithRepeatedParams(
-  params: FrequentQuestionsQueryParams,
-): Promise<ApiResponsePageFrequentQnaSetResponse> {
-  return customFetchWithSerializedQuery<ApiResponsePageFrequentQnaSetResponse>(getGetFrequentQuestionsUrl(), params, {
-    method: 'GET',
-  })
 }
