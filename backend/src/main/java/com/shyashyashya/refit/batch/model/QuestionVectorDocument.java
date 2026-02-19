@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import lombok.experimental.SuperBuilder;
 
+import static com.shyashyashya.refit.global.constant.ClusteringConstant.QUESTION_VECTOR_QUESTION_KEY;
+
 @SuperBuilder
 public class QuestionVectorDocument extends SingleVectorDocument<Long> {
 
@@ -21,9 +23,9 @@ public class QuestionVectorDocument extends SingleVectorDocument<Long> {
     }
 
     public String getQuestion() throws Exception {
-        if (!this.getPayload().containsKey("question")) {
-            throw new Exception("error");
+        if (!this.getPayload().containsKey(QUESTION_VECTOR_QUESTION_KEY)) {
+            throw new Exception("[getQuestion] question 필드가 QuestionVectorDocument Payload 안에 없습니다.");
         }
-        return (String) this.getPayload().get("question");
+        return (String) this.getPayload().get(QUESTION_VECTOR_QUESTION_KEY);
     }
 }
