@@ -40,7 +40,7 @@ public class QuestionCategoryBatchService {
                 questionVectorRepository.findAll().toList();
 
         log.info("[createCategories] 2. 질문 임베딩 벡터 클러스터링");
-        List<CategoryVectorDocument> clusters = clusterUtil.createClusters(questionVectors, 3, 2);
+        List<CategoryVectorDocument> clusters = clusterUtil.createClusters(questionVectors);
 
         log.info("[createCategories] 3. LLM 으로 클러스터 별 이름 및 대표질문 생성");
         String prompt = promptGenerateUtil.buildCategoryNameCreatePrompt(clusters, questionVectors);

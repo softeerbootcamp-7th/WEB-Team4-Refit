@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ClusterUtil {
 
-    List<CategoryVectorDocument> createClusters(List<QuestionVectorDocument> documents, int minPoints, int minSize);
+    List<CategoryVectorDocument> createClusters(List<QuestionVectorDocument> documents);
 
     CategoryVectorDocument mapToCluster(QuestionVectorDocument document);
 }
