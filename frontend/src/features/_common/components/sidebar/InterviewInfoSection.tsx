@@ -19,7 +19,7 @@ export function InterviewInfoSection({ company, interviewStartAt, jobRole, inter
 
 const InfoRow = ({ label, value }: LabelValueType) => {
   return (
-    <div key={label} className="flex gap-2">
+    <div key={label} className="flex gap-1">
       <span className="body-s-semibold w-18.5 text-gray-300">{label}</span>
       <span className="body-s-medium w-33.75 text-gray-800">{value}</span>
     </div>

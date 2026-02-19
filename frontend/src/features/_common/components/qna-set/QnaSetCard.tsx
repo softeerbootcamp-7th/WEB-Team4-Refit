@@ -31,10 +31,10 @@ export function QnaSetCard({
           <Badge type="question-label" theme={badgeTheme} content={questionLabel} />
           {topRightComponent}
         </div>
-        <span className="title-s-semibold">{questionText}</span>
+        <p className="title-s-semibold shrink-0 wrap-break-word">{questionText}</p>
         <div className="ml-2 flex gap-4">
           <CornerDownRightIcon className="h-4 w-4 shrink-0 text-gray-600" />
-          <span>{answerText}</span>
+          <span className="max-h-50 overflow-y-auto wrap-break-word">{answerText}</span>
         </div>
       </div>
       {children}
