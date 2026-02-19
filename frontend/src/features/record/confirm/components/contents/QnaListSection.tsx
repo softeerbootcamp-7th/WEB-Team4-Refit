@@ -1,4 +1,4 @@
-import { useState, type RefObject } from 'react'
+import { useEffect, useState, type RefObject } from 'react'
 import { CirclePlusIcon } from '@/designs/assets'
 import { Button, FadeScrollArea } from '@/designs/components'
 import { QnaSetEditForm } from '@/features/_common/components/qna-set'
@@ -33,6 +33,13 @@ export function QnaListSection({
   scrollContainerRef,
 }: QnaListSectionProps) {
   const [editingId, setEditingId] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (isAddMode) {
+      const el = scrollContainerRef.current
+      if (el) requestAnimationFrame(() => el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' }))
+    }
+  }, [isAddMode, scrollContainerRef])
 
   const isOtherEditing = (qnaSetId: number) => isAddMode || (editingId !== null && editingId !== `qna-${qnaSetId}`)
   const isAddDisabled = isCreating || editingId !== null
