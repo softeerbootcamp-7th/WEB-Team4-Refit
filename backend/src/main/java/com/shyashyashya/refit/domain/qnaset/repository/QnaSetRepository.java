@@ -55,4 +55,6 @@ public interface QnaSetRepository extends JpaRepository<QnaSet, Long>, QnaSetCus
     """)
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     void updateQnaSetCategoryQnaSetIdsIn(QnaSetCategory category, List<Long> questionIds);
+
+    void deleteAllByInterview(Interview interview);
 }

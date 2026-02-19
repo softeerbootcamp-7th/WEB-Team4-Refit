@@ -163,9 +163,13 @@ public class InterviewService {
 
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
-
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
+        interviewSelfReviewRepository.deleteByInterview(interview);
+        pdfHighlightingRepository.deleteAllByInterview(interview);
+        starAnalysisRepository.deleteAllByInterview(interview);
+        qnaSetSelfReviewRepository.deleteAllByInterview(interview);
+        qnaSetRepository.deleteAllByInterview(interview);
         interviewRepository.delete(interview);
     }
 

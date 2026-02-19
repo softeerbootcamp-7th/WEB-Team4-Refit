@@ -25,7 +25,16 @@ import com.shyashyashya.refit.domain.interview.model.InterviewType;
 import com.shyashyashya.refit.domain.interview.model.InterviewResultStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewSelfReview;
 import com.shyashyashya.refit.domain.interview.repository.InterviewSelfReviewRepository;
+import com.shyashyashya.refit.domain.qnaset.dto.PdfHighlightingRectDto;
+import com.shyashyashya.refit.domain.qnaset.dto.request.PdfHighlightingUpdateRequest;
+import com.shyashyashya.refit.domain.qnaset.model.QnaSetSelfReview;
+import com.shyashyashya.refit.domain.qnaset.model.StarAnalysis;
+import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRectRepository;
+import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRepository;
+import com.shyashyashya.refit.domain.qnaset.repository.QnaSetSelfReviewRepository;
+import com.shyashyashya.refit.domain.qnaset.repository.StarAnalysisRepository;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
@@ -54,6 +63,18 @@ public class InterviewIntegrationTest extends IntegrationTest {
 
     @Autowired
     private InterviewSelfReviewRepository interviewSelfReviewRepository;
+
+    @Autowired
+    private QnaSetSelfReviewRepository qnaSetSelfReviewRepository;
+
+    @Autowired
+    private StarAnalysisRepository starAnalysisRepository;
+
+    @Autowired
+    private PdfHighlightingRepository pdfHighlightingRepository;
+
+    @Autowired
+    private PdfHighlightingRectRepository pdfHighlightingRectRepository;
 
     @Nested
     class 면접_생성_시 {
@@ -181,6 +202,119 @@ public class InterviewIntegrationTest extends IntegrationTest {
                     .body("code", equalTo(COMMON204.name()))
                     .body("message", equalTo(COMMON204.getMessage()))
                     .body("result", nullValue());
+        }
+
+        @Test
+        void QnaSet이_존재하는_면접_삭제에_성공한다() {
+            // given
+            QnaSetCreateRequest qnaSetRequest1 = new QnaSetCreateRequest("question1", "answer1");
+            QnaSetCreateRequest qnaSetRequest2 = new QnaSetCreateRequest("question2", "answer2");
+            Interview interview = interviewRepository.findById(interviewId).get();
+            createAndSaveQnaSet(qnaSetRequest1, interview);
+            createAndSaveQnaSet(qnaSetRequest2, interview);
+
+            // when & then
+            given(spec)
+            .when()
+                    .delete(path + "/" + interviewId)
+            .then()
+                    .assertThat().statusCode(200)
+                    .body("code", equalTo(COMMON204.name()))
+                    .body("message", equalTo(COMMON204.getMessage()))
+                    .body("result", nullValue());
+
+            assertThat(qnaSetRepository.count()).isEqualTo(0);
+        }
+
+        @Test
+        void QnaSet과_QnaSet_회고가_존재하는_면접_삭제에_성공한다() {
+            // given
+            QnaSetCreateRequest qnaSetRequest = new QnaSetCreateRequest("question", "answer");
+            Interview interview = interviewRepository.findById(interviewId).get();
+            QnaSet qnaSet = createAndSaveQnaSet(qnaSetRequest, interview);
+            qnaSetSelfReviewRepository.save(QnaSetSelfReview.create("self review text", qnaSet));
+
+            // when & then
+            given(spec)
+            .when()
+                    .delete(path + "/" + interviewId)
+            .then()
+                    .assertThat().statusCode(200)
+                    .body("code", equalTo(COMMON204.name()))
+                    .body("message", equalTo(COMMON204.getMessage()))
+                    .body("result", nullValue());
+
+            assertThat(qnaSetRepository.count()).isEqualTo(0);
+            assertThat(qnaSetSelfReviewRepository.count()).isEqualTo(0);
+        }
+
+        @Test
+        void QnaSet_그리고_StarAnalysis가_존재하는_면접_삭제에_성공한다() {
+            // given
+            QnaSetCreateRequest qnaSetRequest = new QnaSetCreateRequest("question", "answer");
+            Interview interview = interviewRepository.findById(interviewId).get();
+            QnaSet qnaSet = createAndSaveQnaSet(qnaSetRequest, interview);
+            starAnalysisRepository.save(StarAnalysis.create(qnaSet));
+
+            // when & then
+            given(spec)
+            .when()
+                    .delete(path + "/" + interviewId)
+            .then()
+                    .assertThat().statusCode(200)
+                    .body("code", equalTo(COMMON204.name()))
+                    .body("message", equalTo(COMMON204.getMessage()))
+                    .body("result", nullValue());
+
+            assertThat(qnaSetRepository.count()).isEqualTo(0);
+            assertThat(starAnalysisRepository.count()).isEqualTo(0);
+        }
+
+        @Test
+        void QnaSet_그리고_PDF_하이라이팅이_존재하는_면접_삭제에_성공한다() {
+            // given
+            QnaSetCreateRequest qnaSetRequest = new QnaSetCreateRequest("question", "answer");
+            Interview interview = interviewRepository.findById(interviewId).get();
+            QnaSet qnaSet = createAndSaveQnaSet(qnaSetRequest, interview);
+
+            List<PdfHighlightingUpdateRequest> pdfRequest = List.of(
+                    new PdfHighlightingUpdateRequest("highlighting1", Collections.emptyList())
+            );
+            createAndSavePdfHighlighting(pdfRequest, qnaSet);
+
+            // when & then
+            given(spec)
+            .when()
+                    .delete(path + "/" + interviewId)
+            .then()
+                    .assertThat().statusCode(200)
+                    .body("code", equalTo(COMMON204.name()))
+                    .body("message", equalTo(COMMON204.getMessage()))
+                    .body("result", nullValue());
+
+            assertThat(qnaSetRepository.count()).isEqualTo(0);
+            assertThat(pdfHighlightingRepository.count()).isEqualTo(0);
+        }
+
+        @Test
+        void Interview_Self_Review가_존재하는_면접_삭제에_성공한다() {
+            // given
+            Interview interview = interviewRepository.findById(interviewId).get();
+            interviewSelfReviewRepository.save(
+                    InterviewSelfReview.create("Keep", "Problem", "Try", interview)
+            );
+
+            // when & then
+            given(spec)
+            .when()
+                    .delete(path + "/" + interviewId)
+            .then()
+                    .assertThat().statusCode(200)
+                    .body("code", equalTo(COMMON204.name()))
+                    .body("message", equalTo(COMMON204.getMessage()))
+                    .body("result", nullValue());
+
+            assertThat(interviewSelfReviewRepository.count()).isEqualTo(0);
         }
 
         @Test
