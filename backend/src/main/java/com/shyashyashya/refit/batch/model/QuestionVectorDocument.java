@@ -22,9 +22,9 @@ public class QuestionVectorDocument extends SingleVectorDocument<Long> {
         return this.getId();
     }
 
-    public String getQuestion() throws Exception {
+    public String getQuestion() {
         if (!this.getPayload().containsKey(QUESTION_VECTOR_QUESTION_KEY)) {
-            throw new Exception("[getQuestion] question 필드가 QuestionVectorDocument Payload 안에 없습니다.");
+            throw new RuntimeException("[getQuestion] question 필드가 QuestionVectorDocument Payload 안에 없습니다.");
         }
         return (String) this.getPayload().get(QUESTION_VECTOR_QUESTION_KEY);
     }

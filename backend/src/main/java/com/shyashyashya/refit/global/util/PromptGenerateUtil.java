@@ -81,17 +81,7 @@ public class PromptGenerateUtil {
                     List<Long> questionIds = category.getQuestionDocumentIds();
                     List<String> questions = questionVectors.stream()
                             .filter(questionVector -> questionIds.contains(questionVector.getId()))
-                            .map(questionVector -> {
-                                try {
-                                    return questionVector.getQuestion();
-                                } catch (Exception e) {
-                                    log.error(
-                                            "[convertToRequest] error converting question vector id {} to string",
-                                            questionVector.getId(),
-                                            e);
-                                    throw new RuntimeException(e);
-                                }
-                            })
+                            .map(QuestionVectorDocument::getQuestion)
                             .toList();
                     return new PromptGenerateUtil.CategoryNameCreatePromptRequest(category.getId(), questions);
                 })
