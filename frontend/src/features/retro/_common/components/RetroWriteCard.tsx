@@ -10,7 +10,6 @@ type RetroWriteCardProps = {
 
 export function RetroWriteCard({ idx, value, onChange }: RetroWriteCardProps) {
   const readOnly = !onChange
-
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const text = e.target.value
     if (text.length <= MAX_LENGTH) {
@@ -18,13 +17,15 @@ export function RetroWriteCard({ idx, value, onChange }: RetroWriteCardProps) {
     }
   }
 
+  const retroLabel = idx > 0 ? `${idx}번 회고` : '회고'
+
   return (
     <div className="flex flex-col gap-3">
       <div className="inline-flex flex-wrap items-center gap-2.5">
-        <Badge type="question-label" theme="orange-100" content={`${idx}번 회고`} />
+        <Badge type="question-label" theme="orange-100" content={retroLabel} />
       </div>
       {readOnly ? (
-        <span className="mb-3">{value}</span>
+        <p className="body-m-regular mb-3 w-full whitespace-pre-wrap break-words [overflow-wrap:anywhere]">{value}</p>
       ) : (
         <div className="relative">
           <textarea

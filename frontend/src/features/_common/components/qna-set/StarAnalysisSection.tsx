@@ -31,7 +31,7 @@ export function StarAnalysisSection({ starAnalysis, isAnalyzing = false, onAnaly
 
 type StarAnalysisResultSectionProps = Pick<StarAnalysisSectionProps, 'starAnalysis'>
 
-function StarAnalysisResultSection({ starAnalysis }: StarAnalysisResultSectionProps) {
+export function StarAnalysisResultSection({ starAnalysis }: StarAnalysisResultSectionProps) {
   if (!starAnalysis) return null
 
   return (

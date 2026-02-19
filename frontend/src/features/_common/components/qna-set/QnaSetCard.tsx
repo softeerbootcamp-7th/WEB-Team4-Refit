@@ -22,7 +22,7 @@ export function QnaSetCard({
   className = '',
   children,
 }: QnaSetCardProps) {
-  const questionLabel = `${idx}번 질문`
+  const questionLabel = idx > 0 ? `${idx}번 질문` : '질문'
 
   return (
     <div ref={ref} className={`bg-gray-white flex flex-col gap-6 rounded-lg p-5 ${className}`}>
