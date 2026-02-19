@@ -6,15 +6,16 @@ import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetCategory;
 import com.shyashyashya.refit.domain.user.model.User;
+import java.util.Collection;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 public interface QnaSetRepository extends JpaRepository<QnaSet, Long>, QnaSetCustomRepository {
 
-    // TODO : queryDSL 적용
     @Query("""
         SELECT q
           FROM QnaSet q
@@ -30,7 +31,6 @@ public interface QnaSetRepository extends JpaRepository<QnaSet, Long>, QnaSetCus
     """)
     List<QnaSet> findAllByIndustryAndJobCategory(Industry industry, JobCategory jobCategory);
 
-    // TODO : queryDSL 적용
     @Query("""
         SELECT q
           FROM QnaSet q
@@ -48,4 +48,12 @@ public interface QnaSetRepository extends JpaRepository<QnaSet, Long>, QnaSetCus
            AND q.isMarkedDifficult = TRUE
     """)
     Page<QnaSet> findAllDifficultByUser(User user, Pageable pageable);
+
+    @Query("""
+        UPDATE QnaSet q
+           SET q.qnaSetCategory = :category
+         WHERE q.id IN :questionIds
+    """)
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    void updateQnaSetCategoryQnaSetIdsIn(QnaSetCategory category, List<Long> questionIds);
 }
