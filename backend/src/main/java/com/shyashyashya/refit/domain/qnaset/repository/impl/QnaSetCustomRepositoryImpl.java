@@ -104,7 +104,8 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
     public Page<FrequentQnaSetCategoryResponse> findFrequentQnaSetCategoryByUser(User user, Pageable pageable) {
         BooleanExpression[] whereConditions = {
                 qnaSet.interview.user.eq(user),
-                qnaSet.interview.reviewStatus.eq(InterviewReviewStatus.DEBRIEF_COMPLETED),
+                qnaSet.interview.reviewStatus.in(
+                        InterviewReviewStatus.DEBRIEF_COMPLETED, InterviewReviewStatus.SELF_REVIEW_DRAFT),
                 qnaSet.qnaSetCategory.isNotNull()
         };
         var pageContent = queryFactory
@@ -136,7 +137,8 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
         BooleanExpression[] searchConditions = {
                 qnaSet.interview.user.eq(user),
                 qnaSet.isMarkedDifficult.isTrue(),
-                qnaSet.interview.reviewStatus.eq(InterviewReviewStatus.DEBRIEF_COMPLETED)
+                qnaSet.interview.reviewStatus.in(
+                        InterviewReviewStatus.DEBRIEF_COMPLETED, InterviewReviewStatus.SELF_REVIEW_DRAFT),
         };
 
         List<QnaSet> contents = queryFactory
