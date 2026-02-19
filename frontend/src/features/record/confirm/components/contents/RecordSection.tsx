@@ -45,6 +45,7 @@ export function RecordSection({
 }: RecordSectionProps) {
   const navigateWithId = useInterviewNavigate()
   const goToRecordLinkPage = () => navigateWithId(ROUTES.RECORD_LINK)
+  const isEmpty = qnaList.length === 0
 
   return (
     <div className="flex h-full flex-col gap-5 overflow-hidden p-6">
@@ -64,7 +65,7 @@ export function RecordSection({
       />
       {actionError ? <p className="body-s-medium text-red-400">{actionError}</p> : null}
       <div className="flex shrink-0 justify-end gap-3">
-        <Button variant="fill-orange-500" size="md" className="w-60" onClick={goToRecordLinkPage}>
+        <Button variant="fill-orange-500" size="md" className="w-60" onClick={goToRecordLinkPage} disabled={isEmpty}>
           다음 단계
         </Button>
       </div>
