@@ -12,7 +12,6 @@ type RetroSidebarProps = {
 }
 
 export function RetroSidebar({ interviewInfo, items, activeIndex, onItemClick }: RetroSidebarProps) {
-  // TODO: 사이드바 클릭하면 이전 값과 비교하여 변화 있을 때 updateQnaSet (회고 입력 결과 저장 API 호출)
   return (
     <SidebarLayout>
       <div className="inline-flex gap-2">

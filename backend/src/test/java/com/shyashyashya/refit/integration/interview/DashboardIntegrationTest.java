@@ -230,7 +230,7 @@ public class DashboardIntegrationTest extends IntegrationTest {
         @Test
         void 곧_있을_면접_리스트를_조회한다() {
             // given
-            LocalDateTime upcomingDate = NOW.plusDays(2);
+            LocalDateTime upcomingDate = LocalDateTime.now().plusDays(2);
 
             createAndSaveInterview(
                 new InterviewCreateRequest(

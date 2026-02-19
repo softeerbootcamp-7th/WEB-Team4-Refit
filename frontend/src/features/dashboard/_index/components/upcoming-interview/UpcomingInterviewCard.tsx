@@ -1,6 +1,8 @@
-import { CalendarStarIcon, NoteIcon, SmallLogoIcon } from '@/designs/assets'
+import { useNavigate } from 'react-router'
+import { CalendarStarIcon, SmallLogoIcon } from '@/designs/assets'
 import { Badge } from '@/designs/components'
 import Button from '@/designs/components/button'
+import { ROUTES } from '@/routes/routes'
 import type { UpcomingInterviewData } from './types'
 
 interface UpcomingInterviewCardProps {
@@ -8,11 +10,12 @@ interface UpcomingInterviewCardProps {
 }
 
 const DefaultCompanyLogo = () => <SmallLogoIcon className="h-6 w-6 text-gray-400" />
-const DefaultMiniLogo = () => <SmallLogoIcon className="h-4 w-4 text-gray-400" />
 
 export default function UpcomingInterviewCard({ data }: UpcomingInterviewCardProps) {
+  const navigate = useNavigate()
+
   return (
-    <div className="flex w-full flex-col gap-5 rounded-2xl bg-white p-6">
+    <div className="flex h-full w-full flex-col gap-5 rounded-2xl bg-white p-6">
       <div className="flex items-start gap-4">
         <div className="border-gray-150 flex size-13 shrink-0 items-center justify-center overflow-hidden rounded-full border bg-white">
           {data.companyLogo ?? <DefaultCompanyLogo />}
@@ -34,7 +37,7 @@ export default function UpcomingInterviewCard({ data }: UpcomingInterviewCardPro
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5">
             <CalendarStarIcon className="h-6 w-6 text-gray-400" />
-            <span className="body-l-semibold text-gray-800">최근 등록된 {data.companyName} 면접질문</span>
+            <span className="body-l-semibold text-gray-800">{data.jobCategoryName} 면접 기출 질문</span>
           </div>
         </div>
         <div className="flex flex-col gap-2">
@@ -46,44 +49,14 @@ export default function UpcomingInterviewCard({ data }: UpcomingInterviewCardPro
           ))}
         </div>
 
-        <Button variant="outline-gray-white" size="sm" className="w-full">
+        <Button
+          variant="outline-gray-white"
+          size="sm"
+          className="w-full"
+          onClick={() => navigate(ROUTES.DASHBOARD_TREND_QUESTIONS)}
+        >
           비슷한 면접 질문 더 보러가기
         </Button>
-      </div>
-
-      <div className="flex flex-col gap-3">
-        <div className="flex items-center gap-1.5">
-          <NoteIcon className="h-6 w-6 text-gray-400" />
-          <span className="body-l-semibold text-gray-800">유사한 나의 과거 면접</span>
-        </div>
-        <div className="grid grid-cols-2 gap-3">
-          {data.similarInterviews.map((interview) => (
-            <button
-              key={interview.id}
-              className="flex cursor-pointer flex-col gap-3 rounded-lg bg-gray-100 p-4"
-              onClick={() => {}}
-            >
-              <span className="body-s-medium w-fit text-gray-300">{interview.date} 응시</span>
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-2">
-                  <div className="border-gray-150 flex h-8.5 w-8.5 items-center justify-center rounded-full border bg-white">
-                    {interview.logo ?? <DefaultMiniLogo />}
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="title-s-semibold text-gray-900">{interview.companyName}</span>
-                    <span className="body-m-medium text-gray-400">{interview.industry}</span>
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-1.5">
-                  <span className="body-m-medium text-gray-700">{interview.jobCategory}</span>
-                  <span className="h-3 w-px shrink-0 bg-gray-300" aria-hidden />
-                  <span className="body-m-medium text-gray-700">{interview.interviewType}</span>
-                </div>
-              </div>
-            </button>
-          ))}
-        </div>
       </div>
     </div>
   )

@@ -47,6 +47,7 @@ public class QnaSet extends BaseEntity {
     /*
      * Static Factory Method
      */
+    // TODO create를 없애고 createNew->create
     public static QnaSet create(
             String questionText,
             String answerText,
@@ -59,6 +60,16 @@ public class QnaSet extends BaseEntity {
                 .isMarkedDifficult(isMarkedDifficult)
                 .interview(interview)
                 .qnaSetCategory(qnaSetCategory)
+                .build();
+    }
+
+    public static QnaSet createNew(String questionText, String answerText, Interview interview) {
+        return QnaSet.builder()
+                .questionText(questionText)
+                .answerText(answerText)
+                .isMarkedDifficult(false)
+                .interview(interview)
+                .qnaSetCategory(null)
                 .build();
     }
 
@@ -94,5 +105,9 @@ public class QnaSet extends BaseEntity {
         this.isMarkedDifficult = isMarkedDifficult;
         this.interview = interview;
         this.qnaSetCategory = qnaSetCategory;
+    }
+
+    public void updateCategory(QnaSetCategory category) {
+        this.qnaSetCategory = category;
     }
 }

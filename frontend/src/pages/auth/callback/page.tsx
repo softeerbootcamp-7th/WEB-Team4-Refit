@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
+import { resetAuthSessionStatus } from '@/routes/middleware/auth-session'
 import { ROUTES } from '@/routes/routes'
 
 export default function AuthCallbackPage() {
@@ -26,10 +27,12 @@ export default function AuthCallbackPage() {
     }
 
     if (status === 'loginSuccess') {
+      resetAuthSessionStatus()
       navigate(ROUTES.DASHBOARD, { replace: true })
       return
     }
     if (status === 'signUpRequired') {
+      resetAuthSessionStatus()
       navigate(ROUTES.SIGNUP, { state: { nickname, profileImageUrl }, replace: true })
       return
     }

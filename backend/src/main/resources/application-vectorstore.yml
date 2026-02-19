@@ -2,9 +2,15 @@ spring:
   vectorstore:
     qdrant:
       host: "${QDRANT_HOST}"
-      port: ${QDRANT_PORT}
+      port: "${QDRANT_PORT}"
+      timeout: "${QDRANT_TIMEOUT}"
+      find-all-default-batch-size: "${QDRANT_FIND_ALL_DEFAULT_BATCH_SIZE}"
       collections:
         qna-set-question:
           name: "${QDRANT_QNA_SET_COLLECTION_NAME}"
-          vector-dimension: ${QDRANT_QNA_SET_COLLECTION_VECTOR_DIMENSION}
+          vector-dimension: "${QDRANT_QNA_SET_COLLECTION_VECTOR_DIMENSION}"
           distance: "${QDRANT_QNA_SET_COLLECTION_DISTANCE}"
+        qna-set-category:
+          name: "${QDRANT_QUESTION_CATEGORY_COLLECTION_NAME}"
+          vector-dimension: "${QDRANT_QUESTION_CATEGORY_COLLECTION_VECTOR_DIMENSION}"
+          distance: "${QDRANT_QUESTION_CATEGORY_COLLECTION_DISTANCE}"

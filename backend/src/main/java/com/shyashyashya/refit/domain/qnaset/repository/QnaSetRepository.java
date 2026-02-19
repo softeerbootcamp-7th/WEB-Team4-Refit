@@ -10,11 +10,11 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 public interface QnaSetRepository extends JpaRepository<QnaSet, Long>, QnaSetCustomRepository {
 
-    // TODO : queryDSL 적용
     @Query("""
         SELECT q
           FROM QnaSet q
@@ -30,7 +30,6 @@ public interface QnaSetRepository extends JpaRepository<QnaSet, Long>, QnaSetCus
     """)
     List<QnaSet> findAllByIndustryAndJobCategory(Industry industry, JobCategory jobCategory);
 
-    // TODO : queryDSL 적용
     @Query("""
         SELECT q
           FROM QnaSet q
@@ -40,4 +39,22 @@ public interface QnaSetRepository extends JpaRepository<QnaSet, Long>, QnaSetCus
     Page<QnaSet> findAllByUserAndQnaSetCategory(User user, QnaSetCategory qnaSetCategory, Pageable pageable);
 
     List<QnaSet> findAllByInterview(Interview interview);
+
+    @Query("""
+        SELECT q
+          FROM QnaSet q
+         WHERE q.interview.user = :user
+           AND q.isMarkedDifficult = TRUE
+    """)
+    Page<QnaSet> findAllDifficultByUser(User user, Pageable pageable);
+
+    @Query("""
+        UPDATE QnaSet q
+           SET q.qnaSetCategory = :category
+         WHERE q.id IN :questionIds
+    """)
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    void updateQnaSetCategoryQnaSetIdsIn(QnaSetCategory category, List<Long> questionIds);
+
+    void deleteAllByInterview(Interview interview);
 }

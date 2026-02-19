@@ -1,4 +1,4 @@
-import InterviewCard from '@/features/dashboard/my-interviews/components/interviews/InterviewCard'
+import InterviewCard from '@/features/dashboard/my-interviews/components/interviews/list/interview-card/InterviewCard'
 import type { InterviewResultStatus } from '@/features/dashboard/my-interviews/constants/constants'
 import type { InterviewType } from '@/types/interview'
 

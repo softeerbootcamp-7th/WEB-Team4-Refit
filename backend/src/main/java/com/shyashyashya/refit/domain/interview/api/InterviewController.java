@@ -13,7 +13,7 @@ import com.shyashyashya.refit.domain.interview.dto.request.QnaSetCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.response.GuideQuestionResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.InterviewCreateResponse;
-import com.shyashyashya.refit.domain.interview.dto.response.PresignedUrlResponse;
+import com.shyashyashya.refit.domain.interview.dto.response.PdfFilePresignResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.QnaSetCreateResponse;
 import com.shyashyashya.refit.domain.interview.service.GuideQuestionService;
 import com.shyashyashya.refit.domain.interview.service.InterviewService;
@@ -102,8 +102,9 @@ public class InterviewController {
     }
 
     @Operation(summary = "면접 기록을 질문/답변 세트로 변환합니다.", description = """
-            변환이 완료되면 면접 상태를 '질답 세트 검토중' 상태로 변화시킵니다. 질답세트를 추가/수정/삭제하려면 반드시 면접 상태가 '질답 세트 검토중' 상태여야 합니다.
-            변환이 실패하면 ? (고도화 예정)
+            변환이 완료되면 면접 상태를 '질답 세트 검토중' 상태로 바꿉니다.
+            질답세트를 추가/수정/삭제하려면 반드시 면접 상태가 '질답 세트 검토중' 상태여야 합니다.
+            변환이 실패하면 실패 응답을 반환하고 '기록 중' 상태를 유지합니다.
     """)
     @PostMapping("/{interviewId}/raw-text/convert")
     public ResponseEntity<ApiResponse<Void>> convertRawTextToQnaSet(@PathVariable Long interviewId) {
@@ -158,7 +159,7 @@ public class InterviewController {
 
     @Operation(summary = "면접 PDF 파일 업로드를 위한 Pre-Signed URL을 요청합니다.")
     @GetMapping("/{interviewId}/pdf/upload-url")
-    public ResponseEntity<ApiResponse<PresignedUrlResponse>> createUploadUrl(@PathVariable Long interviewId) {
+    public ResponseEntity<ApiResponse<PdfFilePresignResponse>> createPdfUploadUrl(@PathVariable Long interviewId) {
         var body = interviewService.createPdfUploadUrl(interviewId);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
@@ -166,9 +167,19 @@ public class InterviewController {
 
     @Operation(summary = "면접 PDF 파일 다운로드를 위한 Pre-Signed URL을 요청합니다.")
     @GetMapping("/{interviewId}/pdf/download-url")
-    public ResponseEntity<ApiResponse<PresignedUrlResponse>> createDownloadUrl(@PathVariable Long interviewId) {
+    public ResponseEntity<ApiResponse<PdfFilePresignResponse>> createPdfDownloadUrl(@PathVariable Long interviewId) {
         var body = interviewService.createPdfDownloadUrl(interviewId);
         var response = ApiResponse.success(COMMON200, body);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "면접 PDF 파일을 삭제합니다.", description = """
+            연관된 하이라이팅은 모두 삭제됩니다.
+            """)
+    @DeleteMapping("/{interviewId}/pdf")
+    public ResponseEntity<ApiResponse<Void>> deleteInterviewPdf(@PathVariable Long interviewId) {
+        interviewService.deletePdf(interviewId);
+        var response = ApiResponse.success(COMMON204);
         return ResponseEntity.ok(response);
     }
 }

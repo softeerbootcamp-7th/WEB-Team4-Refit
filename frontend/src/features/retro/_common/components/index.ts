@@ -1,3 +1,3 @@
 export { KptWriteCard } from './KptWriteCard'
 export { RetroWriteCard } from './RetroWriteCard'
-export { ScrapModal } from './ScrapModal'
+export { ScrapModal } from './scrap-modal/ScrapModal'

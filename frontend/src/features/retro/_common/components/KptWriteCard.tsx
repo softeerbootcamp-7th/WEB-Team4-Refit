@@ -3,7 +3,6 @@ import { KPT_SECTIONS } from '@/constants/retro'
 import { Badge, Border } from '@/designs/components'
 import type { KptTextsType } from '@/types/interview'
 
-const KPT_MAX_LENGTH = 400
 const KPT_INITIAL_VALUE: KptTextsType = { keepText: '', problemText: '', tryText: '' }
 
 type KptWriteCardProps = {
@@ -16,11 +15,9 @@ export function KptWriteCard({ defaultValue, readOnly = false, onChange }: KptWr
   const [kptTexts, setKptTexts] = useState<KptTextsType>(defaultValue ?? KPT_INITIAL_VALUE)
 
   const handleChange = (key: keyof KptTextsType, value: string) => {
-    if (value.length <= KPT_MAX_LENGTH) {
-      const updated = { ...kptTexts, [key]: value }
-      setKptTexts(updated)
-      onChange?.(updated)
-    }
+    const updated = { ...kptTexts, [key]: value }
+    setKptTexts(updated)
+    onChange?.(updated)
   }
 
   return (
@@ -62,19 +59,13 @@ function KptSection({ label, question, value, onChange, readOnly }: KptSectionPr
       {readOnly ? (
         <span className="mb-6">{value}</span>
       ) : (
-        <div className="relative">
-          <textarea
-            className={`body-m-regular border-gray-150 min-h-36 w-full resize-none rounded-[10px] border p-4 focus-visible:outline-none ${readOnly ? '' : 'focus-visible:border-gray-200'}`}
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            readOnly={readOnly}
-            placeholder={readOnly ? undefined : `${label}에 대해 작성해주세요.`}
-            maxLength={KPT_MAX_LENGTH}
-          />
-          <span className="body-s-regular absolute right-4 bottom-4 text-gray-300">
-            {value.length}/{KPT_MAX_LENGTH}
-          </span>
-        </div>
+        <textarea
+          className={`body-m-regular border-gray-150 min-h-36 w-full resize-none rounded-[10px] border p-4 focus-visible:outline-none ${readOnly ? '' : 'focus-visible:border-gray-200'}`}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          readOnly={readOnly}
+          placeholder={readOnly ? undefined : `${label}에 대해 작성해주세요.`}
+        />
       )}
     </div>
   )

@@ -12,9 +12,6 @@ import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.util.RequestUserContext;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -56,15 +53,15 @@ public class QnaSetMyService {
         User requestUser = requestUserContext.getRequestUser();
 
         return qnaSetRepository
-            .searchMyQnaSet(
-                    requestUser,
-                    request.keyword(),
-                    request.searchFilter().hasStarAnalysis(),
-                    request.searchFilter().sInclusionLevels(),
-                    request.searchFilter().tInclusionLevels(),
-                    request.searchFilter().aInclusionLevels(),
-                    request.searchFilter().rInclusionLevels(),
-                    pageable)
-            .map(QnaSetSearchResponse::from);
+                .searchMyQnaSet(
+                        requestUser,
+                        request.keyword(),
+                        request.searchFilter().hasStarAnalysis(),
+                        request.searchFilter().sInclusionLevels(),
+                        request.searchFilter().tInclusionLevels(),
+                        request.searchFilter().aInclusionLevels(),
+                        request.searchFilter().rInclusionLevels(),
+                        pageable)
+                .map(QnaSetSearchResponse::from);
     }
 }

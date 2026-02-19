@@ -63,7 +63,7 @@ const FolderListItem = ({
             <MoreIcon className="h-4 w-4" />
           </button>
           {isMenuOpen && (
-            <div className="absolute top-full right-0 z-10 mt-1 min-w-[120px] overflow-hidden rounded-lg border border-gray-100 bg-white shadow-lg ring-1 ring-black/5">
+            <div className="absolute top-full right-0 z-10 mt-1 min-w-30 overflow-hidden rounded-lg border border-gray-100 bg-white shadow-lg ring-1 ring-black/5">
               <button
                 onClick={handleEdit}
                 className="body-s-medium w-full px-4 py-2.5 text-left text-gray-700 hover:bg-gray-50"

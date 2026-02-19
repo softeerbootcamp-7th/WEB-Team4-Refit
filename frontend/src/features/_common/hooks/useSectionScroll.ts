@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 type UseSectionScrollOptions = {
   idPrefix?: string
   threshold?: number
+  rootMargin?: string
 }
 
 type UseSectionScrollReturn = {
@@ -14,7 +15,8 @@ type UseSectionScrollReturn = {
 
 export function useSectionScroll({
   idPrefix = 'section',
-  threshold = 0.3,
+  threshold = 0,
+  rootMargin = '-20% 0px -20% 0px',
 }: UseSectionScrollOptions = {}): UseSectionScrollReturn {
   const [activeIndex, setActiveIndex] = useState(0)
   const sectionRefs = useRef<(HTMLDivElement | null)[]>([])
@@ -43,7 +45,7 @@ export function useSectionScroll({
           setActiveIndex(Math.min(...visibleIndexSetRef.current))
         }
       },
-      { root: container, threshold },
+      { root: container, threshold, rootMargin },
     )
 
     sectionRefs.current.forEach((ref) => {
@@ -51,7 +53,7 @@ export function useSectionScroll({
     })
 
     return () => observerRef.current?.disconnect()
-  }, [threshold])
+  }, [threshold, rootMargin])
 
   const initialScrollDoneRef = useRef(false)
 
