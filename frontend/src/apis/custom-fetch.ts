@@ -33,10 +33,7 @@ export const customFetch = async <T>(urlWithoutBase: string, initOptions: Reques
     return data
   } catch (error) {
     const shouldReissue =
-      error instanceof HttpError &&
-      !!error.payload &&
-      typeof error.payload === 'object' &&
-      (error.payload as { code?: unknown }).code === 'TOKEN_REISSUE_REQUIRED'
+      error instanceof HttpError && error.status === 401
 
     if (isReissueRequest || !shouldReissue) {
       throw error
