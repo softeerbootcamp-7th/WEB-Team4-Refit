@@ -108,7 +108,7 @@ public class ElkiClusterUtil implements ClusterUtil {
 
     @Override
     public CategoryVectorDocument mapToCluster(QuestionVectorDocument document) {
-        return null;
+        throw new UnsupportedOperationException("mapToCluster is not yet implemented");
     }
 
     private Database createDatabase(List<QuestionVectorDocument> documents) {
