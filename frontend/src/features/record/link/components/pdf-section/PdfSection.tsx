@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useParams } from 'react-router'
 import {
@@ -21,6 +21,7 @@ export function PdfSection() {
   const queryClient = useQueryClient()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const uploadAbortRef = useRef<AbortController | null>(null)
+  const [zoom, setZoom] = useState(1)
   const { hasPdf, linkingQnaSetId, setHasPdf, clearAllHighlights } = useHighlightContext()
   const { mutate: completeQnaSetDraft, isPending: isCompletingQnaSetDraft } = useCompleteQnaSetDraft()
 
@@ -88,6 +89,7 @@ export function PdfSection() {
       clearPdfObjectUrlCache(queryClient, interviewId)
       queryClient.setQueryData(getPdfObjectUrlKey(interviewId, updatedAt), objectUrl)
       setHasPdf(true)
+      setZoom(1)
       void queryClient.invalidateQueries({ queryKey: getCreatePdfDownloadUrlQueryKey(interviewId) })
     },
     onSettled: () => {
@@ -106,6 +108,7 @@ export function PdfSection() {
         clearPdfObjectUrlCache(queryClient, interviewId)
         queryClient.removeQueries({ queryKey: getCreatePdfDownloadUrlQueryKey(interviewId), exact: true })
         setHasPdf(false)
+        setZoom(1)
         clearAllHighlights()
         if (fileInputRef.current) fileInputRef.current.value = ''
       },
@@ -139,14 +142,6 @@ export function PdfSection() {
 
   return (
     <div className={`relative flex h-full flex-col gap-5 p-6 ${isLinking ? 'z-50 bg-gray-100' : ''}`}>
-      <div className="absolute top-10 right-10 flex items-center justify-end">
-        {resolvedPdfUrl && (
-          <Button variant="outline-gray-100" onClick={handleRemovePdf} size="xs" disabled={isPdfBusy}>
-            업로드 취소
-          </Button>
-        )}
-      </div>
-
       <input
         ref={fileInputRef}
         type="file"
@@ -156,7 +151,13 @@ export function PdfSection() {
       />
 
       {resolvedPdfUrl ? (
-        <PdfViewer pdfUrl={resolvedPdfUrl} />
+        <PdfViewer
+          pdfUrl={resolvedPdfUrl}
+          onRemovePdf={handleRemovePdf}
+          isPdfBusy={isPdfBusy}
+          zoom={zoom}
+          onZoomChange={setZoom}
+        />
       ) : isPdfBusy ? (
         <div className="title-s-bold flex flex-1 items-center justify-center rounded-xl border-2 border-dashed border-gray-200 text-gray-300">
           <div className="flex flex-col items-center gap-1">

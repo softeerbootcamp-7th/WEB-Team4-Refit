@@ -18,6 +18,7 @@ type RetroPdfPanelProps = {
 export function RetroPdfPanel({ interviewId, hasPdf: initialHasPdf, qnaSetIds }: RetroPdfPanelProps) {
   const [hasPdf, setHasPdf] = useState(initialHasPdf)
   const [selectedPage, setSelectedPage] = useState<number | null>(null)
+  const [zoom, setZoom] = useState(1)
   const viewerRef = useRef<HTMLDivElement>(null)
   const containerSize = useContainerSize(viewerRef)
 
@@ -85,7 +86,15 @@ export function RetroPdfPanel({ interviewId, hasPdf: initialHasPdf, qnaSetIds }:
 
   return (
     <div className="flex h-full min-h-0 flex-col bg-gray-100 p-6">
-      {pdf && <PdfNavigation currentPage={currentPage} totalPages={totalPages} onPageChange={setSelectedPage} />}
+      {pdf && (
+        <PdfNavigation
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setSelectedPage}
+          zoom={zoom}
+          onZoomChange={setZoom}
+        />
+      )}
       <div ref={viewerRef} className="relative min-h-0 flex-1 overflow-hidden">
         {isLoading && (
           <div className="flex h-full items-center justify-center">
@@ -94,7 +103,13 @@ export function RetroPdfPanel({ interviewId, hasPdf: initialHasPdf, qnaSetIds }:
         )}
         {hasError && <p className="body-m-regular py-10 text-center text-red-400">PDF를 불러오는 데 실패했습니다.</p>}
         {isReady && (
-          <RetroPdfPage pdf={pdf} pageNumber={currentPage} containerSize={containerSize} savedRects={savedRects} />
+          <RetroPdfPage
+            pdf={pdf}
+            pageNumber={currentPage}
+            containerSize={containerSize}
+            savedRects={savedRects}
+            zoom={zoom}
+          />
         )}
       </div>
     </div>
