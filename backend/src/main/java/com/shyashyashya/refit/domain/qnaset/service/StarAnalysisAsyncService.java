@@ -8,13 +8,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shyashyashya.refit.domain.qnaset.dto.StarAnalysisDto;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.StarAnalysis;
-import com.shyashyashya.refit.domain.qnaset.util.StarAnalysisCreationPromptUtil;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.gemini.GeminiClient;
-import com.shyashyashya.refit.global.gemini.GeminiGenerateRequest;
-import com.shyashyashya.refit.global.gemini.GeminiGenerateResponse;
 import com.shyashyashya.refit.global.gemini.GenerateModel;
-import com.shyashyashya.refit.global.gemini.StarAnalysisGeminiResponse;
+import com.shyashyashya.refit.global.gemini.dto.GeminiGenerateRequest;
+import com.shyashyashya.refit.global.gemini.dto.GeminiGenerateResponse;
+import com.shyashyashya.refit.global.gemini.dto.StarAnalysisGeminiResponse;
+import com.shyashyashya.refit.global.util.PromptGenerateUtil;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import lombok.RequiredArgsConstructor;
@@ -29,16 +29,16 @@ public class StarAnalysisAsyncService {
     private final QnaSetService qnaSetService;
     private final StarAnalysisService starAnalysisService;
     private final GeminiClient geminiClient;
-    private final StarAnalysisCreationPromptUtil starAnalysisPromptGenerator;
     private final Executor geminiPostProcessExecutor;
     private final ObjectMapper objectMapper;
+    private final PromptGenerateUtil promptGenerateUtil;
 
     public CompletableFuture<StarAnalysisDto> createStarAnalysis(Long qnaSetId) {
         QnaSet qnaSet = qnaSetService.getQnaSet(qnaSetId);
         Long starAnalysisId =
                 starAnalysisService.createInProgressStarAnalysis(qnaSet).getId();
 
-        String prompt = starAnalysisPromptGenerator.buildPrompt(qnaSet);
+        String prompt = promptGenerateUtil.buildStarAnalysisCreatePrompt(qnaSet);
         GeminiGenerateRequest requestBody = GeminiGenerateRequest.from(prompt);
 
         log.info("Send star analysis generate request to gemini. qnaSetId: {}", qnaSetId);

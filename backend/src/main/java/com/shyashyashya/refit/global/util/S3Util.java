@@ -1,4 +1,4 @@
-package com.shyashyashya.refit.global.aws;
+package com.shyashyashya.refit.global.util;
 
 import static com.shyashyashya.refit.global.exception.ErrorCode.S3_RESOURCE_DELETE_FAILED;
 

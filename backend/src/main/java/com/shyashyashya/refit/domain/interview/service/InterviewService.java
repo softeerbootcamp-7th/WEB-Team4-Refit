@@ -33,7 +33,6 @@ import com.shyashyashya.refit.domain.interview.model.InterviewSelfReview;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
 import com.shyashyashya.refit.domain.interview.repository.InterviewSelfReviewRepository;
 import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
-import com.shyashyashya.refit.domain.interview.util.RawTextConvertPromptUtil;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
 import com.shyashyashya.refit.domain.qnaset.dto.StarAnalysisDto;
@@ -45,16 +44,17 @@ import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetSelfReviewRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.StarAnalysisRepository;
 import com.shyashyashya.refit.domain.user.model.User;
-import com.shyashyashya.refit.global.aws.S3Util;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.gemini.GeminiClient;
-import com.shyashyashya.refit.global.gemini.GeminiGenerateRequest;
-import com.shyashyashya.refit.global.gemini.GeminiGenerateResponse;
 import com.shyashyashya.refit.global.gemini.GenerateModel;
-import com.shyashyashya.refit.global.gemini.QnaSetsGeminiResponse;
+import com.shyashyashya.refit.global.gemini.dto.GeminiGenerateRequest;
+import com.shyashyashya.refit.global.gemini.dto.GeminiGenerateResponse;
+import com.shyashyashya.refit.global.gemini.dto.QnaSetsGeminiResponse;
 import com.shyashyashya.refit.global.property.S3FolderNameProperty;
 import com.shyashyashya.refit.global.util.HangulUtil;
+import com.shyashyashya.refit.global.util.PromptGenerateUtil;
 import com.shyashyashya.refit.global.util.RequestUserContext;
+import com.shyashyashya.refit.global.util.S3Util;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -87,12 +87,12 @@ public class InterviewService {
 
     private final InterviewValidator interviewValidator;
     private final RequestUserContext requestUserContext;
-    private final RawTextConvertPromptUtil qnaSetPromptGenerator;
     private final GeminiClient geminiClient;
     private final S3FolderNameProperty s3FolderNameProperty;
     private final S3Util s3Util;
     private final HangulUtil hangulUtil;
     private final ObjectMapper objectMapper;
+    private final PromptGenerateUtil promptGenerateUtil;
 
     @Transactional(readOnly = true)
     public InterviewDto getInterview(Long interviewId) {
@@ -297,7 +297,7 @@ public class InterviewService {
         interviewValidator.validateInterviewOwner(interview, requestUser);
         interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.LOG_DRAFT);
 
-        String prompt = qnaSetPromptGenerator.buildPrompt(interview);
+        String prompt = promptGenerateUtil.buildInterviewRawTextConvertPrompt(interview);
         GeminiGenerateRequest requestBody = GeminiGenerateRequest.from(prompt);
         GeminiGenerateResponse response =
                 geminiClient.sendTextGenerateRequest(requestBody, GenerateModel.GEMMA_3_27B_IT);

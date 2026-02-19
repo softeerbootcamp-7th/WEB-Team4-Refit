@@ -1,4 +1,4 @@
-package com.shyashyashya.refit.global.gemini;
+package com.shyashyashya.refit.global.gemini.dto;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.List;

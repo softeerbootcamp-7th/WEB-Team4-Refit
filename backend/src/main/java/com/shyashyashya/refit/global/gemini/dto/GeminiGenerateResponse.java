@@ -1,4 +1,4 @@
-package com.shyashyashya.refit.global.gemini;
+package com.shyashyashya.refit.global.gemini.dto;
 
 import java.util.List;
 import java.util.Optional;
