@@ -34,7 +34,8 @@ export function QnaListSection({
 }: QnaListSectionProps) {
   const [editingId, setEditingId] = useState<string | null>(null)
 
-  const isOtherEditing = (qnaSetId: number) => editingId !== null && editingId !== `qna-${qnaSetId}`
+  const isOtherEditing = (qnaSetId: number) => isAddMode || (editingId !== null && editingId !== `qna-${qnaSetId}`)
+  const isAddDisabled = isCreating || editingId !== null
   const nextIdx = qnaList.length + 1
 
   return (
@@ -53,11 +54,13 @@ export function QnaListSection({
         />
       ))}
       {isAddMode ? (
-        <QnaSetEditForm idx={nextIdx} onSave={onAddSave} onCancel={onCancelAdd} isSaving={isCreating} />
+        <div className="rounded-lg border border-gray-300 shadow-md">
+          <QnaSetEditForm idx={nextIdx} onSave={onAddSave} onCancel={onCancelAdd} isSaving={isCreating} />
+        </div>
       ) : (
         <div className="flex justify-center">
-          <Button variant="outline-orange-100" size="sm" radius="full" onClick={onStartAdd} disabled={isCreating}>
-            <CirclePlusIcon className="text-orange-500" />
+          <Button variant="outline-orange-100" size="sm" radius="full" onClick={onStartAdd} disabled={isAddDisabled}>
+            <CirclePlusIcon className={isAddDisabled ? 'text-gray-300' : 'text-orange-500'} />
             질문 추가하기
           </Button>
         </div>
