@@ -1,10 +1,9 @@
 package com.shyashyashya.refit.batch.model;
 
 import com.shyashyashya.refit.global.vectordb.model.SingleVectorDocument;
-import lombok.experimental.SuperBuilder;
-
 import java.util.List;
 import java.util.Map;
+import lombok.experimental.SuperBuilder;
 
 @SuperBuilder
 public class CategoryVectorDocument extends SingleVectorDocument<Long> {

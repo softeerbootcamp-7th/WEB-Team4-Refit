@@ -18,13 +18,12 @@ import elki.database.ids.DBIDRange;
 import elki.database.relation.Relation;
 import elki.datasource.ArrayAdapterDatabaseConnection;
 import elki.distance.CosineDistance;
-import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import org.springframework.stereotype.Component;
 
 /**
  * Elki 라이브러리를 활용하여 HDBSCAN 방식으로 클러스터링을 처리하는 구현체입니다.
@@ -35,7 +34,8 @@ public class ElkiClusterUtil implements ClusterUtil {
     public record Result(Map<Integer, List<Long>> clusters, List<Long> noise) {}
 
     @Override
-    public List<CategoryVectorDocument> createClusters(List<QuestionVectorDocument> documents, int minPoints, int minClusterSize) {
+    public List<CategoryVectorDocument> createClusters(
+            List<QuestionVectorDocument> documents, int minPoints, int minClusterSize) {
         Database db = createDatabase(documents);
         db.initialize();
 
@@ -56,8 +56,7 @@ public class ElkiClusterUtil implements ClusterUtil {
                     "cluster name=%s, size=%d, model=%s%n",
                     c.getNameAutomatic(),
                     c.size(),
-                    (c.getModel() == null ? "null" : c.getModel().getClass().getName())
-            );
+                    (c.getModel() == null ? "null" : c.getModel().getClass().getName()));
         }
 
         // 6) ELKI cluster의 DBID를 원래 인덱스(offset)로 변환 후 pointId로 매핑
@@ -94,16 +93,13 @@ public class ElkiClusterUtil implements ClusterUtil {
                     List<Long> clusterDocumentIds = cluster.getValue();
 
                     List<List<Float>> questionEmbeddingsInCluster = documents.stream()
-                            .filter(document ->
-                                    clusterDocumentIds.contains(document.getId()))
+                            .filter(document -> clusterDocumentIds.contains(document.getId()))
                             .map(SingleVectorDocument::getVector)
                             .toList();
                     List<Float> centroidVector = calculateCentroid(questionEmbeddingsInCluster);
 
                     return CategoryVectorDocument.of(
-                            clusterId.longValue(),
-                            centroidVector,
-                            Map.of("clusterDocumentIds", clusterDocumentIds));
+                            clusterId.longValue(), centroidVector, Map.of("clusterDocumentIds", clusterDocumentIds));
                 })
                 .toList();
     }
@@ -117,7 +113,9 @@ public class ElkiClusterUtil implements ClusterUtil {
         double[][] data = new double[documents.size()][];
         for (int i = 0; i < documents.size(); i++) {
             var document = documents.get(i);
-            data[i] = document.getVector().stream().mapToDouble(Number::doubleValue).toArray();
+            data[i] = document.getVector().stream()
+                    .mapToDouble(Number::doubleValue)
+                    .toArray();
         }
 
         return new StaticArrayDatabase(new ArrayAdapterDatabaseConnection(data), null);

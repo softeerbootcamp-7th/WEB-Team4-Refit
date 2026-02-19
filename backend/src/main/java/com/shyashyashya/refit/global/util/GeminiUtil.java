@@ -1,5 +1,7 @@
 package com.shyashyashya.refit.global.util;
 
+import static com.shyashyashya.refit.global.exception.ErrorCode.GEMINI_RESPONSE_PARSING_FAILED;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shyashyashya.refit.global.exception.CustomException;
@@ -10,8 +12,6 @@ import com.shyashyashya.refit.global.gemini.dto.GeminiGenerateResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import static com.shyashyashya.refit.global.exception.ErrorCode.GEMINI_RESPONSE_PARSING_FAILED;
 
 @Component
 @RequiredArgsConstructor
@@ -33,8 +33,8 @@ public class GeminiUtil {
 
     private <T> T parseGeminiResponse(GeminiGenerateResponse response, Class<T> targetClass) {
         try {
-            String jsonText = response.firstJsonText()
-                    .orElseThrow(() -> new CustomException(GEMINI_RESPONSE_PARSING_FAILED));
+            String jsonText =
+                    response.firstJsonText().orElseThrow(() -> new CustomException(GEMINI_RESPONSE_PARSING_FAILED));
             log.info("[parseGeminiResponse] raw json text: {}", jsonText);
             return objectMapper.readValue(jsonText, targetClass);
         } catch (JsonProcessingException e) {
