@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router'
-import { Logo, MicIcon } from '@/designs/assets'
+import { LightningIcon, Logo } from '@/designs/assets'
 import Button from '@/designs/components/button'
 import { ROUTES } from '@/routes/routes'
 import InstantRecordModal from './InstantRecordModal'
@@ -20,27 +20,27 @@ export default function Navbar() {
     <>
       <nav className="bg-gray-white fixed top-0 right-0 left-0 z-50 h-15 border-b border-gray-100">
         <div className="mx-auto flex h-full w-6xl items-center gap-8">
-        <NavLink to={ROUTES.DASHBOARD} className="flex items-center">
-          <Logo className="h-6 w-auto text-orange-500" />
-        </NavLink>
+          <NavLink to={ROUTES.DASHBOARD} className="flex items-center">
+            <Logo className="h-6 w-auto text-orange-500" />
+          </NavLink>
 
-        <div className="flex h-full items-center gap-2">
-          {navItems.map((item) => (
-            <NavLink key={item.to} to={item.to} end={item.end} className={getNavLinkClassName}>
-              {item.label}
-            </NavLink>
-          ))}
-        </div>
+          <div className="flex h-full items-center gap-2">
+            {navItems.map((item) => (
+              <NavLink key={item.to} to={item.to} end={item.end} className={getNavLinkClassName}>
+                {item.label}
+              </NavLink>
+            ))}
+          </div>
 
-        <div className="flex-1" />
+          <div className="flex-1" />
 
-        <div className="flex items-center gap-4">
-          <Button variant="fill-orange-500" size="xs" onClick={() => setIsInstantRecordOpen(true)}>
-            <MicIcon className="h-4 w-4" />
-            면접 바로 기록하기
-          </Button>
-          <UserProfile />
-        </div>
+          <div className="flex items-center gap-4">
+            <Button variant="fill-orange-500" size="xs" onClick={() => setIsInstantRecordOpen(true)}>
+              <LightningIcon className="w- h-4" />
+              면접 바로 복기하기
+            </Button>
+            <UserProfile />
+          </div>
         </div>
       </nav>
 
