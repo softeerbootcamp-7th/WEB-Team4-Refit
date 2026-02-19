@@ -48,6 +48,7 @@ public enum ErrorCode {
     EXTERNAL_OAUTH2_SERVER_ERROR(BAD_GATEWAY, "외부 OAuth2 서버와의 통신에 실패했습니다."),
     INVALID_OAUTH2_ACCESS_TOKEN(UNAUTHORIZED, "유효하지 않은 OAuth2 액세스 토큰입니다."),
     LOGIN_REQUIRED(UNAUTHORIZED, "로그인이 필요합니다."),
+    LOGIN_REQUIRED_RT_THEFT_DETECTED(UNAUTHORIZED, "Refresh Token 도난이 감지되어 로그인이 필요합니다."),
 
     SCRAP_FOLDER_NOT_ACCESSIBLE(FORBIDDEN, "스크랩 폴더에 접근할 수 없습니다."),
     SCRAP_FOLDER_NOT_FOUND(NOT_FOUND, "스크랩 폴더가 존재하지 않습니다."),
