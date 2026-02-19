@@ -10,7 +10,7 @@ const getTodayDateString = () => {
   return `${y}-${m}-${d}`
 }
 
-const DEFAULT_INTERVIEW_TIME = '00:00'
+const DEFAULT_INTERVIEW_TIME = '10:00'
 
 export interface InterviewScheduleFormValues {
   interviewType: string

@@ -39,6 +39,7 @@ export default function InstantRecordModal({ open, onClose }: InstantRecordModal
   })
 
   const config = SCHEDULE_MODAL_STEP_CONFIG[step]
+  const modalTitle = '면접 데이터 추가'
 
   const handleClose = () => {
     onClose()
@@ -64,7 +65,7 @@ export default function InstantRecordModal({ open, onClose }: InstantRecordModal
   }
 
   return (
-    <Modal open={open} onClose={handleClose} title={config.title} description={config.description}>
+    <Modal open={open} onClose={handleClose} title={modalTitle} description={config.description}>
       <ScheduleModalContent step={step} onStepChange={setStep} onSubmit={handleSubmit} isSubmitting={isPending} pastOnly />
     </Modal>
   )
