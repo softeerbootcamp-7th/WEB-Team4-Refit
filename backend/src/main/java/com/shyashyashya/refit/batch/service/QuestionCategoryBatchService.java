@@ -73,13 +73,9 @@ public class QuestionCategoryBatchService {
             log.debug("[createCategories] update qna-set's category FK");
             QnaSetCategory qnaSetCategory =
                     qnaSetCategoryRepository.findById(categoryId).orElseThrow();
-            for (Long questionVectorId : tempCategory.getQuestionDocumentIds()) {
-                qnaSetRepository
-                        .findById(questionVectorId)
-                        .ifPresentOrElse(
-                                qnaSet -> qnaSet.updateCategory(qnaSetCategory),
-                                () -> log.info("qna set not exists: {}", questionVectorId));
-            }
+
+            List<Long> questionIds = tempCategory.getQuestionDocumentIds();
+            qnaSetRepository.updateQnaSetCategoryQnaSetIdsIn(qnaSetCategory, questionIds);
         }
     }
 }
