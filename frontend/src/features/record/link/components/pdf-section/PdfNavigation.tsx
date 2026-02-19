@@ -50,7 +50,7 @@ export function PdfNavigation({
         </Button>
       </div>
       <div className="flex items-center justify-end gap-3">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <Button size="xs" onClick={zoomOut} disabled={zoom <= ZOOM_STEPS[0]}>
             -
           </Button>
