@@ -55,7 +55,7 @@ import java.util.List;
 @Import(TestQdrantConfig.class)
 public abstract class IntegrationTest {
 
-    protected static final LocalDateTime NOW = LocalDateTime.of(2026, 2, 16, 10, 0, 0);
+    protected static final LocalDateTime NOW = LocalDateTime.now();
     protected static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     @LocalServerPort
