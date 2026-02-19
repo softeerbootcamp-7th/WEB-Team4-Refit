@@ -12,7 +12,7 @@ import type {
   ApiResponseInterviewCreateResponse,
   ApiResponseInterviewDto,
   ApiResponseInterviewFullDto,
-  ApiResponsePresignedUrlDto,
+  ApiResponsePdfFilePresignResponse,
   ApiResponseQnaSetCreateResponse,
   ApiResponseVoid,
 } from '../refit-api.schemas'
@@ -230,16 +230,19 @@ export const getGetInterviewFullResponseMock = (
 })
 
 export const getCreatePdfUploadUrlResponseMock = (
-  overrideResponse: Partial<Extract<ApiResponsePresignedUrlDto, object>> = {},
-): ApiResponsePresignedUrlDto => ({
+  overrideResponse: Partial<Extract<ApiResponsePdfFilePresignResponse, object>> = {},
+): ApiResponsePdfFilePresignResponse => ({
   isSuccess: faker.datatype.boolean(),
   code: faker.string.alpha({ length: { min: 10, max: 20 } }),
   message: faker.string.alpha({ length: { min: 10, max: 20 } }),
   result: faker.helpers.arrayElement([
     {
-      url: faker.string.alpha({ length: { min: 10, max: 20 } }),
-      key: faker.string.alpha({ length: { min: 10, max: 20 } }),
-      expireSeconds: faker.number.int(),
+      presignedUrlDto: {
+        url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+        key: faker.string.alpha({ length: { min: 10, max: 20 } }),
+        expireSeconds: faker.number.int(),
+      },
+      pdfUploadUrlPublishedAt: faker.date.past().toISOString().slice(0, 19) + 'Z',
     },
     undefined,
   ]),
@@ -247,16 +250,19 @@ export const getCreatePdfUploadUrlResponseMock = (
 })
 
 export const getCreatePdfDownloadUrlResponseMock = (
-  overrideResponse: Partial<Extract<ApiResponsePresignedUrlDto, object>> = {},
-): ApiResponsePresignedUrlDto => ({
+  overrideResponse: Partial<Extract<ApiResponsePdfFilePresignResponse, object>> = {},
+): ApiResponsePdfFilePresignResponse => ({
   isSuccess: faker.datatype.boolean(),
   code: faker.string.alpha({ length: { min: 10, max: 20 } }),
   message: faker.string.alpha({ length: { min: 10, max: 20 } }),
   result: faker.helpers.arrayElement([
     {
-      url: faker.string.alpha({ length: { min: 10, max: 20 } }),
-      key: faker.string.alpha({ length: { min: 10, max: 20 } }),
-      expireSeconds: faker.number.int(),
+      presignedUrlDto: {
+        url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+        key: faker.string.alpha({ length: { min: 10, max: 20 } }),
+        expireSeconds: faker.number.int(),
+      },
+      pdfUploadUrlPublishedAt: faker.date.past().toISOString().slice(0, 19) + 'Z',
     },
     undefined,
   ]),
@@ -560,10 +566,10 @@ export const getGetInterviewFullMockHandler = (
 
 export const getCreatePdfUploadUrlMockHandler = (
   overrideResponse?:
-    | ApiResponsePresignedUrlDto
+    | ApiResponsePdfFilePresignResponse
     | ((
         info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Promise<ApiResponsePresignedUrlDto> | ApiResponsePresignedUrlDto),
+      ) => Promise<ApiResponsePdfFilePresignResponse> | ApiResponsePdfFilePresignResponse),
   options?: RequestHandlerOptions,
 ) => {
   return http.get(
@@ -584,10 +590,10 @@ export const getCreatePdfUploadUrlMockHandler = (
 
 export const getCreatePdfDownloadUrlMockHandler = (
   overrideResponse?:
-    | ApiResponsePresignedUrlDto
+    | ApiResponsePdfFilePresignResponse
     | ((
         info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Promise<ApiResponsePresignedUrlDto> | ApiResponsePresignedUrlDto),
+      ) => Promise<ApiResponsePdfFilePresignResponse> | ApiResponsePdfFilePresignResponse),
   options?: RequestHandlerOptions,
 ) => {
   return http.get(

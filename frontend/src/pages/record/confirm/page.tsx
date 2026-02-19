@@ -26,8 +26,12 @@ function RecordConfirmContent() {
     isCreating,
     isDeleting,
     actionError,
+    isDeleteWithHighlightConfirmOpen,
+    isDeleteWithHighlightConfirmPending,
     handleEdit,
     handleDelete,
+    cancelDeleteWithHighlight,
+    confirmDeleteWithHighlight,
     handleAddSave,
     startAddMode,
     cancelAddMode,
@@ -53,8 +57,12 @@ function RecordConfirmContent() {
         isCreating={isCreating}
         isDeleting={isDeleting}
         actionError={actionError}
+        isDeleteWithHighlightConfirmOpen={isDeleteWithHighlightConfirmOpen}
+        isDeleteWithHighlightConfirmPending={isDeleteWithHighlightConfirmPending}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        onCancelDeleteWithHighlight={cancelDeleteWithHighlight}
+        onConfirmDeleteWithHighlight={confirmDeleteWithHighlight}
         onAddSave={handleAddSave}
         onStartAdd={startAddMode}
         onCancelAdd={cancelAddMode}

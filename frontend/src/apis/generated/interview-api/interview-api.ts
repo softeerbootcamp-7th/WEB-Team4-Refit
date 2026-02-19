@@ -11,7 +11,7 @@ import type {
   ApiResponseInterviewCreateResponse,
   ApiResponseInterviewDto,
   ApiResponseInterviewFullDto,
-  ApiResponsePresignedUrlDto,
+  ApiResponsePdfFilePresignResponse,
   ApiResponseQnaSetCreateResponse,
   ApiResponseVoid,
   InterviewCreateRequest,
@@ -392,8 +392,9 @@ export const useCompleteSelfReview = <TError = unknown, TContext = unknown>(
   return useMutation(getCompleteSelfReviewMutationOptions(options), queryClient)
 }
 /**
- *         변환이 완료되면 면접 상태를 '질답 세트 검토중' 상태로 변화시킵니다. 질답세트를 추가/수정/삭제하려면 반드시 면접 상태가 '질답 세트 검토중' 상태여야 합니다.
-        변환이 실패하면 ? (고도화 예정)
+ *         변환이 완료되면 면접 상태를 '질답 세트 검토중' 상태로 바꿉니다.
+        질답세트를 추가/수정/삭제하려면 반드시 면접 상태가 '질답 세트 검토중' 상태여야 합니다.
+        변환이 실패하면 실패 응답을 반환하고 '기록 중' 상태를 유지합니다.
 
  * @summary 면접 기록을 질문/답변 세트로 변환합니다.
  */
@@ -1102,8 +1103,8 @@ export const getCreatePdfUploadUrlUrl = (interviewId: number) => {
 export const createPdfUploadUrl = async (
   interviewId: number,
   options?: RequestInit,
-): Promise<ApiResponsePresignedUrlDto> => {
-  return customFetch<ApiResponsePresignedUrlDto>(getCreatePdfUploadUrlUrl(interviewId), {
+): Promise<ApiResponsePdfFilePresignResponse> => {
+  return customFetch<ApiResponsePdfFilePresignResponse>(getCreatePdfUploadUrlUrl(interviewId), {
     ...options,
     method: 'GET',
   })
@@ -1283,8 +1284,8 @@ export const getCreatePdfDownloadUrlUrl = (interviewId: number) => {
 export const createPdfDownloadUrl = async (
   interviewId: number,
   options?: RequestInit,
-): Promise<ApiResponsePresignedUrlDto> => {
-  return customFetch<ApiResponsePresignedUrlDto>(getCreatePdfDownloadUrlUrl(interviewId), {
+): Promise<ApiResponsePdfFilePresignResponse> => {
+  return customFetch<ApiResponsePdfFilePresignResponse>(getCreatePdfDownloadUrlUrl(interviewId), {
     ...options,
     method: 'GET',
   })

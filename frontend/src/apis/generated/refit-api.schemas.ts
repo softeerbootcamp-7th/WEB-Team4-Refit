@@ -822,11 +822,16 @@ export interface PresignedUrlDto {
   expireSeconds: number
 }
 
-export interface ApiResponsePresignedUrlDto {
+export interface PdfFilePresignResponse {
+  presignedUrlDto: PresignedUrlDto
+  pdfUploadUrlPublishedAt: string
+}
+
+export interface ApiResponsePdfFilePresignResponse {
   isSuccess: boolean
   code: string
   message: string
-  result?: PresignedUrlDto
+  result?: PdfFilePresignResponse
 }
 
 export interface GuideQuestionResponse {
