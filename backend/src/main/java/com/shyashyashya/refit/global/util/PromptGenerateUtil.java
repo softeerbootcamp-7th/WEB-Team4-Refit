@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class PromptGenerateUtil {
 
-    public static final String RAW_TEXT_CONVERT_PROMPT_FILE_NAME = "qna_set_generate_prompt";
+    public static final String RAW_TEXT_CONVERT_PROMPT_FILE_NAME = "qna_set_generate_prompt.txt";
     public static final String STAR_ANALYSIS_CREATE_PROMPT_HEADER_FILE_NAME = "star_analysis_header.txt";
     public static final String STAR_ANALYSIS_CREATE_PROMPT_TAIL_FILE_NAME = "star_analysis_tail.txt";
 
