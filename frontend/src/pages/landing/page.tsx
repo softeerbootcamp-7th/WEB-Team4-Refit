@@ -1,4 +1,4 @@
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 
 import {
   ArrowRightIcon,
@@ -11,9 +11,12 @@ import {
   PencilChickIcon,
   SpeakingChickIcon,
 } from '@/designs/assets'
+import Button from '@/designs/components/button'
 import { ROUTES } from '@/routes/routes'
 
 export default function LandingPage() {
+  const navigate = useNavigate()
+
   return (
     <div className="bg-gray-white min-h-screen overflow-x-hidden">
       <style>{`
@@ -48,16 +51,13 @@ export default function LandingPage() {
       `}</style>
 
       {/* ─── Navbar ──────────────────────────────────────────────── */}
-      <nav className="border-gray-150 bg-gray-white/80 fixed top-0 right-0 left-0 z-50 border-b backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+      <nav className="bg-gray-white fixed top-0 right-0 left-0 z-50 h-15 border-b border-gray-100">
+        <div className="mx-auto flex h-full w-6xl items-center justify-between">
           <Logo className="h-6 w-auto text-orange-500" />
           <div className="flex items-center gap-2">
-            <Link
-              to={ROUTES.SIGNIN}
-              className="body-m-semibold text-gray-white rounded-2xl bg-orange-500 px-5 py-2.5 transition-colors hover:bg-orange-600"
-            >
+            <Button variant="fill-orange-500" size="xs" onClick={() => navigate(ROUTES.SIGNIN)}>
               시작하기
-            </Link>
+            </Button>
           </div>
         </div>
       </nav>
@@ -71,7 +71,7 @@ export default function LandingPage() {
         <div className="pointer-events-none absolute top-28 right-0 h-96 w-96 rounded-full bg-orange-100 opacity-50 blur-3xl" />
         <div className="bg-orange-050 pointer-events-none absolute bottom-16 left-0 h-72 w-72 rounded-full opacity-80 blur-2xl" />
 
-        <div className="relative mx-auto w-full max-w-6xl px-6 py-24">
+        <div className="relative mx-auto w-6xl py-24">
           <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1fr_auto]">
             {/* Left: Text */}
             <div className="flex max-w-xl flex-col gap-8">
@@ -180,7 +180,7 @@ export default function LandingPage() {
 
       {/* ─── Features ────────────────────────────────────────────── */}
       <section id="features" className="bg-gray-white py-24">
-        <div className="mx-auto max-w-6xl px-6">
+        <div className="mx-auto w-6xl">
           <div className="mb-16 flex flex-col items-center gap-3 text-center">
             <span className="body-s-semibold bg-orange-050 rounded-full px-4 py-1.5 text-orange-500">핵심 기능</span>
             <h2 className="headline-m-bold text-gray-900">
@@ -241,7 +241,7 @@ export default function LandingPage() {
 
       {/* ─── How It Works ────────────────────────────────────────── */}
       <section className="py-24" style={{ background: 'linear-gradient(160deg, #fdf1d7 0%, #fff0e7 100%)' }}>
-        <div className="mx-auto max-w-6xl px-6">
+        <div className="mx-auto w-6xl">
           <div className="mb-16 flex flex-col items-center gap-3 text-center">
             <span className="body-s-semibold bg-gray-white rounded-full border border-orange-200 px-4 py-1.5 text-orange-500 shadow-sm">
               시작 가이드
@@ -297,7 +297,7 @@ export default function LandingPage() {
 
       {/* ─── Benefits ────────────────────────────────────────────── */}
       <section className="bg-gray-white py-24">
-        <div className="mx-auto max-w-6xl px-6">
+        <div className="mx-auto w-6xl">
           <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2">
             {/* Text */}
             <div className="flex flex-col gap-8">
@@ -388,7 +388,7 @@ export default function LandingPage() {
 
       {/* ─── Footer ──────────────────────────────────────────────── */}
       <footer className="bg-gray-900 py-8">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 sm:flex-row">
+        <div className="mx-auto flex w-6xl flex-col items-center justify-between gap-4 sm:flex-row">
           <Logo className="h-5 w-auto text-gray-600" />
           <p className="caption-m-medium text-gray-600">© 2026 Refit. Softeer Team 4. All rights reserved.</p>
         </div>
