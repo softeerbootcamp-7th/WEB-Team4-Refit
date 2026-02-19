@@ -59,6 +59,14 @@ export default function QnaCardListSection({
   const hasItems = items.length > 0
   const isSortDisabled = isLoading || Boolean(errorMessage) || !hasItems
 
+  const handleCardClick = (item: QnaCardListItem) => {
+    if (item.qnaSetId === 0) {
+      navigate(ROUTES.RETRO_DETAILS.replace(':interviewId', String(item.interviewId)))
+    } else {
+      setSelectedCard(item)
+    }
+  }
+
   return (
     <div className="mx-auto flex h-full w-full justify-center">
       <div className="flex h-full w-full flex-col">
@@ -86,7 +94,7 @@ export default function QnaCardListSection({
             hasNextPage={hasNextPage}
             isFetchingNext={isFetchingNext}
             loadMoreRef={loadMoreRef}
-            onCardClick={setSelectedCard}
+            onCardClick={handleCardClick}
           />
         </div>
       </div>
