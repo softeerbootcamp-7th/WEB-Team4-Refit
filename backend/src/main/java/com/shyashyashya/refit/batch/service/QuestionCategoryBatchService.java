@@ -75,5 +75,8 @@ public class QuestionCategoryBatchService {
             List<Long> questionIds = tempCategory.getQuestionDocumentIds();
             qnaSetRepository.updateQnaSetCategoryQnaSetIdsIn(qnaSetCategory, questionIds);
         }
+
+        log.info("[createCategories] 6. QnaSet 이 분류되지 않은 카테고리 삭제");
+        qnaSetCategoryRepository.deleteEmptyCategory();
     }
 }
