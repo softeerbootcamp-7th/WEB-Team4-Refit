@@ -54,13 +54,13 @@ export function LinkQnaSetCard({ ref, qnaData, idx }: LinkQnaSetCardProps) {
     linking: pendingSelection && (
       <div className="rounded-lg bg-orange-50 p-3">
         <p className="body-s-medium mb-1 text-orange-400">선택된 자기소개서 내용</p>
-        <p className="body-s-regular line-clamp-5 whitespace-pre-line text-gray-600">{pendingSelection.text}</p>
+        <p className="body-s-regular max-h-32 overflow-y-auto whitespace-pre-line text-gray-600">{pendingSelection.text}</p>
       </div>
     ),
     linked: (
       <div className="rounded-lg bg-gray-100 p-3">
         <p className="body-s-medium mb-1 text-gray-400">연결된 자기소개서 내용</p>
-        <p className="body-s-regular line-clamp-5 whitespace-pre-line text-gray-600">{highlight?.text}</p>
+        <p className="body-s-regular max-h-32 overflow-y-auto whitespace-pre-line text-gray-600">{highlight?.text}</p>
       </div>
     ),
     idle: null,
