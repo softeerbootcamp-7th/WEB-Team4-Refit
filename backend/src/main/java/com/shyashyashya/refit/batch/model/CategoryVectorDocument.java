@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import lombok.experimental.SuperBuilder;
 
+import static com.shyashyashya.refit.global.constant.ClusteringConstant.QUESTION_VECTOR_DOCUMENTS_ID_KEY;
+
 @SuperBuilder
 public class CategoryVectorDocument extends SingleVectorDocument<Long> {
 
@@ -17,7 +19,7 @@ public class CategoryVectorDocument extends SingleVectorDocument<Long> {
     }
 
     public List<Long> getQuestionDocumentIds() {
-        return (List<Long>) this.getPayload().get("clusterDocumentIds");
+        return (List<Long>) this.getPayload().get(QUESTION_VECTOR_DOCUMENTS_ID_KEY);
     }
 
     public List<Float> getCentroidVector() {

@@ -2,6 +2,7 @@ package com.shyashyashya.refit.global.util;
 
 import com.shyashyashya.refit.batch.model.CategoryVectorDocument;
 import com.shyashyashya.refit.batch.model.QuestionVectorDocument;
+import com.shyashyashya.refit.global.constant.ClusteringConstant;
 import com.shyashyashya.refit.global.vectordb.model.SingleVectorDocument;
 import elki.clustering.ClusteringAlgorithm;
 import elki.clustering.hierarchical.HDBSCANLinearMemory;
@@ -24,6 +25,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import org.springframework.stereotype.Component;
+
+import static com.shyashyashya.refit.global.constant.ClusteringConstant.QUESTION_VECTOR_DOCUMENTS_ID_KEY;
 
 /**
  * Elki 라이브러리를 활용하여 HDBSCAN 방식으로 클러스터링을 처리하는 구현체입니다.
@@ -99,7 +102,7 @@ public class ElkiClusterUtil implements ClusterUtil {
                     List<Float> centroidVector = calculateCentroid(questionEmbeddingsInCluster);
 
                     return CategoryVectorDocument.of(
-                            clusterId.longValue(), centroidVector, Map.of("clusterDocumentIds", clusterDocumentIds));
+                            clusterId.longValue(), centroidVector, Map.of(QUESTION_VECTOR_DOCUMENTS_ID_KEY, clusterDocumentIds));
                 })
                 .toList();
     }
