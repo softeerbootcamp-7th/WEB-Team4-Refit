@@ -24,12 +24,13 @@ export interface InterviewScheduleContentProps {
   onPrev: () => void
   onNext: () => void
   isSubmitting?: boolean
+  pastOnly?: boolean
 }
 
 const inputBaseClass =
   'body-l-medium border-gray-150 w-full rounded-[8px] border px-4 py-3 text-gray-900 outline-none placeholder:text-gray-300 focus:border-orange-500'
 
-export function InterviewScheduleContent({ values, onChange, onPrev, onNext, isSubmitting }: InterviewScheduleContentProps) {
+export function InterviewScheduleContent({ values, onChange, onPrev, onNext, isSubmitting, pastOnly }: InterviewScheduleContentProps) {
   const { interviewType, interviewDate, interviewTime } = values
   const defaultDate = getTodayDateString()
   const displayDate = interviewDate || defaultDate
@@ -53,7 +54,10 @@ export function InterviewScheduleContent({ values, onChange, onPrev, onNext, isS
     <>
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-2">
-          <label className="body-l-semibold text-gray-600">면접 유형</label>
+          <label className="body-l-semibold flex gap-1 text-gray-600">
+            <span>면접 유형</span>
+            <span className="text-red-400" aria-hidden>*</span>
+          </label>
           <div className="grid grid-cols-3 gap-2">
             {INTERVIEW_TYPE_OPTIONS.map((option) => {
               const isSelected = interviewType === option.value
@@ -74,12 +78,16 @@ export function InterviewScheduleContent({ values, onChange, onPrev, onNext, isS
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          <label className="body-l-semibold text-gray-600">면접 일시</label>
+          <label className="body-l-semibold flex gap-1 text-gray-600">
+            <span>면접 일시</span>
+            <span className="text-red-400" aria-hidden>*</span>
+          </label>
           <div className="flex gap-2">
             <input
               type="date"
               value={displayDate}
               disabled={isSubmitting}
+              max={pastOnly ? defaultDate : undefined}
               onChange={(e) => onChange({ ...values, interviewDate: e.target.value })}
               className={inputBaseClass}
             />
