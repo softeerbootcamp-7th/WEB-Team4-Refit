@@ -142,6 +142,7 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
                         qnaSet.interview.user.eq(user),
                         qnaSet.isMarkedDifficult.isTrue(),
                         qnaSet.interview.reviewStatus.eq(InterviewReviewStatus.DEBRIEF_COMPLETED))
+                .orderBy(getSortingConditions(pageable))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
