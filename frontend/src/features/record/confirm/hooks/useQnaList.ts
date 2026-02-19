@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { getGetInterviewFullQueryKey, useCreateQnaSet } from '@/apis/generated/interview-api/interview-api'
-import { useDeleteQnaSet, useUpdateQnaSet } from '@/apis/generated/qna-set-api/qna-set-api'
+import { useDeletePdfHighlighting, useDeleteQnaSet, useUpdateQnaSet } from '@/apis/generated/qna-set-api/qna-set-api'
+import { getApiErrorCode } from '@/features/_common/utils/error'
 
 const ERROR_MESSAGES = {
   EDIT: '질문/답변 저장에 실패했습니다. 잠시 후 다시 시도해주세요.',
@@ -13,13 +14,17 @@ type UseQnaListOptions = {
   interviewId: number
 }
 
+const QNA_DELETE_FAILED_PDF_HIGHLIGHTING_EXISTS = 'QNA_DELETE_FAILED_PDF_HIGHLIGHTING_EXISTS'
+
 export function useQnaList(options: UseQnaListOptions) {
   const queryClient = useQueryClient()
   const [isAddMode, setIsAddMode] = useState(false)
   const [actionError, setActionError] = useState<string | null>(null)
+  const [deleteConfirmQnaSetId, setDeleteConfirmQnaSetId] = useState<number | null>(null)
   const { mutateAsync: updateQnaSet, isPending: isEditing } = useUpdateQnaSet()
   const { mutateAsync: createQnaSet, isPending: isCreating } = useCreateQnaSet()
-  const { mutateAsync: deleteQnaSet, isPending: isDeleting } = useDeleteQnaSet()
+  const { mutateAsync: deleteQnaSet, isPending: isDeletingQnaSet } = useDeleteQnaSet()
+  const { mutateAsync: deletePdfHighlighting, isPending: isDeletingPdfHighlighting } = useDeletePdfHighlighting()
 
   const invalidateInterviewFull = () =>
     queryClient.invalidateQueries({
@@ -37,10 +42,31 @@ export function useQnaList(options: UseQnaListOptions) {
   }
 
   const handleDelete = async (qnaSetId: number) => {
-    if (isDeleting) return
+    if (isDeletingQnaSet || isDeletingPdfHighlighting) return
     setActionError(null)
     try {
       await deleteQnaSet({ qnaSetId })
+      void invalidateInterviewFull()
+    } catch (error) {
+      if (getApiErrorCode(error) === QNA_DELETE_FAILED_PDF_HIGHLIGHTING_EXISTS) {
+        setDeleteConfirmQnaSetId(qnaSetId)
+        return
+      }
+      setActionError(ERROR_MESSAGES.DELETE)
+    }
+  }
+
+  const cancelDeleteWithHighlight = () => setDeleteConfirmQnaSetId(null)
+
+  const confirmDeleteWithHighlight = async () => {
+    if (deleteConfirmQnaSetId === null) return
+    if (isDeletingQnaSet || isDeletingPdfHighlighting) return
+
+    setActionError(null)
+    try {
+      await deletePdfHighlighting({ qnaSetId: deleteConfirmQnaSetId })
+      await deleteQnaSet({ qnaSetId: deleteConfirmQnaSetId })
+      setDeleteConfirmQnaSetId(null)
       void invalidateInterviewFull()
     } catch {
       setActionError(ERROR_MESSAGES.DELETE)
@@ -68,10 +94,14 @@ export function useQnaList(options: UseQnaListOptions) {
     isAddMode,
     isCreating,
     isEditing,
-    isDeleting,
+    isDeleting: isDeletingQnaSet || isDeletingPdfHighlighting,
     actionError,
+    isDeleteWithHighlightConfirmOpen: deleteConfirmQnaSetId !== null,
+    isDeleteWithHighlightConfirmPending: isDeletingQnaSet || isDeletingPdfHighlighting,
     handleEdit,
     handleDelete,
+    cancelDeleteWithHighlight,
+    confirmDeleteWithHighlight,
     handleAddSave,
     startAddMode,
     cancelAddMode,

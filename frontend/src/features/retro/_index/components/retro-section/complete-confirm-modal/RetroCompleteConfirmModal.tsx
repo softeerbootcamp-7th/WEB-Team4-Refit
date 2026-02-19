@@ -22,7 +22,7 @@ export function RetroCompleteConfirmModal({
   if (missingKptItems.length > 0) {
     parts.push(`KPT ${missingKptItems.join(', ')}` + ' 회고')
   }
-  const description = `${parts.join(', ')}가\n작성되지 않았습니다.\n그래도 완료하시겠습니까?`
+  const description = `${parts.join(',\n')}가\n작성되지 않았습니다.\n그래도 완료하시겠습니까?`
 
   return (
     <ConfirmModal
