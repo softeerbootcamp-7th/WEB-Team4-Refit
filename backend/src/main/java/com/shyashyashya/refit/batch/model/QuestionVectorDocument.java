@@ -1,11 +1,11 @@
 package com.shyashyashya.refit.batch.model;
 
+import static com.shyashyashya.refit.global.constant.ClusteringConstant.QUESTION_VECTOR_QUESTION_KEY;
+
 import com.shyashyashya.refit.global.vectordb.model.SingleVectorDocument;
 import java.util.List;
 import java.util.Map;
 import lombok.experimental.SuperBuilder;
-
-import static com.shyashyashya.refit.global.constant.ClusteringConstant.QUESTION_VECTOR_QUESTION_KEY;
 
 @SuperBuilder
 public class QuestionVectorDocument extends SingleVectorDocument<Long> {

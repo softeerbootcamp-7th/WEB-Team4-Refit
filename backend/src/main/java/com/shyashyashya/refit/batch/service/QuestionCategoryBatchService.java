@@ -4,7 +4,6 @@ import com.shyashyashya.refit.batch.model.CategoryVectorDocument;
 import com.shyashyashya.refit.batch.model.QuestionVectorDocument;
 import com.shyashyashya.refit.batch.repository.QuestionCategoryVectorRepository;
 import com.shyashyashya.refit.batch.repository.QuestionVectorRepository;
-import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetCategory;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetCategoryRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;

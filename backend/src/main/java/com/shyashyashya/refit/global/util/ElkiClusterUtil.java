@@ -1,5 +1,7 @@
 package com.shyashyashya.refit.global.util;
 
+import static com.shyashyashya.refit.global.constant.ClusteringConstant.CATEGORY_VECTOR_QUESTION_DOCUMENT_IDS_KEY;
+
 import com.shyashyashya.refit.batch.model.CategoryVectorDocument;
 import com.shyashyashya.refit.batch.model.QuestionVectorDocument;
 import com.shyashyashya.refit.global.property.ClusteringProperty;
@@ -24,12 +26,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import static com.shyashyashya.refit.global.constant.ClusteringConstant.CATEGORY_VECTOR_QUESTION_DOCUMENT_IDS_KEY;
 
 /**
  * Elki 라이브러리를 활용하여 HDBSCAN 방식으로 클러스터링을 처리하는 구현체입니다.
@@ -44,15 +43,15 @@ public class ElkiClusterUtil implements ClusterUtil {
     public record Result(Map<Integer, List<Long>> clusters, List<Long> noise) {}
 
     @Override
-    public List<CategoryVectorDocument> createClusters(
-            List<QuestionVectorDocument> documents) {
+    public List<CategoryVectorDocument> createClusters(List<QuestionVectorDocument> documents) {
         Database db = createDatabase(documents);
         db.initialize();
 
         Relation<NumberVector> relation = db.getRelation(TypeUtil.NUMBER_VECTOR_FIELD);
 
         // 4) HDBSCAN 계층 생성 (CosineDistance)
-        HDBSCANLinearMemory<NumberVector> hdbscan = new HDBSCANLinearMemory<>(CosineDistance.STATIC, clusteringProperty.minPoints());
+        HDBSCANLinearMemory<NumberVector> hdbscan =
+                new HDBSCANLinearMemory<>(CosineDistance.STATIC, clusteringProperty.minPoints());
 
         // 5) HDBSCAN 계층에서 "클러스터 파티션" 추출
         ClusteringAlgorithm<Clustering<DendrogramModel>> extractor =
@@ -60,7 +59,8 @@ public class ElkiClusterUtil implements ClusterUtil {
 
         Clustering<DendrogramModel> clustering = extractor.autorun(db);
 
-        log.debug("[createClusters] allClusters count = " + clustering.getAllClusters().size());
+        log.debug("[createClusters] allClusters count = "
+                + clustering.getAllClusters().size());
         for (Cluster<DendrogramModel> c : clustering.getAllClusters()) {
             log.debug("[createClusters] cluster name={}, size={}", c.getNameAutomatic(), c.size());
         }
@@ -105,7 +105,9 @@ public class ElkiClusterUtil implements ClusterUtil {
                     List<Float> centroidVector = calculateCentroid(questionEmbeddingsInCluster);
 
                     return CategoryVectorDocument.of(
-                            clusterId.longValue(), centroidVector, Map.of(CATEGORY_VECTOR_QUESTION_DOCUMENT_IDS_KEY, clusterDocumentIds));
+                            clusterId.longValue(),
+                            centroidVector,
+                            Map.of(CATEGORY_VECTOR_QUESTION_DOCUMENT_IDS_KEY, clusterDocumentIds));
                 })
                 .toList();
     }
