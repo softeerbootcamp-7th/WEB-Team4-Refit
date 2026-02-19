@@ -12,9 +12,10 @@ type UseSectionScrollReturn = {
   handleItemClick: (index: number) => void
 }
 
+const ROOT_MARGIN = '-20% 0px -20% 0px'
 export function useSectionScroll({
   idPrefix = 'section',
-  threshold = 0.3,
+  threshold = 0,
 }: UseSectionScrollOptions = {}): UseSectionScrollReturn {
   const [activeIndex, setActiveIndex] = useState(0)
   const sectionRefs = useRef<(HTMLDivElement | null)[]>([])
@@ -43,7 +44,7 @@ export function useSectionScroll({
           setActiveIndex(Math.min(...visibleIndexSetRef.current))
         }
       },
-      { root: container, threshold },
+      { root: container, threshold, rootMargin: ROOT_MARGIN },
     )
 
     sectionRefs.current.forEach((ref) => {
