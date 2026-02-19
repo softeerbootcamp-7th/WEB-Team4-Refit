@@ -4,6 +4,7 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.INDUSTRY_NOT_FOU
 import static com.shyashyashya.refit.global.exception.ErrorCode.JOB_CATEGORY_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.USER_NICKNAME_CONFLICT;
 import static com.shyashyashya.refit.global.exception.ErrorCode.USER_SIGNUP_EMAIL_CONFLICT;
+import static org.mockito.Mockito.doThrow;
 import static com.shyashyashya.refit.unit.fixture.IndustryFixture.TEST_INDUSTRY;
 import static com.shyashyashya.refit.unit.fixture.JobCategoryFixture.TEST_JOB_CATEGORY;
 import static com.shyashyashya.refit.unit.fixture.UserFixture.TEST_USER_1;
@@ -30,9 +31,9 @@ import com.shyashyashya.refit.domain.user.service.validator.UserValidator;
 import com.shyashyashya.refit.global.auth.dto.TokenPairDto;
 import com.shyashyashya.refit.global.auth.service.JwtService;
 import com.shyashyashya.refit.global.exception.CustomException;
+import com.shyashyashya.refit.global.exception.ErrorCode;
 import com.shyashyashya.refit.global.util.RequestUserContext;
 import java.util.Optional;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -65,8 +66,7 @@ class UserServiceTest {
     private UserService userService;
 
     @Nested
-    @DisplayName("회원가입")
-    class SignUp {
+    class 회원가입 {
 
         @Test
         void 회원가입_성공시_토큰을_발급한다() {
@@ -150,8 +150,7 @@ class UserServiceTest {
     }
 
     @Nested
-    @DisplayName("약관 동의")
-    class AgreeToTerms {
+    class 약관_동의 {
 
         @Test
         void 약관_동의_상태를_변경한다() {
@@ -163,13 +162,27 @@ class UserServiceTest {
             userService.agreeToTerms();
 
             // then
+            verify(userValidator, times(1)).validateUserNotAgreedToTerms(user);
             verify(user, times(1)).agreeToTerms();
+        }
+
+        @Test
+        void 이미_동의한_경우_예외가_발생한다() {
+            // given
+            User user = mock(User.class);
+            given(requestUserContext.getRequestUser()).willReturn(user);
+            doThrow(new CustomException(ErrorCode.USER_ALREADY_AGREED_TO_TERMS))
+                    .when(userValidator).validateUserNotAgreedToTerms(user);
+
+            // when & then
+            assertThatThrownBy(() -> userService.agreeToTerms())
+                    .isInstanceOf(CustomException.class)
+                    .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_ALREADY_AGREED_TO_TERMS);
         }
     }
 
     @Nested
-    @DisplayName("프로필 조회")
-    class GetMyProfileInfo {
+    class 프로필_조회 {
 
         @Test
         void 내_프로필_정보를_조회한다() {
@@ -189,8 +202,7 @@ class UserServiceTest {
     }
 
     @Nested
-    @DisplayName("프로필 수정")
-    class UpdateMyProfile {
+    class 프로필_수정 {
 
         @Test
         void 프로필_정보를_수정한다() {
