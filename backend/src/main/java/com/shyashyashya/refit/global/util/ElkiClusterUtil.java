@@ -23,6 +23,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import static com.shyashyashya.refit.global.constant.ClusteringConstant.CATEGORY_VECTOR_QUESTION_DOCUMENT_IDS_KEY;
@@ -31,6 +33,7 @@ import static com.shyashyashya.refit.global.constant.ClusteringConstant.CATEGORY
  * Elki 라이브러리를 활용하여 HDBSCAN 방식으로 클러스터링을 처리하는 구현체입니다.
  */
 @Component
+@Slf4j
 public class ElkiClusterUtil implements ClusterUtil {
 
     public record Result(Map<Integer, List<Long>> clusters, List<Long> noise) {}
@@ -52,13 +55,9 @@ public class ElkiClusterUtil implements ClusterUtil {
 
         Clustering<DendrogramModel> clustering = extractor.autorun(db);
 
-        System.out.println("allClusters count = " + clustering.getAllClusters().size());
+        log.debug("[createClusters] allClusters count = " + clustering.getAllClusters().size());
         for (Cluster<DendrogramModel> c : clustering.getAllClusters()) {
-            System.out.printf(
-                    "cluster name=%s, size=%d, model=%s%n",
-                    c.getNameAutomatic(),
-                    c.size(),
-                    (c.getModel() == null ? "null" : c.getModel().getClass().getName()));
+            log.debug("[createClusters] cluster name={}, size={}", c.getNameAutomatic(), c.size());
         }
 
         // 6) ELKI cluster의 DBID를 원래 인덱스(offset)로 변환 후 pointId로 매핑
@@ -87,7 +86,7 @@ public class ElkiClusterUtil implements ClusterUtil {
         }
 
         Result result = new Result(clusters, noise);
-        System.out.println("clusters = " + result.clusters().size());
+        log.debug("[createClusters] clusters = " + result.clusters().size());
 
         return result.clusters.entrySet().stream()
                 .map(cluster -> {
