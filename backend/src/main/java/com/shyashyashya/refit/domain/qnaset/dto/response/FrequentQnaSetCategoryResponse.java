@@ -1,7 +1,6 @@
 package com.shyashyashya.refit.domain.qnaset.dto.response;
 
 import com.querydsl.core.annotations.QueryProjection;
-import com.shyashyashya.refit.domain.qnaset.model.QnaSetCategory;
 import jakarta.validation.constraints.NotNull;
 
 public record FrequentQnaSetCategoryResponse(

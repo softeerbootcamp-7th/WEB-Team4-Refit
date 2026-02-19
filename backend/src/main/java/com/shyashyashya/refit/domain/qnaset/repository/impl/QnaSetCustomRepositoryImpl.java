@@ -103,10 +103,10 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
     @Override
     public Page<FrequentQnaSetCategoryResponse> findFrequentQnaSetCategoryByUser(User user, Pageable pageable) {
         BooleanExpression[] whereConditions = {
-                qnaSet.interview.user.eq(user),
-                qnaSet.interview.reviewStatus.in(
-                        InterviewReviewStatus.DEBRIEF_COMPLETED, InterviewReviewStatus.SELF_REVIEW_DRAFT),
-                qnaSet.qnaSetCategory.isNotNull()
+            qnaSet.interview.user.eq(user),
+            qnaSet.interview.reviewStatus.in(
+                    InterviewReviewStatus.DEBRIEF_COMPLETED, InterviewReviewStatus.SELF_REVIEW_DRAFT),
+            qnaSet.qnaSetCategory.isNotNull()
         };
         var pageContent = queryFactory
                 .select(new QFrequentQnaSetCategoryResponse(
@@ -135,10 +135,10 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
     @Override
     public Page<QnaSet> findAllDifficultByUser(User user, Pageable pageable) {
         BooleanExpression[] searchConditions = {
-                qnaSet.interview.user.eq(user),
-                qnaSet.isMarkedDifficult.isTrue(),
-                qnaSet.interview.reviewStatus.in(
-                        InterviewReviewStatus.DEBRIEF_COMPLETED, InterviewReviewStatus.SELF_REVIEW_DRAFT),
+            qnaSet.interview.user.eq(user),
+            qnaSet.isMarkedDifficult.isTrue(),
+            qnaSet.interview.reviewStatus.in(
+                    InterviewReviewStatus.DEBRIEF_COMPLETED, InterviewReviewStatus.SELF_REVIEW_DRAFT),
         };
 
         List<QnaSet> contents = queryFactory
