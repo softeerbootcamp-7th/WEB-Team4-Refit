@@ -34,6 +34,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.15'
 
+    // MySQL
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
     // Query DSL
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
     annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
@@ -49,8 +52,8 @@ dependencies {
     // Qdrant Vector DB
     implementation "io.qdrant:client:1.16.2"
 
-    // MySQL
-    runtimeOnly 'com.mysql:mysql-connector-j'
+    // ELKI
+    implementation "io.github.elki-project:elki:0.8.0"
 
     // JWT
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
