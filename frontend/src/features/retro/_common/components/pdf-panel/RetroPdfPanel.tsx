@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { useQueries } from '@tanstack/react-query'
-import { getPdfHighlightings } from '@/apis/generated/qna-set-api/qna-set-api'
+import { getGetPdfHighlightingsQueryKey, getPdfHighlightings } from '@/apis/generated/qna-set-api/qna-set-api'
 import type { ApiResponseListPdfHighlightingDto } from '@/apis/generated/refit-api.schemas'
 import { LoadingSpinner } from '@/designs/assets'
 import { PdfNavigation } from '@/features/record/link/components/pdf-section/PdfNavigation'
@@ -33,7 +33,7 @@ export function RetroPdfPanel({ interviewId, hasPdf: initialHasPdf, qnaSetIds }:
 
   const highlightQueries = useQueries({
     queries: (hasPdf ? qnaSetIds : []).map((qnaSetId) => ({
-      queryKey: ['/qna-set', qnaSetId, 'pdf-highlighting', 'retro'],
+      queryKey: getGetPdfHighlightingsQueryKey(qnaSetId),
       queryFn: async () => {
         try {
           return await getPdfHighlightings(qnaSetId)
@@ -92,12 +92,10 @@ export function RetroPdfPanel({ interviewId, hasPdf: initialHasPdf, qnaSetIds }:
             <LoadingSpinner className="h-8 w-8 animate-spin text-gray-300" />
           </div>
         )}
-        {hasError && (
-          <p className="body-m-regular py-10 text-center text-red-400">
-            PDF를 불러오는 데 실패했습니다.
-          </p>
+        {hasError && <p className="body-m-regular py-10 text-center text-red-400">PDF를 불러오는 데 실패했습니다.</p>}
+        {isReady && (
+          <RetroPdfPage pdf={pdf} pageNumber={currentPage} containerSize={containerSize} savedRects={savedRects} />
         )}
-        {isReady && <RetroPdfPage pdf={pdf} pageNumber={currentPage} containerSize={containerSize} savedRects={savedRects} />}
       </div>
     </div>
   )
