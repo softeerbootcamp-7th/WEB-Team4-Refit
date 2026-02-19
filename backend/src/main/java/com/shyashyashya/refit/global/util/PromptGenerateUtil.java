@@ -89,7 +89,7 @@ public class PromptGenerateUtil {
                                             "[convertToRequest] error converting question vector id {} to string",
                                             questionVector.getId(),
                                             e);
-                                    return null;
+                                    throw new RuntimeException(e);
                                 }
                             })
                             .toList();
