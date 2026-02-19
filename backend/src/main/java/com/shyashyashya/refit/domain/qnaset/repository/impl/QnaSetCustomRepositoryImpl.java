@@ -102,6 +102,11 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
 
     @Override
     public Page<FrequentQnaSetCategoryResponse> findFrequentQnaSetCategoryByUser(User user, Pageable pageable) {
+        BooleanExpression[] whereConditions = {
+                qnaSet.interview.user.eq(user),
+                qnaSet.interview.reviewStatus.eq(InterviewReviewStatus.DEBRIEF_COMPLETED),
+                qnaSet.qnaSetCategory.isNotNull()
+        };
         var pageContent = queryFactory
                 .select(new QFrequentQnaSetCategoryResponse(
                         qnaSet.qnaSetCategory.id,
@@ -109,10 +114,7 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
                         qnaSet.count(),
                         qnaSet.qnaSetCategory.cohesion))
                 .from(qnaSet)
-                .where(
-                        qnaSet.interview.user.eq(user),
-                        qnaSet.interview.reviewStatus.eq(InterviewReviewStatus.DEBRIEF_COMPLETED),
-                        qnaSet.qnaSetCategory.isNotNull())
+                .where(whereConditions)
                 .groupBy(qnaSet.qnaSetCategory)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -121,13 +123,8 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
         Long count = queryFactory
                 .select(qnaSet.qnaSetCategory.countDistinct())
                 .from(qnaSet)
-                .where(
-                        qnaSet.interview.user.eq(user),
-                        qnaSet.interview.reviewStatus.eq(InterviewReviewStatus.DEBRIEF_COMPLETED),
-                        qnaSet.qnaSetCategory.isNotNull())
+                .where(whereConditions)
                 .groupBy(qnaSet.qnaSetCategory)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
                 .fetchOne();
         count = count == null ? 0L : count;
 
