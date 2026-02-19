@@ -9,7 +9,7 @@ import com.shyashyashya.refit.domain.qnaset.model.StarAnalysis;
 import com.shyashyashya.refit.domain.qnaset.model.StarAnalysisGenerationStatus;
 import com.shyashyashya.refit.domain.qnaset.repository.StarAnalysisRepository;
 import com.shyashyashya.refit.global.exception.CustomException;
-import com.shyashyashya.refit.global.gemini.StarAnalysisGeminiResponse;
+import com.shyashyashya.refit.global.gemini.dto.StarAnalysisGeminiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

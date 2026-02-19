@@ -1,5 +1,9 @@
 package com.shyashyashya.refit.global.gemini;
 
+import com.shyashyashya.refit.global.gemini.dto.GeminiEmbeddingRequest;
+import com.shyashyashya.refit.global.gemini.dto.GeminiEmbeddingResponse;
+import com.shyashyashya.refit.global.gemini.dto.GeminiGenerateRequest;
+import com.shyashyashya.refit.global.gemini.dto.GeminiGenerateResponse;
 import com.shyashyashya.refit.global.property.GeminiProperty;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
