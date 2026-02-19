@@ -38,7 +38,6 @@ public class QuestionCategoryBatchService {
         log.info("[createCategories] 1. 모든 질문 및 질문 임베딩 벡터 조회");
         List<QuestionVectorDocument> questionVectors =
                 questionVectorRepository.findAll().toList();
-        List<QnaSet> qnaSets = qnaSetRepository.findAll();
 
         log.info("[createCategories] 2. 질문 임베딩 벡터 클러스터링");
         List<CategoryVectorDocument> clusters = clusterUtil.createClusters(questionVectors, 3, 2);
