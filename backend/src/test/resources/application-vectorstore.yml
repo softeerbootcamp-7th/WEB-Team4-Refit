@@ -7,6 +7,10 @@ spring:
       find-all-default-batch-size: 100
       collections:
         qna-set-question:
-          name: "collection_name"
-          vector-dimension: 128
+          name: "interview_questions"
+          vector-dimension: 768
+          distance: "Cosine"
+        qna-set-category:
+          name: "question_categories"
+          vector-dimension: 768
           distance: "Cosine"
