@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router'
+import { ROUTES } from '@/routes/routes'
 import type { InterviewFilter } from '@/types/interview'
 import InterviewCard from './interview-card/InterviewCard'
 import { useInfiniteInterviewList } from './useInfiniteInterviewList'
@@ -7,6 +9,7 @@ type InterviewListSectionProps = {
 }
 
 export default function InterviewListSection({ filter }: InterviewListSectionProps) {
+  const navigate = useNavigate()
   const { items, loadMoreRef, isInitialLoading, isFetchingNext, isPending, emptyMessage } =
     useInfiniteInterviewList(filter)
   const hasItems = items.length > 0
@@ -19,7 +22,13 @@ export default function InterviewListSection({ filter }: InterviewListSectionPro
     if (!hasItems) {
       return <StatusText message={emptyMessage} />
     }
-    return items.map((item) => <InterviewCard key={item.interviewId} {...item} />)
+    return items.map((item) => (
+      <InterviewCard
+        key={item.interviewId}
+        {...item}
+        onClick={() => navigate(ROUTES.RETRO_DETAILS.replace(':interviewId', String(item.interviewId)))}
+      />
+    ))
   }
 
   return (
