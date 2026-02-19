@@ -17,9 +17,4 @@ public record FrequentQnaSetCategoryResponse(
         this.frequentCount = frequentCount;
         this.cohesion = cohesion;
     }
-
-    public static FrequentQnaSetCategoryResponse of(QnaSetCategory category, Long frequentCount) {
-        return new FrequentQnaSetCategoryResponse(
-                category.getId(), category.getCategoryName(), frequentCount, category.getCohesion());
-    }
 }
