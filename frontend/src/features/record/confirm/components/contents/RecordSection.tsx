@@ -44,7 +44,7 @@ export function RecordSection({
   scrollContainerRef,
 }: RecordSectionProps) {
   const navigateWithId = useInterviewNavigate()
-  const goToRecordLinkPage = () => navigateWithId(ROUTES.RECORD_LINK)
+  const goToRecordLinkPage = () => navigateWithId(ROUTES.RECORD_LINK, { replace: true })
 
   return (
     <div className="flex h-full flex-col gap-5 overflow-hidden p-6">

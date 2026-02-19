@@ -28,13 +28,13 @@ export function PdfSection() {
   const { mutate: completeQnaSetDraft, isPending: isCompletingQnaSetDraft } = useCompleteQnaSetDraft()
 
   const navigateWithId = useInterviewNavigate()
-  const goToConfirmPage = () => navigateWithId(ROUTES.RECORD_CONFIRM)
+  const goToConfirmPage = () => navigateWithId(ROUTES.RECORD_CONFIRM, { replace: true })
   const goToRetroPage = () => {
     completeQnaSetDraft(
       { interviewId },
       {
         onSuccess: () => {
-          navigateWithId(ROUTES.RETRO)
+          navigateWithId(ROUTES.RETRO, { replace: true })
         },
       },
     )
