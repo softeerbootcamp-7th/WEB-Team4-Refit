@@ -54,11 +54,13 @@ import com.shyashyashya.refit.global.gemini.GenerateModel;
 import com.shyashyashya.refit.global.gemini.QnaSetsGeminiResponse;
 import com.shyashyashya.refit.global.property.S3FolderNameProperty;
 import com.shyashyashya.refit.global.util.HangulUtil;
+import com.shyashyashya.refit.global.util.KeyLockUtil;
 import com.shyashyashya.refit.global.util.RequestUserContext;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -92,6 +94,7 @@ public class InterviewService {
     private final S3FolderNameProperty s3FolderNameProperty;
     private final S3Util s3Util;
     private final HangulUtil hangulUtil;
+    private final KeyLockUtil<Long> interviewLock;
     private final ObjectMapper objectMapper;
 
     @Transactional(readOnly = true)
@@ -203,20 +206,26 @@ public class InterviewService {
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
-        String resourceKey = interview.getPdfResourceKey();
-        if (resourceKey != null && s3Util.existsByResourceKey(resourceKey)) {
-            throw new CustomException(INTERVIEW_PDF_ALREADY_EXITS);
-        }
+        ReentrantLock lock = interviewLock.acquire(interviewId);
+        try {
+            String resourceKey = interview.getPdfResourceKey();
+            if (resourceKey != null && s3Util.existsByResourceKey(resourceKey)) {
+                throw new CustomException(INTERVIEW_PDF_ALREADY_EXITS);
+            }
 
-        // TODO Race Condition 해결: key가 null인 상태로 요청이 여러번 들어오면, 다른 UUID에 대한 업로드 url이 발행될 수 있음.
-        if (resourceKey == null) {
-            resourceKey = s3FolderNameProperty.interviewPdf() + UUID.randomUUID() + ".pdf";
-            interview.updatePdfResourceKey(resourceKey);
-        }
+            if (resourceKey == null) {
+                resourceKey = s3FolderNameProperty.interviewPdf() + UUID.randomUUID() + ".pdf";
+                interview.updatePdfResourceKey(resourceKey);
+            }
 
-        PresignedUrlDto presignedUrlDto = s3Util.createResourceUploadUrl(resourceKey, MediaType.APPLICATION_PDF);
-        interview.updatePdfUploadUrlPublishedTime(LocalDateTime.now());
-        return PdfFilePresignResponse.of(presignedUrlDto, interview.getPdfUploadUrlPublishedAt());
+            PresignedUrlDto presignedUrlDto = s3Util.createResourceUploadUrl(resourceKey, MediaType.APPLICATION_PDF);
+            interview.updatePdfUploadUrlPublishedTime(LocalDateTime.now());
+            interviewRepository.save(interview);
+
+            return PdfFilePresignResponse.of(presignedUrlDto, interview.getPdfUploadUrlPublishedAt());
+        } finally {
+            interviewLock.release(interviewId, lock);
+        }
     }
 
     @Transactional(readOnly = true)
