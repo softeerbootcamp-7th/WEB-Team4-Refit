@@ -22,6 +22,7 @@ export function LinkQnaSetCard({ ref, qnaData, idx }: LinkQnaSetCardProps) {
     removeHighlight,
     pendingSelection,
     saveHighlight,
+    saveErrors,
   } = useHighlightContext()
 
   const { qnaSetId, questionText, answerText } = qnaData
@@ -38,10 +39,11 @@ export function LinkQnaSetCard({ ref, qnaData, idx }: LinkQnaSetCardProps) {
     isOtherLinking ? 'pointer-events-none opacity-30' : '',
   ].join(' ')
 
+  const errorMessage = saveErrors.get(qnaSetId)
   const badge: Record<CardState, ReactNode> = {
     linking: null,
     linked: <span className="body-s-regular text-orange-500">자기소개서 연결됨</span>,
-    idle: null,
+    idle: errorMessage ? <span className="body-s-regular text-red-400">{errorMessage}</span> : null,
   }
 
   const buttons: Record<CardState, ReactNode> = {
@@ -54,7 +56,9 @@ export function LinkQnaSetCard({ ref, qnaData, idx }: LinkQnaSetCardProps) {
     linking: pendingSelection && (
       <div className="rounded-lg bg-orange-50 p-3">
         <p className="body-s-medium mb-1 text-orange-400">선택된 자기소개서 내용</p>
-        <p className="body-s-regular max-h-32 overflow-y-auto whitespace-pre-line text-gray-600">{pendingSelection.text}</p>
+        <p className="body-s-regular max-h-32 overflow-y-auto whitespace-pre-line text-gray-600">
+          {pendingSelection.text}
+        </p>
       </div>
     ),
     linked: (
