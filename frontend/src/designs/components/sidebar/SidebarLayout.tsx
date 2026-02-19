@@ -1,7 +1,7 @@
 export const SidebarLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="bg-gray-150 my-6 flex flex-1 overflow-hidden rounded-xl p-6 pb-12">
-      <div className="flex w-80 flex-col gap-4">{children}</div>
+      <div className="flex w-full flex-col gap-4">{children}</div>
     </div>
   )
 }

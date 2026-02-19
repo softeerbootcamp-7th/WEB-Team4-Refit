@@ -60,8 +60,11 @@ public class Interview extends BaseEntity {
     @Column(name = "interview_raw_text", columnDefinition = "text")
     private String rawText;
 
-    @Column(columnDefinition = "varchar(2048)")
-    private String pdfUrl;
+    @Column(columnDefinition = "varchar(200)")
+    private String pdfResourceKey;
+
+    @Column(name = "pdf_uploaded_at")
+    private LocalDateTime pdfUploadUrlPublishedAt;
 
     @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -97,7 +100,7 @@ public class Interview extends BaseEntity {
                 .interviewType(interviewType)
                 .startAt(startAt)
                 .rawText("")
-                .pdfUrl(null)
+                .pdfResourceKey(null)
                 .user(user)
                 .company(company)
                 .industry(industry)
@@ -117,7 +120,7 @@ public class Interview extends BaseEntity {
             InterviewType interviewType,
             LocalDateTime startAt,
             String rawText,
-            String pdfUrl,
+            String pdfResourceKey,
             User user,
             Company company,
             Industry industry,
@@ -128,7 +131,7 @@ public class Interview extends BaseEntity {
         this.interviewType = interviewType;
         this.startAt = startAt;
         this.rawText = rawText;
-        this.pdfUrl = pdfUrl;
+        this.pdfResourceKey = pdfResourceKey;
         this.user = user;
         this.company = company;
         this.industry = industry;
@@ -171,7 +174,15 @@ public class Interview extends BaseEntity {
         this.resultStatus = interviewResultStatus;
     }
 
-    public void updatePdfUrl(String pdfUrl) {
-        this.pdfUrl = pdfUrl;
+    public void updatePdfResourceKey(String pdfResourceKey) {
+        this.pdfResourceKey = pdfResourceKey;
+    }
+
+    public void deletePdfResourceKey() {
+        this.pdfResourceKey = null;
+    }
+
+    public void updatePdfUploadUrlPublishedTime(LocalDateTime time) {
+        this.pdfUploadUrlPublishedAt = time;
     }
 }

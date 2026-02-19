@@ -1,5 +1,6 @@
 package com.shyashyashya.refit.domain.qnaset.service;
 
+import static com.shyashyashya.refit.global.exception.ErrorCode.QNA_DELETE_FAILED_PDF_HIGHLIGHTING_EXISTS;
 import static com.shyashyashya.refit.global.exception.ErrorCode.QNA_SET_NOT_FOUND;
 
 import com.shyashyashya.refit.domain.industry.service.validator.IndustryValidator;
@@ -86,6 +87,11 @@ public class QnaSetService {
     public void deleteQnaSet(Long qnaSetId) {
         QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
         interviewValidator.validateInterviewReviewStatus(qnaSet.getInterview(), InterviewReviewStatus.QNA_SET_DRAFT);
+
+        if (pdfHighlightingRepository.existsByQnaSet(qnaSet)) {
+            throw new CustomException(QNA_DELETE_FAILED_PDF_HIGHLIGHTING_EXISTS);
+        }
+
         qnaSetRepository.delete(qnaSet);
     }
 
@@ -102,7 +108,7 @@ public class QnaSetService {
     public void updatePdfHighlighting(Long qnaSetId, List<PdfHighlightingUpdateRequest> request) {
         QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
         interviewValidator.validateInterviewReviewStatus(qnaSet.getInterview(), InterviewReviewStatus.QNA_SET_DRAFT);
-        deleteAllHighlightingsAndRects(qnaSet);
+        pdfHighlightingRepository.deleteAllByQnaSet(qnaSet);
         saveAllHighlightings(qnaSet, request);
     }
 
@@ -123,6 +129,13 @@ public class QnaSetService {
                         highlighting,
                         rectsByHighlighting.getOrDefault(highlighting, java.util.Collections.emptyList())))
                 .toList();
+    }
+
+    @Transactional
+    public void deletePdfHighlighting(Long qnaSetId) {
+        QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
+        interviewValidator.validateInterviewReviewStatus(qnaSet.getInterview(), InterviewReviewStatus.QNA_SET_DRAFT);
+        pdfHighlightingRepository.deleteAllByQnaSet(qnaSet);
     }
 
     @Transactional(readOnly = true)
@@ -164,11 +177,6 @@ public class QnaSetService {
                 .ifPresentOrElse(
                         selfReview -> selfReview.updateSelfReviewText(reqSelfReviewText),
                         () -> qnaSetSelfReviewRepository.save(QnaSetSelfReview.create(reqSelfReviewText, qnaSet)));
-    }
-
-    private void deleteAllHighlightingsAndRects(QnaSet qnaSet) {
-        pdfHighlightingRectRepository.deleteAllByQnaSet(qnaSet);
-        pdfHighlightingRepository.deleteAllByQnaSet(qnaSet);
     }
 
     private void saveAllHighlightings(QnaSet qnaSet, List<PdfHighlightingUpdateRequest> request) {

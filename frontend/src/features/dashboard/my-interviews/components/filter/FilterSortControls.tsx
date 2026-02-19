@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { CaretDownIcon, FilterIcon } from '@/designs/assets'
 import { Button, PlainCombobox } from '@/designs/components'
-import type { LabelValueType } from '@/types/global'
+import { INTERVIEW_SORT_OPTIONS } from '@/features/dashboard/my-interviews/constants/constants'
 import type { InterviewFilter } from '@/types/interview'
 import InterviewFilterModal from './InterviewFilterModal'
 
@@ -24,12 +24,12 @@ export default function FilterSortControls({ filter, onFilterChange }: FilterSor
       </Button>
       <PlainCombobox
         title="면접 정렬"
-        options={SORT_OPTIONS}
+        options={[...INTERVIEW_SORT_OPTIONS]}
         value={filter.sort}
         onChange={(sort) => onFilterChange({ ...filter, sort })}
         trigger={
           <Button size="xs" variant="fill-gray-150">
-            {SORT_OPTIONS.find((o) => o.value === filter.sort)?.label}
+            {INTERVIEW_SORT_OPTIONS.find((o) => o.value === filter.sort)?.label}
             <CaretDownIcon className="h-2 w-2" />
           </Button>
         }
@@ -44,10 +44,3 @@ export default function FilterSortControls({ filter, onFilterChange }: FilterSor
     </div>
   )
 }
-
-const SORT_OPTIONS: LabelValueType[] = [
-  { label: '면접 일시 최신순', value: 'date-latest' },
-  { label: '면접 일시 오래된순', value: 'date-oldest' },
-  { label: '최신 업데이트순', value: 'updated' },
-  { label: '가나다순', value: 'alphabetical' },
-]

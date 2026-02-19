@@ -1,4 +1,5 @@
 import type {
+  InterviewSearchRequest,
   QnaSetSearchRequest,
   QnaSearchFilterAInclusionLevelsItem,
   QnaSearchFilterRInclusionLevelsItem,
@@ -20,12 +21,11 @@ export type QnaSetType = {
   questionText: string
   answerText: string
   qnaSetSelfReviewText: string
-  starAnalysis: StarAnalysisResult
+  starAnalysis?: StarAnalysisResult
   isMarkedDifficult: boolean
 }
 
-// TODO: 회고 페이지에서 StarLevel로 변경
-export type StarStatus = 'present' | 'insufficient' | 'absent'
+export type StarStatus = 'PRESENT' | 'INSUFFICIENT' | 'ABSENT' | 'NULL'
 
 export type StarAnalysisResult = {
   sInclusionLevel: StarStatus
@@ -56,8 +56,8 @@ type InterviewFullType = {
 
 export type InterviewFilter = {
   keyword: string
-  interviewType: string[]
-  resultStatus: string[]
+  interviewType: NonNullable<InterviewSearchRequest['searchFilter']['interviewType']>
+  resultStatus: NonNullable<InterviewSearchRequest['searchFilter']['interviewResultStatus']>
   startDate: string
   endDate: string
   sort: string

@@ -1,21 +1,20 @@
 package com.shyashyashya.refit.domain.qnaset.service;
 
-import static com.shyashyashya.refit.domain.qnaset.constant.StarAnalysisConstant.STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC;
+import static com.shyashyashya.refit.global.exception.ErrorCode.GEMINI_RESPONSE_PARSING_FAILED;
 import static com.shyashyashya.refit.global.exception.ErrorCode.STAR_ANALYSIS_CREATE_FAILED;
-import static com.shyashyashya.refit.global.exception.ErrorCode.STAR_ANALYSIS_PARSING_FAILED;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.shyashyashya.refit.domain.qnaset.constant.StarAnalysisPromptGenerator;
 import com.shyashyashya.refit.domain.qnaset.dto.StarAnalysisDto;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.StarAnalysis;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.gemini.GeminiClient;
-import com.shyashyashya.refit.global.gemini.GeminiGenerateRequest;
-import com.shyashyashya.refit.global.gemini.GeminiGenerateResponse;
 import com.shyashyashya.refit.global.gemini.GenerateModel;
-import com.shyashyashya.refit.global.gemini.StarAnalysisGeminiResponse;
+import com.shyashyashya.refit.global.gemini.dto.GeminiGenerateRequest;
+import com.shyashyashya.refit.global.gemini.dto.GeminiGenerateResponse;
+import com.shyashyashya.refit.global.gemini.dto.StarAnalysisGeminiResponse;
+import com.shyashyashya.refit.global.util.PromptGenerateUtil;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import lombok.RequiredArgsConstructor;
@@ -30,24 +29,23 @@ public class StarAnalysisAsyncService {
     private final QnaSetService qnaSetService;
     private final StarAnalysisService starAnalysisService;
     private final GeminiClient geminiClient;
-    private final StarAnalysisPromptGenerator starAnalysisGeneratePrompt;
     private final Executor geminiPostProcessExecutor;
     private final ObjectMapper objectMapper;
+    private final PromptGenerateUtil promptGenerateUtil;
 
     public CompletableFuture<StarAnalysisDto> createStarAnalysis(Long qnaSetId) {
         QnaSet qnaSet = qnaSetService.getQnaSet(qnaSetId);
         Long starAnalysisId =
                 starAnalysisService.createInProgressStarAnalysis(qnaSet).getId();
 
-        String prompt = starAnalysisGeneratePrompt.buildPrompt(qnaSet);
+        String prompt = promptGenerateUtil.buildStarAnalysisCreatePrompt(qnaSet);
         GeminiGenerateRequest requestBody = GeminiGenerateRequest.from(prompt);
 
         log.info("Send star analysis generate request to gemini. qnaSetId: {}", qnaSetId);
         CompletableFuture<GeminiGenerateResponse> reqFuture =
                 // geminiClient.sendAsyncRequest(requestBody, GenerateModel.GEMINI_2_5_FLASH_LITE,
                 // STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC);
-                geminiClient.sendAsyncTextGenerateRequest(
-                        requestBody, GenerateModel.GEMMA_3_27B_IT, STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC);
+                geminiClient.sendAsyncTextGenerateRequest(requestBody, GenerateModel.GEMMA_3_27B_IT);
 
         return reqFuture
                 .thenApplyAsync(
@@ -68,23 +66,17 @@ public class StarAnalysisAsyncService {
             Long starAnalysisId, Long qnaSetId, GeminiGenerateResponse geminiResponse) {
         log.info("Receive star analysis generate response from gemini. qnaSetId: {} \n{}", qnaSetId, geminiResponse);
         String jsonText =
-                geminiResponse.firstText().orElseThrow(() -> new CustomException(STAR_ANALYSIS_PARSING_FAILED));
+                geminiResponse.firstJsonText().orElseThrow(() -> new CustomException(GEMINI_RESPONSE_PARSING_FAILED));
         StarAnalysisGeminiResponse starAnalysisGeminiResponse = parseStarAnalysisGeminiResponse(jsonText);
         StarAnalysis updated = starAnalysisService.updateStarAnalysis(starAnalysisId, starAnalysisGeminiResponse);
         return StarAnalysisDto.from(updated);
     }
 
-    private StarAnalysisGeminiResponse parseStarAnalysisGeminiResponse(String text) {
+    private StarAnalysisGeminiResponse parseStarAnalysisGeminiResponse(String jsonText) {
         try {
-            if (text.startsWith("```json\n")) {
-                text = text.substring("```json\n".length());
-            }
-            if (text.endsWith("```")) {
-                text = text.substring(0, text.length() - "```".length());
-            }
-            return objectMapper.readValue(text, StarAnalysisGeminiResponse.class);
+            return objectMapper.readValue(jsonText, StarAnalysisGeminiResponse.class);
         } catch (JsonProcessingException e) {
-            throw new CustomException(STAR_ANALYSIS_PARSING_FAILED);
+            throw new CustomException(GEMINI_RESPONSE_PARSING_FAILED);
         }
     }
 }

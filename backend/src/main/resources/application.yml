@@ -11,6 +11,8 @@ spring:
       - s3
       - auth
       - gemini
+      - vectorstore
+      - clustering
 
 server:
   tomcat:

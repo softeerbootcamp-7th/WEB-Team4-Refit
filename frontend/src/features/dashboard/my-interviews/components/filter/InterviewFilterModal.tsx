@@ -14,15 +14,15 @@ type InterviewFilterModalProps = {
 export default function InterviewFilterModalContent({ open, filter, onApply, onClose }: InterviewFilterModalProps) {
   const [draft, setDraft] = useState<InterviewFilter>(filter)
 
-  const toggleItem = (key: keyof Pick<InterviewFilter, 'interviewType' | 'resultStatus'>, value: string) => {
+  const toggleItem = <K extends 'interviewType' | 'resultStatus'>(key: K, value: InterviewFilter[K][number]) => {
     setDraft((prev) => {
-      const list = prev[key]
+      const list = prev[key] as string[]
       const updated = list.includes(value) ? list.filter((v) => v !== value) : [...list, value]
       return { ...prev, [key]: updated }
     })
   }
 
-  const handleReset = () => setDraft(EMPTY_FILTER)
+  const handleReset = () => setDraft((prev) => ({ ...EMPTY_FILTER, keyword: prev.keyword }))
 
   const handleApply = () => {
     onApply(draft)
@@ -37,14 +37,14 @@ export default function InterviewFilterModalContent({ open, filter, onApply, onC
           items={INTERVIEW_TYPE_OPTIONS}
           columns={3}
           selected={draft.interviewType}
-          onToggle={(v) => toggleItem('interviewType', v)}
+          onToggle={(v) => toggleItem('interviewType', v as InterviewFilter['interviewType'][number])}
         />
         <CheckboxGroup
           label="합불 상태"
           items={RESULT_STATUS_ITEMS}
           columns={3}
           selected={draft.resultStatus}
-          onToggle={(v) => toggleItem('resultStatus', v)}
+          onToggle={(v) => toggleItem('resultStatus', v as InterviewFilter['resultStatus'][number])}
         />
         <div className="flex flex-col gap-2">
           <span className="caption-l-medium">기간</span>

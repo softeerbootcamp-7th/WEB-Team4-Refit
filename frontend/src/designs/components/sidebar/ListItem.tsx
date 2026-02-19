@@ -22,13 +22,13 @@ export const ListItemSmall = ({ content, active = false, onClick, className }: L
 export const ListItemLarge = ({ content, active = false, onClick, className }: ListItemProps) => {
   return (
     <div
-      className={[baseStyles, 'body-s-medium px-2.5', active ? 'bg-gray-100' : '', className ?? ''].join(' ')}
+      className={[baseStyles, 'body-s-medium min-w-0 px-2.5', active ? 'bg-gray-100' : '', className ?? ''].join(' ')}
       tabIndex={0}
       role="button"
       aria-pressed={active}
       onClick={onClick}
     >
-      {content}
+      <span className="truncate">{content}</span>
     </div>
   )
 }
