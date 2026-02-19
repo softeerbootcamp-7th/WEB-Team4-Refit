@@ -185,7 +185,7 @@ function getIndexFromHash(hash: string, totalCount: number) {
   if (rawIndex.length === 0) return 0
 
   const parsed = Number(rawIndex)
-
+  if (!Number.isInteger(parsed)) return 0
   const zeroBased = parsed - 1
   if (zeroBased < 0 || zeroBased >= totalCount) return 0
   return zeroBased
