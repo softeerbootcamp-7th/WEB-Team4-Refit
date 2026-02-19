@@ -12,6 +12,7 @@
     "orval": "pnpm get-api-docs && orval && eslint . --fix"
   },
   "dependencies": {
+    "@internationalized/date": "^3.11.0",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/react-query": "^5.90.20",
     "@types/qs": "^6.14.0",
