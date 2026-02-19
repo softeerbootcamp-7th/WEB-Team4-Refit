@@ -112,3 +112,7 @@ Font: Pretendard Variable.
 ### Import Order (ESLint enforced)
 
 `react` → external packages → `@/` internal imports → parent/sibling/index. Imports within each group are alphabetically sorted. Run `pnpm lint --fix` to auto-fix ordering.
+
+## Session Notes
+
+- [navbar-ux-improvements (2026-02-20)](.claude/notes/2026-02-20-navbar-ux-improvements.md) — Navbar polish: avatar-only profile, Lightning icon, w-6xl alignment, pastOnly date constraint
