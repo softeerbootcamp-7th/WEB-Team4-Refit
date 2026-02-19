@@ -5,7 +5,6 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.USER_NICKNAME_CO
 import static com.shyashyashya.refit.global.exception.ErrorCode.USER_SIGNUP_EMAIL_CONFLICT;
 
 import com.shyashyashya.refit.domain.user.model.User;
-
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
 import com.shyashyashya.refit.global.exception.CustomException;
 import lombok.NonNull;
