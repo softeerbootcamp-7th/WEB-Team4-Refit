@@ -1,6 +1,6 @@
 package com.shyashyashya.refit.global.exception;
 
-import static com.shyashyashya.refit.global.exception.ErrorCode.LOGIN_REQUIRED_RT_THEFT_DETECTED;
+import static com.shyashyashya.refit.global.exception.ErrorCode.LOGIN_REQUIRED_REFRESH_TOKEN_THEFT_DETECTED;
 
 import com.shyashyashya.refit.global.constant.AuthConstant;
 import com.shyashyashya.refit.global.dto.ApiResponse;
@@ -33,8 +33,8 @@ public class GlobalExceptionHandler {
         String deleteAccessTokenCookie = cookieUtil.deleteCookie(AuthConstant.ACCESS_TOKEN);
         String deleteRefreshTokenCookie = cookieUtil.deleteCookie(AuthConstant.REFRESH_TOKEN);
         log.info("RefreshTokenTheftException occurred");
-        var response = ApiResponse.customException(LOGIN_REQUIRED_RT_THEFT_DETECTED);
-        return ResponseEntity.status(LOGIN_REQUIRED_RT_THEFT_DETECTED.getHttpStatus())
+        var response = ApiResponse.customException(LOGIN_REQUIRED_REFRESH_TOKEN_THEFT_DETECTED);
+        return ResponseEntity.status(LOGIN_REQUIRED_REFRESH_TOKEN_THEFT_DETECTED.getHttpStatus())
                 .header(HttpHeaders.SET_COOKIE, deleteAccessTokenCookie)
                 .header(HttpHeaders.SET_COOKIE, deleteRefreshTokenCookie)
                 .body(response);
