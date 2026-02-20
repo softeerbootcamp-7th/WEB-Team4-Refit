@@ -1,6 +1,8 @@
 import { Suspense, useState } from 'react'
-import { useNavigate, useParams } from 'react-router'
-import { useConvertRawTextToQnaSet, useUpdateRawText } from '@/apis'
+import { Navigate, useNavigate, useParams } from 'react-router'
+import { useConvertRawTextToQnaSet, useUpdateRawText, type InterviewDtoInterviewReviewStatus } from '@/apis'
+import { getInterviewNavigationPath } from '@/constants/interviewReviewStatusRoutes'
+import ConfirmModal from '@/designs/components/modal/ConfirmModal'
 import SidebarLayoutSkeleton from '@/features/_common/components/sidebar/SidebarLayoutSkeleton'
 import { RecordPageContent } from '@/features/record/_index'
 import { useRecordAutoSave } from '@/features/record/_index/hooks/useRecordAutoSave'
@@ -25,15 +27,19 @@ function RecordPageContentContainer({ interviewId }: RecordPageContentContainerP
   const navigate = useNavigate()
   const [realtimeText, setRealtimeText] = useState('')
   const [isCompleting, setIsCompleting] = useState(false)
+  const [isNextStepConfirmOpen, setIsNextStepConfirmOpen] = useState(false)
   const { data } = useRecordPageData(Number(interviewId))
   const isLoggingDraft = data.interviewReviewStatus === 'LOG_DRAFT'
-  const { text, onTextChange, appendText, autoSaveStatus, ensureLoggingStarted } = useRecordAutoSave({
+  const { text, onTextChange, appendText, autoSaveStatus, ensureLoggingStarted, flushAutoSave } = useRecordAutoSave({
     interviewId,
     startLoggingRequired: data.interviewReviewStatus === 'NOT_LOGGED',
     initialText: isLoggingDraft ? data.interviewRawText : '',
   })
   const { mutateAsync: completeRawText } = useUpdateRawText()
   const { mutateAsync: convertRawTextToQnaSet } = useConvertRawTextToQnaSet()
+  const blockedRecordPath = getBlockedRecordPath(interviewId, data.interviewReviewStatus)
+
+  const getMergedText = () => `${text}${realtimeText ? `${text ? ' ' : ''}${realtimeText}` : ''}`.trim()
 
   const handleRecordComplete = () => {
     if (realtimeText) {
@@ -49,10 +55,20 @@ function RecordPageContentContainer({ interviewId }: RecordPageContentContainerP
   const handleComplete = () => {
     if (!interviewId) return
 
-    const mergedText = `${text}${realtimeText ? `${text ? ' ' : ''}${realtimeText}` : ''}`.trim()
+    if (!getMergedText()) return
+    setIsNextStepConfirmOpen(true)
+  }
+
+  const handleConfirmComplete = () => {
+    if (!interviewId) return
+
+    const mergedText = getMergedText()
     if (!mergedText) return
+
     setIsCompleting(true)
     void (async () => {
+      await flushAutoSave(mergedText)
+
       const isLoggingStarted = await ensureLoggingStarted()
       if (!isLoggingStarted) {
         setIsCompleting(false)
@@ -65,26 +81,56 @@ function RecordPageContentContainer({ interviewId }: RecordPageContentContainerP
           data: { rawText: mergedText },
         })
         await convertRawTextToQnaSet({ interviewId: Number(interviewId) })
-        navigate(ROUTES.RECORD_CONFIRM.replace(':interviewId', interviewId))
+        navigate(ROUTES.RECORD_CONFIRM.replace(':interviewId', interviewId), { replace: true })
       } catch {
         setIsCompleting(false)
       }
     })()
   }
 
+  if (blockedRecordPath) {
+    return <Navigate to={blockedRecordPath} replace />
+  }
+
   return (
-    <RecordPageContent
-      interviewInfo={data.interviewInfo}
-      text={text}
-      realtimeText={realtimeText}
-      onTextChange={onTextChange}
-      onRealtimeTranscript={setRealtimeText}
-      onRecordComplete={handleRecordComplete}
-      onRecordCancel={handleRecordCancel}
-      onComplete={handleComplete}
-      isCompletePending={isCompleting}
-      canSave={Boolean(interviewId)}
-      autoSaveStatus={autoSaveStatus}
-    />
+    <>
+      <RecordPageContent
+        interviewInfo={data.interviewInfo}
+        text={text}
+        realtimeText={realtimeText}
+        onTextChange={onTextChange}
+        onRealtimeTranscript={setRealtimeText}
+        onRecordComplete={handleRecordComplete}
+        onRecordCancel={handleRecordCancel}
+        onComplete={handleComplete}
+        isCompletePending={isCompleting}
+        canSave={Boolean(interviewId)}
+        autoSaveStatus={autoSaveStatus}
+      />
+      <ConfirmModal
+        open={isNextStepConfirmOpen}
+        onClose={() => setIsNextStepConfirmOpen(false)}
+        onOk={() => {
+          setIsNextStepConfirmOpen(false)
+          handleConfirmComplete()
+        }}
+        title="다음 단계로 이동할까요?"
+        description="확인을 누르면 면접 기록이
+        질문/답변으로 자동 분류됩니다."
+        okText="확인"
+        okButtonVariant="fill-orange-500"
+        hasCancelButton={true}
+        cancelText="취소"
+      />
+    </>
   )
+}
+
+function getBlockedRecordPath(
+  interviewId: string | undefined,
+  interviewReviewStatus: InterviewDtoInterviewReviewStatus,
+): string | null {
+  if (!interviewId) return null
+  if (interviewReviewStatus === 'NOT_LOGGED' || interviewReviewStatus === 'LOG_DRAFT') return null
+  return getInterviewNavigationPath(interviewId, interviewReviewStatus)
 }

@@ -77,7 +77,7 @@ export function RecordPageContent({
               disabled={!canSave || isRecording || !canComplete}
               isLoading={isCompletePending}
             >
-              기록 완료
+              다음 단계
             </Button>
           </div>
         </div>
