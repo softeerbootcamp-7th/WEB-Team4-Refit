@@ -1,4 +1,4 @@
-import { Suspense, useRef, useState } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router'
 import { getInterviewFull, useGetInterviewFullSuspense } from '@/apis/generated/interview-api/interview-api'
 import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
@@ -10,6 +10,8 @@ import { RetroSection } from '@/features/retro/_index/components/retro-section/R
 import type { RetroListItem } from '@/features/retro/_index/components/retro-section/types'
 import { RetroMinimizedSidebar, RetroSidebar } from '@/features/retro/_index/components/sidebar'
 import type { InterviewInfoType, InterviewType } from '@/types/interview'
+
+const RETRO_HASH_PREFIX = 'retro'
 
 export default function RetroQuestionPage() {
   return (
@@ -27,14 +29,21 @@ function RetroQuestionContent() {
   const { interviewInfo, qnaSets, hasPdfResourceKey } = data
   const { company, interviewType } = interviewInfo
 
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const totalCount = qnaSets.length + 1
+  const [currentIndex, setCurrentIndex] = useState(() => getIndexFromHash(window.location.hash, totalCount))
   const [isPdfOpen, setIsPdfOpen] = useState(false)
   const saveCurrentStepRef = useRef<() => Promise<void>>(async () => {})
 
-  const totalCount = qnaSets.length + 1
   const isKptStep = currentIndex === qnaSets.length
   const currentItem: RetroListItem | undefined = isKptStep ? undefined : qnaSets[currentIndex]
   const togglePdf = () => setIsPdfOpen((v) => !v)
+
+  useEffect(() => {
+    const hash = `#${RETRO_HASH_PREFIX}-${currentIndex + 1}`
+    if (window.location.hash !== hash) {
+      window.history.replaceState(null, '', hash)
+    }
+  }, [currentIndex])
 
   const registerSaveHandler = (saveHandler: () => Promise<void>) => {
     saveCurrentStepRef.current = saveHandler
@@ -166,4 +175,18 @@ function transformInterviewData(res: Awaited<ReturnType<typeof getInterviewFull>
       tryText: interviewFull.interviewSelfReview?.tryText ?? '',
     },
   }
+}
+
+function getIndexFromHash(hash: string, totalCount: number) {
+  const hashPrefix = `#${RETRO_HASH_PREFIX}-`
+  if (!hash.startsWith(hashPrefix)) return 0
+
+  const rawIndex = hash.slice(hashPrefix.length)
+  if (rawIndex.length === 0) return 0
+
+  const parsed = Number(rawIndex)
+  if (!Number.isInteger(parsed)) return 0
+  const zeroBased = parsed - 1
+  if (zeroBased < 0 || zeroBased >= totalCount) return 0
+  return zeroBased
 }
