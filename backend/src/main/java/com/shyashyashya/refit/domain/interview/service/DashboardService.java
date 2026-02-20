@@ -106,7 +106,7 @@ public class DashboardService {
 
         LocalDateTime now = LocalDateTime.now();
         return interviewRepository
-                .findAllByUserAndReviewStatusIn(requestUser, REVIEW_NEEDED_STATUSES, pageable)
+                .findMyDebriefIncompletedInterviews(requestUser, REVIEW_NEEDED_STATUSES, now, pageable)
                 .map(interview ->
                         DashboardDebriefIncompletedInterviewResponse.of(interview, -getInterviewDday(now, interview)));
     }
