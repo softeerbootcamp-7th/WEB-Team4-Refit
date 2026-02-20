@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type Dispatch, type SetStateAction } from 'react'
 import { useAudioVisualizer } from './useAudioVisualizer'
 import { useSpeechRecognition } from './useSpeechRecognition'
 
@@ -19,9 +19,15 @@ export function useAudioRecorder({ onCancel, onComplete, onRealtimeTranscript }:
 
   const { startRecognition, stopRecognition } = useSpeechRecognition({
     onRealtimeTranscript,
+    onRecognitionStatusChange: setIsRecording,
   })
 
-  useAudioVisualizer(stream, canvasRef)
+  const isAndroid = useMemo(() => {
+    if (typeof navigator === 'undefined') return false
+    return /Android/i.test(navigator.userAgent)
+  }, [])
+
+  useAudioVisualizer(isAndroid ? null : stream, canvasRef)
 
   const minutes = Math.floor(seconds / 60)
   const secs = seconds % 60
@@ -39,12 +45,18 @@ export function useAudioRecorder({ onCancel, onComplete, onRealtimeTranscript }:
     if (isRequestingPermission) return
     setIsRequestingPermission(true)
     try {
-      const newStream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      streamRef.current = newStream
-      setStream(newStream)
+      if (!isAndroid) {
+        const newStream = await navigator.mediaDevices.getUserMedia({ audio: true })
+        streamRef.current = newStream
+        setStream(newStream)
+      }
       setSeconds(0)
+      const isRecognitionStarted = startRecognition()
+      if (!isRecognitionStarted) {
+        setIsRecording(false)
+        return
+      }
       setIsRecording(true)
-      startRecognition()
     } catch {
       // 마이크 권한 관련 로직
     } finally {
@@ -86,6 +98,7 @@ export function useAudioRecorder({ onCancel, onComplete, onRealtimeTranscript }:
     isRecording,
     seconds,
     timerText,
+    isAndroid,
     isRequestingPermission,
     startRecording,
     cancel,

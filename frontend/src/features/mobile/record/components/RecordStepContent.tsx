@@ -1,5 +1,5 @@
 import type { Dispatch, SetStateAction } from 'react'
-import LiveAudioVisualizer from '@/features/_common/auth/components/LiveAudioVisualizer'
+import { LiveAudioVisualizer } from '@/features/_common/record/components'
 
 type RecordStepContentProps = {
   realtimeText: string
