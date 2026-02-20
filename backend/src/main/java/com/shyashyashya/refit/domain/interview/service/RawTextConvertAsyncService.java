@@ -18,11 +18,13 @@ import com.shyashyashya.refit.global.gemini.GeminiClient;
 import com.shyashyashya.refit.global.gemini.GenerateModel;
 import com.shyashyashya.refit.global.gemini.dto.GeminiGenerateRequest;
 import com.shyashyashya.refit.global.gemini.dto.GeminiGenerateResponse;
+import com.shyashyashya.refit.global.util.KeyLockUtil;
 import com.shyashyashya.refit.global.util.PromptGenerateUtil;
 import com.shyashyashya.refit.global.util.RequestUserContext;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.concurrent.locks.ReentrantLock;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +45,7 @@ public class RawTextConvertAsyncService {
     private final RawTextConvertService rawTextConvertService;
     private final Executor geminiPostProcessExecutor;
     private final ConvertWaitingMap convertWaitingMap;
+    private final KeyLockUtil<Long> interviewLock;
 
     @Transactional
     public void startRawTextConvertAsync(Long interviewId) {
@@ -54,26 +57,30 @@ public class RawTextConvertAsyncService {
         interviewValidator.validateInterviewReviewStatus(interview, List.of(InterviewReviewStatus.LOG_DRAFT));
         interviewValidator.validateInterviewConvertStatusIsNotConverted(interview);
 
-        interview.updateConvertStatus(InterviewConvertStatus.IN_PROGRESS);
-        interview.completeLogging();
+        ReentrantLock lock = interviewLock.acquire(interviewId);
+        try {
+            interview.updateConvertStatus(InterviewConvertStatus.IN_PROGRESS);
+            interview.completeLogging();
 
-        String prompt = qnaSetPromptGenerator.buildInterviewRawTextConvertPrompt(interview);
-        GeminiGenerateRequest requestBody = GeminiGenerateRequest.from(prompt);
-        CompletableFuture<GeminiGenerateResponse> future =
-                geminiClient.sendAsyncTextGenerateRequest(requestBody, GenerateModel.GEMINI_3_FLASH);
-        log.info("request sended");
-        future.thenApplyAsync(
-                        response -> {
-                            rawTextConvertService.processConvertSuccess(interviewId, response);
-                            return null;
-                        },
-                        geminiPostProcessExecutor)
-                .exceptionally(e -> {
-                    log.error(e.getMessage(), e);
-                    rawTextConvertService.processConvertFailure(interviewId);
-                    // 에러를 throw
-                    return null;
-                });
+            String prompt = qnaSetPromptGenerator.buildInterviewRawTextConvertPrompt(interview);
+            GeminiGenerateRequest requestBody = GeminiGenerateRequest.from(prompt);
+            CompletableFuture<GeminiGenerateResponse> future =
+                    geminiClient.sendAsyncTextGenerateRequest(requestBody, GenerateModel.GEMINI_3_FLASH);
+            log.info("request sended");
+            future.thenApplyAsync(
+                            response -> {
+                                rawTextConvertService.processConvertSuccess(interviewId, response);
+                                return null;
+                            },
+                            geminiPostProcessExecutor)
+                    .exceptionally(e -> {
+                        log.error(e.getMessage(), e);
+                        rawTextConvertService.processConvertFailure(interviewId);
+                        return null;
+                    });
+        } finally {
+            interviewLock.release(interviewId, lock);
+        }
     }
 
     @Transactional(readOnly = true)
