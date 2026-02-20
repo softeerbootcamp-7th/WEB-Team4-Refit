@@ -1,3 +1,4 @@
+import { PencilIcon } from '@/designs/assets'
 import { Button } from '@/designs/components'
 
 type LinkingButtonsProps = {
@@ -39,6 +40,7 @@ type DefaultButtonProps = {
 export function DefaultButton({ hasPdf, onStartLinking }: DefaultButtonProps) {
   return (
     <Button size="xs" variant="outline-orange-100" disabled={!hasPdf} onClick={onStartLinking}>
+      <PencilIcon className="text-orange-500" />
       {hasPdf ? '자기소개서 연결하기' : '자기소개서를 먼저 업로드해주세요'}
     </Button>
   )

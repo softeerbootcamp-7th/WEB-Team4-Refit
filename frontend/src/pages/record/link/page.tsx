@@ -35,7 +35,12 @@ function RecordLinkContent() {
       <div className="grid h-full grid-cols-[80px_1.2fr_1fr]">
         <RecordLinkSidebar items={sidebarItems} activeIndex={activeIndex} onItemClick={handleItemClick} />
         <div className="flex h-full flex-col gap-5 overflow-hidden py-6 pl-6">
-          <h1 className="title-l-bold">면접에서 나온 질문과 자기소개서를 연결해보세요.</h1>
+          <div>
+            <h1 className="title-l-bold">면접에서 나온 질문과 자기소개서를 연결해보세요.</h1>
+            <p className="body-s-regular mt-1 text-gray-400">
+              질문별 '자기소개서 연결하기' 버튼을 누른 후, 오른쪽 자기소개서에서 관련 내용을 드래그하세요.
+            </p>
+          </div>
           <QnaListSection qnaList={data.qnaList} setRef={setRef} scrollContainerRef={scrollContainerRef} />
         </div>
         <PdfSection />
