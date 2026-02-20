@@ -1,5 +1,6 @@
 package com.shyashyashya.refit.domain.scrapfolder.repository.impl;
 
+import static com.shyashyashya.refit.domain.qnaset.model.QQnaSet.qnaSet;
 import static com.shyashyashya.refit.domain.scrapfolder.model.QQnaSetScrapFolder.qnaSetScrapFolder;
 import static com.shyashyashya.refit.global.exception.ErrorCode.SORTING_PROPERTY_NOT_EXISTS;
 
@@ -26,9 +27,10 @@ public class QnaSetScrapFolderCustomRepositoryImpl implements QnaSetScrapFolderC
     @Override
     public Page<QnaSet> findQnaSetsByScrapFolder(ScrapFolder scrapFolder, Pageable pageable) {
         List<QnaSet> content = queryFactory
-                .select(qnaSetScrapFolder.qnaSet)
+                .select(qnaSet)
                 .from(qnaSetScrapFolder)
-                .join(qnaSetScrapFolder.qnaSet)
+                .join(qnaSetScrapFolder.qnaSet, qnaSet)
+                .join(qnaSet.interview)
                 .fetchJoin()
                 .where(qnaSetScrapFolder.scrapFolder.eq(scrapFolder))
                 .orderBy(getSortConditions(pageable))
