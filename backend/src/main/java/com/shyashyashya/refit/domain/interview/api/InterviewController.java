@@ -11,10 +11,12 @@ import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatus
 import com.shyashyashya.refit.domain.interview.dto.request.KptSelfReviewUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.QnaSetCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
+import com.shyashyashya.refit.domain.interview.dto.response.ConvertResultResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.GuideQuestionResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.InterviewCreateResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.PdfFilePresignResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.QnaSetCreateResponse;
+import com.shyashyashya.refit.domain.interview.service.ConvertAsyncService;
 import com.shyashyashya.refit.domain.interview.service.GuideQuestionService;
 import com.shyashyashya.refit.domain.interview.service.InterviewService;
 import com.shyashyashya.refit.global.dto.ApiResponse;
@@ -32,6 +34,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.async.DeferredResult;
 
 @Tag(name = "Interview API", description = "면접 기록 및 면접 회고 작성 관련 API 입니다.")
 @RestController
@@ -41,6 +44,7 @@ public class InterviewController {
 
     private final InterviewService interviewService;
     private final GuideQuestionService guideQuestionService;
+    private final ConvertAsyncService convertAsyncService;
 
     @Operation(summary = "면접 데이터를 생성합니다.")
     @PostMapping
@@ -101,6 +105,7 @@ public class InterviewController {
         return ResponseEntity.ok(response);
     }
 
+    @Deprecated
     @Operation(summary = "면접 기록을 질문/답변 세트로 변환합니다.", description = """
             변환이 완료되면 면접 상태를 '질답 세트 검토중' 상태로 바꿉니다.
             질답세트를 추가/수정/삭제하려면 반드시 면접 상태가 '질답 세트 검토중' 상태여야 합니다.
@@ -111,6 +116,24 @@ public class InterviewController {
         interviewService.convertRawTextToQnaSet(interviewId);
         var response = ApiResponse.success(COMMON200);
         return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "면접 기록을 질문/답변 세트으로 변환 요청합니다.")
+    @PostMapping("/{interviewId}/raw-text/convert/request")
+    public ResponseEntity<ApiResponse<Void>> requestConvert(@PathVariable Long interviewId) {
+        convertAsyncService.startConvertAsync(interviewId);
+        var response = ApiResponse.success(COMMON200);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "변환 요청 완료를 기다립니다.")
+    @GetMapping("/{interviewId}/raw-text/convert/result")
+    public DeferredResult<ResponseEntity<ApiResponse<ConvertResultResponse>>> waitConvertResult(
+            @PathVariable Long interviewId) {
+        long timeoutMs = 30_000L;
+        DeferredResult<ResponseEntity<ApiResponse<ConvertResultResponse>>> deferredResult = new DeferredResult<>(timeoutMs);
+        convertAsyncService.registerOrRespondImmediately(interviewId, deferredResult);
+        return deferredResult;
     }
 
     @Operation(summary = "면접 기록 녹음/텍스트 작성을 시작합니다.", description = """
