@@ -30,11 +30,12 @@ function RecordPageContentContainer({ interviewId }: RecordPageContentContainerP
   const [isNextStepConfirmOpen, setIsNextStepConfirmOpen] = useState(false)
   const { data } = useRecordPageData(Number(interviewId))
   const isLoggingDraft = data.interviewReviewStatus === 'LOG_DRAFT'
-  const { text, onTextChange, appendText, autoSaveStatus, ensureLoggingStarted, flushAutoSave } = useRecordAutoSave({
-    interviewId,
-    startLoggingRequired: data.interviewReviewStatus === 'NOT_LOGGED',
-    initialText: isLoggingDraft ? data.interviewRawText : '',
-  })
+  const { text, onTextChange, appendText, autoSaveStatus, autoSaveErrorMessage, ensureLoggingStarted, flushAutoSave } =
+    useRecordAutoSave({
+      interviewId,
+      startLoggingRequired: data.interviewReviewStatus === 'NOT_LOGGED',
+      initialText: isLoggingDraft ? data.interviewRawText : '',
+    })
   const { mutateAsync: completeRawText } = useUpdateRawText()
   const { mutateAsync: convertRawTextToQnaSet } = useConvertRawTextToQnaSet()
   const blockedRecordPath = getBlockedRecordPath(interviewId, data.interviewReviewStatus)
@@ -106,6 +107,7 @@ function RecordPageContentContainer({ interviewId }: RecordPageContentContainerP
         isCompletePending={isCompleting}
         canSave={Boolean(interviewId)}
         autoSaveStatus={autoSaveStatus}
+        autoSaveErrorMessage={autoSaveErrorMessage}
       />
       <ConfirmModal
         open={isNextStepConfirmOpen}

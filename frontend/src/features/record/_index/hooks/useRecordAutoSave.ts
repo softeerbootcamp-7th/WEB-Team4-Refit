@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useStartLogging, useUpdateRawText } from '@/apis'
+import { HttpError } from '@/apis/custom-fetch'
 
 type AutoSaveStatus = 'idle' | 'saving' | 'saved' | 'error'
 
@@ -14,6 +15,7 @@ type UseRecordAutoSaveResult = {
   onTextChange: (nextText: string) => void
   appendText: (nextText: string) => void
   autoSaveStatus: AutoSaveStatus
+  autoSaveErrorMessage: string | null
   ensureLoggingStarted: () => Promise<boolean>
   flushAutoSave: (rawText?: string) => Promise<void>
 }
@@ -30,6 +32,7 @@ export function useRecordAutoSave({
   const [isAutoSaving, setIsAutoSaving] = useState(false)
   const [hasPendingAutoSave, setHasPendingAutoSave] = useState(false)
   const [isAutoSaveError, setIsAutoSaveError] = useState(false)
+  const [autoSaveErrorMessage, setAutoSaveErrorMessage] = useState<string | null>(null)
   const { mutateAsync: autoSaveRawText } = useUpdateRawText()
   const { mutateAsync: startLogging } = useStartLogging()
   const textRef = useRef(initialText)
@@ -52,9 +55,13 @@ export function useRecordAutoSave({
         .then(() => {
           startedLoggingRef.current = true
           setHasStartedLogging(true)
+          setAutoSaveErrorMessage(null)
           return true
         })
-        .catch(() => false)
+        .catch((error) => {
+          setAutoSaveErrorMessage(getApiErrorMessage(error))
+          return false
+        })
         .finally(() => {
           startLoggingPromiseRef.current = null
         })
@@ -79,6 +86,7 @@ export function useRecordAutoSave({
       setIsAutoSaving(true)
       setHasPendingAutoSave(false)
       setIsAutoSaveError(false)
+      setAutoSaveErrorMessage(null)
 
       try {
         const isStarted = await ensureLoggingStarted()
@@ -88,9 +96,10 @@ export function useRecordAutoSave({
           interviewId: numericInterviewId,
           data: { rawText },
         })
-      } catch {
+      } catch (error) {
         if (requestId !== lastAutoSaveRequestIdRef.current) return
         setIsAutoSaveError(true)
+        setAutoSaveErrorMessage(getApiErrorMessage(error))
       } finally {
         pendingAutoSaveCountRef.current = Math.max(0, pendingAutoSaveCountRef.current - 1)
         if (pendingAutoSaveCountRef.current === 0) {
@@ -212,7 +221,21 @@ export function useRecordAutoSave({
     onTextChange,
     appendText,
     autoSaveStatus,
+    autoSaveErrorMessage,
     ensureLoggingStarted,
     flushAutoSave,
   }
+}
+
+function getApiErrorMessage(error: unknown): string {
+  if (error instanceof HttpError && error.payload && typeof error.payload === 'object') {
+    const message = (error.payload as { message?: unknown }).message
+    if (typeof message === 'string' && message.trim().length > 0) {
+      return message
+    }
+  }
+  if (error instanceof Error && error.message.trim().length > 0) {
+    return error.message
+  }
+  return '저장 실패'
 }
