@@ -35,14 +35,14 @@ import org.springframework.web.context.request.async.DeferredResult;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ConvertAsyncService {
+public class RawTextConvertAsyncService {
 
     private final RequestUserContext requestUserContext;
     private final InterviewRepository interviewRepository;
     private final InterviewValidator interviewValidator;
     private final PromptGenerateUtil qnaSetPromptGenerator;
     private final GeminiClient geminiClient;
-    private final ConvertService convertWorker;
+    private final RawTextConvertService convertWorker;
     private final Executor geminiPostProcessExecutor;
     private final ConvertWaitingMap convertWaitingMap;
 

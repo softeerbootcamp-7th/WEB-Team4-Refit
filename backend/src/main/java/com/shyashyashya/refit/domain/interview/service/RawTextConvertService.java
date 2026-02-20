@@ -28,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ConvertService {
+public class RawTextConvertService {
 
     private final InterviewRepository interviewRepository;
     private final QnaSetRepository qnaSetRepository;

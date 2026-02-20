@@ -17,7 +17,7 @@ import com.shyashyashya.refit.domain.interview.dto.response.GuideQuestionRespons
 import com.shyashyashya.refit.domain.interview.dto.response.InterviewCreateResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.PdfFilePresignResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.QnaSetCreateResponse;
-import com.shyashyashya.refit.domain.interview.service.ConvertAsyncService;
+import com.shyashyashya.refit.domain.interview.service.RawTextConvertAsyncService;
 import com.shyashyashya.refit.domain.interview.service.GuideQuestionService;
 import com.shyashyashya.refit.domain.interview.service.InterviewService;
 import com.shyashyashya.refit.global.dto.ApiResponse;
@@ -45,7 +45,7 @@ public class InterviewController {
 
     private final InterviewService interviewService;
     private final GuideQuestionService guideQuestionService;
-    private final ConvertAsyncService convertAsyncService;
+    private final RawTextConvertAsyncService convertAsyncService;
 
     @Operation(summary = "면접 데이터를 생성합니다.")
     @PostMapping
