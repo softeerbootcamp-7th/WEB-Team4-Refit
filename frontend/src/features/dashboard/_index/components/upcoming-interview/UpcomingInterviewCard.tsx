@@ -41,6 +41,9 @@ export default function UpcomingInterviewCard({ data }: UpcomingInterviewCardPro
           </div>
         </div>
         <div className="flex flex-col gap-2">
+          {data.recentQuestions.length === 0 && (
+            <p className="body-m-medium my-10 text-center text-gray-400">아직 기출 질문 데이터가 없어요.</p>
+          )}
           {data.recentQuestions.map((q) => (
             <div key={q.id} className="flex items-start gap-2">
               <span className="body-m-semibold text-gray-300">Q.</span>
