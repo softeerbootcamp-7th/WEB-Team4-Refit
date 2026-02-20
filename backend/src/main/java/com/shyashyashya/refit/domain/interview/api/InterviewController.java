@@ -126,7 +126,7 @@ public class InterviewController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "변환 요청 완료를 기다립니다.")
+    @Operation(summary = "변환 요청 결과를 조회합니다.")
     @GetMapping("/{interviewId}/raw-text/convert/result")
     public DeferredResult<ResponseEntity<ApiResponse<ConvertResultResponse>>> waitConvertResult(
             @PathVariable Long interviewId) {
