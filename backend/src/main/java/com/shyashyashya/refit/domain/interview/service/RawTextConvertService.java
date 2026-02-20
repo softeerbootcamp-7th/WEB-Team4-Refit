@@ -19,6 +19,7 @@ import com.shyashyashya.refit.global.dto.ApiResponse;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.gemini.dto.GeminiGenerateResponse;
 import com.shyashyashya.refit.global.gemini.dto.QnaSetsGeminiResponse;
+import com.shyashyashya.refit.global.util.GeminiUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -35,15 +36,14 @@ public class RawTextConvertService {
     private final QnaSetSelfReviewRepository qnaSetSelfReviewRepository;
     private final ConvertWaitingMap convertWaitingMap;
     private final ObjectMapper objectMapper;
+    private final GeminiUtil geminiUtil;
 
     @Transactional
     public void processConvertSuccess(Long interviewId, GeminiGenerateResponse response) {
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
 
-        String jsonText =
-                response.firstJsonText().orElseThrow(() -> new CustomException(GEMINI_RESPONSE_PARSING_FAILED));
-        QnaSetsGeminiResponse result = parseQnaSetsGeminiResponse(jsonText);
+        QnaSetsGeminiResponse result = geminiUtil.parseGeminiResponse(response, QnaSetsGeminiResponse.class);
 
         result.interactions().forEach(qnaSetAndReview -> {
             QnaSet qnaSet = qnaSetRepository.save(
@@ -77,13 +77,5 @@ public class RawTextConvertService {
         convertWaitingMap.remove(interviewId).ifPresent(deferredResult -> {
             deferredResult.setErrorResult(new CustomException(INTERVIEW_CONVERTING_FAILED));
         });
-    }
-
-    private QnaSetsGeminiResponse parseQnaSetsGeminiResponse(String jsonText) {
-        try {
-            return objectMapper.readValue(jsonText, QnaSetsGeminiResponse.class);
-        } catch (JsonProcessingException e) {
-            throw new CustomException(GEMINI_RESPONSE_PARSING_FAILED);
-        }
     }
 }

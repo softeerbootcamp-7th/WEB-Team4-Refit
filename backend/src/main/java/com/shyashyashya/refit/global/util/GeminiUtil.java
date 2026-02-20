@@ -31,7 +31,7 @@ public class GeminiUtil {
         return result;
     }
 
-    private <T> T parseGeminiResponse(GeminiGenerateResponse response, Class<T> targetClass) {
+    public <T> T parseGeminiResponse(GeminiGenerateResponse response, Class<T> targetClass) {
         try {
             String jsonText =
                     response.firstJsonText().orElseThrow(() -> new CustomException(GEMINI_RESPONSE_PARSING_FAILED));
