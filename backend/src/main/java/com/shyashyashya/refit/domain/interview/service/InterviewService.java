@@ -50,9 +50,10 @@ import com.shyashyashya.refit.global.gemini.GenerateModel;
 import com.shyashyashya.refit.global.gemini.dto.GeminiGenerateRequest;
 import com.shyashyashya.refit.global.gemini.dto.GeminiGenerateResponse;
 import com.shyashyashya.refit.global.gemini.dto.QnaSetsGeminiResponse;
+import com.shyashyashya.refit.global.gemini.generator.InterviewRawTextConvertPromptGenerator;
+import com.shyashyashya.refit.global.gemini.generator.resource.InterviewRawTextConvertResource;
 import com.shyashyashya.refit.global.property.S3FolderNameProperty;
 import com.shyashyashya.refit.global.util.HangulUtil;
-import com.shyashyashya.refit.global.util.PromptGenerateUtil;
 import com.shyashyashya.refit.global.util.RequestUserContext;
 import com.shyashyashya.refit.global.util.S3Util;
 import java.time.LocalDateTime;
@@ -92,7 +93,7 @@ public class InterviewService {
     private final S3Util s3Util;
     private final HangulUtil hangulUtil;
     private final ObjectMapper objectMapper;
-    private final PromptGenerateUtil promptGenerateUtil;
+    private final InterviewRawTextConvertPromptGenerator interviewRawTextConvertPromptGenerator;
 
     @Transactional(readOnly = true)
     public InterviewDto getInterview(Long interviewId) {
@@ -301,7 +302,9 @@ public class InterviewService {
         interviewValidator.validateInterviewOwner(interview, requestUser);
         interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.LOG_DRAFT);
 
-        String prompt = promptGenerateUtil.buildInterviewRawTextConvertPrompt(interview);
+        var resource = new InterviewRawTextConvertResource(interview);
+        String prompt = interviewRawTextConvertPromptGenerator.generatePrompt(resource);
+
         GeminiGenerateRequest requestBody = GeminiGenerateRequest.from(prompt);
         GeminiGenerateResponse response =
                 geminiClient.sendTextGenerateRequest(requestBody, GenerateModel.GEMMA_3_27B_IT);

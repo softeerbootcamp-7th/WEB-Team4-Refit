@@ -14,9 +14,12 @@ import com.shyashyashya.refit.global.gemini.GenerateModel;
 import com.shyashyashya.refit.global.gemini.dto.GeminiGenerateRequest;
 import com.shyashyashya.refit.global.gemini.dto.GeminiGenerateResponse;
 import com.shyashyashya.refit.global.gemini.dto.StarAnalysisGeminiResponse;
-import com.shyashyashya.refit.global.util.PromptGenerateUtil;
+
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+
+import com.shyashyashya.refit.global.gemini.generator.StarAnalysisPromptGenerator;
+import com.shyashyashya.refit.global.gemini.generator.resource.StarAnalysisGenerateResource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,14 +34,15 @@ public class StarAnalysisAsyncService {
     private final GeminiClient geminiClient;
     private final Executor geminiPostProcessExecutor;
     private final ObjectMapper objectMapper;
-    private final PromptGenerateUtil promptGenerateUtil;
+    private final StarAnalysisPromptGenerator starAnalysisPromptGenerator;
 
     public CompletableFuture<StarAnalysisDto> createStarAnalysis(Long qnaSetId) {
         QnaSet qnaSet = qnaSetService.getQnaSet(qnaSetId);
         Long starAnalysisId =
                 starAnalysisService.createInProgressStarAnalysis(qnaSet).getId();
 
-        String prompt = promptGenerateUtil.buildStarAnalysisCreatePrompt(qnaSet);
+        var resource = new StarAnalysisGenerateResource(qnaSet);
+        String prompt = starAnalysisPromptGenerator.generatePrompt(resource);
         GeminiGenerateRequest requestBody = GeminiGenerateRequest.from(prompt);
 
         log.info("Send star analysis generate request to gemini. qnaSetId: {}", qnaSetId);

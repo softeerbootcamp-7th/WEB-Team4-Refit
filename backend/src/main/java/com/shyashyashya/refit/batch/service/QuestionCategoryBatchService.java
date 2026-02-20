@@ -8,9 +8,11 @@ import com.shyashyashya.refit.domain.qnaset.model.QnaSetCategory;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetCategoryRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.global.gemini.dto.CategoryNameCreateGeminiResponse;
+import com.shyashyashya.refit.global.gemini.generator.CategoryNamePromptGenerator;
+import com.shyashyashya.refit.global.gemini.generator.resource.CategoryNameGenerateResource;
 import com.shyashyashya.refit.global.util.ClusterUtil;
 import com.shyashyashya.refit.global.util.GeminiUtil;
-import com.shyashyashya.refit.global.util.PromptGenerateUtil;
+import com.shyashyashya.refit.global.gemini.generator.PromptGenerator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +32,7 @@ public class QuestionCategoryBatchService {
     private final QuestionCategoryVectorRepository categoryVectorRepository;
     private final GeminiUtil geminiUtil;
     private final ClusterUtil clusterUtil;
-    private final PromptGenerateUtil promptGenerateUtil;
+    private final CategoryNamePromptGenerator categoryNamePromptGenerator;
 
     @Transactional
     public void createCategories() {
@@ -42,7 +44,8 @@ public class QuestionCategoryBatchService {
         List<CategoryVectorDocument> clusters = clusterUtil.createClusters(questionVectors);
 
         log.info("[createCategories] 3. LLM 으로 클러스터 별 이름 및 대표질문 생성");
-        String prompt = promptGenerateUtil.buildCategoryNameCreatePrompt(clusters, questionVectors);
+        var resource = new CategoryNameGenerateResource(clusters, questionVectors);
+        String prompt = categoryNamePromptGenerator.generatePrompt(resource);
         CategoryNameCreateGeminiResponse result =
                 geminiUtil.sendTextGenerateRequest(prompt, CategoryNameCreateGeminiResponse.class);
 
