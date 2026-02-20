@@ -28,6 +28,7 @@ export function HighlightProvider({ qnaSetIds, hasPdf: initialHasPdf, children }
   )
 
   const [pendingSelection, setPendingSelection] = useState<HighlightData | null>(null)
+  const [saveErrors, setSaveErrors] = useState<Map<number, string>>(new Map())
   const { mutate: updatePdfHighlighting } = useUpdatePdfHighlighting()
 
   const startLinking = (qnaSetId: number) => {
@@ -42,7 +43,14 @@ export function HighlightProvider({ qnaSetIds, hasPdf: initialHasPdf, children }
 
   const saveHighlight = (data: HighlightData) => {
     if (linkingQnaSetId === null) return
+    const prevHighlight = highlights.get(linkingQnaSetId)
+
     setHighlights((prev) => new Map(prev).set(linkingQnaSetId, data))
+    setSaveErrors((prev) => {
+      const next = new Map(prev)
+      next.delete(linkingQnaSetId)
+      return next
+    })
 
     updatePdfHighlighting(
       {
@@ -61,6 +69,20 @@ export function HighlightProvider({ qnaSetIds, hasPdf: initialHasPdf, children }
         ],
       },
       {
+        onError: () => {
+          setHighlights((prev) => {
+            const next = new Map(prev)
+            if (prevHighlight) {
+              next.set(linkingQnaSetId, prevHighlight)
+            } else {
+              next.delete(linkingQnaSetId)
+            }
+            return next
+          })
+          setSaveErrors((prev) =>
+            new Map(prev).set(linkingQnaSetId, '자기소개서 연결에 실패했습니다. 다시 시도해주세요.'),
+          )
+        },
         onSettled: () => {
           queryClient.invalidateQueries({
             queryKey: getGetPdfHighlightingsQueryKey(linkingQnaSetId),
@@ -108,6 +130,7 @@ export function HighlightProvider({ qnaSetIds, hasPdf: initialHasPdf, children }
     saveHighlight,
     removeHighlight,
     clearAllHighlights,
+    saveErrors,
     pendingSelection,
     setPendingSelection,
   }

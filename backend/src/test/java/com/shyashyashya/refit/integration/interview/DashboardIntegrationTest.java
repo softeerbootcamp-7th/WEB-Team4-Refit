@@ -251,37 +251,6 @@ public class DashboardIntegrationTest extends IntegrationTest {
     }
 
     @Nested
-    class 내가_어렵게_느낀_질문_조회 {
-
-        private final String path = "/dashboard/qna-set/my/difficult";
-
-        @Test
-        void 어렵다고_표시한_QnA_리스트를_조회한다() {
-            // given
-            Interview interview = createAndSaveInterview(
-                new InterviewCreateRequest(
-                    NOW.minusDays(5),
-                    InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
-                ), InterviewReviewStatus.DEBRIEF_COMPLETED);
-
-            QnaSet difficultQna = QnaSet.create("Question 1", "Answer 1", true, interview, null);
-            QnaSet easyQna = QnaSet.create("Question 2", "Answer 2", false, interview, null);
-            qnaSetRepository.save(difficultQna);
-            qnaSetRepository.save(easyQna);
-
-            // when & then
-            given(spec)
-            .when()
-                    .get(path)
-            .then()
-                    .statusCode(200)
-                    .body("code", equalTo(COMMON200.name()))
-                    .body("result.content", hasSize(1))
-                    .body("result.content[0].question", equalTo("Question 1"));
-        }
-    }
-
-    @Nested
     class 복기_대기중인_면접_조회 {
 
         private final String path = "/dashboard/interview/debrief-uncompleted";

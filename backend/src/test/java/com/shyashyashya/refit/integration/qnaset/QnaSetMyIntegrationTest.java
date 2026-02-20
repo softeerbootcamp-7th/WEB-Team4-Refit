@@ -42,6 +42,97 @@ public class QnaSetMyIntegrationTest extends IntegrationTest {
     private Interview interview;
 
     @Nested
+    class 내가_어렵게_느낀_질문_조회 {
+
+        private final String path = "/qna-set/my/difficult";
+
+        @Test
+        void 어렵다고_표시한_QnA_리스트를_조회한다() {
+            // given
+            Interview interview = createAndSaveInterview(
+                    new InterviewCreateRequest(
+                            NOW.minusDays(5),
+                            InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+                    ), InterviewReviewStatus.DEBRIEF_COMPLETED);
+
+            QnaSet difficultQna = QnaSet.create("Question 1", "Answer 1", true, interview, null);
+            QnaSet easyQna = QnaSet.create("Question 2", "Answer 2", false, interview, null);
+            qnaSetRepository.save(difficultQna);
+            qnaSetRepository.save(easyQna);
+
+            // when & then
+            given(spec)
+            .when()
+                    .get(path)
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("result.content", hasSize(1))
+                    .body("result.content[0].question", equalTo("Question 1"));
+        }
+
+        @Test
+        void interviewStartAt_오름차순_정렬시_정상적으로_조회된다() {
+            // given
+            Interview interview1 = createAndSaveInterview(
+                    new InterviewCreateRequest(
+                            NOW.minusDays(5),
+                            InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+                    ), InterviewReviewStatus.DEBRIEF_COMPLETED);
+            qnaSetRepository.save(QnaSet.create("Question 1", "Answer 1", true, interview1, null));
+
+            Interview interview2 = createAndSaveInterview(
+                    new InterviewCreateRequest(
+                            NOW.minusDays(2),
+                            InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+                    ), InterviewReviewStatus.DEBRIEF_COMPLETED);
+            qnaSetRepository.save(QnaSet.create("Question 2", "Answer 2", true, interview2, null));
+
+            // when & then
+            given(spec)
+                    .queryParam("sort", "interviewStartAt,asc")
+            .when()
+                    .get(path)
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("result.content", hasSize(2))
+                    .body("result.content[0].question", equalTo("Question 1"))
+                    .body("result.content[1].question", equalTo("Question 2"));
+        }
+
+        @Test
+        void interviewStartAt_내림차순_정렬시_정상적으로_조회된다() {
+            // given
+            Interview interview1 = createAndSaveInterview(
+                    new InterviewCreateRequest(
+                            NOW.minusDays(5),
+                            InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+                    ), InterviewReviewStatus.DEBRIEF_COMPLETED);
+            qnaSetRepository.save(QnaSet.create("Question 1", "Answer 1", true, interview1, null));
+
+            Interview interview2 = createAndSaveInterview(
+                    new InterviewCreateRequest(
+                            NOW.minusDays(2),
+                            InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+                    ), InterviewReviewStatus.DEBRIEF_COMPLETED);
+            qnaSetRepository.save(QnaSet.create("Question 2", "Answer 2", true, interview2, null));
+
+            // when & then
+            given(spec)
+                    .queryParam("sort", "interviewStartAt,desc")
+            .when()
+                    .get(path)
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("result.content", hasSize(2))
+                    .body("result.content[0].question", equalTo("Question 2"))
+                    .body("result.content[1].question", equalTo("Question 1"));
+        }
+    }
+
+    @Nested
     class 빈출_질문_카테고리_조회할_때 {
 
         @BeforeEach

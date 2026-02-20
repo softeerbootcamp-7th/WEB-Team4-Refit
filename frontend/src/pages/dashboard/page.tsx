@@ -32,7 +32,7 @@ export default function DashboardPage() {
     <ScheduleModalProvider>
       <div className="flex w-full min-w-0 flex-col justify-center gap-10">
         <div className="flex w-full items-stretch gap-6">
-          <div ref={leftColumnRef} className="flex w-225 min-h-0 flex-1 flex-col gap-10">
+          <div ref={leftColumnRef} className="flex min-h-0 w-225 flex-1 flex-col gap-10">
             <DashboardBanner variant={variant} titleText={titleText} isLoading={isLoading} />
             <ReviewWaitingSection />
             <UpcomingInterviewSection />

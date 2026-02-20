@@ -10,9 +10,10 @@ type PdfPageProps = {
   pdf: PDFDocumentProxy
   pageNumber: number
   containerSize: ContainerSize
+  zoom: number
 }
 
-export function PdfPage({ pdf, pageNumber, containerSize }: PdfPageProps) {
+export function PdfPage({ pdf, pageNumber, containerSize, zoom }: PdfPageProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const textLayerRef = useRef<HTMLDivElement>(null)
@@ -42,7 +43,11 @@ export function PdfPage({ pdf, pageNumber, containerSize }: PdfPageProps) {
 
       const devicePixelRatio = window.devicePixelRatio || 1
       const defaultViewport = page.getViewport({ scale: 1 })
-      const scale = Math.min(containerSize.height / defaultViewport.height, containerSize.width / defaultViewport.width)
+      const baseScale = Math.min(
+        containerSize.height / defaultViewport.height,
+        containerSize.width / defaultViewport.width,
+      )
+      const scale = baseScale * zoom
 
       const renderViewport = page.getViewport({ scale: scale * devicePixelRatio })
       const displayViewport = page.getViewport({ scale })
@@ -50,10 +55,14 @@ export function PdfPage({ pdf, pageNumber, containerSize }: PdfPageProps) {
       // Drawing Buffer: 실제로 그릴 픽셀 개수
       canvasRef.current.width = renderViewport.width
       canvasRef.current.height = renderViewport.height
-
       // Display Size: CSS 화면 크기 계산
       canvasRef.current.style.width = `${displayViewport.width}px`
       canvasRef.current.style.height = `${displayViewport.height}px`
+
+      if (pdfContentRef.current) {
+        pdfContentRef.current.style.width = `${displayViewport.width}px`
+        pdfContentRef.current.style.height = `${displayViewport.height}px`
+      }
 
       renderTask = page.render({ canvas: canvasRef.current, viewport: renderViewport })
       await renderTask.promise
@@ -83,20 +92,18 @@ export function PdfPage({ pdf, pageNumber, containerSize }: PdfPageProps) {
       renderTask?.cancel()
       textLayerInstance?.cancel()
     }
-  }, [pdf, pageNumber, containerSize])
+  }, [pdf, pageNumber, containerSize, zoom])
 
   const savedRects = Array.from(highlights.entries()).flatMap(([qnaSetId, h]) =>
-    h.rects
-      .filter((r) => r.pageNumber === pageNumber)
-      .map((r, i) => ({ ...r, qnaSetId, rectIndex: i })),
+    h.rects.filter((r) => r.pageNumber === pageNumber).map((r, i) => ({ ...r, qnaSetId, rectIndex: i })),
   )
   const pendingRects = pendingSelection?.rects.filter((r) => r.pageNumber === pageNumber) ?? []
 
   return (
-    <div ref={containerRef} className="absolute inset-0 flex items-center justify-center" onMouseUp={handleMouseUp}>
-      <div ref={pdfContentRef} className="relative">
+    <div ref={containerRef} className="absolute inset-0 flex overflow-auto" onMouseUp={handleMouseUp}>
+      <div ref={pdfContentRef} className="relative m-auto shrink-0 overflow-hidden">
         <canvas ref={canvasRef} />
-        <div ref={textLayerRef} className="textLayer" />
+        <div ref={textLayerRef} className="textLayer absolute inset-0" />
         <HighlightLayer savedRects={savedRects} pendingRects={pendingRects} />
         {!hasSelectableText && (
           <p className="body-m-medium pointer-events-none absolute right-4 bottom-4 rounded-lg border border-orange-400 bg-white/85 px-2 py-1 text-gray-600">

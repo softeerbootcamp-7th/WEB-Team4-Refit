@@ -131,7 +131,8 @@ public class InterviewController {
     public DeferredResult<ResponseEntity<ApiResponse<ConvertResultResponse>>> waitConvertResult(
             @PathVariable Long interviewId) {
         long timeoutMs = 30_000L;
-        DeferredResult<ResponseEntity<ApiResponse<ConvertResultResponse>>> deferredResult = new DeferredResult<>(timeoutMs);
+        DeferredResult<ResponseEntity<ApiResponse<ConvertResultResponse>>> deferredResult =
+                new DeferredResult<>(timeoutMs);
         convertAsyncService.registerOrRespondImmediately(interviewId, deferredResult);
         return deferredResult;
     }

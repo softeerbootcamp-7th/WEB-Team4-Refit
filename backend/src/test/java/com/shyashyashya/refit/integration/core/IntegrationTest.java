@@ -55,11 +55,11 @@ import java.util.List;
 @Import(TestQdrantConfig.class)
 public abstract class IntegrationTest {
 
-    protected static final LocalDateTime NOW = LocalDateTime.of(2026, 2, 16, 10, 0, 0);
+    protected static final LocalDateTime NOW = LocalDateTime.now();
     protected static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     @LocalServerPort
-    private Integer port;
+    protected Integer port;
 
     protected RequestSpecification spec;
 
@@ -79,16 +79,16 @@ public abstract class IntegrationTest {
     protected QnaSetCategory qnaSetCategory3;
 
     @PersistenceContext
-    private EntityManager em;
+    protected EntityManager em;
 
     @Autowired
-    private JwtEncoder jwtEncoder;
+    protected JwtEncoder jwtEncoder;
 
     @Autowired
-    private HangulUtil hangulUtil;
+    protected HangulUtil hangulUtil;
 
     @Autowired
-    private UserRepository userRepository;
+    protected UserRepository userRepository;
 
     @Autowired
     private IndustryRepository industryRepository;
@@ -152,11 +152,11 @@ public abstract class IntegrationTest {
 
             // 모든 테이블 조회
             ResultSet rs = st.executeQuery("""
-                SELECT TABLE_NAME, TABLE_SCHEMA, TABLE_TYPE
-                  FROM INFORMATION_SCHEMA.TABLES
-                 WHERE TABLE_SCHEMA = 'PUBLIC'
-                   AND TABLE_TYPE = 'BASE TABLE'
-            """);
+                        SELECT TABLE_NAME, TABLE_SCHEMA, TABLE_TYPE
+                          FROM INFORMATION_SCHEMA.TABLES
+                         WHERE TABLE_SCHEMA = 'PUBLIC'
+                           AND TABLE_TYPE = 'BASE TABLE'
+                    """);
 
             List<String> tableNames = new ArrayList<>();
             while (rs.next()) {
@@ -183,7 +183,8 @@ public abstract class IntegrationTest {
         return createAndSaveInterview(request, reviewStatus, requestUser);
     }
 
-    protected Interview createAndSaveInterview(InterviewCreateRequest request, InterviewReviewStatus reviewStatus, User user) {
+    protected Interview createAndSaveInterview(InterviewCreateRequest request, InterviewReviewStatus reviewStatus,
+            User user) {
         Company company = companyRepository.findByName(request.companyName()).get();
         Industry industry = industryRepository.findById(request.industryId()).get();
         JobCategory jobCategory = jobCategoryRepository.findById(request.jobCategoryId()).get();
@@ -253,25 +254,25 @@ public abstract class IntegrationTest {
                 request.answerText(),
                 isMarkedDifficult,
                 interview,
-                null
-        );
+                null);
 
         return qnaSetRepository.save(qnaSet);
     }
 
-    protected QnaSet createAndSaveQnaSet(QnaSetCreateRequest request, Interview interview, QnaSetCategory qnaSetCategory) {
+    protected QnaSet createAndSaveQnaSet(QnaSetCreateRequest request, Interview interview,
+            QnaSetCategory qnaSetCategory) {
         QnaSet qnaSet = QnaSet.create(
                 request.questionText(),
                 request.answerText(),
                 false,
                 interview,
-                qnaSetCategory
-        );
+                qnaSetCategory);
 
         return qnaSetRepository.save(qnaSet);
     }
 
-    protected List<PdfHighlighting> createAndSavePdfHighlighting(List<PdfHighlightingUpdateRequest> requests, QnaSet qnaSet) {
+    protected List<PdfHighlighting> createAndSavePdfHighlighting(List<PdfHighlightingUpdateRequest> requests,
+            QnaSet qnaSet) {
         List<PdfHighlighting> result = new ArrayList<>();
 
         requests.forEach(request -> {
@@ -289,8 +290,7 @@ public abstract class IntegrationTest {
                                 pdfHighlighting);
 
                         pdfHighlightingRectRepository.save(rect);
-                    }
-            );
+                    });
         });
 
         return result;

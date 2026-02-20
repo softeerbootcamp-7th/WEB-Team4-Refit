@@ -2,7 +2,7 @@ export default function SidebarLayoutSkeleton() {
   return (
     <div className="mx-auto grid h-full w-7xl grid-cols-[320px_1fr]">
       <div className="bg-gray-150 my-6 flex flex-1 overflow-hidden rounded-xl p-6 pb-12">
-        <div className="flex w-80 flex-col gap-4">
+        <div className="flex w-full flex-col gap-4">
           <div className="inline-flex gap-2">
             <div className="h-6 w-6 animate-pulse rounded bg-gray-200" />
             <div className="h-6 w-24 animate-pulse rounded bg-gray-200" />

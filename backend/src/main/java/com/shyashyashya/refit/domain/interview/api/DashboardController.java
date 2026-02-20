@@ -5,7 +5,6 @@ import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardCalendarResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardDebriefIncompletedInterviewResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardHeadlineResponse;
-import com.shyashyashya.refit.domain.interview.dto.response.DashboardMyDifficultQuestionResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardUpcomingInterviewResponse;
 import com.shyashyashya.refit.domain.interview.service.DashboardService;
 import com.shyashyashya.refit.global.dto.ApiResponse;
@@ -64,22 +63,14 @@ public class DashboardController {
     }
 
     @Operation(summary = "대시보드에서 '곧 있을 면접' 영역의 데이터를 조회합니다.", description = """
-            곧 보게되는 면접 정보, 유사 산업군/직군 면접 질문, 유사 면접 리스트를 조회합니다.
-            각 면접 일정의 Dday 필드는 과거라면 음수, 미래라면 양수 값을 갖습니다.
+            곧 보게되는 면접 정보, 유사 산업군/직군 면접 질문, 유사 면접 리스트를 조회합니다.<br>
+            각 면접 일정의 Dday 필드는 과거라면 음수, 미래라면 양수 값을 갖습니다.<br>
+            가장 가까운 면접 일시 순서대로 정렬됩니다.
             """)
     @GetMapping("/interview/upcoming")
     public ResponseEntity<ApiResponse<Page<DashboardUpcomingInterviewResponse>>> getUpcomingInterviews(
             @ParameterObject Pageable pageable) {
         var body = dashboardService.getUpcomingInterviews(pageable);
-        var response = ApiResponse.success(COMMON200, body);
-        return ResponseEntity.ok(response);
-    }
-
-    @Operation(summary = "대시보드에서 '내가 어렵게 느낀 질문'을 조회합니다.")
-    @GetMapping("/qna-set/my/difficult")
-    public ResponseEntity<ApiResponse<Page<DashboardMyDifficultQuestionResponse>>> getMyDifficultQnaSets(
-            @ParameterObject Pageable pageable) {
-        var body = dashboardService.getMyDifficultQnaSets(pageable);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }

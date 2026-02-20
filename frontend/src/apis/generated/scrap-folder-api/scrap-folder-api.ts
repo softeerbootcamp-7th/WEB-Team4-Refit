@@ -544,7 +544,9 @@ export const useUpdateScrapFolderName = <TError = unknown, TContext = unknown>(
   return useMutation(getUpdateScrapFolderNameMutationOptions(options), queryClient)
 }
 /**
- * '나의 어려웠던 질문' 폴더는 포함하지 않습니다. 해당 폴더의 내용은 어려웠던 질문을 조회하는 API로 조회합니다.
+ *         '나의 어려웠던 질문' 폴더는 포함하지 않습니다. 해당 폴더의 내용은 어려웠던 질문을 조회하는 API로 조회합니다.<br>
+        정렬 기준 (형식: field,asc / field,desc)<br>지원하는 정렬 필드:<br>- interviewStartAt (면접일)
+
  * @summary 나의 스크랩 폴더 내 질문 답변 세트 리스트를 조회합니다.
  */
 export const getGetQnaSetsInScrapFolderUrl = (scrapFolderId: number, params?: GetQnaSetsInScrapFolderParams) => {

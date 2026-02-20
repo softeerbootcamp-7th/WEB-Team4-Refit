@@ -10,6 +10,7 @@ import com.shyashyashya.refit.domain.interview.service.validator.InterviewValida
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.util.RequestUserContext;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +33,7 @@ public class GuideQuestionService {
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, currentUser);
-        interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.LOG_DRAFT);
+        interviewValidator.validateInterviewReviewStatus(interview, List.of(InterviewReviewStatus.LOG_DRAFT));
 
         String rawText = interview.getRawText();
 

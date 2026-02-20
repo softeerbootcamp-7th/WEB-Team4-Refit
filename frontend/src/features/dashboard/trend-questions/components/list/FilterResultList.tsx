@@ -30,7 +30,14 @@ export default function FilterResultList({ filter, isBlurred = false }: FilterRe
         <FilterBadges badges={badges} onRemove={removeBadge} onClearAll={clearAll} />
       </div>
       <div className="relative">
-        <div className={isBlurred ? 'pointer-events-none blur-sm' : ''}>
+        {isBlurred ? (
+          <>
+            <div className="pointer-events-none blur-sm">
+              <DummyCardList />
+            </div>
+            <BlurOverlay onAgreeClick={() => setIsTermsModalOpen(true)} />
+          </>
+        ) : (
           <ListContent
             isLoading={isLoading}
             isEmpty={isEmpty}
@@ -38,8 +45,7 @@ export default function FilterResultList({ filter, isBlurred = false }: FilterRe
             frequentQuestions={frequentQuestions}
             loadMoreRef={loadMoreRef}
           />
-        </div>
-        {isBlurred && <BlurOverlay onAgreeClick={() => setIsTermsModalOpen(true)} />}
+        )}
       </div>
       <TermsModal open={isTermsModalOpen} onClose={() => setIsTermsModalOpen(false)} />
     </section>
@@ -72,6 +78,27 @@ function ListContent({ isLoading, isEmpty, frequentQuestions, loadMoreRef, showI
       <div ref={loadMoreRef} className="h-1" aria-hidden />
       {showInfiniteLoading && <div className="body-m-medium py-4 text-center text-gray-400">더 불러오는 중...</div>}
     </>
+  )
+}
+
+const DUMMY_PLACEHOLDER = '약관 동의가 필요합니다'
+
+function DummyCardList() {
+  return (
+    <div className="grid grid-cols-2 gap-4">
+      {Array.from({ length: 4 }, (_, i) => (
+        <TrendQuestionCard
+          key={`dummy-${i}`}
+          item={{
+            question: DUMMY_PLACEHOLDER,
+            industryName: DUMMY_PLACEHOLDER,
+            jobCategoryName: DUMMY_PLACEHOLDER,
+            interviewType: 'FIRST',
+            interviewStartAt: DUMMY_PLACEHOLDER,
+          }}
+        />
+      ))}
+    </div>
   )
 }
 

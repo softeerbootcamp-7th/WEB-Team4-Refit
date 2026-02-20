@@ -7,6 +7,7 @@ import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
+import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,8 +19,8 @@ public class InterviewValidator {
         }
     }
 
-    public void validateInterviewReviewStatus(Interview interview, InterviewReviewStatus reviewStatus) {
-        if (!interview.getReviewStatus().equals(reviewStatus)) {
+    public void validateInterviewReviewStatus(Interview interview, List<InterviewReviewStatus> reviewStatuses) {
+        if (!reviewStatuses.contains(interview.getReviewStatus())) {
             throw new CustomException(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED);
         }
     }

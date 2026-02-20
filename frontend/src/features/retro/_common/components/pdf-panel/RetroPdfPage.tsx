@@ -12,9 +12,10 @@ type RetroPdfPageProps = {
   pageNumber: number
   containerSize: ContainerSize
   savedRects: SavedRect[]
+  zoom: number
 }
 
-export function RetroPdfPage({ pdf, pageNumber, containerSize, savedRects }: RetroPdfPageProps) {
+export function RetroPdfPage({ pdf, pageNumber, containerSize, savedRects, zoom }: RetroPdfPageProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const textLayerRef = useRef<HTMLDivElement>(null)
@@ -32,7 +33,8 @@ export function RetroPdfPage({ pdf, pageNumber, containerSize, savedRects }: Ret
 
       const devicePixelRatio = window.devicePixelRatio || 1
       const defaultViewport = page.getViewport({ scale: 1 })
-      const scale = Math.min(containerSize.height / defaultViewport.height, containerSize.width / defaultViewport.width)
+      const baseScale = Math.min(containerSize.height / defaultViewport.height, containerSize.width / defaultViewport.width)
+      const scale = baseScale * zoom
 
       const renderViewport = page.getViewport({ scale: scale * devicePixelRatio })
       const displayViewport = page.getViewport({ scale })
@@ -72,13 +74,13 @@ export function RetroPdfPage({ pdf, pageNumber, containerSize, savedRects }: Ret
       renderTask?.cancel()
       textLayerInstance?.cancel()
     }
-  }, [pdf, pageNumber, containerSize])
+  }, [pdf, pageNumber, containerSize, zoom])
 
   const pageRects = savedRects.filter((rect) => rect.pageNumber === pageNumber)
 
   return (
-    <div ref={containerRef} className="absolute inset-0 flex items-center justify-center">
-      <div ref={pdfContentRef} className="relative overflow-hidden bg-white">
+    <div ref={containerRef} className="absolute inset-0 flex overflow-auto">
+      <div ref={pdfContentRef} className="relative m-auto shrink-0 overflow-hidden bg-white">
         <canvas ref={canvasRef} className="block bg-white" />
         <div ref={textLayerRef} className="textLayer absolute inset-0" />
         <HighlightLayer savedRects={pageRects} pendingRects={[]} />

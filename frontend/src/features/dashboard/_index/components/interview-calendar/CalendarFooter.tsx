@@ -1,3 +1,4 @@
+import { CalendarStarIcon } from '@/designs/assets'
 import { CalendarInterviewCard } from '@/features/dashboard/_index/components/interview-calendar/CalendarInterviewCard'
 import type { CalendarInterviewItem } from '@/features/dashboard/_index/hooks/useInterviewCalendar'
 
@@ -30,8 +31,10 @@ export function CalendarFooter({ selectedDate, items, isLoading, isError, onItem
 
   if (items.length === 0) {
     return (
-      <div className="rounded-[10px] bg-gray-100 px-5 py-4">
-        <p className="body-m-medium text-gray-400">{selectedDateLabel}에 등록된 면접 일정이 없어요.</p>
+      <div className="flex flex-col items-center gap-1.5 rounded-[10px] bg-gray-100 px-5 py-6">
+        <CalendarStarIcon className="h-8 w-8 text-gray-300" />
+        <p className="body-s-medium text-gray-400">{selectedDateLabel}의 면접 정보가 없어요</p>
+        <p className="caption-m-medium text-gray-300">+ 버튼으로 면접 일정을 추가해보세요.</p>
       </div>
     )
   }

@@ -8,3 +8,4 @@ spring:
       - gemini
       - vectorstore
       - s3
+      - clustering

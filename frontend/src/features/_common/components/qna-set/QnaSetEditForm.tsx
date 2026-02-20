@@ -12,7 +12,6 @@ type QnaSetEditFormProps = {
   children?: React.ReactNode
 }
 
-// TODO: 최소/최대 글자 수 제한 추가
 export function QnaSetEditForm({
   idx,
   badgeTheme = 'orange-100',
@@ -44,6 +43,7 @@ export function QnaSetEditForm({
       <input
         className="title-s-medium outline-gray-150 flex-1 rounded-lg px-2.5 py-1 outline-1"
         value={question}
+        maxLength={200}
         onChange={(e) => setQuestion(e.target.value)}
         placeholder="질문을 작성해주세요."
         disabled={isSaving}
@@ -51,6 +51,7 @@ export function QnaSetEditForm({
       <textarea
         className="body-m-regular outline-gray-150 min-h-40 resize-none rounded-[10px] p-4 outline-1"
         value={answer}
+        maxLength={10000}
         onChange={(e) => setAnswer(e.target.value)}
         placeholder="답변을 작성해주세요."
         disabled={isSaving}

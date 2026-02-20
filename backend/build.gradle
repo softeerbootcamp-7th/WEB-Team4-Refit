@@ -34,24 +34,33 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.15'
 
+    // MySQL
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // Query DSL
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
     annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
+    // S3
     implementation platform('software.amazon.awssdk:bom:2.27.21')
     implementation 'software.amazon.awssdk:s3'
     implementation 'software.amazon.awssdk:sso'
     implementation 'software.amazon.awssdk:ssooidc'
 
-    runtimeOnly 'com.mysql:mysql-connector-j'
+    // Qdrant Vector DB
+    implementation "io.qdrant:client:1.16.2"
 
+    // ELKI
+    implementation "io.github.elki-project:elki:0.8.0"
+
+    // JWT
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
-    implementation 'io.qdrant:client:1.16.2'
-
+    // TEST
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.rest-assured:rest-assured'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

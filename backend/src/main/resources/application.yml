@@ -12,6 +12,7 @@ spring:
       - auth
       - gemini
       - vectorstore
+      - clustering
 
 server:
   tomcat:

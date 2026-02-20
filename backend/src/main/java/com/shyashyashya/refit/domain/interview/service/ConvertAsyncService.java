@@ -13,15 +13,17 @@ import com.shyashyashya.refit.domain.interview.model.InterviewConvertStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
 import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
-import com.shyashyashya.refit.domain.interview.util.RawTextConvertPromptUtil;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.dto.ApiResponse;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.gemini.GeminiClient;
-import com.shyashyashya.refit.global.gemini.GeminiGenerateRequest;
-import com.shyashyashya.refit.global.gemini.GeminiGenerateResponse;
 import com.shyashyashya.refit.global.gemini.GenerateModel;
+import com.shyashyashya.refit.global.gemini.dto.GeminiGenerateRequest;
+import com.shyashyashya.refit.global.gemini.dto.GeminiGenerateResponse;
+import com.shyashyashya.refit.global.util.PromptGenerateUtil;
 import com.shyashyashya.refit.global.util.RequestUserContext;
+
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +41,7 @@ public class ConvertAsyncService {
     private final RequestUserContext requestUserContext;
     private final InterviewRepository interviewRepository;
     private final InterviewValidator interviewValidator;
-    private final RawTextConvertPromptUtil qnaSetPromptGenerator;
+    private final PromptGenerateUtil qnaSetPromptGenerator;
     private final GeminiClient geminiClient;
     private final ConvertService convertWorker;
     private final Executor geminiPostProcessExecutor;
@@ -52,7 +54,7 @@ public class ConvertAsyncService {
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
-        interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.LOG_DRAFT);
+        interviewValidator.validateInterviewReviewStatus(interview, List.of(InterviewReviewStatus.LOG_DRAFT));
 
         if (interview.getConvertStatus().equals(InterviewConvertStatus.IN_PROGRESS)) {
             throw new CustomException(INTERVIEW_CONVERTING_ALREADY_IN_PROGRESS);
@@ -65,7 +67,7 @@ public class ConvertAsyncService {
         interview.updateConvertStatus(InterviewConvertStatus.IN_PROGRESS);
         interview.completeLogging();
 
-        String prompt = qnaSetPromptGenerator.buildPrompt(interview);
+        String prompt = qnaSetPromptGenerator.buildInterviewRawTextConvertPrompt(interview);
         GeminiGenerateRequest requestBody = GeminiGenerateRequest.from(prompt);
         CompletableFuture<GeminiGenerateResponse> future =
                 geminiClient.sendAsyncTextGenerateRequest(requestBody, GenerateModel.GEMINI_3_FLASH);
