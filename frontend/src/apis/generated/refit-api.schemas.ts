@@ -679,6 +679,34 @@ export interface ApiResponsePageFrequentQnaSetCategoryQuestionResponse {
   result?: PageFrequentQnaSetCategoryQuestionResponse
 }
 
+export interface MyDifficultQuestionResponse {
+  qnaSetId: number
+  question: string
+  answer: string
+  interview: InterviewDto
+}
+
+export interface PageMyDifficultQuestionResponse {
+  totalElements?: number
+  totalPages?: number
+  size?: number
+  content?: MyDifficultQuestionResponse[]
+  number?: number
+  sort?: SortObject
+  pageable?: PageableObject
+  first?: boolean
+  numberOfElements?: number
+  last?: boolean
+  empty?: boolean
+}
+
+export interface ApiResponsePageMyDifficultQuestionResponse {
+  isSuccess: boolean
+  code: string
+  message: string
+  result?: PageMyDifficultQuestionResponse
+}
+
 export type FrequentQnaSetResponseInterviewType =
   (typeof FrequentQnaSetResponseInterviewType)[keyof typeof FrequentQnaSetResponseInterviewType]
 
@@ -883,32 +911,6 @@ export interface ApiResponseListIndustryResponse {
   code: string
   message: string
   result?: IndustryResponse[]
-}
-
-export interface DashboardMyDifficultQuestionResponse {
-  question: string
-  interview: InterviewDto
-}
-
-export interface PageDashboardMyDifficultQuestionResponse {
-  totalElements?: number
-  totalPages?: number
-  size?: number
-  content?: DashboardMyDifficultQuestionResponse[]
-  number?: number
-  sort?: SortObject
-  pageable?: PageableObject
-  first?: boolean
-  numberOfElements?: number
-  last?: boolean
-  empty?: boolean
-}
-
-export interface ApiResponsePageDashboardMyDifficultQuestionResponse {
-  isSuccess: boolean
-  code: string
-  message: string
-  result?: PageDashboardMyDifficultQuestionResponse
 }
 
 export interface DashboardUpcomingInterviewResponse {
@@ -1181,6 +1183,23 @@ export type GetMyFrequentQnaSetCategoryQuestionsParams = {
   sort?: string[]
 }
 
+export type GetMyDifficultQnaSetsParams = {
+  /**
+   * Zero-based page index (0..N)
+   * @minimum 0
+   */
+  page?: number
+  /**
+   * The size of the page to be returned
+   * @minimum 1
+   */
+  size?: number
+  /**
+   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   */
+  sort?: string[]
+}
+
 export type GetFrequentQuestionsParams = {
   industryIds?: number[]
   jobCategoryIds?: number[]
@@ -1225,23 +1244,6 @@ export const GetMyInterviewDraftsInterviewDraftType = {
   LOGGING: 'LOGGING',
   REVIEWING: 'REVIEWING',
 } as const
-
-export type GetMyDifficultQnaSetsParams = {
-  /**
-   * Zero-based page index (0..N)
-   * @minimum 0
-   */
-  page?: number
-  /**
-   * The size of the page to be returned
-   * @minimum 1
-   */
-  size?: number
-  /**
-   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
-   */
-  sort?: string[]
-}
 
 export type GetUpcomingInterviewsParams = {
   /**

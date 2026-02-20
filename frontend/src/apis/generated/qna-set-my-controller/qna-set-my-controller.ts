@@ -9,7 +9,9 @@ import { customFetch } from '../../custom-fetch'
 import type {
   ApiResponsePageFrequentQnaSetCategoryQuestionResponse,
   ApiResponsePageFrequentQnaSetCategoryResponse,
+  ApiResponsePageMyDifficultQuestionResponse,
   ApiResponsePageQnaSetSearchResponse,
+  GetMyDifficultQnaSetsParams,
   GetMyFrequentQnaSetCategoriesParams,
   GetMyFrequentQnaSetCategoryQuestionsParams,
   QnaSetSearchRequest,
@@ -37,7 +39,9 @@ import type {
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
 
 /**
- * 나의 면접 질문들을 검색합니다. 조건을 넣지 않으면 전체 데이터를 조회합니다.
+ *     나의 면접 질문들을 검색합니다. 조건을 넣지 않으면 전체 데이터를 조회합니다.<br>
+    정렬 기준 (형식: field,asc / field,desc)<br>지원하는 정렬 필드:<br>- interviewStartAt (면접일)<br>- updatedAt (수정일)
+
  * @summary 나의 면접 질문들을 검색합니다.
  */
 export const getSearchMyQnaSetUrl = (params?: SearchMyQnaSetParams) => {
@@ -592,6 +596,211 @@ export function useGetMyFrequentQnaSetCategoryQuestionsSuspense<
   queryClient?: QueryClient,
 ): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
   const queryOptions = getGetMyFrequentQnaSetCategoryQuestionsSuspenseQueryOptions(categoryId, params, options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as UseSuspenseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  return { ...query, queryKey: queryOptions.queryKey }
+}
+
+/**
+ * 정렬 기준 (형식: field,asc / field,desc)<br>지원하는 정렬 필드:<br>- interviewStartAt (면접일)
+
+ * @summary 대시보드 및 스크랩 화면에서 '내가 어렵게 느낀 질문' 리스트를 조회합니다.
+ */
+export const getGetMyDifficultQnaSetsUrl = (params?: GetMyDifficultQnaSetsParams) => {
+  const normalizedParams = new URLSearchParams()
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  })
+
+  const stringifiedParams = normalizedParams.toString()
+
+  return stringifiedParams.length > 0 ? `/qna-set/my/difficult?${stringifiedParams}` : `/qna-set/my/difficult`
+}
+
+export const getMyDifficultQnaSets = async (
+  params?: GetMyDifficultQnaSetsParams,
+  options?: RequestInit,
+): Promise<ApiResponsePageMyDifficultQuestionResponse> => {
+  return customFetch<ApiResponsePageMyDifficultQuestionResponse>(getGetMyDifficultQnaSetsUrl(params), {
+    ...options,
+    method: 'GET',
+  })
+}
+
+export const getGetMyDifficultQnaSetsQueryKey = (params?: GetMyDifficultQnaSetsParams) => {
+  return [`/qna-set/my/difficult`, ...(params ? [params] : [])] as const
+}
+
+export const getGetMyDifficultQnaSetsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMyDifficultQnaSets>>,
+  TError = unknown,
+>(
+  params?: GetMyDifficultQnaSetsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getGetMyDifficultQnaSetsQueryKey(params)
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyDifficultQnaSets>>> = ({ signal }) =>
+    getMyDifficultQnaSets(params, { signal, ...requestOptions })
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getMyDifficultQnaSets>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetMyDifficultQnaSetsQueryResult = NonNullable<Awaited<ReturnType<typeof getMyDifficultQnaSets>>>
+export type GetMyDifficultQnaSetsQueryError = unknown
+
+export function useGetMyDifficultQnaSets<TData = Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError = unknown>(
+  params: undefined | GetMyDifficultQnaSetsParams,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMyDifficultQnaSets>>,
+          TError,
+          Awaited<ReturnType<typeof getMyDifficultQnaSets>>
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMyDifficultQnaSets<TData = Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError = unknown>(
+  params?: GetMyDifficultQnaSetsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMyDifficultQnaSets>>,
+          TError,
+          Awaited<ReturnType<typeof getMyDifficultQnaSets>>
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMyDifficultQnaSets<TData = Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError = unknown>(
+  params?: GetMyDifficultQnaSetsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 대시보드 및 스크랩 화면에서 '내가 어렵게 느낀 질문' 리스트를 조회합니다.
+ */
+
+export function useGetMyDifficultQnaSets<TData = Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError = unknown>(
+  params?: GetMyDifficultQnaSetsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetMyDifficultQnaSetsQueryOptions(params, options)
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  return { ...query, queryKey: queryOptions.queryKey }
+}
+
+export const getGetMyDifficultQnaSetsSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMyDifficultQnaSets>>,
+  TError = unknown,
+>(
+  params?: GetMyDifficultQnaSetsParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getGetMyDifficultQnaSetsQueryKey(params)
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyDifficultQnaSets>>> = ({ signal }) =>
+    getMyDifficultQnaSets(params, { signal, ...requestOptions })
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getMyDifficultQnaSets>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetMyDifficultQnaSetsSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof getMyDifficultQnaSets>>>
+export type GetMyDifficultQnaSetsSuspenseQueryError = unknown
+
+export function useGetMyDifficultQnaSetsSuspense<
+  TData = Awaited<ReturnType<typeof getMyDifficultQnaSets>>,
+  TError = unknown,
+>(
+  params: undefined | GetMyDifficultQnaSetsParams,
+  options: {
+    query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMyDifficultQnaSetsSuspense<
+  TData = Awaited<ReturnType<typeof getMyDifficultQnaSets>>,
+  TError = unknown,
+>(
+  params?: GetMyDifficultQnaSetsParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMyDifficultQnaSetsSuspense<
+  TData = Awaited<ReturnType<typeof getMyDifficultQnaSets>>,
+  TError = unknown,
+>(
+  params?: GetMyDifficultQnaSetsParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 대시보드 및 스크랩 화면에서 '내가 어렵게 느낀 질문' 리스트를 조회합니다.
+ */
+
+export function useGetMyDifficultQnaSetsSuspense<
+  TData = Awaited<ReturnType<typeof getMyDifficultQnaSets>>,
+  TError = unknown,
+>(
+  params?: GetMyDifficultQnaSetsParams,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyDifficultQnaSets>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetMyDifficultQnaSetsSuspenseQueryOptions(params, options)
 
   const query = useSuspenseQuery(queryOptions, queryClient) as UseSuspenseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>
