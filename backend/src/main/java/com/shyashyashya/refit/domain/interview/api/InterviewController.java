@@ -4,6 +4,7 @@ import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON201;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON204;
 
+import com.shyashyashya.refit.domain.interview.constant.InterviewConstant;
 import com.shyashyashya.refit.domain.interview.dto.InterviewDto;
 import com.shyashyashya.refit.domain.interview.dto.InterviewFullDto;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
@@ -130,9 +131,8 @@ public class InterviewController {
     @GetMapping("/{interviewId}/raw-text/convert/result")
     public DeferredResult<ResponseEntity<ApiResponse<ConvertResultResponse>>> waitConvertResult(
             @PathVariable Long interviewId) {
-        long timeoutMs = 30_000L;
         DeferredResult<ResponseEntity<ApiResponse<ConvertResultResponse>>> deferredResult =
-                new DeferredResult<>(timeoutMs);
+                new DeferredResult<>(InterviewConstant.QNA_SET_CONVERT_RESULT_TIMEOUT_MILLISECONDS);
         convertAsyncService.registerOrRespondImmediately(interviewId, deferredResult);
         return deferredResult;
     }
