@@ -65,7 +65,7 @@ public class RawTextConvertAsyncService {
             String prompt = qnaSetPromptGenerator.buildInterviewRawTextConvertPrompt(interview);
             GeminiGenerateRequest requestBody = GeminiGenerateRequest.from(prompt);
             CompletableFuture<GeminiGenerateResponse> future =
-                    geminiClient.sendAsyncTextGenerateRequest(requestBody, GenerateModel.GEMINI_3_FLASH);
+                    geminiClient.sendAsyncTextGenerateRequest(requestBody, GenerateModel.GEMMA_3_27B_IT);
             log.info("request sended");
             future.thenApplyAsync(
                             response -> {
