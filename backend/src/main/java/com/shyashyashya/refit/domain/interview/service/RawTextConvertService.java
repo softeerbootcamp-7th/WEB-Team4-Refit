@@ -55,10 +55,8 @@ public class RawTextConvertService {
         });
 
         interview.updateConvertStatus(InterviewConvertStatus.COMPLETED);
-        interviewRepository.save(interview);
 
         // TODO 응답 부분을 컨트롤러로 분리
-        // 대기중인 요청 깨우기
         convertWaitingMap.remove(interviewId).ifPresent(deferredResult -> {
             var body = ApiResponse.success(
                     COMMON200, ConvertResultResponse.of(interviewId, InterviewConvertStatus.COMPLETED));
