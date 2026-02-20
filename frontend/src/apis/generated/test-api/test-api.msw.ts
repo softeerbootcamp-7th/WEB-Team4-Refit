@@ -80,6 +80,23 @@ export const getGetGeminiEmbeddingMockHandler = (
   )
 }
 
+export const getClusterCategoryMockHandler = (
+  overrideResponse?: void | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void),
+  options?: RequestHandlerOptions,
+) => {
+  return http.post(
+    '*/test/batch/clustering-category',
+    async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+      if (typeof overrideResponse === 'function') {
+        await overrideResponse(info)
+      }
+
+      return new HttpResponse(null, { status: 200 })
+    },
+    options,
+  )
+}
+
 export const getDeleteUserByEmailMockHandler = (
   overrideResponse?:
     | ApiResponseVoid
@@ -125,6 +142,7 @@ export const getDeleteUserByIdMockHandler = (
 }
 export const getTestApiMock = () => [
   getGetGeminiEmbeddingMockHandler(),
+  getClusterCategoryMockHandler(),
   getDeleteUserByEmailMockHandler(),
   getDeleteUserByIdMockHandler(),
 ]
