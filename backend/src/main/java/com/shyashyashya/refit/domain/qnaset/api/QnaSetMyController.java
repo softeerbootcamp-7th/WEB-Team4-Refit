@@ -10,10 +10,6 @@ import com.shyashyashya.refit.domain.qnaset.dto.response.QnaSetSearchResponse;
 import com.shyashyashya.refit.domain.qnaset.service.QnaSetMyService;
 import com.shyashyashya.refit.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -36,19 +32,12 @@ public class QnaSetMyController {
 
     private final QnaSetMyService qnaSetMyService;
 
-    @Operation(summary = "대시보드 및 스크랩 화면에서 '내가 어렵게 느낀 질문' 리스트를 조회합니다.")
-    @Parameters(
-            value = {
-                @Parameter(name = "page", description = "페이지 번호 (0..N)"),
-                @Parameter(name = "size", description = "페이지 크기 (기본값 20)"),
-                @Parameter(
-                        name = "sort",
-                        description = "정렬 기준 (형식: field,asc / field,desc)<br>지원하는 정렬 필드:<br>- interviewStartAt (면접일)",
-                        array = @ArraySchema(schema = @Schema(type = "string")))
-            })
+    @Operation(summary = "대시보드 및 스크랩 화면에서 '내가 어렵게 느낀 질문' 리스트를 조회합니다.", description = """
+            정렬 기준 (형식: field,asc / field,desc)<br>지원하는 정렬 필드:<br>- interviewStartAt (면접일)
+            """)
     @GetMapping("/difficult")
     public ResponseEntity<ApiResponse<Page<MyDifficultQuestionResponse>>> getMyDifficultQnaSets(
-            @Parameter(hidden = true) Pageable pageable) {
+            @ParameterObject Pageable pageable) {
         var body = qnaSetMyService.getMyDifficultQnaSets(pageable);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
@@ -74,20 +63,13 @@ public class QnaSetMyController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "나의 면접 질문들을 검색합니다.", description = "나의 면접 질문들을 검색합니다. 조건을 넣지 않으면 전체 데이터를 조회합니다.")
-    @Parameters(
-            value = {
-                @Parameter(name = "page", description = "페이지 번호 (0..N)"),
-                @Parameter(name = "size", description = "페이지 크기 (기본값 20)"),
-                @Parameter(
-                        name = "sort",
-                        description =
-                                "정렬 기준 (형식: field,asc / field,desc)<br>지원하는 정렬 필드:<br>- interviewStartAt (면접일)<br>- updatedAt (수정일)",
-                        array = @ArraySchema(schema = @Schema(type = "string")))
-            })
+    @Operation(summary = "나의 면접 질문들을 검색합니다.", description = """
+            나의 면접 질문들을 검색합니다. 조건을 넣지 않으면 전체 데이터를 조회합니다.<br>
+            정렬 기준 (형식: field,asc / field,desc)<br>지원하는 정렬 필드:<br>- interviewStartAt (면접일)<br>- updatedAt (수정일)
+        """)
     @PostMapping("/search")
     public ResponseEntity<ApiResponse<Page<QnaSetSearchResponse>>> searchMyQnaSet(
-            @Valid @RequestBody QnaSetSearchRequest request, @Parameter(hidden = true) Pageable pageable) {
+            @Valid @RequestBody QnaSetSearchRequest request, @ParameterObject Pageable pageable) {
         var body = qnaSetMyService.searchQnaSets(request, pageable);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
