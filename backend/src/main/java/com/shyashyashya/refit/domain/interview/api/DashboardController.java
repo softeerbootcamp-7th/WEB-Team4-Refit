@@ -10,6 +10,10 @@ import com.shyashyashya.refit.domain.interview.dto.response.DashboardUpcomingInt
 import com.shyashyashya.refit.domain.interview.service.DashboardService;
 import com.shyashyashya.refit.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -77,9 +81,18 @@ public class DashboardController {
     }
 
     @Operation(summary = "대시보드에서 '내가 어렵게 느낀 질문'을 조회합니다.")
+    @Parameters(
+            value = {
+                @Parameter(name = "page", description = "페이지 번호 (0..N)"),
+                @Parameter(name = "size", description = "페이지 크기 (기본값 20)"),
+                @Parameter(
+                        name = "sort",
+                        description = "정렬 기준 (형식: field,asc / field,desc)<br>지원하는 정렬 필드:<br>- interviewStartAt (면접일)",
+                        array = @ArraySchema(schema = @Schema(type = "string")))
+            })
     @GetMapping("/qna-set/my/difficult")
     public ResponseEntity<ApiResponse<Page<DashboardMyDifficultQuestionResponse>>> getMyDifficultQnaSets(
-            @ParameterObject Pageable pageable) {
+            @Parameter(hidden = true) Pageable pageable) {
         var body = dashboardService.getMyDifficultQnaSets(pageable);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
