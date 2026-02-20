@@ -47,9 +47,10 @@ public class QnaSetController {
     private final QnaSetService qnaSetService;
     private final StarAnalysisAsyncService starAnalysisAsyncService;
 
-    @Operation(
-            summary = "지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다.",
-            description = "지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다. 지정하지 않은 필드에 대해서는 전체를 대상으로 조회합니다.")
+    @Operation(summary = "지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다.", description = """
+                    지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다. 지정하지 않은 필드에 대해서는 전체를 대상으로 조회합니다.<br>
+                    약관에 동의하지 않은 사용자가 조회하면 질답 세트 데이터가 조회되지 않고, 조회 결과 개수만 반환합니다.
+            """)
     @GetMapping("/frequent")
     public ResponseEntity<ApiResponse<Page<FrequentQnaSetResponse>>> getFrequentQuestions(
             @Parameter(style = ParameterStyle.FORM, explode = Explode.TRUE) @RequestParam(required = false)
