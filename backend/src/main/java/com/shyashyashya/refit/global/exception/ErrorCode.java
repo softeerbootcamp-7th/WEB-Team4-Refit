@@ -6,6 +6,7 @@ import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.PROCESSING;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import lombok.Getter;
@@ -61,7 +62,13 @@ public enum ErrorCode {
 
     S3_RESOURCE_DELETE_FAILED(INTERNAL_SERVER_ERROR, "S3 리소스 삭제 중 오류가 발생했습니다."),
     GEMINI_RESPONSE_PARSING_FAILED(INTERNAL_SERVER_ERROR, "Gemini 응답 파싱 중 오류가 발생하였습니다."),
-    TEXT_EMBEDDING_CREATE_FAILED(INTERNAL_SERVER_ERROR, "임베딩 생성에 실패하였습니다.");
+    TEXT_EMBEDDING_CREATE_FAILED(INTERNAL_SERVER_ERROR, "임베딩 생성에 실패하였습니다."),
+
+    INTERVIEW_CONVERTING_STATUS_IS_PENDING(BAD_REQUEST, "질답 세트 변환 진행 중이 아닙니다."),
+    INTERVIEW_CONVERTING_ALREADY_IN_PROGRESS(BAD_REQUEST, "질답 세트 변환이 이미 진행 중입니다."),
+    INTERVIEW_CONVERTING_ALREADY_COMPLETED(BAD_REQUEST, "질답 세트 변환이 이미 완료되었습니다."),
+    INTERVIEW_CONVERTING_FAILED(BAD_REQUEST, "질답 세트 변환에 실패하였습니다."),
+    INTERVIEW_CONVERTING_IN_PROGRESS(PROCESSING, "질답 세트 변환이 진행 중입니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
