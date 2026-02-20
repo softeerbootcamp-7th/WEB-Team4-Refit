@@ -39,6 +39,7 @@ public enum ErrorCode {
     USER_NICKNAME_CONFLICT(CONFLICT, "이미 사용 중인 닉네임입니다."),
     USER_SIGNUP_REQUIRED(UNAUTHORIZED, "회원가입이 필요합니다."),
     USER_ALREADY_SIGNED_UP(BAD_REQUEST, "이미 회원가입이 완료된 사용자입니다."),
+    USER_ALREADY_AGREED_TO_TERMS(BAD_REQUEST, "이미 약관에 동의한 사용자입니다."),
 
     TOKEN_REISSUE_REQUIRED(UNAUTHORIZED, "토큰 Reissue가 필요합니다."),
     TOKEN_VALIDATION_FAILED(BAD_REQUEST, "토큰 검증에 실패했습니다."),
