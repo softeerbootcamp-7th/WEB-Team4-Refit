@@ -22,6 +22,8 @@ export type QuestionCardModel = {
 }
 
 export type QnaCardItemModel = {
+  interviewId: number
+  qnaSetId: number
   resultStatus: InterviewSearchFilterInterviewResultStatusItem
   date: string
   company: string
@@ -52,6 +54,8 @@ export function mapFrequentQuestion(item: FrequentQnaSetCategoryQuestionResponse
 
 export function mapSearchQuestionToQnaCard(item: QnaSetSearchResponse): QnaCardItemModel {
   return {
+    interviewId: item.interviewInfo?.interviewId ?? 0,
+    qnaSetId: item.qnaSetInfo?.qnaSetId ?? 0,
     resultStatus: item.interviewInfo?.interviewResultStatus ?? 'WAIT',
     date: item.interviewInfo?.updatedAt ?? '',
     company: item.interviewInfo?.companyName ?? '',

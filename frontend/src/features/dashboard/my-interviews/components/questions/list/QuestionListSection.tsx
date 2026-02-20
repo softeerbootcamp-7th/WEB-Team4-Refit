@@ -1,14 +1,22 @@
+import { useState } from 'react'
+import { useNavigate } from 'react-router'
+import RetroDetailModal from '@/features/_common/components/retro-detail-modal/RetroDetailModal'
 import QnaCard from '@/features/dashboard/my-interviews/components/questions/list/qna-card/QnaCard'
+import { ROUTES } from '@/routes/routes'
 import type { QuestionFilter } from '@/types/interview'
 import { useInfiniteQuestionList } from './useInfiniteQuestionList'
+import type { QnaCardItemModel } from '../mappers'
 
 type QuestionListSectionProps = {
   filter: QuestionFilter
 }
 
 export default function QuestionListSection({ filter }: QuestionListSectionProps) {
+  const navigate = useNavigate()
   const { items, loadMoreRef, isInitialLoading, isFetchingNext, isPending, emptyMessage } =
     useInfiniteQuestionList(filter)
+  const [selectedCard, setSelectedCard] = useState<QnaCardItemModel | null>(null)
+
   const hasItems = items.length > 0
   const isLoadingMore = hasItems && (isFetchingNext || isPending)
 
@@ -19,7 +27,7 @@ export default function QuestionListSection({ filter }: QuestionListSectionProps
     if (!hasItems) {
       return <StatusText message={emptyMessage} />
     }
-    return items.map((item, i) => <QnaCard key={i} {...item} />)
+    return items.map((item) => <QnaCard key={item.qnaSetId} {...item} onClick={() => setSelectedCard(item)} />)
   }
 
   return (
@@ -29,6 +37,17 @@ export default function QuestionListSection({ filter }: QuestionListSectionProps
         <div ref={loadMoreRef} className="body-s-regular py-2 text-center text-gray-400">
           {isLoadingMore ? '불러오는 중...' : ''}
         </div>
+      )}
+      {selectedCard && (
+        <RetroDetailModal
+          open={true}
+          onClose={() => setSelectedCard(null)}
+          interviewId={selectedCard.interviewId}
+          qnaSetId={selectedCard.qnaSetId}
+          onMoveToDetails={() =>
+            navigate(ROUTES.RETRO_DETAILS.replace(':interviewId', String(selectedCard.interviewId)))
+          }
+        />
       )}
     </section>
   )
