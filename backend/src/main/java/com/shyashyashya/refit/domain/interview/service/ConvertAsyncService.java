@@ -22,7 +22,6 @@ import com.shyashyashya.refit.global.gemini.dto.GeminiGenerateRequest;
 import com.shyashyashya.refit.global.gemini.dto.GeminiGenerateResponse;
 import com.shyashyashya.refit.global.util.PromptGenerateUtil;
 import com.shyashyashya.refit.global.util.RequestUserContext;
-
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -100,7 +99,7 @@ public class ConvertAsyncService {
             var body = ConvertResultResponse.of(interviewId, InterviewConvertStatus.COMPLETED);
             deferredResult.setResult(ResponseEntity.ok(ApiResponse.success(COMMON200, body)));
         }
-        if (convertStatus.equals(InterviewConvertStatus.PENDING)) {
+        if (convertStatus.equals(InterviewConvertStatus.NOT_CONVERTED)) {
             throw new CustomException(INTERVIEW_CONVERTING_STATUS_IS_PENDING);
         }
 

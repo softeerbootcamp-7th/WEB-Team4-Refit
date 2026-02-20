@@ -71,7 +71,7 @@ public class ConvertService {
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
 
-        interview.updateConvertStatus(InterviewConvertStatus.PENDING);
+        interview.updateConvertStatus(InterviewConvertStatus.NOT_CONVERTED);
         interview.rollbackToLogDraft();
         interviewRepository.save(interview);
         log.error("process failed request");

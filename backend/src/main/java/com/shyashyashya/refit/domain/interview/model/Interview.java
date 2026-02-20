@@ -110,7 +110,7 @@ public class Interview extends BaseEntity {
                 .company(company)
                 .industry(industry)
                 .jobCategory(jobCategory)
-                .convertStatus(InterviewConvertStatus.PENDING)
+                .convertStatus(InterviewConvertStatus.NOT_CONVERTED)
                 .build();
     }
 
