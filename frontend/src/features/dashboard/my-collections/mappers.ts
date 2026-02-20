@@ -1,5 +1,5 @@
 import type {
-  DashboardMyDifficultQuestionResponse,
+  MyDifficultQuestionResponse,
   ScrapFolderQnaSetResponse,
   ScrapFolderResponse,
 } from '@/apis/generated/refit-api.schemas'
@@ -44,7 +44,7 @@ export function mapScrapFolderQnaToCardItem(item: ScrapFolderQnaSetResponse): Qn
   }
 }
 
-export function mapDifficultQnaToCardItem(item: DashboardMyDifficultQuestionResponse, index: number): QnaCardListItem {
+export function mapDifficultQnaToCardItem(item: MyDifficultQuestionResponse, index: number): QnaCardListItem {
   return {
     id: `${item.interview.interviewId}-${index}`,
     interviewId: item.interview.interviewId,
@@ -55,7 +55,7 @@ export function mapDifficultQnaToCardItem(item: DashboardMyDifficultQuestionResp
     job: item.interview.jobCategoryName,
     interviewType: toInterviewType(item.interview.interviewType),
     question: item.question,
-    answer: '', // TODO: 추후 API 필드 추가되면 수정
+    answer: item.answer,
     createdAt: item.interview.interviewStartAt,
   }
 }
