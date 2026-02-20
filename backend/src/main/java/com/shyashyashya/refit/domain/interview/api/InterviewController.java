@@ -133,7 +133,7 @@ public class InterviewController {
             @PathVariable Long interviewId) {
         DeferredResult<ResponseEntity<ApiResponse<ConvertResultResponse>>> deferredResult =
                 new DeferredResult<>(InterviewConstant.QNA_SET_CONVERT_RESULT_TIMEOUT_MILLISECONDS);
-        convertAsyncService.registerOrRespondImmediately(interviewId, deferredResult);
+        convertAsyncService.handleRawTextConvertResultRequest(interviewId, deferredResult);
         return deferredResult;
     }
 

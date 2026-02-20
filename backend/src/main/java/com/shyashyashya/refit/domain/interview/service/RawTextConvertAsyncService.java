@@ -1,7 +1,5 @@
 package com.shyashyashya.refit.domain.interview.service;
 
-import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_CONVERTING_ALREADY_COMPLETED;
-import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_CONVERTING_ALREADY_IN_PROGRESS;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_CONVERTING_IN_PROGRESS;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_CONVERTING_STATUS_IS_PENDING;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_FOUND;
@@ -54,7 +52,7 @@ public class RawTextConvertAsyncService {
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
         interviewValidator.validateInterviewReviewStatus(interview, List.of(InterviewReviewStatus.LOG_DRAFT));
-        interviewValidator.validateInterviewConvertStatusNotConverted(interview);
+        interviewValidator.validateInterviewConvertStatusIsNotConverted(interview);
 
         interview.updateConvertStatus(InterviewConvertStatus.IN_PROGRESS);
         interview.completeLogging();
@@ -79,7 +77,7 @@ public class RawTextConvertAsyncService {
     }
 
     @Transactional(readOnly = true)
-    public void registerOrRespondImmediately(
+    public void handleRawTextConvertResultRequest(
             Long interviewId, DeferredResult<ResponseEntity<ApiResponse<ConvertResultResponse>>> deferredResult) {
         User requestUser = requestUserContext.getRequestUser();
 
@@ -91,6 +89,7 @@ public class RawTextConvertAsyncService {
         if (convertStatus.equals(InterviewConvertStatus.COMPLETED)) {
             var body = ConvertResultResponse.of(interviewId, InterviewConvertStatus.COMPLETED);
             deferredResult.setResult(ResponseEntity.ok(ApiResponse.success(COMMON200, body)));
+            return;
         }
         if (convertStatus.equals(InterviewConvertStatus.NOT_CONVERTED)) {
             throw new CustomException(INTERVIEW_CONVERTING_STATUS_IS_PENDING);
@@ -101,10 +100,6 @@ public class RawTextConvertAsyncService {
         deferredResult.onTimeout(() -> {
             convertWaitingMap.remove(interviewId);
             throw new CustomException(INTERVIEW_CONVERTING_IN_PROGRESS);
-            //            deferredResult.setResult(ResponseEntity.accepted()
-            //                    .body(ApiResponse.success(
-            //                            COMMON200, ConvertResultResponse.of(interviewId,
-            // InterviewConvertStatus.IN_PROGRESS))));
         });
 
         deferredResult.onCompletion(() -> convertWaitingMap.remove(interviewId));
