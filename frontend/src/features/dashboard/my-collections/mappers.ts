@@ -1,5 +1,5 @@
 import type {
-  DashboardMyDifficultQuestionResponse,
+  MyDifficultQuestionResponse,
   ScrapFolderQnaSetResponse,
   ScrapFolderResponse,
 } from '@/apis/generated/refit-api.schemas'
@@ -34,7 +34,7 @@ export function mapScrapFolderQnaToCardItem(item: ScrapFolderQnaSetResponse): Qn
     interviewId: item.interview.interviewId,
     qnaSetId: item.qnaSet.qnaSetId,
     resultStatus: toInterviewResultStatus(item.interview.interviewResultStatus),
-    date: formatInterviewDateLabel(item.interview.interviewStartAt),
+    date: item.interview.interviewStartAt,
     company: item.interview.companyName,
     job: item.interview.jobCategoryName,
     interviewType: toInterviewType(item.interview.interviewType),
@@ -44,18 +44,18 @@ export function mapScrapFolderQnaToCardItem(item: ScrapFolderQnaSetResponse): Qn
   }
 }
 
-export function mapDifficultQnaToCardItem(item: DashboardMyDifficultQuestionResponse, index: number): QnaCardListItem {
+export function mapDifficultQnaToCardItem(item: MyDifficultQuestionResponse, index: number): QnaCardListItem {
   return {
     id: `${item.interview.interviewId}-${index}`,
     interviewId: item.interview.interviewId,
     qnaSetId: 0, // TODO: API에서 qnaSetId 제공되면 수정 필요
     resultStatus: toInterviewResultStatus(item.interview.interviewResultStatus),
-    date: formatInterviewDateLabel(item.interview.interviewStartAt),
+    date: item.interview.interviewStartAt,
     company: item.interview.companyName,
     job: item.interview.jobCategoryName,
     interviewType: toInterviewType(item.interview.interviewType),
     question: item.question,
-    answer: '',
+    answer: item.answer,
     createdAt: item.interview.interviewStartAt,
   }
 }

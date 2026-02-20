@@ -68,6 +68,48 @@ export const useGetGeminiEmbedding = <TError = unknown, TContext = unknown>(
 ): UseMutationResult<Awaited<ReturnType<typeof getGeminiEmbedding>>, TError, { data: string }, TContext> => {
   return useMutation(getGetGeminiEmbeddingMutationOptions(options), queryClient)
 }
+export const getClusterCategoryUrl = () => {
+  return `/test/batch/clustering-category`
+}
+
+export const clusterCategory = async (options?: RequestInit): Promise<void> => {
+  return customFetch<void>(getClusterCategoryUrl(), {
+    ...options,
+    method: 'POST',
+  })
+}
+
+export const getClusterCategoryMutationOptions = <TError = unknown, TContext = unknown>(options?: {
+  mutation?: UseMutationOptions<Awaited<ReturnType<typeof clusterCategory>>, TError, void, TContext>
+  request?: SecondParameter<typeof customFetch>
+}): UseMutationOptions<Awaited<ReturnType<typeof clusterCategory>>, TError, void, TContext> => {
+  const mutationKey = ['clusterCategory']
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
+
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof clusterCategory>>, void> = () => {
+    return clusterCategory(requestOptions)
+  }
+
+  return { mutationFn, ...mutationOptions }
+}
+
+export type ClusterCategoryMutationResult = NonNullable<Awaited<ReturnType<typeof clusterCategory>>>
+
+export type ClusterCategoryMutationError = unknown
+
+export const useClusterCategory = <TError = unknown, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<Awaited<ReturnType<typeof clusterCategory>>, TError, void, TContext>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<Awaited<ReturnType<typeof clusterCategory>>, TError, void, TContext> => {
+  return useMutation(getClusterCategoryMutationOptions(options), queryClient)
+}
 /**
  * @summary (테스트용) 유저를 이메일로 찾아 삭제합니다.
  */

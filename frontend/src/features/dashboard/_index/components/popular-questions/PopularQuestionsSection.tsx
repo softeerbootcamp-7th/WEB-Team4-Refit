@@ -1,8 +1,11 @@
+import { useNavigate } from 'react-router'
 import { ArrowRightIcon, NoteIcon } from '@/designs/assets'
+import { ROUTES } from '@/routes/routes'
 import { usePopularQuestions, type PopularQuestionItem } from '../../hooks/usePopularQuestions'
 
 export default function PopularQuestionsSection() {
   const { data, nickname } = usePopularQuestions()
+  const navigate = useNavigate()
 
   return (
     <section className="flex flex-col rounded-2xl bg-white p-6">
@@ -14,6 +17,7 @@ export default function PopularQuestionsSection() {
         <button
           type="button"
           className="body-m-medium flex shrink-0 cursor-pointer items-center gap-1 whitespace-nowrap text-gray-400 hover:text-gray-600"
+          onClick={() => navigate(ROUTES.DASHBOARD_TREND_QUESTIONS)}
         >
           비슷한 질문 더 보러가기
           <ArrowRightIcon className="shrink-0" />
