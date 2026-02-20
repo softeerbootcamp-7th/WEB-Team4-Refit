@@ -7,6 +7,7 @@ import { RecordSidebar } from '@/features/record/_index/components/RecordSidebar
 import type { InterviewInfoType } from '@/types/interview'
 
 type AutoSaveStatus = 'idle' | 'saving' | 'saved' | 'error'
+const MAX_RECORD_TEXT_LENGTH = 10_000
 
 type RecordPageContentProps = {
   interviewInfo: InterviewInfoType
@@ -58,6 +59,7 @@ export function RecordPageContent({
               value={text + (realtimeText ? (text ? ' ' : '') + realtimeText : '')}
               onChange={(e) => onTextChange(e.target.value)}
               readOnly={!!realtimeText || isRecording}
+              maxLength={MAX_RECORD_TEXT_LENGTH}
             />
             <div className="mt-4 shrink-0">
               <LiveAudioVisualizer
