@@ -120,7 +120,7 @@ function RecordPageContentContainer({ interviewId }: RecordPageContentContainerP
         description="확인을 누르면 면접 기록이
         질문/답변으로 자동 분류됩니다."
         okText="확인"
-        okButtonVariant="fill-orange-500"
+        okButtonVariant="fill-gray-800"
         hasCancelButton={true}
         cancelText="취소"
       />
