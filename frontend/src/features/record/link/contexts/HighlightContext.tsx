@@ -29,6 +29,9 @@ export type HighlightContextType = {
   removeHighlight: (qnaSetId: number) => void
   clearAllHighlights: () => void
 
+  // 에러 상태
+  saveErrors: Map<number, string>
+
   // 현재 선택된 텍스트
   pendingSelection: HighlightData | null
   setPendingSelection: (data: HighlightData | null) => void

@@ -9,6 +9,7 @@ import {
 } from '@/apis/generated/interview-api/interview-api'
 import { FilePlusIcon, LoadingSpinner } from '@/designs/assets'
 import { Button } from '@/designs/components'
+import ConfirmModal from '@/designs/components/modal/ConfirmModal'
 import { useInterviewNavigate } from '@/features/_common/hooks/useInterviewNavigation'
 import { useHighlightContext } from '@/features/record/link/contexts'
 import { ROUTES } from '@/routes/routes'
@@ -22,17 +23,18 @@ export function PdfSection() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const uploadAbortRef = useRef<AbortController | null>(null)
   const [zoom, setZoom] = useState(1)
+  const [isRetroConfirmOpen, setIsRetroConfirmOpen] = useState(false)
   const { hasPdf, linkingQnaSetId, setHasPdf, clearAllHighlights } = useHighlightContext()
   const { mutate: completeQnaSetDraft, isPending: isCompletingQnaSetDraft } = useCompleteQnaSetDraft()
 
   const navigateWithId = useInterviewNavigate()
-  const goToConfirmPage = () => navigateWithId(ROUTES.RECORD_CONFIRM)
+  const goToConfirmPage = () => navigateWithId(ROUTES.RECORD_CONFIRM, { replace: true })
   const goToRetroPage = () => {
     completeQnaSetDraft(
       { interviewId },
       {
         onSuccess: () => {
-          navigateWithId(ROUTES.RETRO)
+          navigateWithId(ROUTES.RETRO, { replace: true })
         },
       },
     )
@@ -196,12 +198,24 @@ export function PdfSection() {
           variant="fill-orange-500"
           size="md"
           className="w-60"
-          onClick={goToRetroPage}
+          onClick={() => setIsRetroConfirmOpen(true)}
           disabled={isCompletingQnaSetDraft || isPdfBusy}
         >
           회고 하러 가기
         </Button>
       </div>
+      <ConfirmModal
+        open={isRetroConfirmOpen}
+        onClose={() => setIsRetroConfirmOpen(false)}
+        title="회고 단계로 이동할까요?"
+        description={`이동하면 다시 돌아올 수 없어요.\n작성한 내용은 모두 저장돼요.`}
+        hasCancelButton={true}
+        cancelText="취소"
+        okText="이동하기"
+        okButtonVariant="fill-gray-800"
+        okButtonLoading={isCompletingQnaSetDraft}
+        onOk={goToRetroPage}
+      />
     </div>
   )
 }

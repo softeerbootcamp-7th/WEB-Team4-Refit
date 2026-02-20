@@ -17,7 +17,14 @@ export function useTextSelection({
   setPendingSelection,
 }: UseTextSelectionParams) {
   const handleMouseUp = useCallback(() => {
-    if (!isLinkingMode) return
+    if (!isLinkingMode) {
+      const selection = window.getSelection()
+      if (selection && !selection.isCollapsed && selection.toString().trim()) {
+        alert("먼저 질문의 '자기소개서 연결하기' 버튼을 눌러주세요.")
+        selection.removeAllRanges()
+      }
+      return
+    }
 
     const selection = window.getSelection()
     if (!selection || selection.isCollapsed || !containerRef.current) return

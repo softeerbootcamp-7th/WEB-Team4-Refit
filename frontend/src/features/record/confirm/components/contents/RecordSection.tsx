@@ -44,7 +44,7 @@ export function RecordSection({
   scrollContainerRef,
 }: RecordSectionProps) {
   const navigateWithId = useInterviewNavigate()
-  const goToRecordLinkPage = () => navigateWithId(ROUTES.RECORD_LINK)
+  const goToRecordLinkPage = () => navigateWithId(ROUTES.RECORD_LINK, { replace: true })
   const isEmpty = qnaList.length === 0
 
   return (

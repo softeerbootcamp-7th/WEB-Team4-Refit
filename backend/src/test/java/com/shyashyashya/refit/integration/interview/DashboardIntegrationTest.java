@@ -279,6 +279,66 @@ public class DashboardIntegrationTest extends IntegrationTest {
                     .body("result.content", hasSize(1))
                     .body("result.content[0].question", equalTo("Question 1"));
         }
+
+        @Test
+        void interviewStartAt_오름차순_정렬시_정상적으로_조회된다() {
+            // given
+            Interview interview1 = createAndSaveInterview(
+                new InterviewCreateRequest(
+                    NOW.minusDays(5),
+                    InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+                ), InterviewReviewStatus.DEBRIEF_COMPLETED);
+            qnaSetRepository.save(QnaSet.create("Question 1", "Answer 1", true, interview1, null));
+
+            Interview interview2 = createAndSaveInterview(
+                new InterviewCreateRequest(
+                    NOW.minusDays(2),
+                    InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+                ), InterviewReviewStatus.DEBRIEF_COMPLETED);
+            qnaSetRepository.save(QnaSet.create("Question 2", "Answer 2", true, interview2, null));
+
+            // when & then
+            given(spec)
+                    .queryParam("sort", "interviewStartAt,asc")
+            .when()
+                    .get(path)
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("result.content", hasSize(2))
+                    .body("result.content[0].question", equalTo("Question 1"))
+                    .body("result.content[1].question", equalTo("Question 2"));
+        }
+
+        @Test
+        void interviewStartAt_내림차순_정렬시_정상적으로_조회된다() {
+            // given
+            Interview interview1 = createAndSaveInterview(
+                new InterviewCreateRequest(
+                    NOW.minusDays(5),
+                    InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+                ), InterviewReviewStatus.DEBRIEF_COMPLETED);
+            qnaSetRepository.save(QnaSet.create("Question 1", "Answer 1", true, interview1, null));
+
+            Interview interview2 = createAndSaveInterview(
+                new InterviewCreateRequest(
+                    NOW.minusDays(2),
+                    InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+                ), InterviewReviewStatus.DEBRIEF_COMPLETED);
+            qnaSetRepository.save(QnaSet.create("Question 2", "Answer 2", true, interview2, null));
+
+            // when & then
+            given(spec)
+                    .queryParam("sort", "interviewStartAt,desc")
+            .when()
+                    .get(path)
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("result.content", hasSize(2))
+                    .body("result.content[0].question", equalTo("Question 2"))
+                    .body("result.content[1].question", equalTo("Question 1"));
+        }
     }
 
     @Nested
