@@ -15,6 +15,7 @@ type UseRecordAutoSaveResult = {
   appendText: (nextText: string) => void
   autoSaveStatus: AutoSaveStatus
   ensureLoggingStarted: () => Promise<boolean>
+  flushAutoSave: (rawText?: string) => Promise<void>
 }
 
 const AUTO_SAVE_DEBOUNCE_MS = 1000
@@ -38,6 +39,8 @@ export function useRecordAutoSave({
   const startedLoggingRef = useRef(!startLoggingRequired)
   const startLoggingPromiseRef = useRef<Promise<boolean> | null>(null)
   const hasInputStartedRef = useRef(false)
+  const autoSaveTimerRef = useRef<number | null>(null)
+  const inFlightAutoSavePromisesRef = useRef<Set<Promise<void>>>(new Set())
 
   const ensureLoggingStarted = useCallback(async () => {
     if (!interviewId) return false
@@ -98,6 +101,18 @@ export function useRecordAutoSave({
     [autoSaveRawText, ensureLoggingStarted, interviewId],
   )
 
+  const requestAutoSave = useCallback(
+    (rawText: string) => {
+      const autoSavePromise = persistAutoSave(rawText)
+      inFlightAutoSavePromisesRef.current.add(autoSavePromise)
+      void autoSavePromise.finally(() => {
+        inFlightAutoSavePromisesRef.current.delete(autoSavePromise)
+      })
+      return autoSavePromise
+    },
+    [persistAutoSave],
+  )
+
   const onTextChange = useCallback(
     (nextText: string) => {
       textRef.current = nextText
@@ -111,13 +126,13 @@ export function useRecordAutoSave({
       if (!hasInputStartedRef.current) {
         hasInputStartedRef.current = true
         setHasStartedLogging(true)
-        void persistAutoSave(nextText)
+        void requestAutoSave(nextText)
         return
       }
 
       setHasPendingAutoSave(nextText !== lastRequestedAutoSaveTextRef.current)
     },
-    [persistAutoSave],
+    [requestAutoSave],
   )
 
   const appendText = useCallback(
@@ -130,18 +145,58 @@ export function useRecordAutoSave({
   )
 
   useEffect(() => {
+    if (autoSaveTimerRef.current !== null) {
+      window.clearTimeout(autoSaveTimerRef.current)
+      autoSaveTimerRef.current = null
+    }
     if (!interviewId) return
     if (!hasInputStartedRef.current) return
     if (text === lastRequestedAutoSaveTextRef.current) return
 
-    const timerId = window.setTimeout(() => {
-      void persistAutoSave(text)
+    autoSaveTimerRef.current = window.setTimeout(() => {
+      autoSaveTimerRef.current = null
+      void requestAutoSave(text)
     }, AUTO_SAVE_DEBOUNCE_MS)
 
     return () => {
-      window.clearTimeout(timerId)
+      if (autoSaveTimerRef.current !== null) {
+        window.clearTimeout(autoSaveTimerRef.current)
+        autoSaveTimerRef.current = null
+      }
     }
-  }, [interviewId, persistAutoSave, text])
+  }, [interviewId, requestAutoSave, text])
+
+  const flushAutoSave = useCallback(
+    async (rawText?: string) => {
+      const targetText = rawText ?? textRef.current
+
+      if (autoSaveTimerRef.current !== null) {
+        window.clearTimeout(autoSaveTimerRef.current)
+        autoSaveTimerRef.current = null
+      }
+      setHasPendingAutoSave(false)
+      if (!interviewId) return
+
+      if (inFlightAutoSavePromisesRef.current.size > 0) {
+        await Promise.allSettled(Array.from(inFlightAutoSavePromisesRef.current))
+      }
+      if (!targetText.trim()) return
+
+      if (!hasInputStartedRef.current) {
+        hasInputStartedRef.current = true
+        setHasStartedLogging(true)
+      }
+
+      if (targetText !== lastRequestedAutoSaveTextRef.current || isAutoSaveError) {
+        await requestAutoSave(targetText)
+      }
+
+      if (inFlightAutoSavePromisesRef.current.size > 0) {
+        await Promise.allSettled(Array.from(inFlightAutoSavePromisesRef.current))
+      }
+    },
+    [interviewId, isAutoSaveError, requestAutoSave],
+  )
 
   const autoSaveStatus = isAutoSaving
     || hasPendingAutoSave
@@ -158,5 +213,6 @@ export function useRecordAutoSave({
     appendText,
     autoSaveStatus,
     ensureLoggingStarted,
+    flushAutoSave,
   }
 }
