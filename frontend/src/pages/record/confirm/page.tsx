@@ -1,6 +1,8 @@
 import { Suspense } from 'react'
-import { useParams } from 'react-router'
+import { Navigate, useParams } from 'react-router'
+import type { InterviewDtoInterviewReviewStatus } from '@/apis'
 import { getInterviewFull, useGetInterviewFullSuspense } from '@/apis/generated/interview-api/interview-api'
+import { getInterviewNavigationPath } from '@/constants/interviewReviewStatusRoutes'
 import SidebarLayoutSkeleton from '@/features/_common/components/sidebar/SidebarLayoutSkeleton'
 import { useSectionScroll } from '@/features/_common/hooks/useSectionScroll'
 import { RecordSection } from '@/features/record/confirm/components/contents/RecordSection'
@@ -19,7 +21,12 @@ export default function RecordConfirmPage() {
 function RecordConfirmContent() {
   const { interviewId } = useParams()
   const id = Number(interviewId)
-  const { data } = useGetInterviewFullSuspense(id, { query: { select: transformInterviewData } })
+  const { data } = useGetInterviewFullSuspense(id, {
+    query: {
+      select: transformInterviewData,
+    },
+  })
+  const blockedConfirmPath = getBlockedConfirmPath(id, data.interviewReviewStatus)
 
   const {
     isAddMode,
@@ -42,6 +49,10 @@ function RecordConfirmContent() {
     id: qnaSetId,
     label: `${index + 1}. ${questionText}`,
   }))
+
+  if (blockedConfirmPath) {
+    return <Navigate to={blockedConfirmPath} replace />
+  }
 
   return (
     <div className="mx-auto grid h-full w-7xl grid-cols-[320px_1fr]">
@@ -91,5 +102,14 @@ function transformInterviewData(res: Awaited<ReturnType<typeof getInterviewFull>
     answerText: qnaSet.answerText ?? '',
   }))
 
-  return { interviewInfo, qnaList }
+  return {
+    interviewInfo,
+    qnaList,
+    interviewReviewStatus: (interviewFull.interviewReviewStatus ?? 'NOT_LOGGED') as InterviewDtoInterviewReviewStatus,
+  }
+}
+
+function getBlockedConfirmPath(interviewId: number, interviewReviewStatus: InterviewDtoInterviewReviewStatus): string | null {
+  if (interviewReviewStatus === 'LOG_DRAFT' || interviewReviewStatus === 'QNA_SET_DRAFT') return null
+  return getInterviewNavigationPath(interviewId, interviewReviewStatus)
 }

@@ -137,7 +137,7 @@ export default function DraftListModal({ open, onClose, interviewDraftType }: Dr
         hasCancelButton={true}
         cancelText="취소"
         okText="삭제"
-        okButtonVariant="fill-orange-500"
+        okButtonVariant="fill-gray-800"
         okButtonLoading={isDeleting}
         onOk={handleConfirmDelete}
       />

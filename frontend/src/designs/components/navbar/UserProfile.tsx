@@ -24,29 +24,22 @@ function UserProfileContent() {
   })
   const nickname = profile?.nickname
   const profileImageUrl = profile?.profileImageUrl
+  const initial = nickname?.[0]?.toUpperCase() ?? '?'
 
   return (
-    <div className="ml-auto flex items-center gap-2.5">
-      <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-gray-200">
-        {profileImageUrl ? (
-          <img
-            src={profileImageUrl}
-            alt={`${nickname}의 프로필`}
-            className="h-full w-full object-cover"
-            loading="lazy"
-          />
-        ) : null}
-      </div>
-      <span className="body-l-semibold text-gray-700">{nickname} 님</span>
-    </div>
+    <button
+      className="flex h-8 w-8 cursor-pointer items-center justify-center overflow-hidden rounded-full bg-orange-400 transition-all hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400"
+      aria-label={`${nickname} 프로필`}
+    >
+      {profileImageUrl ? (
+        <img src={profileImageUrl} alt="" className="h-full w-full object-cover" loading="lazy" />
+      ) : (
+        <span className="caption-l-semibold text-white">{initial}</span>
+      )}
+    </button>
   )
 }
 
 function UserProfileSkeleton() {
-  return (
-    <div className="ml-auto flex items-center gap-2.5">
-      <div className="h-8 w-8 animate-pulse rounded-full bg-gray-200" />
-      <div className="bg-gray-150 h-5 w-20 animate-pulse rounded" />
-    </div>
-  )
+  return <div className="h-8 w-8 animate-pulse rounded-full bg-gray-200" />
 }
