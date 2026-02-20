@@ -10,6 +10,7 @@ import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON204;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -38,8 +39,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetSearchRequest;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import org.junit.jupiter.params.provider.CsvSource;
 
 public class QnaSetIntegrationTest extends IntegrationTest {
 
@@ -573,9 +578,9 @@ public class QnaSetIntegrationTest extends IntegrationTest {
             // when & then
             given(spec)
                     .body(request)
-                    .when()
+            .when()
                     .put("/qna-set/" + qnaSetDraftQnaSetId + "/pdf-highlighting")
-                    .then()
+            .then()
                     .statusCode(200)
                     .body("code", equalTo(COMMON200.name()))
                     .body("message", equalTo(COMMON200.getMessage()))
@@ -618,9 +623,9 @@ public class QnaSetIntegrationTest extends IntegrationTest {
             // when & then
             given(spec)
                     .body(request)
-                    .when()
+            .when()
                     .put("/qna-set/" + Long.MAX_VALUE + "/pdf-highlighting")
-                    .then()
+            .then()
                     .statusCode(404)
                     .body("code", equalTo(QNA_SET_NOT_FOUND.name()))
                     .body("message", equalTo(QNA_SET_NOT_FOUND.getMessage()))
@@ -635,9 +640,9 @@ public class QnaSetIntegrationTest extends IntegrationTest {
             // when & then
             given(spec)
                     .body(request)
-                    .when()
+            .when()
                     .put("/qna-set/" + otherUserQnaSetId + "/pdf-highlighting")
-                    .then()
+            .then()
                     .statusCode(403)
                     .body("code", equalTo(INTERVIEW_NOT_ACCESSIBLE.name()))
                     .body("message", equalTo(INTERVIEW_NOT_ACCESSIBLE.getMessage()))
@@ -706,9 +711,9 @@ public class QnaSetIntegrationTest extends IntegrationTest {
 
             // when & then
             given(spec)
-                    .when()
+            .when()
                     .get("/qna-set/" + qnaSetWithPdfHighlightingId + "/pdf-highlighting")
-                    .then()
+            .then()
                     .statusCode(200)
                     .body("code", equalTo(COMMON200.name()))
                     .body("message", equalTo(COMMON200.getMessage()))
@@ -1283,6 +1288,73 @@ public class QnaSetIntegrationTest extends IntegrationTest {
                     .body("code", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.name()))
                     .body("message", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.getMessage()))
                     .body("result", nullValue());
+        }
+    }
+
+    @Nested
+    class 질문_목록_검색_및_정렬_시 {
+
+        private static final String path = "/qna-set/my/search";
+        private QnaSet qnaSet1;
+        private QnaSet qnaSet2;
+        private QnaSet qnaSet3;
+
+        @BeforeEach
+        void setUp() {
+            createAndSaveCompany("A_Company");
+            createAndSaveCompany("B_Company");
+            createAndSaveCompany("C_Company");
+
+            InterviewCreateRequest req1 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 1, 2, 10, 0, 0),
+                    InterviewType.FIRST, "B_Company", industry1.getId(), jobCategory1.getId(), "BE Developer");
+            Interview interview1 = createAndSaveInterview(req1, InterviewReviewStatus.DEBRIEF_COMPLETED);
+            qnaSet1 = createAndSaveQnaSet(new QnaSetCreateRequest("Q1", "A1"), interview1, false);
+
+            try { Thread.sleep(100); } catch (InterruptedException e) {}
+
+            InterviewCreateRequest req2 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 1, 3, 10, 0, 0),
+                    InterviewType.FIRST, "A_Company", industry1.getId(), jobCategory1.getId(), "BE Developer");
+            Interview interview2 = createAndSaveInterview(req2, InterviewReviewStatus.DEBRIEF_COMPLETED);
+            qnaSet2 = createAndSaveQnaSet(new QnaSetCreateRequest("Q2", "A2"), interview2, false);
+
+            try { Thread.sleep(100); } catch (InterruptedException e) {}
+
+            InterviewCreateRequest req3 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 1, 1, 10, 0, 0),
+                    InterviewType.FIRST, "C_Company", industry1.getId(), jobCategory1.getId(), "BE Developer");
+            Interview interview3 = createAndSaveInterview(req3, InterviewReviewStatus.DEBRIEF_COMPLETED);
+            qnaSet3 = createAndSaveQnaSet(new QnaSetCreateRequest("Q3", "A3"), interview3, false);
+        }
+
+        @ParameterizedTest(name = "{0} 필드를 {1} 로 정렬에 성공한다")
+        @CsvSource({
+                "interviewStartAt, asc, 3:1:2",
+                "interviewStartAt, desc, 2:1:3",
+                "updatedAt, asc, 1:2:3",
+                "updatedAt, desc, 3:2:1"
+        })
+        void 정렬_조건에_따라_올바르게_정렬된다(String sortField, String direction, String expectedOrderIndices) {
+            List<Integer> expectedIds = Arrays.stream(expectedOrderIndices.split(":")).map(Integer::parseInt).toList();
+
+            QnaSetSearchRequest request = new QnaSetSearchRequest(
+                    null,
+                    new QnaSetSearchRequest.QnaSearchFilter(
+                            null, Collections.emptySet(), Collections.emptySet(), Collections.emptySet(), Collections.emptySet())
+            );
+
+            given(spec)
+                    .body(request)
+                    .queryParam("sort", sortField + "," + direction)
+            .when()
+                    .post(path)
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result.content", hasSize(expectedIds.size()))
+                    .body("result.content*.qnaSetInfo.qnaSetId", contains(expectedIds.toArray()));
         }
     }
 }

@@ -11,6 +11,10 @@ import com.shyashyashya.refit.domain.scrapfolder.dto.response.ScrapFolderRespons
 import com.shyashyashya.refit.domain.scrapfolder.service.ScrapFolderService;
 import com.shyashyashya.refit.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -50,9 +54,18 @@ public class ScrapFolderController {
     @Operation(
             summary = "나의 스크랩 폴더 내 질문 답변 세트 리스트를 조회합니다.",
             description = "'나의 어려웠던 질문' 폴더는 포함하지 않습니다. 해당 폴더의 내용은 어려웠던 질문을 조회하는 API로 조회합니다.")
+    @Parameters(
+            value = {
+                @Parameter(name = "page", description = "페이지 번호 (0..N)"),
+                @Parameter(name = "size", description = "페이지 크기 (기본값 20)"),
+                @Parameter(
+                        name = "sort",
+                        description = "정렬 기준 (형식: field,asc / field,desc)<br>지원하는 정렬 필드:<br>- interviewStartAt (면접일)",
+                        array = @ArraySchema(schema = @Schema(type = "string")))
+            })
     @GetMapping("/{scrapFolderId}")
     public ResponseEntity<ApiResponse<Page<ScrapFolderQnaSetResponse>>> getQnaSetsInScrapFolder(
-            @PathVariable Long scrapFolderId, @ParameterObject Pageable pageable) {
+            @PathVariable Long scrapFolderId, @Parameter(hidden = true) Pageable pageable) {
         var body = scrapFolderService.getQnaSetsInScrapFolder(scrapFolderId, pageable);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);

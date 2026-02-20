@@ -1,8 +1,10 @@
 package com.shyashyashya.refit.domain.interview.repository;
 
+import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewResultStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
+import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.user.model.User;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,4 +25,6 @@ public interface InterviewCustomRepository {
             Pageable pageable);
 
     List<Interview> findInterviewsNotLoggedRecentOneMonth(User user, LocalDateTime now);
+
+    List<Interview> findAllSimilarInterviewsByUser(User user, Industry industry, JobCategory jobCategory);
 }
