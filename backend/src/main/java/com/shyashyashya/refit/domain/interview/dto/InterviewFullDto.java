@@ -23,7 +23,8 @@ public record InterviewFullDto(
         @NotNull LocalDateTime interviewStartAt,
         @NotNull InterviewReviewStatus interviewReviewStatus,
         @NotNull InterviewResultStatus interviewResultStatus,
-        @NotNull String company,
+        @NotNull String companyName,
+        @NotNull String companyLogoUrl,
         @NotNull Long industryId,
         @NotNull Long jobCategoryId,
         String jobRole,
@@ -38,7 +39,8 @@ public record InterviewFullDto(
                 .interviewStartAt(interview.getStartAt())
                 .interviewReviewStatus(interview.getReviewStatus())
                 .interviewResultStatus(interview.getResultStatus())
-                .company(interview.getCompany().getName())
+                .companyName(interview.getCompany().getName())
+                .companyLogoUrl(interview.getCompany().getLogoUrl())
                 .industryId(interview.getIndustry().getId())
                 .jobCategoryId(interview.getJobCategory().getId())
                 .jobRole(interview.getJobRole())
@@ -71,7 +73,8 @@ public record InterviewFullDto(
                 .interviewStartAt(interview.getStartAt())
                 .interviewReviewStatus(interview.getReviewStatus())
                 .interviewResultStatus(interview.getResultStatus())
-                .company(interview.getCompany().getName())
+                .companyName(interview.getCompany().getName())
+                .companyLogoUrl(interview.getCompany().getLogoUrl())
                 .industryId(interview.getIndustry().getId())
                 .jobCategoryId(interview.getJobCategory().getId())
                 .jobRole(interview.getJobRole())
