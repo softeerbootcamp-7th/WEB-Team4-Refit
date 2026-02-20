@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from 'react'
+import { Button } from '@/designs/components'
 import { useHighlightContext } from '@/features/record/link/contexts'
 import { PdfNavigation } from './PdfNavigation'
 import { PdfPage } from './PdfPage'
@@ -7,9 +8,19 @@ import { usePdfLoader } from './usePdfLoader'
 
 type PdfViewerProps = {
   pdfUrl: string
+  onRemovePdf?: () => void
+  isPdfBusy?: boolean
+  zoom: number
+  onZoomChange: (zoom: number) => void
 }
 
-export function PdfViewer({ pdfUrl }: PdfViewerProps) {
+export function PdfViewer({
+  pdfUrl,
+  onRemovePdf,
+  isPdfBusy,
+  zoom,
+  onZoomChange,
+}: PdfViewerProps) {
   const { pdf, isLoading, error } = usePdfLoader(pdfUrl)
   const [selectedPage, setSelectedPage] = useState<number | null>(null)
   const viewerRef = useRef<HTMLDivElement>(null)
@@ -38,11 +49,26 @@ export function PdfViewer({ pdfUrl }: PdfViewerProps) {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      {pdf && <PdfNavigation currentPage={currentPage} totalPages={totalPages} onPageChange={setSelectedPage} />}
+      {pdf && (
+        <PdfNavigation
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setSelectedPage}
+          zoom={zoom}
+          onZoomChange={onZoomChange}
+          actions={
+            onRemovePdf && (
+              <Button variant="outline-gray-100" onClick={onRemovePdf} size="xs" disabled={isPdfBusy}>
+                업로드 해제
+              </Button>
+            )
+          }
+        />
+      )}
       <div ref={viewerRef} className="relative min-h-0 flex-1 overflow-hidden">
         {isLoading && <p className="body-m-regular py-10 text-center text-gray-400">PDF 로딩 중...</p>}
         {error && <p className="body-m-regular py-10 text-center text-red-400">{error}</p>}
-        {isReady && <PdfPage pdf={pdf} pageNumber={currentPage} containerSize={containerSize} />}
+        {isReady && <PdfPage pdf={pdf} pageNumber={currentPage} containerSize={containerSize} zoom={zoom} />}
       </div>
     </div>
   )

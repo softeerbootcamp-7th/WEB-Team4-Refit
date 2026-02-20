@@ -16,6 +16,7 @@ type InterviewCardProps = {
   interviewType: InterviewType
   infoDirection?: 'row' | 'column'
   children?: React.ReactNode
+  onClick?: () => void
 }
 
 export default function InterviewCard({
@@ -26,9 +27,13 @@ export default function InterviewCard({
   interviewType,
   infoDirection = 'column',
   children,
+  onClick,
 }: InterviewCardProps) {
   return (
-    <div className="bg-gray-white hover:bg-gray-150 flex cursor-pointer flex-col gap-2.5 rounded-2xl p-5 transition-colors">
+    <div
+      onClick={onClick}
+      className="bg-gray-white hover:bg-gray-150 flex cursor-pointer flex-col gap-2.5 rounded-2xl p-5 transition-colors"
+    >
       <div className="flex items-center gap-2">
         <Badge content={RESULT_LABEL[resultStatus]} type="question-label" theme={RESULT_THEME[resultStatus]} />
         <span className="body-m-medium text-gray-500">{formatDate(date)} 응시</span>

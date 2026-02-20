@@ -61,6 +61,7 @@ public class UserService {
     @Transactional
     public void agreeToTerms() {
         User user = requestUserContext.getRequestUser();
+        userValidator.validateUserNotAgreedToTerms(user);
         user.agreeToTerms();
     }
 

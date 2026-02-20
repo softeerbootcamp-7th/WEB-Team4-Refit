@@ -12,9 +12,10 @@ export interface ScheduleModalContentProps {
   onStepChange: (step: ScheduleModalStep) => void
   onSubmit?: (values: ScheduleFormSubmitValues) => void
   isSubmitting?: boolean
+  pastOnly?: boolean
 }
 
-export function ScheduleModalContent({ step, onStepChange, onSubmit, isSubmitting }: ScheduleModalContentProps) {
+export function ScheduleModalContent({ step, onStepChange, onSubmit, isSubmitting, pastOnly }: ScheduleModalContentProps) {
   const [interviewInfoValues, setInterviewInfoValues] = useState<InterviewInfoFormValues>({
     companyName: '',
     industryId: '',
@@ -39,6 +40,7 @@ export function ScheduleModalContent({ step, onStepChange, onSubmit, isSubmittin
         onPrev={() => onStepChange('info')}
         onNext={handleSubmit}
         isSubmitting={isSubmitting}
+        pastOnly={pastOnly}
       />
     )
   }

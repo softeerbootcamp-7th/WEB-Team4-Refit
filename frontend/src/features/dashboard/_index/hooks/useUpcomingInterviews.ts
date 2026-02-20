@@ -32,17 +32,14 @@ function formatDateTime(dateString: string): string {
   const date = new Date(dateString)
   if (!isValidDate(date)) return '-'
 
-  const datePart = date.toLocaleDateString('ko-KR', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
+  return date.toLocaleString('ko-KR', {
+    year: '2-digit',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
   })
-  const timePart = date.toLocaleTimeString('ko-KR', {
-    hour: 'numeric',
-    hour12: true,
-  })
-
-  return `${datePart} ${timePart}`.trim()
 }
 
 function formatUpdatedTime(dateString: string): string {
@@ -79,7 +76,6 @@ export const useUpcomingInterviews = () => {
     {
       page: 0,
       size: 10,
-      sort: ['interviewStartAt,asc'],
     },
     {
       query: {

@@ -106,4 +106,8 @@ public class QnaSet extends BaseEntity {
         this.interview = interview;
         this.qnaSetCategory = qnaSetCategory;
     }
+
+    public void updateCategory(QnaSetCategory category) {
+        this.qnaSetCategory = category;
+    }
 }

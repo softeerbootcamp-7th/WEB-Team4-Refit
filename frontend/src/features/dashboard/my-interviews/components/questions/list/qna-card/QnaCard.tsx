@@ -10,12 +10,12 @@ type QnaCardProps = {
   interviewType: InterviewType
   question: string
   answer: string
+  onClick?: () => void
 }
 
-// TODO: 클릭하면 retro details 모달 열리도록 수정
-export default function QnaCard({ question, answer, ...cardProps }: QnaCardProps) {
+export default function QnaCard({ question, answer, onClick, ...cardProps }: QnaCardProps) {
   return (
-    <InterviewCard {...cardProps} infoDirection="row">
+    <InterviewCard {...cardProps} infoDirection="row" onClick={onClick}>
       <div className="flex h-full flex-col gap-3 rounded-[10px] bg-gray-100 p-3">
         <div className="flex gap-2">
           <span className="body-l-medium text-gray-300">Q.</span>

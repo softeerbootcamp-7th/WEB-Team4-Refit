@@ -4,6 +4,7 @@ import { getInterviewFull, useGetInterviewFullSuspense } from '@/apis/generated/
 import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
 import SidebarLayoutSkeleton from '@/features/_common/components/sidebar/SidebarLayoutSkeleton'
 import { useSectionScroll } from '@/features/_common/hooks/useSectionScroll'
+import { RetroPdfPanel } from '@/features/retro/_common/components/pdf-panel/RetroPdfPanel'
 import { DetailHeader } from '@/features/retro/details/components/contents/DetailHeader'
 import { RetroDetailSection } from '@/features/retro/details/components/contents/RetroDetailSection'
 import { DetailMinimizedSidebar } from '@/features/retro/details/components/sidebar/DetailMinimizedSidebar'
@@ -23,7 +24,7 @@ function RetroDetailContent() {
   const id = Number(interviewId)
   const { data } = useGetInterviewFullSuspense(id, { query: { select: transformInterviewData } })
 
-  const { interviewInfo, interviewResultStatus, qnaSets, interviewSelfReview } = data
+  const { interviewInfo, interviewResultStatus, qnaSets, interviewSelfReview, hasUploadedPdf } = data
   const { company, interviewType } = interviewInfo
 
   const [isPdfOpen, setIsPdfOpen] = useState(false)
@@ -49,7 +50,7 @@ function RetroDetailContent() {
             scrollContainerRef={scrollContainerRef}
           />
         </div>
-        <div className="flex h-full flex-col bg-gray-100">PDF 영역</div>
+        <RetroPdfPanel interviewId={id} hasPdf={hasUploadedPdf} qnaSetIds={qnaSets.map((qna) => qna.qnaSetId)} />
       </div>
     )
   }
@@ -113,5 +114,6 @@ function transformInterviewData(res: Awaited<ReturnType<typeof getInterviewFull>
     interviewResultStatus,
     qnaSets,
     interviewSelfReview,
+    hasUploadedPdf: Boolean(interviewFull.pdfResourceKey),
   }
 }

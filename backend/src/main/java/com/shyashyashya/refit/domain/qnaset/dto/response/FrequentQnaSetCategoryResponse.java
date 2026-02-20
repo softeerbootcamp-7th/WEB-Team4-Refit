@@ -1,6 +1,6 @@
 package com.shyashyashya.refit.domain.qnaset.dto.response;
 
-import com.shyashyashya.refit.domain.qnaset.model.QnaSetCategory;
+import com.querydsl.core.annotations.QueryProjection;
 import jakarta.validation.constraints.NotNull;
 
 public record FrequentQnaSetCategoryResponse(
@@ -9,8 +9,11 @@ public record FrequentQnaSetCategoryResponse(
         @NotNull Long frequentCount,
         @NotNull Double cohesion) {
 
-    public static FrequentQnaSetCategoryResponse of(QnaSetCategory category, Long frequentCount) {
-        return new FrequentQnaSetCategoryResponse(
-                category.getId(), category.getCategoryName(), frequentCount, category.getCohesion());
+    @QueryProjection
+    public FrequentQnaSetCategoryResponse(Long categoryId, String categoryName, Long frequentCount, Double cohesion) {
+        this.categoryId = categoryId;
+        this.categoryName = categoryName;
+        this.frequentCount = frequentCount;
+        this.cohesion = cohesion;
     }
 }

@@ -108,8 +108,7 @@ export function QnaSetContainer({
         title={`질문을 정말\n삭제하시겠어요?`}
         okText="삭제하기"
         okButtonVariant="fill-gray-800"
-        // TODO: 속성 추가되면 추가
-        //okButtonLoading={isDeleting}
+        okButtonLoading={isDeleting}
         onOk={handleConfirmDelete}
       />
     </div>

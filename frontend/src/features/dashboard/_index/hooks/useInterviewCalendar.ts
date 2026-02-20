@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react'
+import { getLocalTimeZone, today } from '@internationalized/date'
 import { useGetDashboardCalendarInterviews } from '@/apis'
 import type { InterviewDto } from '@/apis'
 import type { EventColor } from '@/features/dashboard/_index/constants/interviewCalendar'
+import type { CalendarDate } from '@internationalized/date'
 
-type CalendarDay = { day: number; isCurrentMonth: boolean }
 type CalendarDateEntry = {
   year: number
   month: number
@@ -17,47 +18,35 @@ export interface CalendarInterviewItem {
   interview: InterviewDto
 }
 
-const createCalendarDay = (day: number, isCurrentMonth: boolean): CalendarDay => ({ day, isCurrentMonth })
-
-function getCalendarDays(year: number, month: number): CalendarDay[] {
-  const first = new Date(year, month, 1)
-  const last = new Date(year, month + 1, 0)
-  const startPad = first.getDay()
-  const daysInMonth = last.getDate()
-  const prevMonthDays = new Date(year, month, 0).getDate()
-
-  const prevDays = Array.from({ length: startPad }, (_, i) => createCalendarDay(prevMonthDays - startPad + 1 + i, false))
-  const currentDays = Array.from({ length: daysInMonth }, (_, i) => createCalendarDay(i + 1, true))
-  const nextDaysCount = 42 - prevDays.length - currentDays.length
-  const nextDays = Array.from({ length: nextDaysCount }, (_, i) => createCalendarDay(i + 1, false))
-
-  return [...prevDays, ...currentDays, ...nextDays]
-}
-
 function parseCalendarDate(date: string) {
   const [year, month, day] = date.split('T')[0].split('-').map(Number)
   return { year, month, day }
 }
 
 export const useInterviewCalendar = () => {
-  const [today] = useState(() => new Date())
-  const [viewDate, setViewDate] = useState(() => ({
-    year: today.getFullYear(),
-    month: today.getMonth(),
-  }))
-  const [selectedDate, setSelectedDate] = useState(() => ({
-    year: today.getFullYear(),
-    month: today.getMonth(),
-    day: today.getDate(),
-  }))
+  const [todayValue] = useState<CalendarDate>(() => today(getLocalTimeZone()))
+  const [focusedValue, setFocusedValue] = useState<CalendarDate>(todayValue)
+  const [selectedValue, setSelectedValue] = useState<CalendarDate>(todayValue)
+  const viewDate = useMemo(
+    () => ({
+      year: focusedValue.year,
+      month: focusedValue.month - 1,
+    }),
+    [focusedValue.month, focusedValue.year],
+  )
+  const selectedDate = useMemo(
+    () => ({
+      year: selectedValue.year,
+      month: selectedValue.month - 1,
+      day: selectedValue.day,
+    }),
+    [selectedValue.day, selectedValue.month, selectedValue.year],
+  )
 
   const { data: calendarResponse, isLoading, isError } = useGetDashboardCalendarInterviews({
     year: viewDate.year,
     month: viewDate.month + 1,
   })
-
-  const calendarDays = getCalendarDays(viewDate.year, viewDate.month)
-  const monthLabel = `${viewDate.year}년 ${viewDate.month + 1}월`
 
   const calendarEntries = useMemo<CalendarDateEntry[]>(() => {
     return (calendarResponse?.result ?? [])
@@ -75,18 +64,16 @@ export const useInterviewCalendar = () => {
       .filter((entry): entry is CalendarDateEntry => entry !== null)
   }, [calendarResponse?.result])
 
-  const eventColorByDay = useMemo(() => {
-    const mapped: Partial<Record<number, EventColor>> = {}
+  const eventColorByDate = useMemo(() => {
+    const mapped: Partial<Record<`${number}-${number}-${number}`, EventColor>> = {}
 
     calendarEntries.forEach((entry) => {
-      if (entry.year !== viewDate.year || entry.month !== viewDate.month + 1) return
-
       const hasPendingReview = entry.interviews.some((interview) => interview.interviewReviewStatus !== 'DEBRIEF_COMPLETED')
-      mapped[entry.day] = hasPendingReview ? 'orange' : 'gray'
+      mapped[`${entry.year}-${entry.month}-${entry.day}`] = hasPendingReview ? 'orange' : 'gray'
     })
 
     return mapped
-  }, [calendarEntries, viewDate.month, viewDate.year])
+  }, [calendarEntries])
 
   const selectedDateInterviews = useMemo<CalendarInterviewItem[]>(() => {
     const selectedEntry = calendarEntries.find(
@@ -97,34 +84,21 @@ export const useInterviewCalendar = () => {
     return selectedEntry.interviews.map((interview) => ({ dDay: selectedEntry.dDay, interview }))
   }, [calendarEntries, selectedDate.day, selectedDate.month, selectedDate.year])
 
-  const prevMonth = () => {
-    setViewDate((d) => (d.month === 0 ? { year: d.year - 1, month: 11 } : { year: d.year, month: d.month - 1 }))
+  const getEventColor = (date: CalendarDate): EventColor | undefined => {
+    if (date.year !== viewDate.year || date.month !== viewDate.month + 1) return undefined
+    return eventColorByDate[`${date.year}-${date.month}-${date.day}`]
   }
-  const nextMonth = () => {
-    setViewDate((d) => (d.month === 11 ? { year: d.year + 1, month: 0 } : { year: d.year, month: d.month + 1 }))
-  }
-  const handleDateClick = (day: number, isCurrentMonth: boolean) => {
-    if (!isCurrentMonth) return
-    setSelectedDate({
-      year: viewDate.year,
-      month: viewDate.month,
-      day,
-    })
-  }
-  const getEventColor = (day: number): EventColor | undefined => eventColorByDay[day]
 
   return {
-    today,
+    focusedValue,
+    selectedValue,
     viewDate,
     selectedDate,
-    calendarDays,
-    monthLabel,
     isLoading,
     isError,
     selectedDateInterviews,
-    prevMonth,
-    nextMonth,
-    handleDateClick,
+    setFocusedValue,
+    setSelectedValue,
     getEventColor,
   }
 }
