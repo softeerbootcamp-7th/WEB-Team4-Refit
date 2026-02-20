@@ -82,7 +82,7 @@ public class Interview extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private JobCategory jobCategory;
 
-    @Column(name = "convert_status", nullable = false)
+    @Column(name = "convert_status", nullable = false, columnDefinition="varchar(30) default 'NOT_CONVERTED'")
     @Enumerated(EnumType.STRING)
     private InterviewConvertStatus convertStatus;
 
