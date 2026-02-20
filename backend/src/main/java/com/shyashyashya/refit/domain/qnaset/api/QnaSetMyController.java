@@ -36,7 +36,7 @@ public class QnaSetMyController {
 
     private final QnaSetMyService qnaSetMyService;
 
-    @Operation(summary = "대시보드에서 '내가 어렵게 느낀 질문'을 조회합니다.")
+    @Operation(summary = "대시보드 및 스크랩 화면에서 '내가 어렵게 느낀 질문' 리스트를 조회합니다.")
     @Parameters(
             value = {
                 @Parameter(name = "page", description = "페이지 번호 (0..N)"),
