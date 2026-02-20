@@ -5,6 +5,7 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.QNA_SET_CATEGORY
 import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetSearchRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetCategoryQuestionResponse;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetCategoryResponse;
+import com.shyashyashya.refit.domain.qnaset.dto.response.MyDifficultQuestionResponse;
 import com.shyashyashya.refit.domain.qnaset.dto.response.QnaSetSearchResponse;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetCategory;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetCategoryRepository;
@@ -25,6 +26,13 @@ public class QnaSetMyService {
     private final RequestUserContext requestUserContext;
     private final QnaSetRepository qnaSetRepository;
     private final QnaSetCategoryRepository qnaSetCategoryRepository;
+
+    @Transactional(readOnly = true)
+    public Page<MyDifficultQuestionResponse> getMyDifficultQnaSets(Pageable pageable) {
+        User requestUser = requestUserContext.getRequestUser();
+
+        return qnaSetRepository.findAllDifficultByUser(requestUser, pageable).map(MyDifficultQuestionResponse::from);
+    }
 
     @Transactional(readOnly = true)
     public Page<FrequentQnaSetCategoryResponse> getFrequentQnaSetCategories(Pageable pageable) {

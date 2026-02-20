@@ -8,7 +8,6 @@ import static com.shyashyashya.refit.domain.interview.model.InterviewReviewStatu
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardCalendarResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardDebriefIncompletedInterviewResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardHeadlineResponse;
-import com.shyashyashya.refit.domain.interview.dto.response.DashboardMyDifficultQuestionResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardUpcomingInterviewResponse;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
@@ -81,15 +80,6 @@ public class DashboardService {
                             requestUser, interview.getIndustry(), interview.getJobCategory());
                     return DashboardUpcomingInterviewResponse.of(interview, similarTrendQuestions, similarInterviews);
                 });
-    }
-
-    @Transactional(readOnly = true)
-    public Page<DashboardMyDifficultQuestionResponse> getMyDifficultQnaSets(Pageable pageable) {
-        User requestUser = requestUserContext.getRequestUser();
-
-        return qnaSetRepository
-                .findAllDifficultByUser(requestUser, pageable)
-                .map(DashboardMyDifficultQuestionResponse::from);
     }
 
     @Transactional(readOnly = true)
