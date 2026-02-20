@@ -54,14 +54,7 @@ public class RawTextConvertAsyncService {
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
         interviewValidator.validateInterviewReviewStatus(interview, List.of(InterviewReviewStatus.LOG_DRAFT));
-
-        if (interview.getConvertStatus().equals(InterviewConvertStatus.IN_PROGRESS)) {
-            throw new CustomException(INTERVIEW_CONVERTING_ALREADY_IN_PROGRESS);
-        }
-        if (interview.getConvertStatus().equals(InterviewConvertStatus.COMPLETED)) {
-            // TODO 완료 성공 응답으로 변경
-            throw new CustomException(INTERVIEW_CONVERTING_ALREADY_COMPLETED);
-        }
+        interviewValidator.validateInterviewConvertStatusNotConverted(interview);
 
         interview.updateConvertStatus(InterviewConvertStatus.IN_PROGRESS);
         interview.completeLogging();
