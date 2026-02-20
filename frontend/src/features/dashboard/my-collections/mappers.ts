@@ -32,7 +32,7 @@ export function mapScrapFolderQnaToCardItem(item: ScrapFolderQnaSetResponse): Qn
   return {
     id: item.qnaSet.qnaSetId,
     resultStatus: toInterviewResultStatus(item.interview.interviewResultStatus),
-    date: formatInterviewDateLabel(item.interview.interviewStartAt),
+    date: item.interview.interviewStartAt,
     company: item.interview.companyName,
     job: item.interview.jobCategoryName,
     interviewType: toInterviewType(item.interview.interviewType),
@@ -46,12 +46,12 @@ export function mapDifficultQnaToCardItem(item: DashboardMyDifficultQuestionResp
   return {
     id: `${item.interview.interviewId}-${index}`,
     resultStatus: toInterviewResultStatus(item.interview.interviewResultStatus),
-    date: formatInterviewDateLabel(item.interview.interviewStartAt),
+    date: item.interview.interviewStartAt,
     company: item.interview.companyName,
     job: item.interview.jobCategoryName,
     interviewType: toInterviewType(item.interview.interviewType),
     question: item.question,
-    answer: '',
+    answer: '', // TODO: 추후 API 필드 추가되면 수정
     createdAt: item.interview.interviewStartAt,
   }
 }
