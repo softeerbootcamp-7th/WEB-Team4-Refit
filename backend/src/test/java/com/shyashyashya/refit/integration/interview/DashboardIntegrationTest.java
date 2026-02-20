@@ -257,13 +257,19 @@ public class DashboardIntegrationTest extends IntegrationTest {
 
         @ParameterizedTest
         @EnumSource(value = InterviewReviewStatus.class, names = {"NOT_LOGGED", "LOG_DRAFT", "QNA_SET_DRAFT", "SELF_REVIEW_DRAFT"})
-        void 복기가_완료되지_않은_면접_리스트를_조회한다(InterviewReviewStatus reviewStatus) {
+        void 과거의_면접_중_복기가_완료되지_않은_면접_리스트를_조회한다(InterviewReviewStatus reviewStatus) {
             // given
-            int interviewId = createAndSaveInterview(
+            int pastInterviewId = createAndSaveInterview(
                 new InterviewCreateRequest(
                     NOW.minusDays(1),
                     InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
                 ), reviewStatus).getId().intValue();
+
+            createAndSaveInterview(
+                new InterviewCreateRequest(
+                    NOW.plusDays(1),
+                    InterviewType.FIRST, company3.getName(), industry2.getId(), jobCategory2.getId(), "Developer"
+                ), reviewStatus);
 
             createAndSaveInterview(
                 new InterviewCreateRequest(
@@ -279,7 +285,34 @@ public class DashboardIntegrationTest extends IntegrationTest {
                     .statusCode(200)
                     .body("code", equalTo(COMMON200.name()))
                     .body("result.content", hasSize(1))
-                    .body("result.content[0].interview.interviewId", equalTo(interviewId));
+                    .body("result.content[0].interview.interviewId", equalTo(pastInterviewId));
+        }
+
+        @Test
+        void 과거의_면접들은_가장_최근_면접부터_내림차순으로_조회된다() {
+            // given
+            int olderInterviewId = createAndSaveInterview(
+                new InterviewCreateRequest(
+                    NOW.minusDays(5),
+                    InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+                ), InterviewReviewStatus.NOT_LOGGED).getId().intValue();
+
+            int newerInterviewId = createAndSaveInterview(
+                new InterviewCreateRequest(
+                    NOW.minusDays(1),
+                    InterviewType.FIRST, company2.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+                ), InterviewReviewStatus.NOT_LOGGED).getId().intValue();
+
+            // when & then
+            given(spec)
+            .when()
+                    .get(path)
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("result.content", hasSize(2))
+                    .body("result.content[0].interview.interviewId", equalTo(newerInterviewId))
+                    .body("result.content[1].interview.interviewId", equalTo(olderInterviewId));
         }
     }
 }
