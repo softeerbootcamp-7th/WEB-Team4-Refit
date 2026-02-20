@@ -4,6 +4,7 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_REVIEW
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_REVIEW_STATUS_NOT_UPDATABLE_TO_LOG_DRAFT;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_REVIEW_STATUS_NOT_UPDATABLE_TO_QNA_SET_DRAFT;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_REVIEW_STATUS_NOT_UPDATABLE_TO_SELF_REVIEW_DRAFT;
+import static java.lang.String.valueOf;
 
 import com.shyashyashya.refit.domain.company.model.Company;
 import com.shyashyashya.refit.domain.industry.model.Industry;
@@ -161,8 +162,7 @@ public class Interview extends BaseEntity {
         throw new CustomException(INTERVIEW_REVIEW_STATUS_NOT_UPDATABLE_TO_QNA_SET_DRAFT);
     }
 
-    public void setLogDraftStatus() {
-        // TODO 임시 롤백 메소드
+    public void rollbackToLogDraft() {
         reviewStatus = InterviewReviewStatus.LOG_DRAFT;
     }
 
