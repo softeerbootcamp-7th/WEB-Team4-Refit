@@ -51,6 +51,7 @@ export function QnaSetEditForm({
       <textarea
         className="body-m-regular outline-gray-150 min-h-40 resize-none rounded-[10px] p-4 outline-1"
         value={answer}
+        maxLength={10000}
         onChange={(e) => setAnswer(e.target.value)}
         placeholder="답변을 작성해주세요."
         disabled={isSaving}
