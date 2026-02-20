@@ -287,7 +287,7 @@ public class InterviewService {
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
-        interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.LOG_DRAFT);
+        interviewValidator.validateInterviewReviewStatus(interview, List.of(InterviewReviewStatus.LOG_DRAFT));
 
         interview.updateRawText(request.rawText());
     }
@@ -299,7 +299,7 @@ public class InterviewService {
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
-        interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.LOG_DRAFT);
+        interviewValidator.validateInterviewReviewStatus(interview, List.of(InterviewReviewStatus.LOG_DRAFT));
 
         String prompt = promptGenerateUtil.buildInterviewRawTextConvertPrompt(interview);
         GeminiGenerateRequest requestBody = GeminiGenerateRequest.from(prompt);
@@ -328,7 +328,7 @@ public class InterviewService {
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
-        interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.SELF_REVIEW_DRAFT);
+        interviewValidator.validateInterviewReviewStatus(interview, List.of(InterviewReviewStatus.SELF_REVIEW_DRAFT));
 
         interviewSelfReviewRepository
                 .findByInterview(interview)
@@ -352,7 +352,7 @@ public class InterviewService {
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
-        interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.QNA_SET_DRAFT);
+        interviewValidator.validateInterviewReviewStatus(interview, List.of(InterviewReviewStatus.QNA_SET_DRAFT));
 
         QnaSet createdQnaSet = qnaSetRepository.save(
                 QnaSet.create(request.questionText(), request.answerText(), false, interview, null));
@@ -367,7 +367,7 @@ public class InterviewService {
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
-        interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.NOT_LOGGED);
+        interviewValidator.validateInterviewReviewStatus(interview, List.of(InterviewReviewStatus.NOT_LOGGED));
 
         interview.startLogging();
     }
@@ -379,7 +379,7 @@ public class InterviewService {
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
-        interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.QNA_SET_DRAFT);
+        interviewValidator.validateInterviewReviewStatus(interview, List.of(InterviewReviewStatus.QNA_SET_DRAFT));
 
         interview.completeQnaSetDraft();
     }
@@ -391,7 +391,7 @@ public class InterviewService {
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
-        interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.SELF_REVIEW_DRAFT);
+        interviewValidator.validateInterviewReviewStatus(interview, List.of(InterviewReviewStatus.SELF_REVIEW_DRAFT));
 
         interview.completeReview();
     }
