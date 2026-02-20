@@ -122,7 +122,7 @@ public class InterviewController {
     @Operation(summary = "면접 기록을 질문/답변 세트으로 변환 요청합니다.")
     @PostMapping("/{interviewId}/raw-text/convert/request")
     public ResponseEntity<ApiResponse<Void>> requestConvert(@PathVariable Long interviewId) {
-        convertAsyncService.startConvertAsync(interviewId);
+        convertAsyncService.startRawTextConvertAsync(interviewId);
         var response = ApiResponse.success(COMMON200);
         return ResponseEntity.ok(response);
     }

@@ -42,12 +42,12 @@ public class RawTextConvertAsyncService {
     private final InterviewValidator interviewValidator;
     private final PromptGenerateUtil qnaSetPromptGenerator;
     private final GeminiClient geminiClient;
-    private final RawTextConvertService convertWorker;
+    private final RawTextConvertService rawTextConvertService;
     private final Executor geminiPostProcessExecutor;
     private final ConvertWaitingMap convertWaitingMap;
 
     @Transactional
-    public void startConvertAsync(Long interviewId) {
+    public void startRawTextConvertAsync(Long interviewId) {
         User requestUser = requestUserContext.getRequestUser();
 
         Interview interview =
@@ -73,13 +73,13 @@ public class RawTextConvertAsyncService {
         log.info("request sended");
         future.thenApplyAsync(
                         response -> {
-                            convertWorker.processConvertSuccess(interviewId, response);
+                            rawTextConvertService.processConvertSuccess(interviewId, response);
                             return null;
                         },
                         geminiPostProcessExecutor)
                 .exceptionally(e -> {
                     log.error(e.getMessage(), e);
-                    convertWorker.processConvertFailure(interviewId);
+                    rawTextConvertService.processConvertFailure(interviewId);
                     // 에러를 throw
                     return null;
                 });
