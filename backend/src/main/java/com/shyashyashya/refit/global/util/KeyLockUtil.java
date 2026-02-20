@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class KeyLockUtil<K> {
 
+    // TODO 여러개의 락을 만들 수 있도록 빈 등록 구조 변경
     private final ConcurrentHashMap<K, ReentrantLock> locks = new ConcurrentHashMap<>();
 
     public ReentrantLock acquire(K key) {
