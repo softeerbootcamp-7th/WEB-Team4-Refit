@@ -16,9 +16,15 @@ import com.shyashyashya.refit.global.exception.ErrorCode;
 import com.shyashyashya.refit.integration.core.IntegrationTest;
 import io.restassured.http.ContentType;
 import java.time.Instant;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 
 class UserIntegrationTest extends IntegrationTest {
@@ -52,9 +58,9 @@ class UserIntegrationTest extends IntegrationTest {
                     .cookie(AuthConstant.REFRESH_TOKEN, guestRefreshToken)
                     .contentType(ContentType.JSON)
                     .body(request)
-                    .when()
+            .when()
                     .post("/user/signup")
-                    .then()
+            .then()
                     .statusCode(HttpStatus.OK.value())
                     .cookie(AuthConstant.ACCESS_TOKEN, notNullValue())
                     .cookie(AuthConstant.REFRESH_TOKEN, notNullValue());
@@ -66,9 +72,8 @@ class UserIntegrationTest extends IntegrationTest {
         }
 
         @Test
-        void 이미_가입된_이메일로_가입하면_409_Conflict_반환한다() {
+        void 게스트_이메일이_이미_가입된_이메일이면_409_Conflict_반환한다() {
             // given
-            // requestUser는 이미 가입된 유저, Guest Token으로 위장하여 가입 시도
             String existingEmail = requestUser.getEmail();
             Instant now = Instant.now();
             String guestAccessToken = jwtEncoder.encodeAccessJwt(existingEmail, null, now);
@@ -87,11 +92,39 @@ class UserIntegrationTest extends IntegrationTest {
                     .cookie(AuthConstant.REFRESH_TOKEN, guestRefreshToken)
                     .contentType(ContentType.JSON)
                     .body(request)
-                    .when()
+            .when()
                     .post("/user/signup")
-                    .then()
+            .then()
                     .statusCode(HttpStatus.CONFLICT.value())
                     .body("code", equalTo(ErrorCode.USER_SIGNUP_EMAIL_CONFLICT.name()));
+        }
+
+        @Test
+        void 이미_회원가입한_사용자가_가입_시도시_400_bad_request_반환한다() {
+            // given
+            String existingEmail = requestUser.getEmail();
+            Instant now = Instant.now();
+            String guestAccessToken = jwtEncoder.encodeAccessJwt(existingEmail, 1L, now);
+            String guestRefreshToken = jwtEncoder.encodeRefreshJwt(existingEmail, 1L, now);
+
+            UserSignUpRequest request = new UserSignUpRequest(
+                    "anotherNick",
+                    "img",
+                    industry1.getId(),
+                    jobCategory1.getId());
+
+            // when & then
+            given()
+                    .port(port)
+                    .cookie(AuthConstant.ACCESS_TOKEN, guestAccessToken)
+                    .cookie(AuthConstant.REFRESH_TOKEN, guestRefreshToken)
+                    .contentType(ContentType.JSON)
+                    .body(request)
+            .when()
+                    .post("/user/signup")
+            .then()
+                    .statusCode(HttpStatus.BAD_REQUEST.value())
+                    .body("code", equalTo(ErrorCode.USER_ALREADY_SIGNED_UP.name()));
         }
     }
 
@@ -101,9 +134,9 @@ class UserIntegrationTest extends IntegrationTest {
         @Test
         void 내_정보를_조회한다() {
             given(spec)
-                    .when()
+            .when()
                     .get("/user/my")
-                    .then()
+            .then()
                     .log().all()
                     .statusCode(HttpStatus.OK.value())
                     .body("result.nickname", equalTo(requestUser.getNickname()));
@@ -120,9 +153,9 @@ class UserIntegrationTest extends IntegrationTest {
             assertThat(currentUser.isAgreedToTerms()).isFalse();
 
             given(spec)
-                    .when()
+            .when()
                     .post("/user/my/terms/agree")
-                    .then()
+            .then()
                     .log().all()
                     .statusCode(HttpStatus.OK.value())
                     .body("code", equalTo(COMMON200.name())); // ApiResponse structure
@@ -140,10 +173,11 @@ class UserIntegrationTest extends IntegrationTest {
             currentUser.agreeToTerms();
             userRepository.save(currentUser);
 
+            // when
             given(spec)
-                    .when()
+            .when()
                     .post("/user/my/terms/agree")
-                    .then()
+            .then()
                     .log().all()
                     .statusCode(HttpStatus.BAD_REQUEST.value())
                     .body("code", equalTo(ErrorCode.USER_ALREADY_AGREED_TO_TERMS.name()));
@@ -165,9 +199,9 @@ class UserIntegrationTest extends IntegrationTest {
             given(spec)
                     .contentType(ContentType.JSON)
                     .body(request)
-                    .when()
+            .when()
                     .put("/user/my")
-                    .then()
+            .then()
                     .log().all()
                     .statusCode(HttpStatus.OK.value());
 
@@ -181,7 +215,6 @@ class UserIntegrationTest extends IntegrationTest {
         @Test
         void 중복된_닉네임으로_수정하면_409_Conflict_반환한다() {
             // given
-            // create another user first
             createAndSaveUser("other@test.com", "duplicateNick", industry1, jobCategory1);
 
             MyProfileUpdateRequest request = new MyProfileUpdateRequest(
@@ -193,9 +226,9 @@ class UserIntegrationTest extends IntegrationTest {
             given(spec)
                     .contentType(ContentType.JSON)
                     .body(request)
-                    .when()
+            .when()
                     .put("/user/my")
-                    .then()
+            .then()
                     .log().all()
                     .statusCode(HttpStatus.CONFLICT.value())
                     .body("code", equalTo(ErrorCode.USER_NICKNAME_CONFLICT.name()));
