@@ -76,7 +76,6 @@ export const useUpcomingInterviews = () => {
     {
       page: 0,
       size: 10,
-      sort: ['interviewStartAt,asc'],
     },
     {
       query: {

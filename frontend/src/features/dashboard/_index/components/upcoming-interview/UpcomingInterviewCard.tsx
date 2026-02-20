@@ -40,8 +40,11 @@ export default function UpcomingInterviewCard({ data }: UpcomingInterviewCardPro
             <span className="body-l-semibold text-gray-800">{data.jobCategoryName} 면접 기출 질문</span>
           </div>
         </div>
-        <div className="flex flex-col gap-2">
-          {data.recentQuestions.map((q) => (
+        <div className="flex flex-col gap-3">
+          {data.recentQuestions.length === 0 && (
+            <p className="body-m-medium my-9 text-center text-gray-400">아직 기출 질문 데이터가 없어요.</p>
+          )}
+          {data.recentQuestions.slice(0, 3).map((q) => (
             <div key={q.id} className="flex items-start gap-2">
               <span className="body-m-semibold text-gray-300">Q.</span>
               <p className="body-m-medium line-clamp-1 text-gray-900">{q.text}</p>
