@@ -1,12 +1,9 @@
 package com.shyashyashya.refit.domain.interview.service;
 
-import static com.shyashyashya.refit.global.exception.ErrorCode.GEMINI_RESPONSE_PARSING_FAILED;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_CONVERTING_FAILED;
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_FOUND;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shyashyashya.refit.domain.interview.dto.response.ConvertResultResponse;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewConvertStatus;
@@ -35,7 +32,6 @@ public class RawTextConvertService {
     private final QnaSetRepository qnaSetRepository;
     private final QnaSetSelfReviewRepository qnaSetSelfReviewRepository;
     private final ConvertWaitingMap convertWaitingMap;
-    private final ObjectMapper objectMapper;
     private final GeminiUtil geminiUtil;
 
     @Transactional

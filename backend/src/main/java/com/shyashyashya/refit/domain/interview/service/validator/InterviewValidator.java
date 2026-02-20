@@ -36,5 +36,4 @@ public class InterviewValidator {
             throw new CustomException(INTERVIEW_CONVERTING_ALREADY_COMPLETED);
         }
     }
-
 }
