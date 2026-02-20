@@ -17,6 +17,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
+import com.shyashyashya.refit.domain.interview.model.InterviewResultStatus;
 import com.shyashyashya.refit.integration.core.IntegrationTest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.QnaSetCreateRequest;
@@ -270,9 +271,18 @@ public class QnaSetIntegrationTest extends IntegrationTest {
             createAndSavePdfHighlighting(pdfHighlightUpdateRequest, qnaSetWithPdfHighlighting);
         }
 
-        @Test
-        void 인터뷰가_질답_세트_검토_중_상태이면_질답_세트_수정에_성공한다() {
+        @ParameterizedTest
+        @EnumSource(value = InterviewReviewStatus.class, names = {"QNA_SET_DRAFT", "SELF_REVIEW_DRAFT", "DEBRIEF_COMPLETED"})
+        void 인터뷰가_질답_세트_검토_중_또는_회고중_또는_회고완료_상태이면_질답_세트_수정에_성공한다(InterviewReviewStatus reviewStatus) {
             // given
+            var interviewCreateRequest1 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview interview = createAndSaveInterview(interviewCreateRequest1, reviewStatus);
+
+            var qnaSetCreateRequest1 = new QnaSetCreateRequest("test question text", "test answer text");
+            QnaSet qnaSetDraftQnaSet = createAndSaveQnaSet(qnaSetCreateRequest1, interview, true);
+            qnaSetDraftQnaSetId = qnaSetDraftQnaSet.getId();
+
             QnaSetUpdateRequest qnaSetUpdateRequest = new QnaSetUpdateRequest("update question", "update answer");
 
             // when & then
@@ -350,16 +360,25 @@ public class QnaSetIntegrationTest extends IntegrationTest {
                     .body("result", nullValue());
         }
 
-        @Test
-        void 인터뷰가_질답_세트_검토_중_상태가_아니라면_질답_세트_수정에_실패한다() {
+        @ParameterizedTest
+        @EnumSource(value = InterviewReviewStatus.class, mode= EnumSource.Mode.EXCLUDE,  names = {"QNA_SET_DRAFT", "SELF_REVIEW_DRAFT", "DEBRIEF_COMPLETED"})
+        void 인터뷰가_질답_세트_검토_중_또는_회고_중_또는_회고_완료_상태가_아니라면_질답_세트_수정에_실패한다(InterviewReviewStatus reviewStatus) {
             // given
+            var interviewCreateRequest1 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview interview = createAndSaveInterview(interviewCreateRequest1, reviewStatus);
+
+            var qnaSetCreateRequest1 = new QnaSetCreateRequest("test question text", "test answer text");
+            QnaSet qnaSetDraftQnaSet = createAndSaveQnaSet(qnaSetCreateRequest1, interview, true);
+            qnaSetDraftQnaSetId = qnaSetDraftQnaSet.getId();
+
             QnaSetUpdateRequest qnaSetUpdateRequest = new QnaSetUpdateRequest("update question", "update answer");
 
             // when & then
             given(spec)
                     .body(qnaSetUpdateRequest)
             .when()
-                    .put("/qna-set/" + debriefCompletedQnaSetId)
+                    .put("/qna-set/" + qnaSetDraftQnaSetId)
             .then()
                     .statusCode(400)
                     .body("code", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.name()))
@@ -1052,23 +1071,18 @@ public class QnaSetIntegrationTest extends IntegrationTest {
     @Nested
     class 질답_세트_회고_수정_시 {
 
-        private Long selfReviewDraftQnaSetId;
-        private Long otherUserQnaSetId;
-
-        @BeforeEach
-        void setUp() {
+        @ParameterizedTest
+        @EnumSource(value = InterviewReviewStatus.class, names = {"SELF_REVIEW_DRAFT", "DEBRIEF_COMPLETED"})
+        void 인터뷰가_회고_중_또는_회고_완료_상태이면_회고_수정에_성공한다(InterviewReviewStatus reviewStatus) {
+            // given
             var interviewCreateRequest = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
-            Interview selfReviewDraftInterview = createAndSaveInterview(interviewCreateRequest, InterviewReviewStatus.SELF_REVIEW_DRAFT);
+            Interview selfReviewDraftInterview = createAndSaveInterview(interviewCreateRequest, reviewStatus);
 
             var qnaSetCreateRequest = new QnaSetCreateRequest("question", "answer");
             QnaSet selfReviewDraftQnaSet = createAndSaveQnaSet(qnaSetCreateRequest, selfReviewDraftInterview);
-            selfReviewDraftQnaSetId = selfReviewDraftQnaSet.getId();
-        }
+            Long selfReviewDraftQnaSetId = selfReviewDraftQnaSet.getId();
 
-        @Test
-        void 인터뷰가_회고_중_상태이면_회고_수정에_성공한다() {
-            // given
             QnaSetReviewUpdateRequest request = new QnaSetReviewUpdateRequest("updated review");
 
             // when & then
@@ -1088,8 +1102,8 @@ public class QnaSetIntegrationTest extends IntegrationTest {
         }
 
         @ParameterizedTest
-        @EnumSource(value = InterviewReviewStatus.class, mode = EnumSource.Mode.EXCLUDE, names = "SELF_REVIEW_DRAFT")
-        void 인터뷰가_회고_중_상태가_아니면_회고_수정에_실패한다(InterviewReviewStatus status) {
+        @EnumSource(value = InterviewReviewStatus.class, mode = EnumSource.Mode.EXCLUDE, names = {"SELF_REVIEW_DRAFT", "DEBRIEF_COMPLETED"})
+        void 인터뷰가_회고_중_또는_회고_완료_상태가_아니면_회고_수정에_실패한다(InterviewReviewStatus status) {
             // given
             var interviewCreateRequest = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
@@ -1139,7 +1153,7 @@ public class QnaSetIntegrationTest extends IntegrationTest {
             Interview otherUserInterview = createAndSaveInterview(interviewCreateRequest, InterviewReviewStatus.SELF_REVIEW_DRAFT, user);
 
             var qnaSetCreateRequest = new QnaSetCreateRequest("question", "answer");
-            otherUserQnaSetId = createAndSaveQnaSet(qnaSetCreateRequest, otherUserInterview).getId();
+            Long otherUserQnaSetId = createAndSaveQnaSet(qnaSetCreateRequest, otherUserInterview).getId();
 
             QnaSetReviewUpdateRequest request = new QnaSetReviewUpdateRequest("updated review");
 
