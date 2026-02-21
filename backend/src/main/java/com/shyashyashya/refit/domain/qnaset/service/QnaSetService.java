@@ -9,6 +9,7 @@ import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
 import com.shyashyashya.refit.domain.jobcategory.service.validator.JobCategoryValidator;
 import com.shyashyashya.refit.domain.qnaset.dto.PdfHighlightingDto;
+import com.shyashyashya.refit.domain.qnaset.dto.event.QuestionEmbeddingEvent;
 import com.shyashyashya.refit.domain.qnaset.dto.request.PdfHighlightingUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetReviewUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetUpdateRequest;
@@ -32,6 +33,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -50,6 +52,7 @@ public class QnaSetService {
     private final InterviewValidator interviewValidator;
     private final IndustryValidator industryValidator;
     private final JobCategoryValidator jobCategoryValidator;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional(readOnly = true)
     public Page<FrequentQnaSetResponse> getFrequentQuestions(
@@ -84,8 +87,14 @@ public class QnaSetService {
                         InterviewReviewStatus.QNA_SET_DRAFT,
                         InterviewReviewStatus.SELF_REVIEW_DRAFT,
                         InterviewReviewStatus.DEBRIEF_COMPLETED));
+
+        boolean isQuestionTextChanged = !qnaSet.getQuestionText().equals(request.questionText());
         qnaSet.updateQuestionText(request.questionText());
         qnaSet.updateAnswerText(request.answerText());
+
+        if (isQuestionTextChanged) {
+            eventPublisher.publishEvent(QuestionEmbeddingEvent.of(qnaSetId, request.questionText()));
+        }
     }
 
     @Transactional
