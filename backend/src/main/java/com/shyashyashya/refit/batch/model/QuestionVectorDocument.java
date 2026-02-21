@@ -18,6 +18,14 @@ public class QuestionVectorDocument extends SingleVectorDocument<Long> {
                 .build();
     }
 
+    public static QuestionVectorDocument of(Long id, String question, List<Float> vector) {
+        return QuestionVectorDocument.builder()
+                .id(id)
+                .payload(Map.of(QUESTION_VECTOR_QUESTION_KEY, question))
+                .vector(vector)
+                .build();
+    }
+
     public Long getQnaSetId() {
         return this.getId();
     }
