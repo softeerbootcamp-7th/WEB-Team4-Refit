@@ -9,16 +9,18 @@ interface UpcomingInterviewCardProps {
   data: UpcomingInterviewData
 }
 
-const DefaultCompanyLogo = () => <SmallLogoIcon className="h-6 w-6 text-gray-400" />
-
 export default function UpcomingInterviewCard({ data }: UpcomingInterviewCardProps) {
   const navigate = useNavigate()
 
   return (
     <div className="flex h-full w-full flex-col gap-5 rounded-2xl bg-white p-6">
       <div className="flex items-start gap-4">
-        <div className="border-gray-150 flex size-13 shrink-0 items-center justify-center overflow-hidden rounded-full border bg-white">
-          {data.companyLogo ?? <DefaultCompanyLogo />}
+        <div className="border-gray-150 flex size-13 shrink-0 items-center justify-center rounded-full border bg-white">
+          {data.companyLogoUrl ? (
+            <img src={data.companyLogoUrl} alt={data.companyName} className="h-full w-full rounded-full object-contain" />
+          ) : (
+            <SmallLogoIcon className="h-6 w-6 text-gray-400" />
+          )}
         </div>
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">

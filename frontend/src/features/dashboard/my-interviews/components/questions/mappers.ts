@@ -27,6 +27,7 @@ export type QnaCardItemModel = {
   resultStatus: InterviewSearchFilterInterviewResultStatusItem
   date: string
   companyName: string
+  companyLogoUrl?: string
   jobRole: string
   interviewType: InterviewType
   question: string
@@ -59,6 +60,7 @@ export function mapSearchQuestionToQnaCard(item: QnaSetSearchResponse): QnaCardI
     resultStatus: item.interviewInfo?.interviewResultStatus ?? 'WAIT',
     date: item.interviewInfo?.updatedAt ?? '',
     companyName: item.interviewInfo?.companyName ?? '',
+    companyLogoUrl: item.interviewInfo?.companyLogoUrl,
     jobRole: item.interviewInfo?.jobCategoryName ?? '',
     interviewType: item.interviewInfo?.interviewType ?? 'FIRST',
     question: item.qnaSetInfo?.questionText ?? '',

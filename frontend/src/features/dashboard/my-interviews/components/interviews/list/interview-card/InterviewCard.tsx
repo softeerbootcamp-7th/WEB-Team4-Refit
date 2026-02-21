@@ -44,13 +44,13 @@ export default function InterviewCard({
       <Border />
       <div className={infoDirection === 'row' ? 'flex items-center gap-5' : 'flex flex-col gap-2.5'}>
         <div className="title-m-semibold flex items-center gap-3">
-          {companyLogoUrl ? (
-            <img src={companyLogoUrl} alt={companyName} className="h-8.5 w-8.5 rounded-full object-cover" />
-          ) : (
-            <div className="flex h-8.5 w-8.5 shrink-0 items-center justify-center rounded-full border border-gray-150 bg-white">
+          <div className="flex h-8.5 w-8.5 shrink-0 items-center justify-center rounded-full border border-gray-150 bg-white">
+            {companyLogoUrl ? (
+              <img src={companyLogoUrl} alt={companyName} className="h-full w-full rounded-full object-contain" />
+            ) : (
               <SmallLogoIcon className="h-4.5 w-4.5 text-gray-400" />
-            </div>
-          )}
+            )}
+          </div>
           <span>{companyName}</span>
         </div>
         <div className="body-m-medium text-gray-700">

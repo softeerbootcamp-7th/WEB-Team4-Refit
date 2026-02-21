@@ -12,6 +12,7 @@ export interface ReviewWaitingData {
   status: InterviewReviewStatusLabel
   elapsedText: string
   companyName: string
+  companyLogoUrl?: string
   industry: string
   jobCategory: string
   interviewType: string
@@ -36,8 +37,12 @@ export default function ReviewWaitingCard({ data }: ReviewWaitingCardProps) {
       </div>
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
-          <div className="border-gray-150 flex h-8 w-8 items-center justify-center rounded-full border bg-white text-gray-400">
-            <SmallLogoIcon className="h-4 w-4 text-gray-400" />
+          <div className="border-gray-150 flex h-8 w-8 items-center justify-center rounded-full border bg-white">
+            {data.companyLogoUrl ? (
+              <img src={data.companyLogoUrl} alt={data.companyName} className="h-full w-full rounded-full object-contain" />
+            ) : (
+              <SmallLogoIcon className="h-4 w-4 text-gray-400" />
+            )}
           </div>
           <h3 className="title-s-semibold text-gray-800">{data.companyName}</h3>
           <span className="body-m-medium text-gray-400">{data.industry}</span>

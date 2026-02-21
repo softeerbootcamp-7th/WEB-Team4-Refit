@@ -1,10 +1,9 @@
-import type { ReactNode } from 'react'
 import { SmallLogoIcon } from '@/designs/assets'
 
 export interface DifficultQuestionCardData {
   id: number
   companyName: string
-  companyLogo?: ReactNode
+  companyLogoUrl?: string
   date: string
   jobCategory: string
   interviewType: string
@@ -20,8 +19,16 @@ export default function DifficultQuestionCard({ data }: DifficultQuestionCardPro
     <div className="flex flex-col gap-3 rounded-2xl border border-gray-200 bg-white p-6 shadow-[0px_2px_16px_0px_rgba(0,0,0,0.04)]">
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-2">
-          <div className="border-gray-150 flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full border bg-white text-gray-400">
-            {data.companyLogo ?? <SmallLogoIcon className="h-4 w-4" />}
+          <div className="border-gray-150 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border bg-white">
+            {data.companyLogoUrl ? (
+              <img
+                src={data.companyLogoUrl}
+                alt={data.companyName}
+                className="h-full w-full rounded-full object-contain"
+              />
+            ) : (
+              <SmallLogoIcon className="h-4 w-4 text-gray-400" />
+            )}
           </div>
           <span className="title-s-semibold text-gray-900">{data.companyName}</span>
         </div>

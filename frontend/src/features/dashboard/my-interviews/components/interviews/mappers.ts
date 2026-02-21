@@ -43,6 +43,7 @@ export function mapInterviewCard(item: InterviewDto): InterviewCardModel {
     resultStatus: toResultStatus(item.interviewResultStatus),
     date: item.interviewStartAt,
     companyName: item.companyName ?? '',
+    companyLogoUrl: item.companyLogoUrl,
     jobRole: item.jobCategoryName ?? '',
     interviewType: toInterviewType(item.interviewType),
   }
