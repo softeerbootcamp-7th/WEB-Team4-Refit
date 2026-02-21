@@ -46,7 +46,7 @@ function RecordConfirmContent() {
   const sectionScroll = useSectionScroll({ idPrefix: 'record-confirm' })
 
   const onAddSave = async (question: string, answer: string) => {
-    const newIndex = data.qnaList.length // 0-based
+    const newIndex = data.qnaList.length
     await handleAddSave(question, answer)
     window.history.replaceState(null, '', `#record-confirm-${newIndex + 1}`)
   }
