@@ -42,14 +42,18 @@ export const INTERVIEW_SORT_OPTIONS = [
   { label: '가나다순', value: 'companyName,asc' },
 ] as const
 
+export const EMPTY_STAR_LEVELS = {
+  sInclusionLevels: [] as QuestionFilter['sInclusionLevels'],
+  tInclusionLevels: [] as QuestionFilter['tInclusionLevels'],
+  aInclusionLevels: [] as QuestionFilter['aInclusionLevels'],
+  rInclusionLevels: [] as QuestionFilter['rInclusionLevels'],
+}
+
 export const EMPTY_QUESTION_FILTER: QuestionFilter = {
   keyword: '',
   sort: 'interviewStartAt,desc',
   hasStarAnalysis: null,
-  sInclusionLevels: [],
-  tInclusionLevels: [],
-  aInclusionLevels: [],
-  rInclusionLevels: [],
+  ...EMPTY_STAR_LEVELS,
 }
 
 export const QUESTION_SORT_OPTIONS = [

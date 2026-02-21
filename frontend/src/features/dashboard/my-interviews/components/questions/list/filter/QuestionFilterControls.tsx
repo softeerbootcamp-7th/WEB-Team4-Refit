@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { CaretDownIcon, FilterIcon } from '@/designs/assets'
 import { Button, Checkbox, Modal, PlainCombobox } from '@/designs/components'
 import {
+  EMPTY_STAR_LEVELS,
   EMPTY_QUESTION_FILTER,
   QUESTION_SORT_OPTIONS,
   STAR_LEVEL_OPTIONS,
@@ -111,6 +112,19 @@ function QuestionFilterModal({ open, filter, onClose, onApply }: ModalProps) {
       return { ...prev, [key]: next } as QuestionFilter
     })
   }
+  const isStarLevelDisabled = draft.hasStarAnalysis === false
+
+  const handleStarAnalysisChange = (hasStarAnalysis: boolean | null) => {
+    setDraft((prev) =>
+      hasStarAnalysis === false
+        ? {
+            ...prev,
+            hasStarAnalysis,
+            ...EMPTY_STAR_LEVELS,
+          }
+        : { ...prev, hasStarAnalysis },
+    )
+  }
 
   return (
     <Modal
@@ -133,7 +147,7 @@ function QuestionFilterModal({ open, filter, onClose, onApply }: ModalProps) {
               size="xs"
               className="justify-center"
               variant={draft.hasStarAnalysis === null ? 'fill-gray-800' : 'outline-gray-100'}
-              onClick={() => setDraft((prev) => ({ ...prev, hasStarAnalysis: null }))}
+              onClick={() => handleStarAnalysisChange(null)}
             >
               전체
             </Button>
@@ -141,7 +155,7 @@ function QuestionFilterModal({ open, filter, onClose, onApply }: ModalProps) {
               size="xs"
               className="justify-center"
               variant={draft.hasStarAnalysis === true ? 'fill-gray-800' : 'outline-gray-100'}
-              onClick={() => setDraft((prev) => ({ ...prev, hasStarAnalysis: true }))}
+              onClick={() => handleStarAnalysisChange(true)}
             >
               있음
             </Button>
@@ -149,7 +163,7 @@ function QuestionFilterModal({ open, filter, onClose, onApply }: ModalProps) {
               size="xs"
               className="justify-center"
               variant={draft.hasStarAnalysis === false ? 'fill-gray-800' : 'outline-gray-100'}
-              onClick={() => setDraft((prev) => ({ ...prev, hasStarAnalysis: false }))}
+              onClick={() => handleStarAnalysisChange(false)}
             >
               없음
             </Button>
@@ -160,21 +174,25 @@ function QuestionFilterModal({ open, filter, onClose, onApply }: ModalProps) {
           label="S: Situation 분석 결과"
           selected={draft.sInclusionLevels}
           onToggle={(value) => toggleLevel('sInclusionLevels', value)}
+          disabled={isStarLevelDisabled}
         />
         <LevelGroup
           label="T: Task 분석 결과"
           selected={draft.tInclusionLevels}
           onToggle={(value) => toggleLevel('tInclusionLevels', value)}
+          disabled={isStarLevelDisabled}
         />
         <LevelGroup
           label="A: Action 분석 결과"
           selected={draft.aInclusionLevels}
           onToggle={(value) => toggleLevel('aInclusionLevels', value)}
+          disabled={isStarLevelDisabled}
         />
         <LevelGroup
           label="R: Result 분석 결과"
           selected={draft.rInclusionLevels}
           onToggle={(value) => toggleLevel('rInclusionLevels', value)}
+          disabled={isStarLevelDisabled}
         />
 
         <div className="flex justify-end gap-3 border-t border-gray-100 pt-3">
@@ -198,13 +216,15 @@ function LevelGroup({
   label,
   selected,
   onToggle,
+  disabled = false,
 }: {
   label: string
   selected: string[]
   onToggle: (value: StarLevel) => void
+  disabled?: boolean
 }) {
   return (
-    <div className="flex flex-col gap-3 rounded-xl border border-gray-100 p-4">
+    <div className={`flex flex-col gap-3 rounded-xl border border-gray-100 p-4 ${disabled ? 'opacity-50' : ''}`}>
       <div className="flex min-h-6 items-center justify-between">
         <span className="caption-l-medium">{label}</span>
         {selected.length > 0 && (
@@ -219,6 +239,7 @@ function LevelGroup({
             key={option.value}
             checked={selected.includes(option.value)}
             onChange={() => onToggle(option.value)}
+            disabled={disabled}
             label={option.label}
           />
         ))}
