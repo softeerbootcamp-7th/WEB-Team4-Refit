@@ -11,7 +11,7 @@ type QnaListSectionProps = {
 
 export function QnaListSection({ qnaList, setRef, scrollContainerRef }: QnaListSectionProps) {
   return (
-    <FadeScrollArea ref={scrollContainerRef} className="space-y-3 pr-2">
+    <FadeScrollArea ref={scrollContainerRef} withBottomSpacer className="space-y-3 pr-2">
       {qnaList.map((qnaData, idx) => (
         <LinkQnaSetCard key={qnaData.qnaSetId} ref={(el) => setRef(idx, el)} qnaData={qnaData} idx={idx + 1} />
       ))}

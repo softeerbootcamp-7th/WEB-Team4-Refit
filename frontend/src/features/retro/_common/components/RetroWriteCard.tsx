@@ -25,7 +25,7 @@ export function RetroWriteCard({ idx, value, onChange }: RetroWriteCardProps) {
         <Badge type="question-label" theme="orange-100" content={retroLabel} />
       </div>
       {readOnly ? (
-        <p className="body-m-regular mb-3 w-full whitespace-pre-wrap break-words [overflow-wrap:anywhere]">{value}</p>
+        <p className="body-m-regular mb-3 max-h-50 w-full overflow-y-scroll break-all whitespace-pre-wrap">{value}</p>
       ) : (
         <div className="relative">
           <textarea
@@ -35,7 +35,7 @@ export function RetroWriteCard({ idx, value, onChange }: RetroWriteCardProps) {
             placeholder={`질문 ${idx}의 내 답변에 대한 회고를 작성해 보세요. 당시 면접장 분위기는 어땠나요? 기분은 어땠어요?\n준비한 질문이 나왔나요? 대답은 잘 한 것 같나요?\n아쉬웠던 점이나 배운 점도 좋아요. 자세히 작성할 수록 다음 면접을 대비하기 쉬워져요.`}
             maxLength={MAX_LENGTH}
           />
-          <span className="body-s-regular absolute right-4 bottom-4 text-gray-300">
+          <span className="body-s-regular bg-gray-white/80 pointer-events-none absolute right-3 bottom-4 rounded px-2 text-gray-300">
             {value.length}/{MAX_LENGTH}
           </span>
         </div>

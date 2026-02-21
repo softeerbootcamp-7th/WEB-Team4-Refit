@@ -18,7 +18,7 @@ function QuestionCard({ card }: { card: QuestionCardModel }) {
       <div className="body-m-medium text-gray-400">
         {card.jobRole} <span className="text-gray-150 mx-1">|</span> {INTERVIEW_TYPE_LABEL[card.interviewType]}
       </div>
-      <p className="body-l-medium mt-1 line-clamp-2">{card.question}</p>
+      <p className="body-l-medium mt-1 line-clamp-2 break-all">{card.question}</p>
     </div>
   )
 }

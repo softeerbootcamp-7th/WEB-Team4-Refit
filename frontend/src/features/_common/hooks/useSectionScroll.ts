@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
+export const SECTION_SCROLL_OFFSET = 30
+
 type UseSectionScrollOptions = {
   idPrefix?: string
   threshold?: number
@@ -15,8 +17,8 @@ type UseSectionScrollReturn = {
 
 export function useSectionScroll({
   idPrefix = 'section',
-  threshold = 0,
-  rootMargin = '-20% 0px -20% 0px',
+  threshold = 0.5,
+  rootMargin = `-${SECTION_SCROLL_OFFSET}px 0px`,
 }: UseSectionScrollOptions = {}): UseSectionScrollReturn {
   const [activeIndex, setActiveIndex] = useState(0)
   const sectionRefs = useRef<(HTMLDivElement | null)[]>([])
@@ -72,7 +74,7 @@ export function useSectionScroll({
         if (!initialScrollDoneRef.current) {
           const hash = window.location.hash
           if (hash === `#${idPrefix}-${index + 1}`) {
-            el.scrollIntoView({ block: 'center' })
+            el.scrollIntoView({ block: 'start' })
             initialScrollDoneRef.current = true
           }
         }
@@ -83,11 +85,11 @@ export function useSectionScroll({
 
   const handleItemClick = useCallback(
     (index: number) => {
+      const el = sectionRefs.current[index]
+      const container = scrollContainerRef.current
+      if (!el || !container) return
       window.history.replaceState(null, '', `#${idPrefix}-${index + 1}`)
-      sectionRefs.current[index]?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-      })
+      container.scrollTo({ top: el.offsetTop - SECTION_SCROLL_OFFSET, behavior: 'smooth' })
     },
     [idPrefix],
   )

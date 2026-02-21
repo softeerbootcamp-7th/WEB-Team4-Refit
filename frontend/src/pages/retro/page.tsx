@@ -1,6 +1,8 @@
 import { Suspense, useEffect, useRef, useState } from 'react'
-import { useParams } from 'react-router'
+import { Navigate, useParams } from 'react-router'
+import { InterviewDtoInterviewReviewStatus } from '@/apis'
 import { getInterviewFull, useGetInterviewFullSuspense } from '@/apis/generated/interview-api/interview-api'
+import { getInterviewNavigationPath } from '@/constants/interviewReviewStatusRoutes'
 import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
 import { FileIcon } from '@/designs/assets'
 import { Button } from '@/designs/components'
@@ -25,6 +27,8 @@ function RetroQuestionContent() {
   const { interviewId } = useParams()
   const id = Number(interviewId)
   const { data } = useGetInterviewFullSuspense(id, { query: { select: transformInterviewData } })
+
+  const blockedRetroPath = getBlockedRetroPath(id, data.interviewReviewStatus)
 
   const { interviewInfo, qnaSets, hasPdfResourceKey } = data
   const { company, interviewType } = interviewInfo
@@ -83,6 +87,10 @@ function RetroQuestionContent() {
       </Button>
     </div>
   )
+
+  if (blockedRetroPath) {
+    return <Navigate to={blockedRetroPath} replace />
+  }
 
   if (!isPdfOpen) {
     return (
@@ -169,12 +177,21 @@ function transformInterviewData(res: Awaited<ReturnType<typeof getInterviewFull>
     interviewInfo,
     qnaSets,
     hasPdfResourceKey: Boolean(interviewFull.pdfResourceKey),
+    interviewReviewStatus: interviewFull.interviewReviewStatus ?? InterviewDtoInterviewReviewStatus.SELF_REVIEW_DRAFT,
     interviewSelfReview: {
       keepText: interviewFull.interviewSelfReview?.keepText ?? '',
       problemText: interviewFull.interviewSelfReview?.problemText ?? '',
       tryText: interviewFull.interviewSelfReview?.tryText ?? '',
     },
   }
+}
+
+function getBlockedRetroPath(
+  interviewId: number,
+  interviewReviewStatus: InterviewDtoInterviewReviewStatus,
+): string | null {
+  if (interviewReviewStatus === InterviewDtoInterviewReviewStatus.SELF_REVIEW_DRAFT) return null
+  return getInterviewNavigationPath(interviewId, interviewReviewStatus)
 }
 
 function getIndexFromHash(hash: string, totalCount: number) {

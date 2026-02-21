@@ -1,6 +1,8 @@
 import { Suspense } from 'react'
-import { useParams } from 'react-router'
+import { Navigate, useParams } from 'react-router'
+import { InterviewDtoInterviewReviewStatus } from '@/apis'
 import { getInterviewFull, useGetInterviewFullSuspense } from '@/apis/generated/interview-api/interview-api'
+import { getInterviewNavigationPath } from '@/constants/interviewReviewStatusRoutes'
 import MinimizedSidebarLayoutSkeleton from '@/features/_common/components/sidebar/MinimizedSidebarLayoutSkeleton'
 import { useSectionScroll } from '@/features/_common/hooks/useSectionScroll'
 import { PdfSection } from '@/features/record/link/components/pdf-section'
@@ -19,7 +21,10 @@ export default function RecordLinkPage() {
 
 function RecordLinkContent() {
   const { interviewId } = useParams()
-  const { data } = useGetInterviewFullSuspense(Number(interviewId), { query: { select: transformInterviewData } })
+  const id = Number(interviewId)
+  const { data } = useGetInterviewFullSuspense(id, { query: { select: transformInterviewData } })
+
+  const blockedLinkPath = getBlockedLinkPath(id, data.interviewReviewStatus)
 
   const qnaSetIds = data.qnaList.map((q) => q.qnaSetId)
   const sidebarItems = data.qnaList.map(({ qnaSetId }, index) => ({
@@ -29,6 +34,10 @@ function RecordLinkContent() {
   const { activeIndex, setRef, scrollContainerRef, handleItemClick } = useSectionScroll({
     idPrefix: 'record-link',
   })
+
+  if (blockedLinkPath) {
+    return <Navigate to={blockedLinkPath} replace />
+  }
 
   return (
     <HighlightProvider qnaSetIds={qnaSetIds} hasPdf={data.hasPdfResourceKey}>
@@ -65,5 +74,14 @@ function transformInterviewData(res: Awaited<ReturnType<typeof getInterviewFull>
   return {
     qnaList,
     hasPdfResourceKey: Boolean(interviewFull.pdfResourceKey),
+    interviewReviewStatus: interviewFull.interviewReviewStatus ?? InterviewDtoInterviewReviewStatus.QNA_SET_DRAFT,
   }
+}
+
+function getBlockedLinkPath(
+  interviewId: number,
+  interviewReviewStatus: InterviewDtoInterviewReviewStatus,
+): string | null {
+  if (interviewReviewStatus === InterviewDtoInterviewReviewStatus.QNA_SET_DRAFT) return null
+  return getInterviewNavigationPath(interviewId, interviewReviewStatus)
 }

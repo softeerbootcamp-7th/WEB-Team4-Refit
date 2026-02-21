@@ -21,7 +21,7 @@ export default function TrendQuestionCard({ item }: TrendQuestionCardProps) {
       <div className="flex h-full rounded-[10px] bg-gray-100 p-3">
         <div className="flex gap-2">
           <span className="body-l-medium text-gray-300">Q.</span>
-          <p className="body-l-regular line-clamp-2 text-gray-800">{item.question}</p>
+          <p className="body-l-regular line-clamp-5 break-all text-gray-800">{item.question}</p>
         </div>
       </div>
     </article>

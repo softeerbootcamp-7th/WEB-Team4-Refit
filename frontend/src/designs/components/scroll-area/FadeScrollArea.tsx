@@ -3,9 +3,15 @@ import { type PropsWithChildren, type Ref, useCallback, useEffect, useRef, useSt
 type FadeScrollAreaProps = PropsWithChildren<{
   ref?: Ref<HTMLDivElement>
   className?: string
+  withBottomSpacer?: boolean
 }>
 
-export default function FadeScrollArea({ ref, children, className = '' }: FadeScrollAreaProps) {
+export default function FadeScrollArea({
+  ref,
+  children,
+  className = '',
+  withBottomSpacer = false,
+}: FadeScrollAreaProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const [canScrollUp, setCanScrollUp] = useState(false)
   const [canScrollDown, setCanScrollDown] = useState(false)
@@ -42,6 +48,7 @@ export default function FadeScrollArea({ ref, children, className = '' }: FadeSc
       />
       <div ref={setRefs} onScroll={updateScrollState} className={`absolute inset-0 overflow-y-auto ${className}`}>
         {children}
+        {withBottomSpacer && <div className="h-1/2 shrink-0" aria-hidden />}
       </div>
       <div
         className={`pointer-events-none absolute right-0 bottom-0 left-0 z-10 h-12 bg-linear-to-t from-gray-100 to-transparent transition-opacity ${canScrollDown ? 'opacity-100' : 'opacity-0'}`}

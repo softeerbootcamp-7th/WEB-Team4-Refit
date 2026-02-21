@@ -19,11 +19,11 @@ export default function QnaCard({ question, answer, onClick, ...cardProps }: Qna
       <div className="flex h-full flex-col gap-3 rounded-[10px] bg-gray-100 p-3">
         <div className="flex gap-2">
           <span className="body-l-medium text-gray-300">Q.</span>
-          <p className="body-l-regular line-clamp-2 flex-1">{question}</p>
+          <p className="body-l-regular line-clamp-2 flex-1 break-all">{question}</p>
         </div>
         <div className="flex gap-2">
           <span className="body-l-medium text-gray-300">A.</span>
-          <p className="body-l-regular line-clamp-2 flex-1">{answer}</p>
+          <p className="body-l-regular line-clamp-2 flex-1 break-all">{answer}</p>
         </div>
       </div>
     </InterviewCard>

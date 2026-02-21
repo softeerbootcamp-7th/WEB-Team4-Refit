@@ -1,5 +1,9 @@
 import { useRef, useState } from 'react'
-import { useUpdateInterviewResultStatus } from '@/apis/generated/interview-api/interview-api'
+import { useQueryClient } from '@tanstack/react-query'
+import {
+  getGetInterviewFullQueryKey,
+  useUpdateInterviewResultStatus,
+} from '@/apis/generated/interview-api/interview-api'
 import { CaretDownIcon, NoteIcon } from '@/designs/assets'
 import { SidebarLayout } from '@/designs/components'
 import { InterviewInfoSection, QuestionListSection } from '@/features/_common/components/sidebar'
@@ -65,6 +69,7 @@ type InterviewResultStatusSectionProps = {
 }
 
 function InterviewResultStatusSection({ interviewId, initialStatus }: InterviewResultStatusSectionProps) {
+  const queryClient = useQueryClient()
   const { mutate: updateResultStatus } = useUpdateInterviewResultStatus()
   const [status, setStatus] = useState<ResultStatus>(initialStatus)
   const [isOpen, setIsOpen] = useState(false)
@@ -76,7 +81,14 @@ function InterviewResultStatusSection({ interviewId, initialStatus }: InterviewR
   const handleSelect = (value: ResultStatus) => {
     setStatus(value)
     setIsOpen(false)
-    updateResultStatus({ interviewId, data: { interviewResultStatus: value } })
+    updateResultStatus(
+      { interviewId, data: { interviewResultStatus: value } },
+      {
+        onSuccess: () => {
+          void queryClient.invalidateQueries({ queryKey: getGetInterviewFullQueryKey(interviewId) })
+        },
+      },
+    )
   }
 
   return (

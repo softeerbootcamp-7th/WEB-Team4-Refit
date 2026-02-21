@@ -42,6 +42,10 @@ export function QnaSetContainer({
   }
 
   const handleSave = async (question: string, answer: string) => {
+    if (question === questionText && answer === answerText) {
+      stopEditing()
+      return
+    }
     try {
       await onEdit?.(qnaSetId, question, answer)
       stopEditing()

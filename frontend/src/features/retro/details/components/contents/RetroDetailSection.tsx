@@ -12,7 +12,13 @@ type RetroDetailSectionProps = {
   scrollContainerRef: RefObject<HTMLDivElement | null>
 }
 
-export function RetroDetailSection({ interviewId, qnaSets, kptTexts, setRef, scrollContainerRef }: RetroDetailSectionProps) {
+export function RetroDetailSection({
+  interviewId,
+  qnaSets,
+  kptTexts,
+  setRef,
+  scrollContainerRef,
+}: RetroDetailSectionProps) {
   const [editingId, setEditingId] = useState<string | null>(null)
 
   const isOtherEditing = (qnaSetId: number) => {
@@ -24,7 +30,7 @@ export function RetroDetailSection({ interviewId, qnaSets, kptTexts, setRef, scr
   const isKptOtherEditing = editingId !== null && editingId !== 'kpt'
 
   return (
-    <FadeScrollArea ref={scrollContainerRef} className="flex flex-col gap-5 rounded-lg pr-2">
+    <FadeScrollArea ref={scrollContainerRef} withBottomSpacer className="flex flex-col gap-5 rounded-lg pr-2">
       {qnaSets.map((qnaSet, index) => (
         <Fragment key={qnaSet.qnaSetId}>
           <QnaRetroCard

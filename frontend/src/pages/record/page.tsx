@@ -1,6 +1,6 @@
 import { Suspense, useState } from 'react'
 import { Navigate, useNavigate, useParams } from 'react-router'
-import { useConvertRawTextToQnaSet, useUpdateRawText, type InterviewDtoInterviewReviewStatus } from '@/apis'
+import { InterviewDtoInterviewReviewStatus, useConvertRawTextToQnaSet, useUpdateRawText } from '@/apis'
 import { getInterviewNavigationPath } from '@/constants/interviewReviewStatusRoutes'
 import ConfirmModal from '@/designs/components/modal/ConfirmModal'
 import SidebarLayoutSkeleton from '@/features/_common/components/sidebar/SidebarLayoutSkeleton'
@@ -133,6 +133,10 @@ function getBlockedRecordPath(
   interviewReviewStatus: InterviewDtoInterviewReviewStatus,
 ): string | null {
   if (!interviewId) return null
-  if (interviewReviewStatus === 'NOT_LOGGED' || interviewReviewStatus === 'LOG_DRAFT') return null
+  if (
+    interviewReviewStatus === InterviewDtoInterviewReviewStatus.NOT_LOGGED ||
+    interviewReviewStatus === InterviewDtoInterviewReviewStatus.LOG_DRAFT
+  )
+    return null
   return getInterviewNavigationPath(interviewId, interviewReviewStatus)
 }
