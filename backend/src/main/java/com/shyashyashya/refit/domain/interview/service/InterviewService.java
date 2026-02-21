@@ -171,11 +171,17 @@ public class InterviewService {
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
 
-        interviewSelfReviewRepository.deleteByInterview(interview);
-        pdfHighlightingRepository.deleteAllByInterview(interview);
+        // interview PDF 삭제
+        String key = interview.getPdfResourceKey();
+        if (key != null && s3Util.existsByResourceKey(key)) {
+            s3Util.deleteFile(key);
+        }
+
+        deleteAllPdfHighlighting(interview);
         starAnalysisRepository.deleteAllByInterview(interview);
         qnaSetSelfReviewRepository.deleteAllByInterview(interview);
         qnaSetRepository.deleteAllByInterview(interview);
+        interviewSelfReviewRepository.deleteByInterview(interview);
         interviewRepository.delete(interview);
     }
 
@@ -271,7 +277,6 @@ public class InterviewService {
 
         s3Util.deleteFile(key);
         deleteAllPdfHighlighting(interview);
-        interview.deletePdfResourceKey();
     }
 
     public Page<InterviewSimpleDto> getMyInterviewDrafts(InterviewDraftType draftType, Pageable pageable) {
