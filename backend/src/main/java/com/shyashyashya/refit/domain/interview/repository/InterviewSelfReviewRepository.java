@@ -16,6 +16,6 @@ public interface InterviewSelfReviewRepository extends JpaRepository<InterviewSe
           FROM InterviewSelfReview i
          WHERE i.interview = :interview
     """)
-    @Modifying(clearAutomatically = true)
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     void deleteByInterview(Interview interview);
 }

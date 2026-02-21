@@ -23,6 +23,6 @@ public interface StarAnalysisRepository extends JpaRepository<StarAnalysis, Long
           FROM StarAnalysis s
          WHERE s.qnaSet.interview = :interview
     """)
-    @Modifying(clearAutomatically = true)
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     void deleteAllByInterview(Interview interview);
 }

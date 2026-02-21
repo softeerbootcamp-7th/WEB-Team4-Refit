@@ -21,6 +21,6 @@ public interface QnaSetSelfReviewRepository extends JpaRepository<QnaSetSelfRevi
           FROM QnaSetSelfReview r
          WHERE r.qnaSet.interview = :interview
     """)
-    @Modifying(clearAutomatically = true)
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     void deleteAllByInterview(Interview interview);
 }
