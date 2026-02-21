@@ -267,7 +267,6 @@ public class InterviewService {
 
         s3Util.deleteFile(key);
         deleteAllPdfHighlighting(interview);
-        interview.deletePdfResourceKey();
     }
 
     public Page<InterviewSimpleDto> getMyInterviewDrafts(InterviewDraftType draftType, Pageable pageable) {
