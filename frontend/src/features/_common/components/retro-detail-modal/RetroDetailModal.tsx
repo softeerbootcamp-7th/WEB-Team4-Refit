@@ -1,4 +1,5 @@
 import { useGetInterviewFull } from '@/apis/generated/interview-api/interview-api'
+import { INTERVIEW_REVIEW_STATUS_LABEL } from '@/constants/interviewReviewStatus'
 import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
 import { SmallLogoIcon } from '@/designs/assets'
 import { Badge, Border, Button, Modal } from '@/designs/components'
@@ -30,6 +31,7 @@ export default function RetroDetailModal({
   const interview = data?.result
   const qnaSet = interview?.qnaSets?.find((item) => item.qnaSetId === qnaSetId) ?? null
   const resultStatus = interview?.interviewResultStatus ?? 'WAIT'
+  const reviewStatus = interview?.interviewReviewStatus ?? 'DEBRIEF_COMPLETED'
   const interviewType = interview?.interviewType ?? 'FIRST'
 
   const goToDetailsPage = () => {
@@ -67,6 +69,7 @@ export default function RetroDetailModal({
       <div className="-mt-10 flex min-h-0 flex-col gap-4">
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
+            <Badge content={INTERVIEW_REVIEW_STATUS_LABEL[reviewStatus]} type="question-label" theme="gray-150" />
             <Badge content={RESULT_LABEL[resultStatus]} type="question-label" theme={RESULT_THEME[resultStatus]} />
             <span className="body-m-medium text-gray-500">{formatDate(interview?.interviewStartAt ?? '')} 응시</span>
           </div>
@@ -91,7 +94,7 @@ export default function RetroDetailModal({
               </span>
             </div>
             <Button variant="fill-gray-800" size="sm" onClick={goToDetailsPage}>
-              회고 상세 페이지로 이동
+              상세 페이지로 이동
             </Button>
           </div>
         </div>
