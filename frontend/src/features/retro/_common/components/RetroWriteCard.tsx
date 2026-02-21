@@ -25,7 +25,7 @@ export function RetroWriteCard({ idx, value, onChange }: RetroWriteCardProps) {
         <Badge type="question-label" theme="orange-100" content={retroLabel} />
       </div>
       {readOnly ? (
-        <p className="body-m-regular mb-3 w-full break-all whitespace-pre-wrap">{value}</p>
+        <p className="body-m-regular mb-3 max-h-50 w-full overflow-y-scroll break-all whitespace-pre-wrap">{value}</p>
       ) : (
         <div className="relative">
           <textarea
