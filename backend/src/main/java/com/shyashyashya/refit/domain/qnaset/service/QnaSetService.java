@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,8 +58,15 @@ public class QnaSetService {
     @Transactional(readOnly = true)
     public Page<FrequentQnaSetResponse> getFrequentQuestions(
             Set<Long> industryIds, Set<Long> jobCategoryIds, Pageable pageable) {
+        User requestUser = requestUserContext.getRequestUser();
+
         industryValidator.validateIndustriesAllExist(industryIds);
         jobCategoryValidator.validateJobCategoriesAllExist(jobCategoryIds);
+
+        if (!requestUser.isAgreedToTerms()) {
+            long qnaSetCount = qnaSetRepository.countByIndustriesAndJobCategories(industryIds, jobCategoryIds);
+            return new PageImpl<>(List.of(), pageable, qnaSetCount);
+        }
 
         return qnaSetRepository
                 .searchByIndustriesAndJobCategories(industryIds, jobCategoryIds, pageable)
