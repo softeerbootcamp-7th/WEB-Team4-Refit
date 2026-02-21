@@ -10,9 +10,10 @@ type KptWriteCardProps = {
   defaultValue?: KptTextsType
   readOnly?: boolean
   onChange?: (kptTexts: KptTextsType) => void
+  saveErrorMessage?: string | null
 }
 
-export function KptWriteCard({ defaultValue, readOnly = false, onChange }: KptWriteCardProps) {
+export function KptWriteCard({ defaultValue, readOnly = false, onChange, saveErrorMessage }: KptWriteCardProps) {
   const [kptTexts, setKptTexts] = useState<KptTextsType>(defaultValue ?? KPT_INITIAL_VALUE)
 
   const handleChange = (key: keyof KptTextsType, value: string) => {
@@ -38,6 +39,7 @@ export function KptWriteCard({ defaultValue, readOnly = false, onChange }: KptWr
           readOnly={readOnly}
         />
       ))}
+      {saveErrorMessage && <p className="body-s-medium text-red-500">{saveErrorMessage}</p>}
     </div>
   )
 }

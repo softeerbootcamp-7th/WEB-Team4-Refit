@@ -30,8 +30,8 @@ const QNA_DELETE_FAILED_PDF_HIGHLIGHTING_EXISTS = 'QNA_DELETE_FAILED_PDF_HIGHLIG
 
 export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChange, onDelete }: QnaRetroCardProps) {
   const { qnaSetId, questionText, answerText, qnaSetSelfReviewText, starAnalysis, isMarkedDifficult } = qnaSet
-  const { mutate: updateQnaSet } = useUpdateQnaSet()
-  const { mutate: updateQnaSetSelfReview } = useUpdateQnaSetSelfReview()
+  const { mutateAsync: updateQnaSet, isPending: isSavingQna } = useUpdateQnaSet()
+  const { mutateAsync: updateQnaSetSelfReview, isPending: isSavingRetro } = useUpdateQnaSetSelfReview()
   const { mutateAsync: deleteQnaSet, isPending: isDeletingQnaSet } = useDeleteQnaSet()
   const { mutateAsync: deletePdfHighlighting, isPending: isDeletingPdfHighlighting } = useDeletePdfHighlighting()
   const { mutate: createStarAnalysis, isPending: isAnalyzing } = useCreateStarAnalysis()
@@ -58,12 +58,14 @@ export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChan
   const [editedAnswer, setEditedAnswer] = useState(answerText)
   const [editedRetro, setEditedRetro] = useState(qnaSetSelfReviewText)
   const [currentStarAnalysis, setCurrentStarAnalysis] = useState(starAnalysis)
+  const [saveErrorMessage, setSaveErrorMessage] = useState<string | null>(null)
   const savedQuestionRef = useRef(questionText)
   const savedAnswerRef = useRef(answerText)
   const savedRetroRef = useRef(qnaSetSelfReviewText)
 
   const hasStarAnalysis = !!currentStarAnalysis
   const isQuestionEmpty = editedQuestion.trim() === ''
+  const isSaving = isSavingQna || isSavingRetro
 
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
@@ -73,21 +75,24 @@ export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChan
 
   const startEditing = () => {
     setIsEditing(true)
+    setSaveErrorMessage(null)
     setIsMenuOpen(false)
     onEditingIdChange?.(editingKey)
   }
 
   const stopEditing = () => {
     setIsEditing(false)
+    setSaveErrorMessage(null)
     onEditingIdChange?.(null)
   }
 
-  const handleSave = (question: string, answer: string) => {
+  const handleSave = async (question: string, answer: string) => {
+    if (isSaving) return
     if (question.trim() === '') return
 
-    const isQuestionChanged = question !== savedQuestionRef.current
-    const isAnswerChanged = answer !== savedAnswerRef.current
-    const isQnaChanged = isQuestionChanged || isAnswerChanged
+    setSaveErrorMessage(null)
+
+    const isQnaChanged = question !== savedQuestionRef.current || answer !== savedAnswerRef.current
     const isRetroChanged = editedRetro !== savedRetroRef.current
 
     if (!isQnaChanged && !isRetroChanged) {
@@ -95,24 +100,31 @@ export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChan
       return
     }
 
-    setEditedQuestion(question)
-    setEditedAnswer(answer)
-    if (isQnaChanged) {
-      savedQuestionRef.current = question
-      savedAnswerRef.current = answer
-      updateQnaSet({
-        qnaSetId,
-        data: {
-          questionText: question,
-          answerText: answer,
-        },
-      })
+    try {
+      setEditedQuestion(question)
+      setEditedAnswer(answer)
+
+      if (isQnaChanged) {
+        await updateQnaSet({
+          qnaSetId,
+          data: {
+            questionText: question,
+            answerText: answer,
+          },
+        })
+        savedQuestionRef.current = question
+        savedAnswerRef.current = answer
+      }
+
+      if (isRetroChanged) {
+        await updateQnaSetSelfReview({ qnaSetId, data: { selfReviewText: editedRetro } })
+        savedRetroRef.current = editedRetro
+      }
+
+      stopEditing()
+    } catch {
+      setSaveErrorMessage('저장에 실패했어요. 잠시 후 다시 시도해주세요.')
     }
-    if (isRetroChanged) {
-      savedRetroRef.current = editedRetro
-      updateQnaSetSelfReview({ qnaSetId, data: { selfReviewText: editedRetro } })
-    }
-    stopEditing()
   }
 
   const handleCancel = () => {
@@ -203,18 +215,22 @@ export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChan
             answerText={editedAnswer}
             badgeTheme="gray-100"
             topRightComponent={
-              <div className="flex gap-2">
-                <Button size="xs" variant="outline-gray-100" onClick={handleCancel}>
-                  취소
-                </Button>
-                <Button
-                  size="xs"
-                  variant="outline-orange-100"
-                  onClick={() => handleSave(editedQuestion, editedAnswer)}
-                  disabled={isQuestionEmpty}
-                >
-                  저장
-                </Button>
+              <div className="flex flex-col items-end gap-1">
+                <div className="flex gap-2">
+                  <Button size="xs" variant="outline-gray-100" onClick={handleCancel}>
+                    취소
+                  </Button>
+                  <Button
+                    size="xs"
+                    variant="outline-orange-100"
+                    onClick={() => void handleSave(editedQuestion, editedAnswer)}
+                    disabled={isQuestionEmpty}
+                    isLoading={isSaving}
+                  >
+                    저장
+                  </Button>
+                </div>
+                {saveErrorMessage && <p className="body-s-medium text-red-500">{saveErrorMessage}</p>}
               </div>
             }
           >
@@ -237,6 +253,7 @@ export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChan
           >
             <Border />
             <RetroWriteCard idx={idx} value={editedRetro} onChange={setEditedRetro} />
+            {saveErrorMessage && <p className="body-s-medium mt-3 text-red-500">{saveErrorMessage}</p>}
           </QnaSetEditForm>
         ) : (
           <QnaSetCard idx={idx} questionText={editedQuestion} answerText={editedAnswer} badgeTheme="gray-100">

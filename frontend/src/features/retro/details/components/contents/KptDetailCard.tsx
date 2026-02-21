@@ -18,12 +18,13 @@ type KptDetailCardProps = {
 }
 
 export function KptDetailCard({ ref, interviewId, kptTexts, isOtherEditing, onEditingIdChange }: KptDetailCardProps) {
-  const { mutate: updateKptSelfReview } = useUpdateKptSelfReview()
+  const { mutateAsync: updateKptSelfReview, isPending: isSaving } = useUpdateKptSelfReview()
 
   const [isEditing, setIsEditing] = useState(false)
   const [editedKpt, setEditedKpt] = useState<KptTextsType>(kptTexts)
   const savedKptRef = useRef<KptTextsType>(kptTexts)
   const [resetKey, setResetKey] = useState(0)
+  const [saveErrorMessage, setSaveErrorMessage] = useState<string | null>(null)
 
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
@@ -31,35 +32,43 @@ export function KptDetailCard({ ref, interviewId, kptTexts, isOtherEditing, onEd
 
   const handleStartEdit = () => {
     setIsEditing(true)
+    setSaveErrorMessage(null)
     setIsMenuOpen(false)
     onEditingIdChange?.('kpt')
   }
 
   const handleCancel = () => {
     setIsEditing(false)
+    setSaveErrorMessage(null)
     setEditedKpt(savedKptRef.current)
     setResetKey((prev) => prev + 1)
     onEditingIdChange?.(null)
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    if (isSaving) return
+    setSaveErrorMessage(null)
     if (isSameKptTexts(editedKpt, savedKptRef.current)) {
       setIsEditing(false)
       onEditingIdChange?.(null)
       return
     }
 
-    savedKptRef.current = editedKpt
-    updateKptSelfReview({
-      interviewId,
-      data: {
-        keepText: editedKpt.keepText,
-        problemText: editedKpt.problemText,
-        tryText: editedKpt.tryText,
-      },
-    })
-    setIsEditing(false)
-    onEditingIdChange?.(null)
+    try {
+      await updateKptSelfReview({
+        interviewId,
+        data: {
+          keepText: editedKpt.keepText,
+          problemText: editedKpt.problemText,
+          tryText: editedKpt.tryText,
+        },
+      })
+      savedKptRef.current = editedKpt
+      setIsEditing(false)
+      onEditingIdChange?.(null)
+    } catch {
+      setSaveErrorMessage('저장에 실패했어요. 잠시 후 다시 시도해주세요.')
+    }
   }
 
   const containerClassName = [
@@ -78,7 +87,7 @@ export function KptDetailCard({ ref, interviewId, kptTexts, isOtherEditing, onEd
             <Button size="xs" variant="outline-gray-100" onClick={handleCancel}>
               취소
             </Button>
-            <Button size="xs" variant="outline-orange-100" onClick={handleSave}>
+            <Button size="xs" variant="outline-orange-100" onClick={handleSave} isLoading={isSaving}>
               저장
             </Button>
           </>
@@ -103,7 +112,13 @@ export function KptDetailCard({ ref, interviewId, kptTexts, isOtherEditing, onEd
           </div>
         )}
       </div>
-      <KptWriteCard key={resetKey} defaultValue={editedKpt} readOnly={!isEditing} onChange={setEditedKpt} />
+      <KptWriteCard
+        key={resetKey}
+        defaultValue={editedKpt}
+        readOnly={!isEditing}
+        onChange={setEditedKpt}
+        saveErrorMessage={saveErrorMessage}
+      />
     </div>
   )
 }
