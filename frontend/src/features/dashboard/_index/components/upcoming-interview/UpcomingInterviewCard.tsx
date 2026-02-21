@@ -49,7 +49,7 @@ export default function UpcomingInterviewCard({ data }: UpcomingInterviewCardPro
           {data.recentQuestions.slice(0, 3).map((q) => (
             <div key={q.id} className="flex items-start gap-2">
               <span className="body-m-semibold text-gray-300">Q.</span>
-              <p className="body-m-medium line-clamp-1 text-gray-900">{q.text}</p>
+              <p className="body-m-medium line-clamp-1 break-all text-gray-900">{q.text}</p>
             </div>
           ))}
         </div>

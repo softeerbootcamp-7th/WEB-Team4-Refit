@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import { Navigate, useParams } from 'react-router'
-import type { InterviewDtoInterviewReviewStatus } from '@/apis'
+import { InterviewDtoInterviewReviewStatus } from '@/apis'
 import { getInterviewFull, useGetInterviewFullSuspense } from '@/apis/generated/interview-api/interview-api'
 import { getInterviewNavigationPath } from '@/constants/interviewReviewStatusRoutes'
 import SidebarLayoutSkeleton from '@/features/_common/components/sidebar/SidebarLayoutSkeleton'
@@ -45,6 +45,12 @@ function RecordConfirmContent() {
   } = useQnaList({ interviewId: id })
   const sectionScroll = useSectionScroll({ idPrefix: 'record-confirm' })
 
+  const onAddSave = async (question: string, answer: string) => {
+    const newIndex = data.qnaList.length
+    await handleAddSave(question, answer)
+    window.history.replaceState(null, '', `#record-confirm-${newIndex + 1}`)
+  }
+
   const questionItems = data.qnaList.map(({ qnaSetId, questionText }, index) => ({
     id: qnaSetId,
     label: `${index + 1}. ${questionText}`,
@@ -74,7 +80,7 @@ function RecordConfirmContent() {
         onDelete={handleDelete}
         onCancelDeleteWithHighlight={cancelDeleteWithHighlight}
         onConfirmDeleteWithHighlight={confirmDeleteWithHighlight}
-        onAddSave={handleAddSave}
+        onAddSave={onAddSave}
         onStartAdd={startAddMode}
         onCancelAdd={cancelAddMode}
         setRef={sectionScroll.setRef}
@@ -105,11 +111,19 @@ function transformInterviewData(res: Awaited<ReturnType<typeof getInterviewFull>
   return {
     interviewInfo,
     qnaList,
-    interviewReviewStatus: (interviewFull.interviewReviewStatus ?? 'NOT_LOGGED') as InterviewDtoInterviewReviewStatus,
+    interviewReviewStatus: interviewFull.interviewReviewStatus ?? InterviewDtoInterviewReviewStatus.QNA_SET_DRAFT,
   }
 }
 
-function getBlockedConfirmPath(interviewId: number, interviewReviewStatus: InterviewDtoInterviewReviewStatus): string | null {
-  if (interviewReviewStatus === 'LOG_DRAFT' || interviewReviewStatus === 'QNA_SET_DRAFT') return null
+function getBlockedConfirmPath(
+  interviewId: number,
+  interviewReviewStatus: InterviewDtoInterviewReviewStatus,
+): string | null {
+  if (
+    // TODO: LOG_DRAFT 상태는 추후 변경 필요
+    interviewReviewStatus === InterviewDtoInterviewReviewStatus.LOG_DRAFT ||
+    interviewReviewStatus === InterviewDtoInterviewReviewStatus.QNA_SET_DRAFT
+  )
+    return null
   return getInterviewNavigationPath(interviewId, interviewReviewStatus)
 }
