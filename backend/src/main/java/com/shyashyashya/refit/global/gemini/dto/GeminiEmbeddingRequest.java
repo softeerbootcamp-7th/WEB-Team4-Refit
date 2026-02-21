@@ -25,7 +25,7 @@ public record GeminiEmbeddingRequest(TaskType taskType, Content content, OutputD
             this.value = value;
         }
 
-        public static OutputDimensionality valueOf(int value) {
+        public static OutputDimensionality fromValue(int value) {
             for (OutputDimensionality dimensionality : values()) {
                 if (dimensionality.value == value) {
                     return dimensionality;

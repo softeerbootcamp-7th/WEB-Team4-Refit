@@ -9,12 +9,12 @@ import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
 import com.shyashyashya.refit.domain.jobcategory.service.validator.JobCategoryValidator;
 import com.shyashyashya.refit.domain.qnaset.dto.PdfHighlightingDto;
-import com.shyashyashya.refit.domain.qnaset.dto.event.QuestionEmbeddingEvent;
 import com.shyashyashya.refit.domain.qnaset.dto.request.PdfHighlightingUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetReviewUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetResponse;
 import com.shyashyashya.refit.domain.qnaset.dto.response.QnaSetScrapFolderResponse;
+import com.shyashyashya.refit.domain.qnaset.event.QuestionEmbeddingEvent;
 import com.shyashyashya.refit.domain.qnaset.model.PdfHighlighting;
 import com.shyashyashya.refit.domain.qnaset.model.PdfHighlightingRect;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
@@ -88,7 +88,8 @@ public class QnaSetService {
                         InterviewReviewStatus.SELF_REVIEW_DRAFT,
                         InterviewReviewStatus.DEBRIEF_COMPLETED));
 
-        boolean isQuestionTextChanged = !qnaSet.getQuestionText().equals(request.questionText());
+        boolean isQuestionTextChanged =
+                request.questionText() == null || !qnaSet.getQuestionText().equals(request.questionText());
         qnaSet.updateQuestionText(request.questionText());
         qnaSet.updateAnswerText(request.answerText());
 

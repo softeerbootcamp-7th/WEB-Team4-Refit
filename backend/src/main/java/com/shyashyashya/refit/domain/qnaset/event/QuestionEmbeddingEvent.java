@@ -1,4 +1,4 @@
-package com.shyashyashya.refit.domain.qnaset.dto.event;
+package com.shyashyashya.refit.domain.qnaset.event;
 
 import lombok.Builder;
 
