@@ -7,29 +7,42 @@ import { EMPTY_QUESTION_FILTER } from '@/features/dashboard/my-interviews/consta
 import type { QuestionFilter } from '@/types/interview'
 
 export default function QuestionsTab() {
-  const [filter, setFilter] = useState<QuestionFilter>(EMPTY_QUESTION_FILTER)
-  const isSearching = filter.keyword.length > 0
+  const [questionFilter, setQuestionFilter] = useState<QuestionFilter>(EMPTY_QUESTION_FILTER)
+  const [searchFilter, setSearchFilter] = useState<QuestionFilter>(EMPTY_QUESTION_FILTER)
+  const isSearching = searchFilter.keyword.length > 0
+
+  const handleSearch = (keyword: string) => {
+    if (!keyword || !searchFilter.keyword) {
+      setQuestionFilter(EMPTY_QUESTION_FILTER)
+      setSearchFilter(keyword ? { ...EMPTY_QUESTION_FILTER, keyword } : EMPTY_QUESTION_FILTER)
+    } else {
+      setSearchFilter((prev) => ({ ...prev, keyword }))
+    }
+  }
+
+  const activeFilter = isSearching ? searchFilter : questionFilter
+  const setActiveFilter = isSearching ? setSearchFilter : setQuestionFilter
 
   return (
     <>
       <div className="absolute top-0 right-0">
         <SearchBar
           placeholder="키워드로 내가 받은 질문 검색하기"
-          keyword={filter.keyword}
-          onSearch={(keyword) => setFilter((prev) => ({ ...prev, keyword }))}
+          keyword={searchFilter.keyword}
+          onSearch={handleSearch}
         />
       </div>
       {!isSearching && <FrequentQuestionsSection />}
       <section className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           {isSearching ? (
-            <SearchResultBar query={filter.keyword} onClose={() => setFilter((prev) => ({ ...prev, keyword: '' }))} />
+            <SearchResultBar query={searchFilter.keyword} onClose={() => handleSearch('')} />
           ) : (
             <h2 className="title-s-bold">내가 기록한 질문과 답변</h2>
           )}
-          <QuestionFilterControls filter={filter} onChange={setFilter} />
+          <QuestionFilterControls filter={activeFilter} onChange={setActiveFilter} />
         </div>
-        <QuestionListSection filter={filter} />
+        <QuestionListSection filter={activeFilter} />
       </section>
     </>
   )
