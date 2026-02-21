@@ -2,6 +2,8 @@ package com.shyashyashya.refit.integration.interview;
 
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.in;
 import static org.hamcrest.Matchers.notNullValue;
@@ -10,6 +12,8 @@ import static org.hamcrest.Matchers.nullValue;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -28,6 +32,9 @@ import com.shyashyashya.refit.domain.user.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
@@ -85,7 +92,7 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
 
         @Test
         void 검색_조건_없이_전체_면접을_조회한다() {
-            InterviewSearchRequest request = new InterviewSearchRequest(null, new InterviewSearchRequest.InterviewSearchFilter(null, null, null, null));
+            InterviewSearchRequest request = new InterviewSearchRequest(null, new InterviewSearchRequest.InterviewSearchFilter(null, null, null, null, null));
 
             given(spec)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -103,7 +110,7 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
 
         @Test
         void 키워드로_면접을_검색하면_회사_이름에서_검색한다() {
-            InterviewSearchRequest request = new InterviewSearchRequest("현대", new InterviewSearchRequest.InterviewSearchFilter(null, null, null, null));
+            InterviewSearchRequest request = new InterviewSearchRequest("현대", new InterviewSearchRequest.InterviewSearchFilter(null, null, null, null, null));
 
             given(spec)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -124,7 +131,7 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
         void 면접_타입으로_면접을_검색한다() {
             InterviewSearchRequest request = new InterviewSearchRequest(
                     null, new InterviewSearchRequest.InterviewSearchFilter(Set.of(InterviewType.FIRST),
-                    null, null, null));
+                    null, null, null, null));
 
             given(spec)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -143,7 +150,7 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
 
         @Test
         void 면접_결과로_면접을_검색한다() {
-            InterviewSearchRequest request = new InterviewSearchRequest(null, new InterviewSearchRequest.InterviewSearchFilter(null, Set.of(InterviewResultStatus.PASS), null, null));
+            InterviewSearchRequest request = new InterviewSearchRequest(null, new InterviewSearchRequest.InterviewSearchFilter(null, Set.of(InterviewResultStatus.PASS), null, null, null));
 
             given(spec)
                     .body(request)
@@ -164,7 +171,7 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
             // Search for interviews in 2024
             InterviewSearchRequest request = new InterviewSearchRequest(
                 null, new InterviewSearchRequest.InterviewSearchFilter(
-                    null, null, LocalDate.of(2023, 1, 1), LocalDate.of(2023, 12, 31)));
+                    null, null, null, LocalDate.of(2023, 1, 1), LocalDate.of(2023, 12, 31)));
 
             given(spec)
                     .body(request)
@@ -184,7 +191,7 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
         void 여러_조건으로_면접을_검색한다() {
             InterviewSearchRequest request = new InterviewSearchRequest(
                 "현대", new InterviewSearchRequest.InterviewSearchFilter(
-                    Set.of(InterviewType.FIRST), Set.of(InterviewResultStatus.PASS),
+                    Set.of(InterviewType.FIRST), Set.of(InterviewResultStatus.PASS), null,
                     LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31)));
 
             given(spec)
@@ -202,7 +209,7 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
 
         @Test
         void 검색_결과가_없는_경우_빈_리스트를_반환한다() {
-            InterviewSearchRequest request = new InterviewSearchRequest("NonExistentKeyword", new InterviewSearchRequest.InterviewSearchFilter(null, null, null, null));
+            InterviewSearchRequest request = new InterviewSearchRequest("NonExistentKeyword", new InterviewSearchRequest.InterviewSearchFilter(null, null, null, null, null));
 
             given(spec)
                     .body(request)
@@ -228,7 +235,7 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
             otherInterview.completeQnaSetDraft();
             otherInterview.completeReview();
 
-            InterviewSearchRequest request = new InterviewSearchRequest("현대", new InterviewSearchRequest.InterviewSearchFilter(null, null, null, null));
+            InterviewSearchRequest request = new InterviewSearchRequest("현대", new InterviewSearchRequest.InterviewSearchFilter(null, null, null, null, null));
 
             given(spec)
                     .body(request)
@@ -258,7 +265,7 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
             reviewDraftInterview.startLogging();
             reviewDraftInterview.completeLogging();
 
-            InterviewSearchRequest request = new InterviewSearchRequest("현대", new InterviewSearchRequest.InterviewSearchFilter(null, null, null, null));
+            InterviewSearchRequest request = new InterviewSearchRequest("현대", new InterviewSearchRequest.InterviewSearchFilter(null, null, null, null, null));
 
             given(spec)
                     .body(request)
@@ -285,6 +292,178 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
             .then()
                     .statusCode(400)
                     .body("result", nullValue());
+        }
+    }
+
+    @Nested
+    class 면접_목록_검색_및_정렬_시 {
+
+        private static final String path = "/interview/my/search";
+        private Interview interview1;
+        private Interview interview2;
+        private Interview interview3;
+
+        @BeforeEach
+        void setUp() {
+            createAndSaveCompany("A_Company");
+            createAndSaveCompany("B_Company");
+            createAndSaveCompany("C_Company");
+
+            InterviewCreateRequest req1 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 1, 2, 10, 0, 0),
+                    InterviewType.FIRST, "B_Company", industry1.getId(), jobCategory1.getId(), "BE Developer");
+            interview1 = createAndSaveInterview(req1, InterviewReviewStatus.DEBRIEF_COMPLETED);
+
+            try { Thread.sleep(50); } catch (InterruptedException e) {}
+
+            InterviewCreateRequest req2 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 1, 3, 10, 0, 0),
+                    InterviewType.FIRST, "A_Company", industry1.getId(), jobCategory1.getId(), "BE Developer");
+            interview2 = createAndSaveInterview(req2, InterviewReviewStatus.DEBRIEF_COMPLETED);
+
+            try { Thread.sleep(50); } catch (InterruptedException e) {}
+
+            InterviewCreateRequest req3 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 1, 1, 10, 0, 0),
+                    InterviewType.FIRST, "C_Company", industry1.getId(), jobCategory1.getId(), "BE Developer");
+            interview3 = createAndSaveInterview(req3, InterviewReviewStatus.DEBRIEF_COMPLETED);
+        }
+
+        @ParameterizedTest(name = "{0} 필드를 {1} 로 정렬에 성공한다")
+        @CsvSource({
+                "interviewStartAt, asc, 3:1:2",
+                "interviewStartAt, desc, 2:1:3",
+                "companyName, asc, 2:1:3",
+                "companyName, desc, 3:1:2",
+                "updatedAt, asc, 1:2:3",
+                "updatedAt, desc, 3:2:1"
+        })
+        void 정렬_조건에_따라_올바르게_정렬된다(String sortField, String direction, String expectedOrderIndices) {
+            // given
+            List<Integer> expectedIndices = Arrays.stream(expectedOrderIndices.split(":")).map(Integer::parseInt).toList();
+            InterviewSearchRequest request = new InterviewSearchRequest(
+                    null,
+                    new InterviewSearchRequest.InterviewSearchFilter(
+                            Collections.emptySet(), Collections.emptySet(), Collections.emptySet(), null, null)
+            );
+
+            // when & then
+            given(spec)
+                    .body(request)
+                    .queryParam("sort", sortField + "," + direction)
+            .when()
+                    .post(path)
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result.content", hasSize(expectedIndices.size()))
+                    .body("result.content*.interviewId", contains(expectedIndices.toArray()));
+        }
+
+        @ParameterizedTest
+        @EnumSource(value = InterviewReviewStatus.class)
+        void 리뷰_상태_기반으로_올바르게_검색된다(InterviewReviewStatus reviewStatus) {
+            // given
+            createAndSaveCompany("D_Company");
+            InterviewCreateRequest req4 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 1, 4, 10, 0, 0),
+                    InterviewType.FIRST, "D_Company", industry1.getId(), jobCategory1.getId(), "BE Developer");
+            Interview interview4 = createAndSaveInterview(req4, reviewStatus);
+
+            InterviewSearchRequest request = new InterviewSearchRequest(
+                    null,
+                    new InterviewSearchRequest.InterviewSearchFilter(
+                            Collections.emptySet(), Collections.emptySet(), Set.of(reviewStatus), null, null)
+            );
+
+            int expectedSize = reviewStatus == InterviewReviewStatus.DEBRIEF_COMPLETED ? 4 : 1;
+
+            // when & then
+            given(spec)
+                    .body(request)
+            .when()
+                    .post(path)
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result.content", hasSize(expectedSize))
+                    .body("result.content*.interviewId", org.hamcrest.Matchers.hasItem(interview4.getId().intValue()));
+        }
+
+        @Test
+        void 검색_조건에_포함되지_않은_리뷰_상태의_면접은_조회되지_않는다() {
+            // given
+            createAndSaveCompany("D_Company");
+            InterviewCreateRequest req4 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 1, 4, 10, 0, 0),
+                    InterviewType.FIRST, "D_Company", industry1.getId(), jobCategory1.getId(), "BE Developer");
+            // NOT_LOGGED 상태의 면접 생성
+            Interview interview4 = createAndSaveInterview(req4, InterviewReviewStatus.NOT_LOGGED);
+
+            // LOG_DRAFT 상태로만 검색을 요청
+            InterviewSearchRequest request = new InterviewSearchRequest(
+                    null,
+                    new InterviewSearchRequest.InterviewSearchFilter(
+                            Collections.emptySet(), Collections.emptySet(), Set.of(InterviewReviewStatus.LOG_DRAFT), null, null)
+            );
+
+            // when & then
+            given(spec)
+                    .body(request)
+            .when()
+                    .post(path)
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result.content", hasSize(0));
+        }
+
+        @Test
+        void 여러_리뷰_상태로_검색하면_해당_상태의_면접들만_조회된다() {
+            // given
+            createAndSaveCompany("D_Company");
+            createAndSaveCompany("E_Company");
+            createAndSaveCompany("F_Company");
+
+            InterviewCreateRequest req4 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 1, 4, 10, 0, 0),
+                    InterviewType.FIRST, "D_Company", industry1.getId(), jobCategory1.getId(), "BE Developer");
+            Interview interview4 = createAndSaveInterview(req4, InterviewReviewStatus.NOT_LOGGED);
+
+            InterviewCreateRequest req5 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 1, 5, 10, 0, 0),
+                    InterviewType.FIRST, "E_Company", industry1.getId(), jobCategory1.getId(), "BE Developer");
+            Interview interview5 = createAndSaveInterview(req5, InterviewReviewStatus.LOG_DRAFT);
+
+            InterviewCreateRequest req6 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 1, 5, 10, 0, 0),
+                    InterviewType.FIRST, "E_Company", industry1.getId(), jobCategory1.getId(), "BE Developer");
+            createAndSaveInterview(req6, InterviewReviewStatus.QNA_SET_DRAFT);
+
+            InterviewSearchRequest request = new InterviewSearchRequest(
+                    null,
+                    new InterviewSearchRequest.InterviewSearchFilter(
+                            Collections.emptySet(),
+                            Collections.emptySet(),
+                            Set.of(InterviewReviewStatus.NOT_LOGGED, InterviewReviewStatus.LOG_DRAFT),
+                            null,
+                            null));
+
+            // when & then
+            given(spec)
+                    .body(request)
+            .when()
+                    .post(path)
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result.content", hasSize(2))
+                    .body("result.content*.interviewId", containsInAnyOrder(
+                            interview4.getId().intValue(), interview5.getId().intValue()));
         }
     }
 
