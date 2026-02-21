@@ -1,7 +1,11 @@
 import { useMemo, useState } from 'react'
 import { INTERVIEW_TYPE_OPTIONS } from '@/constants/interviews'
 import { Button, Checkbox, Modal } from '@/designs/components'
-import { EMPTY_FILTER, RESULT_STATUS_ITEMS } from '@/features/dashboard/my-interviews/constants/constants'
+import {
+  EMPTY_FILTER,
+  RESULT_STATUS_ITEMS,
+  REVIEW_STATUS_ITEMS,
+} from '@/features/dashboard/my-interviews/constants/constants'
 import type { InterviewFilter } from '@/types/interview'
 
 type InterviewFilterModalProps = {
@@ -9,14 +13,26 @@ type InterviewFilterModalProps = {
   onClose: () => void
   filter: InterviewFilter
   onApply: (filter: InterviewFilter) => void
+  isSearching?: boolean
 }
 
-export default function InterviewFilterModalContent({ open, filter, onApply, onClose }: InterviewFilterModalProps) {
+export default function InterviewFilterModalContent({
+  open,
+  filter,
+  onApply,
+  onClose,
+  isSearching = false,
+}: InterviewFilterModalProps) {
   const [draft, setDraft] = useState<InterviewFilter>(filter)
   const [prevOpen, setPrevOpen] = useState(open)
   const selectedCount = useMemo(
-    () => draft.interviewType.length + draft.resultStatus.length + (draft.startDate ? 1 : 0) + (draft.endDate ? 1 : 0),
-    [draft],
+    () =>
+      draft.interviewType.length +
+      draft.resultStatus.length +
+      (isSearching ? draft.interviewReviewStatus.length : 0) +
+      (draft.startDate ? 1 : 0) +
+      (draft.endDate ? 1 : 0),
+    [draft, isSearching],
   )
   const selectedCountLabel = selectedCount > 9 ? '9+' : String(selectedCount)
 
@@ -30,6 +46,15 @@ export default function InterviewFilterModalContent({ open, filter, onApply, onC
       const list = prev[key] as string[]
       const updated = list.includes(value) ? list.filter((v) => v !== value) : [...list, value]
       return { ...prev, [key]: updated }
+    })
+  }
+
+  const toggleReviewStatus = (value: InterviewFilter['interviewReviewStatus'][number]) => {
+    setDraft((prev) => {
+      const updated = prev.interviewReviewStatus.includes(value)
+        ? prev.interviewReviewStatus.filter((v) => v !== value)
+        : [...prev.interviewReviewStatus, value]
+      return { ...prev, interviewReviewStatus: updated }
     })
   }
 
@@ -47,7 +72,7 @@ export default function InterviewFilterModalContent({ open, filter, onApply, onC
       title={
         <span className="inline-flex items-center gap-2">
           <span>면접 필터</span>
-          <span className="caption-m-semibold bg-gray-800 text-gray-white inline-flex h-6 min-w-6 items-center justify-center rounded-full px-1.5">
+          <span className="caption-m-semibold text-gray-white inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-gray-800 px-1.5">
             {selectedCountLabel}
           </span>
         </span>
@@ -68,6 +93,15 @@ export default function InterviewFilterModalContent({ open, filter, onApply, onC
           selected={draft.resultStatus}
           onToggle={(v) => toggleItem('resultStatus', v as InterviewFilter['resultStatus'][number])}
         />
+        {isSearching && (
+          <CheckboxGroup
+            label="면접 상태"
+            items={REVIEW_STATUS_ITEMS}
+            columns={3}
+            selected={draft.interviewReviewStatus}
+            onToggle={(v) => toggleReviewStatus(v as InterviewFilter['interviewReviewStatus'][number])}
+          />
+        )}
         <div className="flex flex-col gap-3 rounded-xl border border-gray-100 p-4">
           <div className="flex min-h-6 items-center justify-between">
             <span className="caption-l-medium">기간</span>

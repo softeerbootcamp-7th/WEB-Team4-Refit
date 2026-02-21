@@ -1,6 +1,7 @@
 import type {
   FrequentQnaSetCategoryQuestionResponse,
   FrequentQnaSetCategoryResponse,
+  InterviewDtoInterviewReviewStatus,
   InterviewSearchFilterInterviewResultStatusItem,
   QnaSetSearchResponse,
 } from '@/apis/generated/refit-api.schemas'
@@ -24,6 +25,7 @@ export type QuestionCardModel = {
 export type QnaCardItemModel = {
   interviewId: number
   qnaSetId: number
+  interviewReviewStatus: InterviewDtoInterviewReviewStatus
   resultStatus: InterviewSearchFilterInterviewResultStatusItem
   date: string
   companyName: string
@@ -57,6 +59,7 @@ export function mapSearchQuestionToQnaCard(item: QnaSetSearchResponse): QnaCardI
   return {
     interviewId: item.interviewInfo?.interviewId ?? 0,
     qnaSetId: item.qnaSetInfo?.qnaSetId ?? 0,
+    interviewReviewStatus: item.interviewInfo?.interviewReviewStatus ?? 'DEBRIEF_COMPLETED',
     resultStatus: item.interviewInfo?.interviewResultStatus ?? 'WAIT',
     date: item.interviewInfo?.updatedAt ?? '',
     companyName: item.interviewInfo?.companyName ?? '',

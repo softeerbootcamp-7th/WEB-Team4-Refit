@@ -1,5 +1,6 @@
 import type {
   InterviewDto,
+  InterviewDtoInterviewReviewStatus,
   InterviewSimpleDto,
   InterviewSimpleDtoInterviewReviewStatus,
 } from '@/apis/generated/refit-api.schemas'
@@ -18,6 +19,7 @@ export type DraftInterviewRowModel = {
 
 export type InterviewCardModel = {
   interviewId: number
+  interviewReviewStatus: InterviewDtoInterviewReviewStatus
   resultStatus: InterviewResultStatus
   date: string
   companyName: string
@@ -40,6 +42,7 @@ export function mapDraftInterviewRow(item: InterviewSimpleDto): DraftInterviewRo
 export function mapInterviewCard(item: InterviewDto): InterviewCardModel {
   return {
     interviewId: item.interviewId,
+    interviewReviewStatus: item.interviewReviewStatus,
     resultStatus: toResultStatus(item.interviewResultStatus),
     date: item.interviewStartAt,
     companyName: item.companyName ?? '',
