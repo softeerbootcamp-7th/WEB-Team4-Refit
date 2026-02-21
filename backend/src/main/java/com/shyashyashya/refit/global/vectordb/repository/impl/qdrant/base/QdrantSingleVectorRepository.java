@@ -2,7 +2,6 @@ package com.shyashyashya.refit.global.vectordb.repository.impl.qdrant.base;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.shyashyashya.refit.global.property.QdrantProperty;
-import com.shyashyashya.refit.global.property.QdrantProperty.QdrantCollectionContext;
 import com.shyashyashya.refit.global.vectordb.model.SingleVectorDocument;
 import com.shyashyashya.refit.global.vectordb.repository.VectorRepository;
 import io.qdrant.client.QdrantClient;
@@ -37,6 +36,7 @@ public abstract class QdrantSingleVectorRepository<K, V extends SingleVectorDocu
 
     private final QdrantClient qdrantClient;
     private final QdrantProperty qdrantProperty;
+    private QdrantProperty.QdrantCollectionContext collectionContext;
     private String collectionName;
     private Duration timeout;
 
@@ -56,11 +56,23 @@ public abstract class QdrantSingleVectorRepository<K, V extends SingleVectorDocu
         <T> T block(ListenableFuture<T> future, String description);
     }
 
+    public String getCollectionName() {
+        return collectionContext.name();
+    }
+
+    public Integer getCollectionVectorDimension() {
+        return collectionContext.vectorDimension();
+    }
+
+    public Collections.Distance getCollectionDistance() {
+        return collectionContext.distance();
+    }
+
     @PostConstruct
     public void postConstruct() {
-        QdrantCollectionContext context = qdrantProperty.collections().get(getCollectionContextName());
-        validateQdrantCollectionContext(context);
-        this.collectionName = context.name();
+        this.collectionContext = qdrantProperty.collections().get(getCollectionContextName());
+        validateQdrantCollectionContext();
+        this.collectionName = getCollectionName();
         this.timeout = qdrantProperty.timeout();
 
         boolean collectionExists =
@@ -70,7 +82,22 @@ public abstract class QdrantSingleVectorRepository<K, V extends SingleVectorDocu
             return;
         }
 
-        createQdrantCollection(context);
+        log.info("Creating Qdrant Collection: {}", collectionName);
+        Collections.VectorParams vectorParams = Collections.VectorParams.newBuilder()
+                .setSize(getCollectionVectorDimension())
+                .setDistance(getCollectionDistance())
+                .build();
+
+        Collections.CreateCollection createCollectionRequest = Collections.CreateCollection.newBuilder()
+                .setCollectionName(collectionName)
+                .setVectorsConfig(Collections.VectorsConfig.newBuilder()
+                        .setParams(vectorParams)
+                        .build())
+                .setOnDiskPayload(true) // Payload를 디스크에 저장하여 RAM 사용량 최적화
+                .build();
+
+        block(qdrantClient.createCollectionAsync(createCollectionRequest, timeout), "create collection");
+        log.info("Qdrant Collection '{}' created successfully.", collectionName);
     }
 
     @Override
@@ -212,30 +239,11 @@ public abstract class QdrantSingleVectorRepository<K, V extends SingleVectorDocu
         }
     }
 
-    private void validateQdrantCollectionContext(QdrantCollectionContext qdrantCollectionContext) {
-        if (qdrantCollectionContext == null) {
+    private void validateQdrantCollectionContext() {
+        if (this.collectionContext == null) {
             log.error("Qdrant Collection Context '{}' is missing", getCollectionContextName());
             throw new IllegalStateException("Qdrant collection context is missing");
         }
-    }
-
-    private void createQdrantCollection(QdrantCollectionContext qdrantCollectionContext) {
-        log.info("Creating Qdrant Collection: {}", collectionName);
-        Collections.VectorParams vectorParams = Collections.VectorParams.newBuilder()
-                .setSize(qdrantCollectionContext.vectorDimension())
-                .setDistance(qdrantCollectionContext.distance())
-                .build();
-
-        Collections.CreateCollection createCollectionRequest = Collections.CreateCollection.newBuilder()
-                .setCollectionName(collectionName)
-                .setVectorsConfig(Collections.VectorsConfig.newBuilder()
-                        .setParams(vectorParams)
-                        .build())
-                .setOnDiskPayload(true) // Payload를 디스크에 저장하여 RAM 사용량 최적화
-                .build();
-
-        block(qdrantClient.createCollectionAsync(createCollectionRequest, timeout), "create collection");
-        log.info("Qdrant Collection '{}' created successfully.", collectionName);
     }
 
     // point.getVectors().getVector().getDataList()가 deprecated 되었는데, 대체 메서드를 찾지 못해서 그대로 사용함.
