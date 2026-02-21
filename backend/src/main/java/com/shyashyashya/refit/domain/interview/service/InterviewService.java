@@ -197,6 +197,7 @@ public class InterviewService {
                         request.keyword(),
                         request.searchFilter().interviewType(),
                         request.searchFilter().interviewResultStatus(),
+                        request.searchFilter().interviewReviewStatus(),
                         request.searchFilter().startDate(),
                         request.searchFilter().endDate(),
                         pageable)
