@@ -58,7 +58,7 @@ function KptSection({ label, question, value, onChange, readOnly }: KptSectionPr
         <span className="body-l-semibold">{question}</span>
       </div>
       {readOnly ? (
-        <span className="mb-6 h-50 overflow-y-scroll break-all whitespace-pre-wrap">{value}</span>
+        <span className="mb-6 max-h-50 overflow-y-scroll break-all whitespace-pre-wrap">{value}</span>
       ) : (
         <div className="relative">
           <textarea
