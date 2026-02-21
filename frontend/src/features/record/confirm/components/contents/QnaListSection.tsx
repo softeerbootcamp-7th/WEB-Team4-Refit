@@ -1,7 +1,8 @@
-import { useEffect, useState, type RefObject } from 'react'
+import { useEffect, useRef, useState, type RefObject } from 'react'
 import { CirclePlusIcon } from '@/designs/assets'
 import { Button, FadeScrollArea } from '@/designs/components'
 import { QnaSetEditForm } from '@/features/_common/components/qna-set'
+import { SECTION_SCROLL_OFFSET } from '@/features/_common/hooks/useSectionScroll'
 import type { SimpleQnaType } from '@/types/interview'
 import { QnaSetContainer } from './QnaSetContainer'
 
@@ -33,11 +34,16 @@ export function QnaListSection({
   scrollContainerRef,
 }: QnaListSectionProps) {
   const [editingId, setEditingId] = useState<string | null>(null)
+  const addFormRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (isAddMode) {
-      const el = scrollContainerRef.current
-      if (el) requestAnimationFrame(() => el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' }))
+      const container = scrollContainerRef.current
+      const el = addFormRef.current
+      if (container && el)
+        requestAnimationFrame(() =>
+          container.scrollTo({ top: el.offsetTop - SECTION_SCROLL_OFFSET, behavior: 'smooth' }),
+        )
     }
   }, [isAddMode, scrollContainerRef])
 
@@ -46,7 +52,7 @@ export function QnaListSection({
   const nextIdx = qnaList.length + 1
 
   return (
-    <FadeScrollArea ref={scrollContainerRef} className="flex flex-col gap-5 pr-2">
+    <FadeScrollArea ref={scrollContainerRef} withBottomSpacer className="flex flex-col gap-5 pr-2">
       {qnaList.map((qnaData, idx) => (
         <QnaSetContainer
           key={qnaData.qnaSetId}
@@ -61,7 +67,7 @@ export function QnaListSection({
         />
       ))}
       {isAddMode ? (
-        <div className="rounded-lg border border-gray-300 shadow-md">
+        <div ref={addFormRef} className="rounded-lg border border-gray-300 shadow-md">
           <QnaSetEditForm idx={nextIdx} onSave={onAddSave} onCancel={onCancelAdd} isSaving={isCreating} />
         </div>
       ) : (
