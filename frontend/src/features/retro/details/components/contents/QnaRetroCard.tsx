@@ -58,8 +58,12 @@ export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChan
   const [editedAnswer, setEditedAnswer] = useState(answerText)
   const [editedRetro, setEditedRetro] = useState(qnaSetSelfReviewText)
   const [currentStarAnalysis, setCurrentStarAnalysis] = useState(starAnalysis)
+  const savedQuestionRef = useRef(questionText)
+  const savedAnswerRef = useRef(answerText)
+  const savedRetroRef = useRef(qnaSetSelfReviewText)
 
   const hasStarAnalysis = !!currentStarAnalysis
+  const isQuestionEmpty = editedQuestion.trim() === ''
 
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
@@ -79,21 +83,40 @@ export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChan
   }
 
   const handleSave = (question: string, answer: string) => {
+    if (question.trim() === '') return
+
+    const isQuestionChanged = question !== savedQuestionRef.current
+    const isAnswerChanged = answer !== savedAnswerRef.current
+    const isQnaChanged = isQuestionChanged || isAnswerChanged
+    const isRetroChanged = editedRetro !== savedRetroRef.current
+
+    if (!isQnaChanged && !isRetroChanged) {
+      stopEditing()
+      return
+    }
+
     setEditedQuestion(question)
     setEditedAnswer(answer)
-    updateQnaSet({
-      qnaSetId,
-      data: {
-        questionText: question,
-        answerText: answer,
-      },
-    })
-    updateQnaSetSelfReview({ qnaSetId, data: { selfReviewText: editedRetro } })
+    if (isQnaChanged) {
+      savedQuestionRef.current = question
+      savedAnswerRef.current = answer
+      updateQnaSet({
+        qnaSetId,
+        data: {
+          questionText: question,
+          answerText: answer,
+        },
+      })
+    }
+    if (isRetroChanged) {
+      savedRetroRef.current = editedRetro
+      updateQnaSetSelfReview({ qnaSetId, data: { selfReviewText: editedRetro } })
+    }
     stopEditing()
   }
 
   const handleCancel = () => {
-    setEditedRetro(qnaSetSelfReviewText)
+    setEditedRetro(savedRetroRef.current)
     stopEditing()
   }
 
@@ -184,7 +207,12 @@ export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChan
                 <Button size="xs" variant="outline-gray-100" onClick={handleCancel}>
                   취소
                 </Button>
-                <Button size="xs" variant="outline-orange-100" onClick={() => handleSave(editedQuestion, editedAnswer)}>
+                <Button
+                  size="xs"
+                  variant="outline-orange-100"
+                  onClick={() => handleSave(editedQuestion, editedAnswer)}
+                  disabled={isQuestionEmpty}
+                >
                   저장
                 </Button>
               </div>

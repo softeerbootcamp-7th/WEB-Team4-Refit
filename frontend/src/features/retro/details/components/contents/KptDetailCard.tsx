@@ -6,6 +6,9 @@ import { useOnClickOutside } from '@/features/_common/hooks/useOnClickOutside'
 import { KptWriteCard } from '@/features/retro/_common/components/KptWriteCard'
 import type { KptTextsType } from '@/types/interview'
 
+const isSameKptTexts = (current: KptTextsType, saved: KptTextsType) =>
+  current.keepText === saved.keepText && current.problemText === saved.problemText && current.tryText === saved.tryText
+
 type KptDetailCardProps = {
   ref?: Ref<HTMLDivElement>
   interviewId: number
@@ -19,6 +22,7 @@ export function KptDetailCard({ ref, interviewId, kptTexts, isOtherEditing, onEd
 
   const [isEditing, setIsEditing] = useState(false)
   const [editedKpt, setEditedKpt] = useState<KptTextsType>(kptTexts)
+  const savedKptRef = useRef<KptTextsType>(kptTexts)
   const [resetKey, setResetKey] = useState(0)
 
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -33,12 +37,19 @@ export function KptDetailCard({ ref, interviewId, kptTexts, isOtherEditing, onEd
 
   const handleCancel = () => {
     setIsEditing(false)
-    setEditedKpt(kptTexts)
+    setEditedKpt(savedKptRef.current)
     setResetKey((prev) => prev + 1)
     onEditingIdChange?.(null)
   }
 
   const handleSave = () => {
+    if (isSameKptTexts(editedKpt, savedKptRef.current)) {
+      setIsEditing(false)
+      onEditingIdChange?.(null)
+      return
+    }
+
+    savedKptRef.current = editedKpt
     updateKptSelfReview({
       interviewId,
       data: {
