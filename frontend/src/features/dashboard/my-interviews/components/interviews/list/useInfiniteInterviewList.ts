@@ -69,6 +69,8 @@ const toInterviewSearchRequestBody = (filter: InterviewFilter): InterviewSearchR
     // searchFilter 조건 없어도 null/빈배열로 채워서 전송
     interviewType: filter.interviewType,
     interviewResultStatus: filter.resultStatus,
+    // 검색어 있으면 전체 상태 조회, 없으면 복기 완료된 면접만 조회
+    interviewReviewStatus: filter.keyword ? [] : ['DEBRIEF_COMPLETED'],
     startDate: toNullableDate(filter.startDate),
     endDate: toNullableDate(filter.endDate),
   } as InterviewSearchRequest['searchFilter'],

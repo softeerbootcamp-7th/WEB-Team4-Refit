@@ -13,6 +13,12 @@ type InterviewFilterModalProps = {
 
 export default function InterviewFilterModalContent({ open, filter, onApply, onClose }: InterviewFilterModalProps) {
   const [draft, setDraft] = useState<InterviewFilter>(filter)
+  const [prevOpen, setPrevOpen] = useState(open)
+
+  if (prevOpen !== open) {
+    setPrevOpen(open)
+    if (open) setDraft(filter)
+  }
 
   const toggleItem = <K extends 'interviewType' | 'resultStatus'>(key: K, value: InterviewFilter[K][number]) => {
     setDraft((prev) => {
