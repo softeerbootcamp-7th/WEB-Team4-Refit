@@ -25,6 +25,17 @@ public interface InterviewRepository extends JpaRepository<Interview, Long>, Int
 
     boolean existsByUserAndReviewStatusIn(User user, List<InterviewReviewStatus> reviewStatuses);
 
+    @Query("""
+        SELECT i
+          FROM Interview i
+         WHERE i.user = :user
+           AND i.reviewStatus IN :reviewStatuses
+           AND i.startAt < :now
+         ORDER BY i.startAt DESC
+    """)
+    Page<Interview> findMyDebriefIncompletedInterviews(
+            User user, List<InterviewReviewStatus> reviewStatuses, LocalDateTime now, Pageable pageable);
+
     Page<Interview> findAllByUserAndReviewStatusIn(
             User user, List<InterviewReviewStatus> reviewStatuses, Pageable pageable);
 

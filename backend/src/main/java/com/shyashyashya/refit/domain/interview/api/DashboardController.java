@@ -62,25 +62,27 @@ public class DashboardController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "대시보드에서 '곧 있을 면접' 영역의 데이터를 조회합니다.", description = """
+    @Operation(summary = "대시보드에서 복기 대기중인 면접 리스트를 조회합니다.", description = """
+            복기 대기중인 면접은 과거 면접을 대상으로 내림차순 조회합니다.
+            """)
+    @GetMapping("/interview/debrief-uncompleted")
+    public ResponseEntity<ApiResponse<Page<DashboardDebriefIncompletedInterviewResponse>>>
+            getDebriefIncompletedInterviews(@ParameterObject Pageable pageable) {
+        var body = dashboardService.getDebriefIncompletedInterviews(pageable);
+        var response = ApiResponse.success(COMMON200, body);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "대시보드에서 '다가오는 면접' 영역의 데이터를 조회합니다.", description = """
             곧 보게되는 면접 정보, 유사 산업군/직군 면접 질문, 유사 면접 리스트를 조회합니다.<br>
             각 면접 일정의 Dday 필드는 과거라면 음수, 미래라면 양수 값을 갖습니다.<br>
             유사 산업군/직군 면접 질문의 경우, 유저가 약관에 동의하지 않았다면 빈 리스트를 응답합니다.<br>
-            가장 가까운 면접 일시 순서대로 정렬됩니다.
+            '다가오는 면접'은 미래 면접만 조회되며, 가장 가까운 면접 일시 순서대로 오름차순 정렬됩니다.
             """)
     @GetMapping("/interview/upcoming")
     public ResponseEntity<ApiResponse<Page<DashboardUpcomingInterviewResponse>>> getUpcomingInterviews(
             @ParameterObject Pageable pageable) {
         var body = dashboardService.getUpcomingInterviews(pageable);
-        var response = ApiResponse.success(COMMON200, body);
-        return ResponseEntity.ok(response);
-    }
-
-    @Operation(summary = "대시보드에서 복기 대기중인 면접 리스트를 조회합니다.")
-    @GetMapping("/interview/debrief-uncompleted")
-    public ResponseEntity<ApiResponse<Page<DashboardDebriefIncompletedInterviewResponse>>>
-            getDebriefIncompletedInterviews(@ParameterObject Pageable pageable) {
-        var body = dashboardService.getDebriefIncompletedInterviews(pageable);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
     }
