@@ -35,7 +35,7 @@ export type StarAnalysisResult = {
   overallSummary: string
 }
 
-export type InterviewInfoType = Pick<InterviewFullType, 'company' | 'jobRole' | 'interviewType' | 'interviewStartAt'>
+export type InterviewInfoType = Pick<InterviewFullType, 'companyName' | 'jobRole' | 'interviewType' | 'interviewStartAt'>
 
 type InterviewFullType = {
   interviewId: number
@@ -43,7 +43,8 @@ type InterviewFullType = {
   interviewStartAt: string
   interviewReviewStatus: string
   interviewResultStatus: string
-  company: string
+  companyName: string
+  companyLogoUrl: string
   industryId: number
   jobCategoryId: number
   jobRole: string | null

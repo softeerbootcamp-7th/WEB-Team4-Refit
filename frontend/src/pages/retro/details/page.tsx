@@ -25,7 +25,7 @@ function RetroDetailContent() {
   const { data } = useGetInterviewFullSuspense(id, { query: { select: transformInterviewData } })
 
   const { interviewInfo, interviewResultStatus, qnaSets, interviewSelfReview, hasUploadedPdf } = data
-  const { company, interviewType } = interviewInfo
+  const { companyName, interviewType } = interviewInfo
 
   const [isPdfOpen, setIsPdfOpen] = useState(false)
 
@@ -34,7 +34,7 @@ function RetroDetailContent() {
   const togglePdf = () => setIsPdfOpen((v) => !v)
 
   const interviewTypeLabel = INTERVIEW_TYPE_LABEL[interviewType]
-  const title = `${company} ${interviewTypeLabel} 회고 상세 보기`
+  const title = `${companyName} ${interviewTypeLabel} 회고 상세 보기`
 
   if (isPdfOpen) {
     return (
@@ -84,7 +84,7 @@ function transformInterviewData(res: Awaited<ReturnType<typeof getInterviewFull>
   if (!interviewFull) throw new Error('인터뷰 데이터가 존재하지 않습니다.')
 
   const interviewInfo: InterviewInfoType = {
-    company: interviewFull.company ?? '',
+    companyName: interviewFull.companyName ?? '',
     jobRole: interviewFull.jobRole ?? '',
     interviewType: interviewFull.interviewType as InterviewType,
     interviewStartAt: interviewFull.interviewStartAt ?? '',

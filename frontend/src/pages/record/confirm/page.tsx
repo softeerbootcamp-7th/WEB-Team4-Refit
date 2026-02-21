@@ -90,7 +90,7 @@ function transformInterviewData(res: Awaited<ReturnType<typeof getInterviewFull>
   if (!interviewFull) throw new Error('인터뷰 데이터가 존재하지 않습니다.')
 
   const interviewInfo: InterviewInfoType = {
-    company: interviewFull.company ?? '',
+    companyName: interviewFull.companyName ?? '',
     jobRole: interviewFull.jobRole ?? '',
     interviewType: interviewFull.interviewType as InterviewType,
     interviewStartAt: interviewFull.interviewStartAt ?? '',

@@ -1,4 +1,5 @@
 import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
+import { SmallLogoIcon } from '@/designs/assets'
 import { Badge, Border } from '@/designs/components'
 import { formatDate } from '@/features/_common/utils/date'
 import {
@@ -11,7 +12,8 @@ import type { InterviewType } from '@/types/interview'
 type InterviewCardProps = {
   resultStatus: InterviewResultStatus
   date: string
-  company: string
+  companyName: string
+  companyLogoUrl?: string
   jobRole: string
   interviewType: InterviewType
   infoDirection?: 'row' | 'column'
@@ -22,7 +24,8 @@ type InterviewCardProps = {
 export default function InterviewCard({
   resultStatus,
   date,
-  company,
+  companyName,
+  companyLogoUrl,
   jobRole,
   interviewType,
   infoDirection = 'column',
@@ -41,8 +44,14 @@ export default function InterviewCard({
       <Border />
       <div className={infoDirection === 'row' ? 'flex items-center gap-5' : 'flex flex-col gap-2.5'}>
         <div className="title-m-semibold flex items-center gap-3">
-          <img src="" alt={company} className="h-8.5 w-8.5 rounded-full bg-gray-300" />
-          <span>{company}</span>
+          {companyLogoUrl ? (
+            <img src={companyLogoUrl} alt={companyName} className="h-8.5 w-8.5 rounded-full object-cover" />
+          ) : (
+            <div className="flex h-8.5 w-8.5 shrink-0 items-center justify-center rounded-full border border-gray-150 bg-white">
+              <SmallLogoIcon className="h-4.5 w-4.5 text-gray-400" />
+            </div>
+          )}
+          <span>{companyName}</span>
         </div>
         <div className="body-m-medium text-gray-700">
           {jobRole} <span className="mx-1 text-gray-200">|</span> {INTERVIEW_TYPE_LABEL[interviewType]}

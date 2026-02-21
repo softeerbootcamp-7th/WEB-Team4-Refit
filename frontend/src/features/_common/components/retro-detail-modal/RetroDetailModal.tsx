@@ -72,8 +72,8 @@ export default function RetroDetailModal({
           <Border />
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <img src="" alt={`${interview?.company ?? ''} 로고`} className="h-14 w-14 rounded-full bg-gray-300" />
-              <h2 className="title-l-bold mr-1">{interview?.company ?? ''}</h2>
+              <img src="" alt={`${interview?.companyName ?? ''} 로고`} className="h-14 w-14 rounded-full bg-gray-300" />
+              <h2 className="title-l-bold mr-1">{interview?.companyName ?? ''}</h2>
               <span className="body-m-medium text-gray-500">
                 {interview?.jobRole ?? ''} <span className="mx-1 text-gray-200">|</span>
                 {INTERVIEW_TYPE_LABEL[interviewType]}

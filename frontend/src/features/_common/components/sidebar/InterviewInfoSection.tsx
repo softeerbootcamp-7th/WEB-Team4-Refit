@@ -4,9 +4,9 @@ import { formatDateTime } from '@/features/_common/utils/date'
 import type { LabelValueType } from '@/types/global'
 import type { InterviewInfoType } from '@/types/interview'
 
-export function InterviewInfoSection({ company, interviewStartAt, jobRole, interviewType }: InterviewInfoType) {
+export function InterviewInfoSection({ companyName, interviewStartAt, jobRole, interviewType }: InterviewInfoType) {
   const infoItems = [
-    { label: '기업명', value: company ?? '-' },
+    { label: '기업명', value: companyName ?? '-' },
     { label: '일시', value: formatDateTime(interviewStartAt) ?? '-' },
     { label: '직무', value: jobRole ?? '-' },
     { label: '면접 유형', value: INTERVIEW_TYPE_LABEL[interviewType] ?? '-' },

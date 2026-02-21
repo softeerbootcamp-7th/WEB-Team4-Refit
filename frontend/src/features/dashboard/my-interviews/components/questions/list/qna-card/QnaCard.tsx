@@ -5,7 +5,8 @@ import type { InterviewType } from '@/types/interview'
 type QnaCardProps = {
   resultStatus: InterviewResultStatus
   date: string
-  company: string
+  companyName: string
+  companyLogoUrl?: string
   jobRole: string
   interviewType: InterviewType
   question: string

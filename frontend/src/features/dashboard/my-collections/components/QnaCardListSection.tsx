@@ -14,7 +14,7 @@ export type QnaCardListItem = {
   qnaSetId: number
   resultStatus: InterviewResultStatus
   date: string
-  company: string
+  companyName: string
   job: string
   interviewType: InterviewType
   question: string
@@ -147,7 +147,7 @@ function QnaCardListContent({
           key={item.id}
           resultStatus={item.resultStatus}
           date={item.date}
-          company={item.company}
+          companyName={item.companyName}
           jobRole={item.job}
           interviewType={item.interviewType}
           question={item.question}
