@@ -166,8 +166,8 @@ function QuestionFilterModal({ open, filter, onClose, onApply }: ModalProps) {
         />
 
         <div className="flex items-center justify-between border-t border-gray-100 pt-3">
-          <span className="caption-m-semibold rounded-2xl bg-gray-100 px-2.5 py-1 text-gray-700">
-            선택 {selectedCount}개
+          <span className="caption-m-semibold bg-gray-150 rounded-2xl px-2.5 py-1 text-gray-700">
+            선택된 필터 {selectedCount}개
           </span>
           <div className="flex gap-3">
             <Button

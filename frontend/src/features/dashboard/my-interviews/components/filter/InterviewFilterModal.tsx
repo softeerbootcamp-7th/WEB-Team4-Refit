@@ -60,9 +60,7 @@ export default function InterviewFilterModalContent({ open, filter, onApply, onC
           <div className="flex min-h-6 items-center justify-between">
             <span className="caption-l-medium">기간</span>
             {(draft.startDate || draft.endDate) && (
-              <span className="caption-m-semibold rounded-2xl bg-orange-100 px-2 py-0.5 text-orange-500">
-                선택됨
-              </span>
+              <span className="caption-m-semibold rounded-2xl bg-orange-100 px-2 py-0.5 text-orange-500">선택됨</span>
             )}
           </div>
           <div className="flex items-center gap-2">
@@ -78,8 +76,8 @@ export default function InterviewFilterModalContent({ open, filter, onApply, onC
           </div>
         </div>
         <div className="flex items-center justify-between border-t border-gray-100 pt-3">
-          <span className="caption-m-semibold rounded-2xl bg-gray-100 px-2.5 py-1 text-gray-700">
-            선택 {selectedCount}개
+          <span className="caption-m-semibold bg-gray-150 rounded-2xl px-2.5 py-1 text-gray-700">
+            선택된 필터 {selectedCount}개
           </span>
           <div className="flex gap-3">
             <Button variant="outline-gray-100" size="sm" onClick={handleReset}>
