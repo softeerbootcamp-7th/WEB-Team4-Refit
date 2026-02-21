@@ -27,6 +27,10 @@ export interface QnaSetUpdateRequest {
    * @maxLength 200
    */
   questionText?: string
+  /**
+   * @minLength 0
+   * @maxLength 10000
+   */
   answerText?: string
 }
 
@@ -269,6 +273,7 @@ export interface InterviewDto {
   interviewReviewStatus: InterviewDtoInterviewReviewStatus
   interviewRawText?: string
   companyName: string
+  companyLogoUrl?: string
   industryId: number
   industryName: string
   jobCategoryId: number
@@ -365,7 +370,10 @@ export interface QnaSetCreateRequest {
    * @maxLength 200
    */
   questionText: string
-  /** @minLength 1 */
+  /**
+   * @minLength 0
+   * @maxLength 10000
+   */
   answerText: string
 }
 
@@ -404,9 +412,21 @@ export const InterviewSearchFilterInterviewResultStatusItem = {
   PASS: 'PASS',
 } as const
 
+export type InterviewSearchFilterInterviewReviewStatusItem =
+  (typeof InterviewSearchFilterInterviewReviewStatusItem)[keyof typeof InterviewSearchFilterInterviewReviewStatusItem]
+
+export const InterviewSearchFilterInterviewReviewStatusItem = {
+  NOT_LOGGED: 'NOT_LOGGED',
+  LOG_DRAFT: 'LOG_DRAFT',
+  QNA_SET_DRAFT: 'QNA_SET_DRAFT',
+  SELF_REVIEW_DRAFT: 'SELF_REVIEW_DRAFT',
+  DEBRIEF_COMPLETED: 'DEBRIEF_COMPLETED',
+} as const
+
 export interface InterviewSearchFilter {
   interviewType?: InterviewSearchFilterInterviewTypeItem[]
   interviewResultStatus?: InterviewSearchFilterInterviewResultStatusItem[]
+  interviewReviewStatus?: InterviewSearchFilterInterviewReviewStatusItem[]
   startDate?: string
   endDate?: string
 }
@@ -770,6 +790,27 @@ export interface ApiResponseInterviewDto {
   result?: InterviewDto
 }
 
+export type ConvertResultResponseConvertStatus =
+  (typeof ConvertResultResponseConvertStatus)[keyof typeof ConvertResultResponseConvertStatus]
+
+export const ConvertResultResponseConvertStatus = {
+  NOT_CONVERTED: 'NOT_CONVERTED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+} as const
+
+export interface ConvertResultResponse {
+  interviewId: number
+  convertStatus: ConvertResultResponseConvertStatus
+}
+
+export interface ApiResponseConvertResultResponse {
+  isSuccess: boolean
+  code: string
+  message: string
+  result?: ConvertResultResponse
+}
+
 export type InterviewFullDtoInterviewType =
   (typeof InterviewFullDtoInterviewType)[keyof typeof InterviewFullDtoInterviewType]
 
@@ -827,7 +868,8 @@ export interface InterviewFullDto {
   interviewStartAt: string
   interviewReviewStatus: InterviewFullDtoInterviewReviewStatus
   interviewResultStatus: InterviewFullDtoInterviewResultStatus
-  company: string
+  companyName: string
+  companyLogoUrl: string
   industryId: number
   jobCategoryId: number
   jobRole?: string

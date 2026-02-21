@@ -61,14 +61,14 @@ export default function DraftSection({ interviewDraftType }: DraftSectionProps) 
               </TableRow>
             ) : (
               items.map(
-                ({ interviewId, interviewReviewStatus, interviewStartAt, company, jobCategoryName, interviewType }) => (
+                ({ interviewId, interviewReviewStatus, interviewStartAt, companyName, jobCategoryName, interviewType }) => (
                   <TableRow
                     key={interviewId}
                     className="cursor-pointer hover:bg-gray-50"
                     onClick={() => navigate(getInterviewNavigationPath(interviewId, interviewReviewStatus))}
                   >
                     <TableCell className="body-s-regular text-gray-300">{interviewStartAt}</TableCell>
-                    <TableCell className="body-s-semibold">{company}</TableCell>
+                    <TableCell className="body-s-semibold">{companyName}</TableCell>
                     <TableCell>{jobCategoryName}</TableCell>
                     <TableCell>{INTERVIEW_TYPE_LABEL[interviewType]}</TableCell>
                   </TableRow>

@@ -11,7 +11,7 @@ export type DraftInterviewRowModel = {
   interviewId: number
   interviewReviewStatus: InterviewSimpleDtoInterviewReviewStatus
   interviewStartAt: string
-  company: string
+  companyName: string
   jobCategoryName: string
   interviewType: InterviewType
 }
@@ -20,7 +20,8 @@ export type InterviewCardModel = {
   interviewId: number
   resultStatus: InterviewResultStatus
   date: string
-  company: string
+  companyName: string
+  companyLogoUrl?: string
   jobRole: string
   interviewType: InterviewType
 }
@@ -30,7 +31,7 @@ export function mapDraftInterviewRow(item: InterviewSimpleDto): DraftInterviewRo
     interviewId: item.interviewId!,
     interviewReviewStatus: item.interviewReviewStatus,
     interviewStartAt: `${formatDate(item.interviewStartAt)} 응시`,
-    company: item.companyInfo?.companyName ?? '',
+    companyName: item.companyInfo?.companyName ?? '',
     jobCategoryName: item.jobCategoryName ?? '',
     interviewType: toInterviewType(item.interviewType),
   }
@@ -41,7 +42,8 @@ export function mapInterviewCard(item: InterviewDto): InterviewCardModel {
     interviewId: item.interviewId,
     resultStatus: toResultStatus(item.interviewResultStatus),
     date: item.interviewStartAt,
-    company: item.companyName ?? '',
+    companyName: item.companyName ?? '',
+    companyLogoUrl: item.companyLogoUrl,
     jobRole: item.jobCategoryName ?? '',
     interviewType: toInterviewType(item.interviewType),
   }

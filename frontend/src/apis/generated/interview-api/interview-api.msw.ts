@@ -8,6 +8,7 @@ import { faker } from '@faker-js/faker'
 
 import { HttpResponse, http } from 'msw'
 import type {
+  ApiResponseConvertResultResponse,
   ApiResponseGuideQuestionResponse,
   ApiResponseInterviewCreateResponse,
   ApiResponseInterviewDto,
@@ -79,6 +80,16 @@ export const getConvertRawTextToQnaSetResponseMock = (
   ...overrideResponse,
 })
 
+export const getRequestConvertResponseMock = (
+  overrideResponse: Partial<Extract<ApiResponseVoid, object>> = {},
+): ApiResponseVoid => ({
+  isSuccess: faker.datatype.boolean(),
+  code: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  message: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  result: faker.helpers.arrayElement([{}, undefined]),
+  ...overrideResponse,
+})
+
 export const getCreateQnaSetResponseMock = (
   overrideResponse: Partial<Extract<ApiResponseQnaSetCreateResponse, object>> = {},
 ): ApiResponseQnaSetCreateResponse => ({
@@ -140,6 +151,7 @@ export const getGetInterviewResponseMock = (
       ] as const),
       interviewRawText: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
       companyName: faker.string.alpha({ length: { min: 10, max: 20 } }),
+      companyLogoUrl: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
       industryId: faker.number.int(),
       industryName: faker.string.alpha({ length: { min: 10, max: 20 } }),
       jobCategoryId: faker.number.int(),
@@ -159,6 +171,22 @@ export const getDeleteInterviewResponseMock = (
   code: faker.string.alpha({ length: { min: 10, max: 20 } }),
   message: faker.string.alpha({ length: { min: 10, max: 20 } }),
   result: faker.helpers.arrayElement([{}, undefined]),
+  ...overrideResponse,
+})
+
+export const getWaitConvertResultResponseMock = (
+  overrideResponse: Partial<Extract<ApiResponseConvertResultResponse, object>> = {},
+): ApiResponseConvertResultResponse => ({
+  isSuccess: faker.datatype.boolean(),
+  code: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  message: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  result: faker.helpers.arrayElement([
+    {
+      interviewId: faker.number.int(),
+      convertStatus: faker.helpers.arrayElement(['NOT_CONVERTED', 'IN_PROGRESS', 'COMPLETED'] as const),
+    },
+    undefined,
+  ]),
   ...overrideResponse,
 })
 
@@ -191,7 +219,8 @@ export const getGetInterviewFullResponseMock = (
         'DEBRIEF_COMPLETED',
       ] as const),
       interviewResultStatus: faker.helpers.arrayElement(['WAIT', 'FAIL', 'PASS'] as const),
-      company: faker.string.alpha({ length: { min: 10, max: 20 } }),
+      companyName: faker.string.alpha({ length: { min: 10, max: 20 } }),
+      companyLogoUrl: faker.string.alpha({ length: { min: 10, max: 20 } }),
       industryId: faker.number.int(),
       jobCategoryId: faker.number.int(),
       jobRole: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
@@ -426,6 +455,28 @@ export const getConvertRawTextToQnaSetMockHandler = (
   )
 }
 
+export const getRequestConvertMockHandler = (
+  overrideResponse?:
+    | ApiResponseVoid
+    | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<ApiResponseVoid> | ApiResponseVoid),
+  options?: RequestHandlerOptions,
+) => {
+  return http.post(
+    '*/interview/:interviewId/raw-text/convert/request',
+    async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+      return HttpResponse.json(
+        overrideResponse !== undefined
+          ? typeof overrideResponse === 'function'
+            ? await overrideResponse(info)
+            : overrideResponse
+          : getRequestConvertResponseMock(),
+        { status: 200 },
+      )
+    },
+    options,
+  )
+}
+
 export const getCreateQnaSetMockHandler = (
   overrideResponse?:
     | ApiResponseQnaSetCreateResponse
@@ -533,6 +584,30 @@ export const getDeleteInterviewMockHandler = (
             ? await overrideResponse(info)
             : overrideResponse
           : getDeleteInterviewResponseMock(),
+        { status: 200 },
+      )
+    },
+    options,
+  )
+}
+
+export const getWaitConvertResultMockHandler = (
+  overrideResponse?:
+    | ApiResponseConvertResultResponse
+    | ((
+        info: Parameters<Parameters<typeof http.get>[1]>[0],
+      ) => Promise<ApiResponseConvertResultResponse> | ApiResponseConvertResultResponse),
+  options?: RequestHandlerOptions,
+) => {
+  return http.get(
+    '*/interview/:interviewId/raw-text/convert/result',
+    async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+      return HttpResponse.json(
+        overrideResponse !== undefined
+          ? typeof overrideResponse === 'function'
+            ? await overrideResponse(info)
+            : overrideResponse
+          : getWaitConvertResultResponseMock(),
         { status: 200 },
       )
     },
@@ -664,11 +739,13 @@ export const getInterviewApiMock = () => [
   getStartLoggingMockHandler(),
   getCompleteSelfReviewMockHandler(),
   getConvertRawTextToQnaSetMockHandler(),
+  getRequestConvertMockHandler(),
   getCreateQnaSetMockHandler(),
   getCompleteQnaSetDraftMockHandler(),
   getUpdateInterviewResultStatusMockHandler(),
   getGetInterviewMockHandler(),
   getDeleteInterviewMockHandler(),
+  getWaitConvertResultMockHandler(),
   getGetInterviewFullMockHandler(),
   getCreatePdfUploadUrlMockHandler(),
   getCreatePdfDownloadUrlMockHandler(),

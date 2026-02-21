@@ -27,7 +27,7 @@ function RetroQuestionContent() {
   const { data } = useGetInterviewFullSuspense(id, { query: { select: transformInterviewData } })
 
   const { interviewInfo, qnaSets, hasPdfResourceKey } = data
-  const { company, interviewType } = interviewInfo
+  const { companyName, interviewType } = interviewInfo
 
   const totalCount = qnaSets.length + 1
   const [currentIndex, setCurrentIndex] = useState(() => getIndexFromHash(window.location.hash, totalCount))
@@ -56,7 +56,7 @@ function RetroQuestionContent() {
   }
 
   const interviewTypeLabel = INTERVIEW_TYPE_LABEL[interviewType]
-  const title = `${company} ${interviewTypeLabel} 회고 작성`
+  const title = `${companyName} ${interviewTypeLabel} 회고 작성`
 
   const sidebarItems = [
     ...qnaSets.map(({ qnaSetId, questionText }, index) => ({
@@ -150,7 +150,7 @@ function transformInterviewData(res: Awaited<ReturnType<typeof getInterviewFull>
   if (!interviewFull) throw new Error('인터뷰 데이터가 존재하지 않습니다.')
 
   const interviewInfo: InterviewInfoType = {
-    company: interviewFull.company ?? '',
+    companyName: interviewFull.companyName ?? '',
     jobRole: interviewFull.jobRole ?? '',
     interviewType: interviewFull.interviewType as InterviewType,
     interviewStartAt: interviewFull.interviewStartAt ?? '',

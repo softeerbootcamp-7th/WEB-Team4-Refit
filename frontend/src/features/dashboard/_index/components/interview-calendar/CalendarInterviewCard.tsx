@@ -116,8 +116,12 @@ export function CalendarInterviewCard({ interview, onItemClick }: CalendarInterv
         </div>
 
         <div className="mb-2 flex items-center gap-1.5">
-          <div className="border-gray-150 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border bg-gray-100">
-            <SmallLogoIcon className="h-3.5 w-3.5 text-gray-400" />
+          <div className="border-gray-150 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border bg-white">
+            {interview.companyLogoUrl ? (
+              <img src={interview.companyLogoUrl} alt={interview.companyName} className="h-full w-full rounded-full object-contain" />
+            ) : (
+              <SmallLogoIcon className="h-3.5 w-3.5 text-gray-400" />
+            )}
           </div>
           <p className="body-l-bold truncate text-gray-800">{interview.companyName}</p>
         </div>

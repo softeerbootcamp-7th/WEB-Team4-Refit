@@ -18,6 +18,7 @@ function mapReviewWaitingInterview(item: DashboardDebriefIncompletedInterviewRes
     status: INTERVIEW_REVIEW_STATUS_LABEL[interview?.interviewReviewStatus ?? 'NOT_LOGGED'],
     elapsedText: `면접 끝난지 ${item.passedDays ?? 0}일 지남`,
     companyName: interview?.companyName ?? '',
+    companyLogoUrl: interview?.companyLogoUrl,
     industry: interview?.companyName === '현대자동차' ? '제조업' : 'IT/플랫폼',
     jobCategory: interview?.jobCategoryName ?? '',
     interviewType: interviewTypeKey ? INTERVIEW_TYPE_LABEL[interviewTypeKey] : (interview?.interviewType ?? ''),

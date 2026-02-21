@@ -13,7 +13,7 @@ function transformInterviewInfo(res: Awaited<ReturnType<typeof getInterview>>) {
 
   return {
     interviewInfo: {
-      company: interview.companyName ?? '',
+      companyName: interview.companyName ?? '',
       jobRole: interview.jobCategoryName ?? '',
       interviewType: interview.interviewType as InterviewType,
       interviewStartAt: interview.interviewStartAt ?? '',

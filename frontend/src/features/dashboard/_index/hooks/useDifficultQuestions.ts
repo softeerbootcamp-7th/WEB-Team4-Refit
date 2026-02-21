@@ -23,6 +23,7 @@ function mapDifficultQuestion(item: MyDifficultQuestionResponse): DifficultQuest
   return {
     id: interview?.interviewId ?? 0,
     companyName: interview?.companyName ?? '',
+    companyLogoUrl: interview?.companyLogoUrl,
     date: formatAppliedDate(interview?.interviewStartAt ?? ''),
     jobCategory: interview?.jobCategoryName ?? '',
     interviewType: toInterviewTypeLabel(interview?.interviewType ?? 'FIRST'),
