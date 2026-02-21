@@ -39,7 +39,7 @@ export default function DifficultQuestionCard({ data }: DifficultQuestionCardPro
         <span className="h-3 w-px shrink-0 bg-gray-300" aria-hidden />
         <span className="body-m-medium text-gray-700">{data.interviewType}</span>
       </div>
-      <p className="body-m-medium line-clamp-2 text-gray-800">{data.questionSnippet}</p>
+      <p className="body-m-medium line-clamp-2 break-all text-gray-800">{data.questionSnippet}</p>
     </div>
   )
 }
