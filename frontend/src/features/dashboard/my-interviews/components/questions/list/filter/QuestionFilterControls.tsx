@@ -13,7 +13,6 @@ type Props = {
   onChange: (filter: QuestionFilter) => void
 }
 
-// TODO: UI 수정
 export default function QuestionFilterControls({ filter, onChange }: Props) {
   const [open, setOpen] = useState(false)
   const [modalVersion, setModalVersion] = useState(0)
@@ -30,20 +29,27 @@ export default function QuestionFilterControls({ filter, onChange }: Props) {
   }, [filter])
 
   const hasFilter = selectedCount > 0
+  const selectedCountLabel = selectedCount > 9 ? '9+' : String(selectedCount)
 
   return (
     <>
-      <div className="flex gap-2">
+      <div className="flex items-center gap-2">
         <Button
           size="xs"
           variant={hasFilter ? 'fill-gray-800' : 'fill-gray-150'}
+          className="gap-1.5 px-2.5"
           onClick={() => {
             setModalVersion((prev) => prev + 1)
             setOpen(true)
           }}
         >
           <FilterIcon className="h-4 w-4" />
-          {hasFilter ? `필터 ${selectedCount}개 선택됨` : '필터'}
+          <span>필터</span>
+          {hasFilter && (
+            <span className="caption-m-semibold bg-gray-white inline-flex min-w-5 items-center justify-center rounded-2xl px-1.5 py-0.5 text-gray-800">
+              {selectedCountLabel}
+            </span>
+          )}
         </Button>
         <PlainCombobox
           title="질문 정렬"
@@ -51,8 +57,10 @@ export default function QuestionFilterControls({ filter, onChange }: Props) {
           value={filter.sort}
           onChange={(sort) => onChange({ ...filter, sort })}
           trigger={
-            <Button size="xs" variant="fill-gray-150">
-              {QUESTION_SORT_OPTIONS.find((option) => option.value === filter.sort)?.label}
+            <Button size="xs" variant="fill-gray-150" className="max-w-34 justify-between gap-2 px-2.5">
+              <span className="truncate">
+                {QUESTION_SORT_OPTIONS.find((option) => option.value === filter.sort)?.label}
+              </span>
               <CaretDownIcon className="h-2 w-2" />
             </Button>
           }
@@ -81,6 +89,16 @@ type ModalProps = {
 
 function QuestionFilterModal({ open, filter, onClose, onApply }: ModalProps) {
   const [draft, setDraft] = useState<QuestionFilter>(filter)
+  const selectedCount = useMemo(() => {
+    const hasStar = draft.hasStarAnalysis === null ? 0 : 1
+    return (
+      hasStar +
+      draft.sInclusionLevels.length +
+      draft.tInclusionLevels.length +
+      draft.aInclusionLevels.length +
+      draft.rInclusionLevels.length
+    )
+  }, [draft])
 
   const toggleLevel = (
     key: 'sInclusionLevels' | 'tInclusionLevels' | 'aInclusionLevels' | 'rInclusionLevels',
@@ -95,12 +113,21 @@ function QuestionFilterModal({ open, filter, onClose, onApply }: ModalProps) {
 
   return (
     <Modal open={open} onClose={onClose} title="질문 필터">
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-col gap-2">
+      <div className="-mt-3 flex flex-col gap-3">
+        <div className="flex items-center justify-between rounded-xl border border-gray-100 bg-gray-50 px-4 py-3">
+          <div className="flex flex-col">
+            <span className="caption-l-semibold text-gray-800">선택된 필터</span>
+            <span className="caption-m-medium text-gray-500">정렬은 유지하고 필터만 초기화됩니다.</span>
+          </div>
+          <span className="body-s-bold text-gray-white rounded-2xl bg-gray-800 px-2.5 py-1">{selectedCount}</span>
+        </div>
+
+        <div className="flex flex-col gap-3 rounded-xl border border-gray-100 p-4">
           <span className="caption-l-medium">STAR 분석 여부</span>
-          <div className="flex items-center gap-2">
+          <div className="grid grid-cols-3 gap-2">
             <Button
               size="xs"
+              className="justify-center"
               variant={draft.hasStarAnalysis === null ? 'fill-gray-800' : 'outline-gray-100'}
               onClick={() => setDraft((prev) => ({ ...prev, hasStarAnalysis: null }))}
             >
@@ -108,6 +135,7 @@ function QuestionFilterModal({ open, filter, onClose, onApply }: ModalProps) {
             </Button>
             <Button
               size="xs"
+              className="justify-center"
               variant={draft.hasStarAnalysis === true ? 'fill-gray-800' : 'outline-gray-100'}
               onClick={() => setDraft((prev) => ({ ...prev, hasStarAnalysis: true }))}
             >
@@ -115,6 +143,7 @@ function QuestionFilterModal({ open, filter, onClose, onApply }: ModalProps) {
             </Button>
             <Button
               size="xs"
+              className="justify-center"
               variant={draft.hasStarAnalysis === false ? 'fill-gray-800' : 'outline-gray-100'}
               onClick={() => setDraft((prev) => ({ ...prev, hasStarAnalysis: false }))}
             >
@@ -171,9 +200,16 @@ function LevelGroup({
   onToggle: (value: StarLevel) => void
 }) {
   return (
-    <div className="flex flex-col gap-2">
-      <span className="caption-l-medium">{label}</span>
-      <div className="grid grid-cols-3 gap-x-6 gap-y-2">
+    <div className="flex flex-col gap-3 rounded-xl border border-gray-100 p-4">
+      <div className="flex items-center justify-between">
+        <span className="caption-l-medium">{label}</span>
+        {selected.length > 0 && (
+          <span className="caption-m-semibold rounded-2xl bg-orange-100 px-2 py-0.5 text-orange-500">
+            {selected.length}개 선택
+          </span>
+        )}
+      </div>
+      <div className="grid grid-cols-3 gap-x-4 gap-y-2">
         {STAR_LEVEL_OPTIONS.map((option) => (
           <Checkbox
             key={option.value}

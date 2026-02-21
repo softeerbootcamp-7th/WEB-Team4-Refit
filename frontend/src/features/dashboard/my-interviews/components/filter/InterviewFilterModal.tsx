@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { INTERVIEW_TYPE_OPTIONS } from '@/constants/interviews'
 import { Button, Checkbox, Modal } from '@/designs/components'
 import { EMPTY_FILTER, RESULT_STATUS_ITEMS } from '@/features/dashboard/my-interviews/constants/constants'
@@ -14,6 +14,10 @@ type InterviewFilterModalProps = {
 export default function InterviewFilterModalContent({ open, filter, onApply, onClose }: InterviewFilterModalProps) {
   const [draft, setDraft] = useState<InterviewFilter>(filter)
   const [prevOpen, setPrevOpen] = useState(open)
+  const selectedCount = useMemo(
+    () => draft.interviewType.length + draft.resultStatus.length + (draft.startDate ? 1 : 0) + (draft.endDate ? 1 : 0),
+    [draft],
+  )
 
   if (prevOpen !== open) {
     setPrevOpen(open)
@@ -37,7 +41,14 @@ export default function InterviewFilterModalContent({ open, filter, onApply, onC
 
   return (
     <Modal open={open} onClose={onClose} title="면접 필터">
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-5">
+        <div className="flex items-center justify-between rounded-xl border border-gray-100 bg-gray-50 px-4 py-3">
+          <div className="flex flex-col">
+            <span className="caption-l-semibold text-gray-800">선택된 필터</span>
+            <span className="caption-m-medium text-gray-500">정렬은 유지하고 필터만 초기화됩니다.</span>
+          </div>
+          <span className="body-s-bold text-gray-white rounded-2xl bg-gray-800 px-2.5 py-1">{selectedCount}</span>
+        </div>
         <CheckboxGroup
           label="면접 형태"
           items={INTERVIEW_TYPE_OPTIONS}
@@ -52,8 +63,13 @@ export default function InterviewFilterModalContent({ open, filter, onApply, onC
           selected={draft.resultStatus}
           onToggle={(v) => toggleItem('resultStatus', v as InterviewFilter['resultStatus'][number])}
         />
-        <div className="flex flex-col gap-2">
-          <span className="caption-l-medium">기간</span>
+        <div className="flex flex-col gap-3 rounded-xl border border-gray-100 p-4">
+          <div className="flex items-center justify-between">
+            <span className="caption-l-medium">기간</span>
+            {(draft.startDate || draft.endDate) && (
+              <span className="caption-m-semibold rounded-2xl bg-orange-100 px-2 py-0.5 text-orange-500">선택됨</span>
+            )}
+          </div>
           <div className="flex items-center gap-2">
             <DateSelectInput
               value={draft.startDate}
@@ -96,8 +112,15 @@ function CheckboxGroup({ label, items, columns, selected, onToggle }: CheckboxGr
   }[columns || 1]
 
   return (
-    <div className="flex flex-col gap-2">
-      <span className="caption-l-medium">{label}</span>
+    <div className="flex flex-col gap-3 rounded-xl border border-gray-100 p-4">
+      <div className="flex items-center justify-between">
+        <span className="caption-l-medium">{label}</span>
+        {selected.length > 0 && (
+          <span className="caption-m-semibold rounded-2xl bg-orange-100 px-2 py-0.5 text-orange-500">
+            {selected.length}개 선택
+          </span>
+        )}
+      </div>
       <div className={`grid gap-x-6 gap-y-2 ${gridCols}`}>
         {items.map((item) => (
           <Checkbox
