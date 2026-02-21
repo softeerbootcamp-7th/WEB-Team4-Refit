@@ -36,6 +36,7 @@ import com.shyashyashya.refit.domain.interview.service.validator.InterviewValida
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
 import com.shyashyashya.refit.domain.qnaset.dto.StarAnalysisDto;
+import com.shyashyashya.refit.domain.qnaset.dto.event.QuestionEmbeddingEvent;
 import com.shyashyashya.refit.domain.qnaset.model.PdfHighlighting;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetSelfReview;
@@ -65,6 +66,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -96,6 +98,7 @@ public class InterviewService {
     private final KeyLockUtil<Long> interviewLock;
     private final ObjectMapper objectMapper;
     private final PromptGenerateUtil promptGenerateUtil;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional(readOnly = true)
     public InterviewDto getInterview(Long interviewId) {
@@ -401,8 +404,12 @@ public class InterviewService {
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
         interviewValidator.validateInterviewReviewStatus(interview, List.of(InterviewReviewStatus.SELF_REVIEW_DRAFT));
-
         interview.completeReview();
+
+        // TODO: 추후 bulk insert 등 한번에 데이터를 전달하는 방식 고려
+        List<QnaSet> qnaSets = qnaSetRepository.findAllByInterview(interview);
+        qnaSets.forEach(qnaSet ->
+                eventPublisher.publishEvent(QuestionEmbeddingEvent.of(qnaSet.getId(), qnaSet.getQuestionText())));
     }
 
     private Company findOrSaveCompany(InterviewCreateRequest request) {
