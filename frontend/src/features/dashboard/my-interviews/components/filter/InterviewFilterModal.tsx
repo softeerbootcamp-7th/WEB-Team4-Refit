@@ -18,6 +18,7 @@ export default function InterviewFilterModalContent({ open, filter, onApply, onC
     () => draft.interviewType.length + draft.resultStatus.length + (draft.startDate ? 1 : 0) + (draft.endDate ? 1 : 0),
     [draft],
   )
+  const selectedCountLabel = selectedCount > 9 ? '9+' : String(selectedCount)
 
   if (prevOpen !== open) {
     setPrevOpen(open)
@@ -40,7 +41,18 @@ export default function InterviewFilterModalContent({ open, filter, onApply, onC
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="면접 필터">
+    <Modal
+      open={open}
+      onClose={onClose}
+      title={
+        <span className="inline-flex items-center gap-2">
+          <span>면접 필터</span>
+          <span className="caption-m-semibold bg-gray-800 text-gray-white inline-flex h-6 min-w-6 items-center justify-center rounded-full px-1.5">
+            {selectedCountLabel}
+          </span>
+        </span>
+      }
+    >
       <div className="flex flex-col gap-5">
         <CheckboxGroup
           label="면접 형태"
@@ -75,18 +87,13 @@ export default function InterviewFilterModalContent({ open, filter, onApply, onC
             />
           </div>
         </div>
-        <div className="flex items-center justify-between border-t border-gray-100 pt-3">
-          <span className="caption-m-semibold bg-gray-150 rounded-2xl px-2.5 py-1 text-gray-700">
-            선택된 필터 {selectedCount}개
-          </span>
-          <div className="flex gap-3">
-            <Button variant="outline-gray-100" size="sm" onClick={handleReset}>
-              초기화
-            </Button>
-            <Button variant="fill-orange-500" size="sm" onClick={handleApply}>
-              적용
-            </Button>
-          </div>
+        <div className="flex justify-end gap-3 border-t border-gray-100 pt-3">
+          <Button variant="outline-gray-100" size="sm" onClick={handleReset}>
+            초기화
+          </Button>
+          <Button variant="fill-orange-500" size="sm" onClick={handleApply}>
+            적용
+          </Button>
         </div>
       </div>
     </Modal>

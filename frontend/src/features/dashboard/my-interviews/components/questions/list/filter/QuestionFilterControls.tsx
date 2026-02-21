@@ -99,6 +99,7 @@ function QuestionFilterModal({ open, filter, onClose, onApply }: ModalProps) {
       draft.rInclusionLevels.length
     )
   }, [draft])
+  const selectedCountLabel = selectedCount > 9 ? '9+' : String(selectedCount)
 
   const toggleLevel = (
     key: 'sInclusionLevels' | 'tInclusionLevels' | 'aInclusionLevels' | 'rInclusionLevels',
@@ -112,7 +113,18 @@ function QuestionFilterModal({ open, filter, onClose, onApply }: ModalProps) {
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="질문 필터">
+    <Modal
+      open={open}
+      onClose={onClose}
+      title={
+        <span className="inline-flex items-center gap-2">
+          <span>질문 필터</span>
+          <span className="caption-m-semibold text-gray-white inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-gray-800 px-1.5">
+            {selectedCountLabel}
+          </span>
+        </span>
+      }
+    >
       <div className="flex flex-col gap-3">
         <div className="flex flex-col gap-3 rounded-xl border border-gray-100 p-4">
           <span className="caption-l-medium">STAR 분석 여부</span>
@@ -165,22 +177,17 @@ function QuestionFilterModal({ open, filter, onClose, onApply }: ModalProps) {
           onToggle={(value) => toggleLevel('rInclusionLevels', value)}
         />
 
-        <div className="flex items-center justify-between border-t border-gray-100 pt-3">
-          <span className="caption-m-semibold bg-gray-150 rounded-2xl px-2.5 py-1 text-gray-700">
-            선택된 필터 {selectedCount}개
-          </span>
-          <div className="flex gap-3">
-            <Button
-              variant="outline-gray-100"
-              size="sm"
-              onClick={() => setDraft((prev) => ({ ...EMPTY_QUESTION_FILTER, keyword: prev.keyword }))}
-            >
-              초기화
-            </Button>
-            <Button variant="fill-orange-500" size="sm" onClick={() => onApply(draft)}>
-              적용
-            </Button>
-          </div>
+        <div className="flex justify-end gap-3 border-t border-gray-100 pt-3">
+          <Button
+            variant="outline-gray-100"
+            size="sm"
+            onClick={() => setDraft((prev) => ({ ...EMPTY_QUESTION_FILTER, keyword: prev.keyword }))}
+          >
+            초기화
+          </Button>
+          <Button variant="fill-orange-500" size="sm" onClick={() => onApply(draft)}>
+            적용
+          </Button>
         </div>
       </div>
     </Modal>
