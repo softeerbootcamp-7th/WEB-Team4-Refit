@@ -13,7 +13,11 @@ export default function QuestionsTab() {
   return (
     <>
       <div className="absolute top-0 right-0">
-        <SearchBar keyword={filter.keyword} onSearch={(keyword) => setFilter((prev) => ({ ...prev, keyword }))} />
+        <SearchBar
+          placeholder="키워드로 내가 받은 질문 검색하기"
+          keyword={filter.keyword}
+          onSearch={(keyword) => setFilter((prev) => ({ ...prev, keyword }))}
+        />
       </div>
       {!isSearching && <FrequentQuestionsSection />}
       <section className="flex flex-col gap-3">
@@ -21,7 +25,7 @@ export default function QuestionsTab() {
           {isSearching ? (
             <SearchResultBar query={filter.keyword} onClose={() => setFilter((prev) => ({ ...prev, keyword: '' }))} />
           ) : (
-            <h2 className="title-s-bold">내가 복기 완료한 질문과 답변</h2>
+            <h2 className="title-s-bold">내가 기록한 질문과 답변</h2>
           )}
           <QuestionFilterControls filter={filter} onChange={setFilter} />
         </div>

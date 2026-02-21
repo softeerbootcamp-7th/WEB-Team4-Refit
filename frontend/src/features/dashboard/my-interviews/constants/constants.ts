@@ -56,7 +56,6 @@ export const QUESTION_SORT_OPTIONS = [
   { label: '면접 일시 최신순', value: 'interviewStartAt,desc' },
   { label: '면접 일시 오래된 순', value: 'interviewStartAt,asc' },
   { label: '최신 업데이트순', value: 'updatedAt,desc' },
-  { label: '가나다순', value: 'questionText,asc' },
 ] as const
 
 export const STAR_LEVEL_OPTIONS: { label: string; value: StarLevel }[] = [
