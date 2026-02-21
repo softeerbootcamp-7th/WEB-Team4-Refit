@@ -3,6 +3,7 @@ package com.shyashyashya.refit.integration.interview;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.in;
 import static org.hamcrest.Matchers.notNullValue;
@@ -421,10 +422,11 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
         }
 
         @Test
-        void 여러_리뷰_상태로_검색하면_해당_상태의_면접들이_모두_조회된다() {
+        void 여러_리뷰_상태로_검색하면_해당_상태의_면접들만_조회된다() {
             // given
             createAndSaveCompany("D_Company");
             createAndSaveCompany("E_Company");
+            createAndSaveCompany("F_Company");
 
             InterviewCreateRequest req4 = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 1, 4, 10, 0, 0),
@@ -436,11 +438,19 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
                     InterviewType.FIRST, "E_Company", industry1.getId(), jobCategory1.getId(), "BE Developer");
             Interview interview5 = createAndSaveInterview(req5, InterviewReviewStatus.LOG_DRAFT);
 
+            InterviewCreateRequest req6 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 1, 5, 10, 0, 0),
+                    InterviewType.FIRST, "E_Company", industry1.getId(), jobCategory1.getId(), "BE Developer");
+            createAndSaveInterview(req6, InterviewReviewStatus.QNA_SET_DRAFT);
+
             InterviewSearchRequest request = new InterviewSearchRequest(
                     null,
                     new InterviewSearchRequest.InterviewSearchFilter(
-                            Collections.emptySet(), Collections.emptySet(), Set.of(InterviewReviewStatus.NOT_LOGGED, InterviewReviewStatus.LOG_DRAFT), null, null)
-            );
+                            Collections.emptySet(),
+                            Collections.emptySet(),
+                            Set.of(InterviewReviewStatus.NOT_LOGGED, InterviewReviewStatus.LOG_DRAFT),
+                            null,
+                            null));
 
             // when & then
             given(spec)
@@ -451,9 +461,9 @@ public class InterviewMyIntegrationTest extends IntegrationTest {
                     .statusCode(200)
                     .body("code", equalTo(COMMON200.name()))
                     .body("message", equalTo(COMMON200.getMessage()))
-                    // setUp의 3개(DEBRIEF_COMPLETED)는 제외되고 새로 생성한 2건만 조회됨
                     .body("result.content", hasSize(2))
-                    .body("result.content*.interviewId", org.hamcrest.Matchers.containsInAnyOrder(interview4.getId().intValue(), interview5.getId().intValue()));
+                    .body("result.content*.interviewId", containsInAnyOrder(
+                            interview4.getId().intValue(), interview5.getId().intValue()));
         }
     }
 
