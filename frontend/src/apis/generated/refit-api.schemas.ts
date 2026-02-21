@@ -273,6 +273,7 @@ export interface InterviewDto {
   interviewReviewStatus: InterviewDtoInterviewReviewStatus
   interviewRawText?: string
   companyName: string
+  companyLogoUrl?: string
   industryId: number
   industryName: string
   jobCategoryId: number

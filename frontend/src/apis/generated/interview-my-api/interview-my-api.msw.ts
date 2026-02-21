@@ -54,6 +54,7 @@ export const getSearchInterviewsResponseMock = (
             undefined,
           ]),
           companyName: faker.string.alpha({ length: { min: 10, max: 20 } }),
+          companyLogoUrl: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), undefined]),
           industryId: faker.number.int(),
           industryName: faker.string.alpha({ length: { min: 10, max: 20 } }),
           jobCategoryId: faker.number.int(),
