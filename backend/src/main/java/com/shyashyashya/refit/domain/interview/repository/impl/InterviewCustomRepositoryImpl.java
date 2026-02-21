@@ -38,11 +38,12 @@ public class InterviewCustomRepositoryImpl implements InterviewCustomRepository 
             String keyword,
             Set<InterviewType> interviewTypes,
             Set<InterviewResultStatus> interviewResultStatuses,
+            Set<InterviewReviewStatus> interviewReviewStatuses,
             LocalDate startDate,
             LocalDate endDate,
             Pageable pageable) {
-        BooleanExpression[] searchConditions =
-                getSearchConditions(user, keyword, interviewTypes, interviewResultStatuses, startDate, endDate);
+        BooleanExpression[] searchConditions = getSearchConditions(
+                user, keyword, interviewTypes, interviewResultStatuses, interviewReviewStatuses, startDate, endDate);
 
         List<Interview> interviews = jpaQueryFactory
                 .selectFrom(interview)
@@ -116,14 +117,15 @@ public class InterviewCustomRepositoryImpl implements InterviewCustomRepository 
             String keyword,
             Set<InterviewType> interviewTypes,
             Set<InterviewResultStatus> interviewResultStatuses,
+            Set<InterviewReviewStatus> interviewReviewStatuses,
             LocalDate startDate,
             LocalDate endDate) {
         return new BooleanExpression[] {
             interview.user.eq(user),
-            interview.reviewStatus.eq(InterviewReviewStatus.DEBRIEF_COMPLETED),
             companyNameContains(keyword),
             interviewTypesIn(interviewTypes),
             interviewResultStatusIn(interviewResultStatuses),
+            interviewReviewStatusIn(interviewReviewStatuses),
             interviewDateIsAfter(startDate),
             interviewDateIsBefore(endDate)
         };
@@ -148,6 +150,13 @@ public class InterviewCustomRepositoryImpl implements InterviewCustomRepository 
             return null;
         }
         return interview.resultStatus.in(interviewResultStatuses);
+    }
+
+    private BooleanExpression interviewReviewStatusIn(Set<InterviewReviewStatus> interviewReviewStatuses) {
+        if (interviewReviewStatuses == null || interviewReviewStatuses.isEmpty()) {
+            return null;
+        }
+        return interview.reviewStatus.in(interviewReviewStatuses);
     }
 
     private BooleanExpression interviewDateIsAfter(LocalDate startDate) {

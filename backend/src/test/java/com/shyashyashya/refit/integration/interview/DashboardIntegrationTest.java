@@ -3,6 +3,7 @@ package com.shyashyashya.refit.integration.interview;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
@@ -228,7 +229,7 @@ public class DashboardIntegrationTest extends IntegrationTest {
         private final String path = "/dashboard/interview/upcoming";
 
         @Test
-        void 곧_있을_면접_리스트를_조회한다() {
+        void 사용자의_산업군_및_직무와_관련있는_질문이_없을_때_곧_있을_면접_리스트를_조회한다() {
             // given
             LocalDateTime upcomingDate = LocalDateTime.now().plusDays(2);
 
@@ -246,7 +247,58 @@ public class DashboardIntegrationTest extends IntegrationTest {
                     .statusCode(200)
                     .body("code", equalTo(COMMON200.name()))
                     .body("result.content", hasSize(1))
+                    .body("result.content[0].frequentlyAskedQuestions", empty())
                     .body("result.content[0].upcomingInterview.companyName", equalTo(company1.getName()));
+        }
+
+        @Test
+        void 약관에_동의하지_않은_사용자는_유사_질답_세트가_빈_리스트로_조회된다() {
+            // given
+            LocalDateTime upcomingDate = LocalDateTime.now().plusDays(2);
+            Interview interview = createAndSaveInterview(
+                new InterviewCreateRequest(
+                    upcomingDate,
+                    InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+                ), InterviewReviewStatus.NOT_LOGGED);
+
+            createAndSaveQnaSet(new com.shyashyashya.refit.domain.interview.dto.request.QnaSetCreateRequest("약관 미동의시 안보일 질문", "답변"), interview);
+
+            // when & then
+            given(spec)
+            .when()
+                    .get(path)
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("result.content", hasSize(1))
+                    .body("result.content[0].frequentlyAskedQuestions", hasSize(0));
+        }
+
+        @Test
+        void 약관에_동의한_사용자는_유사_질답_세트가_조회된다() {
+            // given
+            requestUser.agreeToTerms();
+            userRepository.save(requestUser);
+
+            LocalDateTime upcomingDate = LocalDateTime.now().plusDays(2);
+            Interview interview = createAndSaveInterview(
+                new InterviewCreateRequest(
+                    upcomingDate,
+                    InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+                ), InterviewReviewStatus.NOT_LOGGED);
+
+            createAndSaveQnaSet(new com.shyashyashya.refit.domain.interview.dto.request.QnaSetCreateRequest("약관 동의시 보일 질문", "답변"), interview);
+
+            // when & then
+            given(spec)
+            .when()
+                    .get(path)
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("result.content", hasSize(1))
+                    .body("result.content[0].frequentlyAskedQuestions", hasSize(1))
+                    .body("result.content[0].frequentlyAskedQuestions[0]", equalTo("약관 동의시 보일 질문"));
         }
     }
 

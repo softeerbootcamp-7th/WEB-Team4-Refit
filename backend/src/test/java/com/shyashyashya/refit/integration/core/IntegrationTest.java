@@ -133,9 +133,11 @@ public abstract class IntegrationTest {
         qnaSetCategory3 = qnaSetCategoryRepository.save(QnaSetCategory.create("기술 질문", "당신은 기술 있는 사람입니까?", 0.001));
 
         requestUser = createAndSaveUser("test@example.com", "default", industry1, jobCategory1);
+
         Instant issuedAt = Instant.now();
         String accessToken = jwtEncoder.encodeAccessJwt(requestUser.getEmail(), requestUser.getId(), issuedAt);
         String refreshToken = jwtEncoder.encodeRefreshJwt(requestUser.getEmail(), requestUser.getId(), issuedAt);
+
         spec = new RequestSpecBuilder()
                 .setPort(port)
                 .addCookie(AuthConstant.ACCESS_TOKEN, accessToken)

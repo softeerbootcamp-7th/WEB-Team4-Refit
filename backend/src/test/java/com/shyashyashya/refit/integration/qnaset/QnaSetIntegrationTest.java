@@ -12,6 +12,7 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
@@ -814,7 +815,29 @@ public class QnaSetIntegrationTest extends IntegrationTest {
         }
 
         @Test
+        void 사용자가_약관에_동의하지_않았다면_전체_개수만_조회되고_질답_세트는_빈_리스트가_조회된다() {
+            // given
+
+            // when & then
+            given(spec)
+                    .queryParam("industryIds", 1L, 2L)
+                    .queryParam("jobCategoryIds", 1L, 2L)
+            .when()
+                    .get(path)
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result.content", empty())
+                    .body("result.totalElements", equalTo(4));
+        }
+
+        @Test
         void 산업군과_직무를_하나씩_지정했을_때_조회에_성공한다() {
+            // given
+            requestUser.agreeToTerms();
+            userRepository.save(requestUser);
+
             // when & then
             given(spec)
                     .queryParam("industryIds", 1L)
@@ -841,6 +864,10 @@ public class QnaSetIntegrationTest extends IntegrationTest {
 
         @Test
         void 산업군과_직무를_여러개_지정했을_때_조회에_성공한다() {
+            // given
+            requestUser.agreeToTerms();
+            userRepository.save(requestUser);
+
             // when & then
             given(spec)
                     .queryParam("industryIds", 1L, 2L)
@@ -863,6 +890,10 @@ public class QnaSetIntegrationTest extends IntegrationTest {
 
         @Test
         void 아무런_필터링_조건도_제공하지_않았을_때_모든_자주_묻는_질문을_조회한다() {
+            // given
+            requestUser.agreeToTerms();
+            userRepository.save(requestUser);
+
             // when & then
             given(spec)
             .when()
@@ -885,6 +916,10 @@ public class QnaSetIntegrationTest extends IntegrationTest {
 
         @Test
         void 산업군만_지정했을_때_자주_묻는_질문_조회에_성공한다() {
+            // given
+            requestUser.agreeToTerms();
+            userRepository.save(requestUser);
+
             // when & then
             given(spec)
                     .queryParam("industryIds", 1L)
@@ -905,6 +940,10 @@ public class QnaSetIntegrationTest extends IntegrationTest {
 
         @Test
         void 산업군_ID가_중복되어도_자주_묻는_질문_조회에_성공한다() {
+            // given
+            requestUser.agreeToTerms();
+            userRepository.save(requestUser);
+
             // when & then
             given(spec)
                     .queryParam("industryIds", 1L, 1L, 1L)
@@ -925,6 +964,10 @@ public class QnaSetIntegrationTest extends IntegrationTest {
 
         @Test
         void 직무만_지정했을_때_자주_묻는_질문_조회에_성공한다() {
+            // given
+            requestUser.agreeToTerms();
+            userRepository.save(requestUser);
+
             // when & then
             given(spec)
                     .queryParam("jobCategoryIds", 1L)
@@ -945,6 +988,10 @@ public class QnaSetIntegrationTest extends IntegrationTest {
 
         @Test
         void 직무_ID가_중복되어도_자주_묻는_질문_조회에_성공한다() {
+            // given
+            requestUser.agreeToTerms();
+            userRepository.save(requestUser);
+
             // when & then
             given(spec)
                     .queryParam("jobCategoryIds", 1L, 1L, 1L)

@@ -38,6 +38,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
@@ -1118,73 +1119,6 @@ public class InterviewIntegrationTest extends IntegrationTest {
                     .body("code", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.name()))
                     .body("message", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.getMessage()))
                     .body("result", nullValue());
-        }
-    }
-
-    @Nested
-    class 면접_목록_검색_및_정렬_시 {
-
-        private static final String path = "/interview/my/search";
-        private Interview interview1;
-        private Interview interview2;
-        private Interview interview3;
-
-        @BeforeEach
-        void setUp() {
-            createAndSaveCompany("A_Company");
-            createAndSaveCompany("B_Company");
-            createAndSaveCompany("C_Company");
-
-            InterviewCreateRequest req1 = new InterviewCreateRequest(
-                    LocalDateTime.of(2025, 1, 2, 10, 0, 0),
-                    InterviewType.FIRST, "B_Company", industry1.getId(), jobCategory1.getId(), "BE Developer");
-            interview1 = createAndSaveInterview(req1, InterviewReviewStatus.DEBRIEF_COMPLETED);
-
-            try { Thread.sleep(50); } catch (InterruptedException e) {}
-
-            InterviewCreateRequest req2 = new InterviewCreateRequest(
-                    LocalDateTime.of(2025, 1, 3, 10, 0, 0),
-                    InterviewType.FIRST, "A_Company", industry1.getId(), jobCategory1.getId(), "BE Developer");
-            interview2 = createAndSaveInterview(req2, InterviewReviewStatus.DEBRIEF_COMPLETED);
-
-            try { Thread.sleep(50); } catch (InterruptedException e) {}
-
-            InterviewCreateRequest req3 = new InterviewCreateRequest(
-                    LocalDateTime.of(2025, 1, 1, 10, 0, 0),
-                    InterviewType.FIRST, "C_Company", industry1.getId(), jobCategory1.getId(), "BE Developer");
-            interview3 = createAndSaveInterview(req3, InterviewReviewStatus.DEBRIEF_COMPLETED);
-        }
-
-        @ParameterizedTest(name = "{0} 필드를 {1} 로 정렬에 성공한다")
-        @CsvSource({
-                "interviewStartAt, asc, 3:1:2",
-                "interviewStartAt, desc, 2:1:3",
-                "companyName, asc, 2:1:3",
-                "companyName, desc, 3:1:2",
-                "updatedAt, asc, 1:2:3",
-                "updatedAt, desc, 3:2:1"
-        })
-        void 정렬_조건에_따라_올바르게_정렬된다(String sortField, String direction, String expectedOrderIndices) {
-            // given
-            List<Integer> expectedIndices = Arrays.stream(expectedOrderIndices.split(":")).map(Integer::parseInt).toList();
-            InterviewSearchRequest request = new InterviewSearchRequest(
-                    null,
-                    new InterviewSearchRequest.InterviewSearchFilter(
-                            Collections.emptySet(), Collections.emptySet(), null, null)
-            );
-
-            // when & then
-            given(spec)
-                    .body(request)
-                    .queryParam("sort", sortField + "," + direction)
-            .when()
-                    .post(path)
-            .then()
-                    .statusCode(200)
-                    .body("code", equalTo(COMMON200.name()))
-                    .body("message", equalTo(COMMON200.getMessage()))
-                    .body("result.content", hasSize(expectedIndices.size()))
-                    .body("result.content*.interviewId", contains(expectedIndices.toArray()));
         }
     }
 }

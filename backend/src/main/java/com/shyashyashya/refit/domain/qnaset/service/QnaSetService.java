@@ -14,6 +14,7 @@ import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetReviewUpdateReques
 import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetResponse;
 import com.shyashyashya.refit.domain.qnaset.dto.response.QnaSetScrapFolderResponse;
+import com.shyashyashya.refit.domain.qnaset.event.QuestionEmbeddingEvent;
 import com.shyashyashya.refit.domain.qnaset.model.PdfHighlighting;
 import com.shyashyashya.refit.domain.qnaset.model.PdfHighlightingRect;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
@@ -32,7 +33,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,12 +53,20 @@ public class QnaSetService {
     private final InterviewValidator interviewValidator;
     private final IndustryValidator industryValidator;
     private final JobCategoryValidator jobCategoryValidator;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional(readOnly = true)
     public Page<FrequentQnaSetResponse> getFrequentQuestions(
             Set<Long> industryIds, Set<Long> jobCategoryIds, Pageable pageable) {
+        User requestUser = requestUserContext.getRequestUser();
+
         industryValidator.validateIndustriesAllExist(industryIds);
         jobCategoryValidator.validateJobCategoriesAllExist(jobCategoryIds);
+
+        if (!requestUser.isAgreedToTerms()) {
+            long qnaSetCount = qnaSetRepository.countByIndustriesAndJobCategories(industryIds, jobCategoryIds);
+            return new PageImpl<>(List.of(), pageable, qnaSetCount);
+        }
 
         return qnaSetRepository
                 .searchByIndustriesAndJobCategories(industryIds, jobCategoryIds, pageable)
@@ -84,8 +95,15 @@ public class QnaSetService {
                         InterviewReviewStatus.QNA_SET_DRAFT,
                         InterviewReviewStatus.SELF_REVIEW_DRAFT,
                         InterviewReviewStatus.DEBRIEF_COMPLETED));
+
+        boolean isQuestionTextChanged =
+                request.questionText() == null || !qnaSet.getQuestionText().equals(request.questionText());
         qnaSet.updateQuestionText(request.questionText());
         qnaSet.updateAnswerText(request.answerText());
+
+        if (isQuestionTextChanged) {
+            eventPublisher.publishEvent(QuestionEmbeddingEvent.of(qnaSetId, request.questionText()));
+        }
     }
 
     @Transactional

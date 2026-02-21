@@ -56,7 +56,7 @@ public class QnaSet extends BaseEntity {
             QnaSetCategory qnaSetCategory) {
         return QnaSet.builder()
                 .questionText(questionText)
-                .answerText(answerText)
+                .answerText(answerText == null ? "" : answerText)
                 .isMarkedDifficult(isMarkedDifficult)
                 .interview(interview)
                 .qnaSetCategory(qnaSetCategory)

@@ -74,8 +74,11 @@ public class DashboardService {
         return interviewRepository
                 .getUpcomingInterview(requestUser, now, now.plusDays(7), pageable)
                 .map(interview -> {
-                    List<QnaSet> similarTrendQuestions = qnaSetRepository.findAllByIndustryAndJobCategory(
-                            interview.getIndustry(), interview.getJobCategory());
+                    List<QnaSet> similarTrendQuestions = List.of();
+                    if (requestUser.isAgreedToTerms()) {
+                        similarTrendQuestions = qnaSetRepository.findAllByIndustryAndJobCategory(
+                                interview.getIndustry(), interview.getJobCategory());
+                    }
                     List<Interview> similarInterviews = interviewRepository.findAllSimilarInterviewsByUser(
                             requestUser, interview.getIndustry(), interview.getJobCategory());
                     return DashboardUpcomingInterviewResponse.of(interview, similarTrendQuestions, similarInterviews);
