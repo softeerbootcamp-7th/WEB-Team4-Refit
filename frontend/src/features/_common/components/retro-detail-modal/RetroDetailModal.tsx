@@ -1,5 +1,6 @@
 import { useGetInterviewFull } from '@/apis/generated/interview-api/interview-api'
 import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
+import { SmallLogoIcon } from '@/designs/assets'
 import { Badge, Border, Button, Modal } from '@/designs/components'
 import { QnaSetCard } from '@/features/_common/components/qna-set'
 import { StarAnalysisResultSection } from '@/features/_common/components/qna-set/StarAnalysisSection'
@@ -72,7 +73,17 @@ export default function RetroDetailModal({
           <Border />
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <img src="" alt={`${interview?.companyName ?? ''} 로고`} className="h-14 w-14 rounded-full bg-gray-300" />
+              <div className="bg-gray-white flex h-14 w-14 items-center justify-center rounded-full">
+                {interview?.companyLogoUrl ? (
+                  <img
+                    src={interview.companyLogoUrl}
+                    alt={`${interview?.companyName ?? ''} 로고`}
+                    className="h-full w-full rounded-full object-contain"
+                  />
+                ) : (
+                  <SmallLogoIcon className="h-7 w-7 text-gray-400" />
+                )}
+              </div>
               <h2 className="title-l-bold mr-1">{interview?.companyName ?? ''}</h2>
               <span className="body-m-medium text-gray-500">
                 {interview?.jobRole ?? ''} <span className="mx-1 text-gray-200">|</span>
