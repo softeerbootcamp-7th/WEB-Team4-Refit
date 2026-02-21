@@ -113,15 +113,7 @@ function QuestionFilterModal({ open, filter, onClose, onApply }: ModalProps) {
 
   return (
     <Modal open={open} onClose={onClose} title="질문 필터">
-      <div className="-mt-3 flex flex-col gap-3">
-        <div className="flex items-center justify-between rounded-xl border border-gray-100 bg-gray-50 px-4 py-3">
-          <div className="flex flex-col">
-            <span className="caption-l-semibold text-gray-800">선택된 필터</span>
-            <span className="caption-m-medium text-gray-500">정렬은 유지하고 필터만 초기화됩니다.</span>
-          </div>
-          <span className="body-s-bold text-gray-white rounded-2xl bg-gray-800 px-2.5 py-1">{selectedCount}</span>
-        </div>
-
+      <div className="flex flex-col gap-3">
         <div className="flex flex-col gap-3 rounded-xl border border-gray-100 p-4">
           <span className="caption-l-medium">STAR 분석 여부</span>
           <div className="grid grid-cols-3 gap-2">
@@ -173,17 +165,22 @@ function QuestionFilterModal({ open, filter, onClose, onApply }: ModalProps) {
           onToggle={(value) => toggleLevel('rInclusionLevels', value)}
         />
 
-        <div className="flex justify-end gap-3">
-          <Button
-            variant="outline-gray-100"
-            size="sm"
-            onClick={() => setDraft((prev) => ({ ...EMPTY_QUESTION_FILTER, keyword: prev.keyword }))}
-          >
-            초기화
-          </Button>
-          <Button variant="fill-orange-500" size="sm" onClick={() => onApply(draft)}>
-            적용
-          </Button>
+        <div className="flex items-center justify-between border-t border-gray-100 pt-3">
+          <span className="caption-m-semibold rounded-2xl bg-gray-100 px-2.5 py-1 text-gray-700">
+            선택 {selectedCount}개
+          </span>
+          <div className="flex gap-3">
+            <Button
+              variant="outline-gray-100"
+              size="sm"
+              onClick={() => setDraft((prev) => ({ ...EMPTY_QUESTION_FILTER, keyword: prev.keyword }))}
+            >
+              초기화
+            </Button>
+            <Button variant="fill-orange-500" size="sm" onClick={() => onApply(draft)}>
+              적용
+            </Button>
+          </div>
         </div>
       </div>
     </Modal>
@@ -201,7 +198,7 @@ function LevelGroup({
 }) {
   return (
     <div className="flex flex-col gap-3 rounded-xl border border-gray-100 p-4">
-      <div className="flex items-center justify-between">
+      <div className="flex min-h-6 items-center justify-between">
         <span className="caption-l-medium">{label}</span>
         {selected.length > 0 && (
           <span className="caption-m-semibold rounded-2xl bg-orange-100 px-2 py-0.5 text-orange-500">

@@ -42,13 +42,6 @@ export default function InterviewFilterModalContent({ open, filter, onApply, onC
   return (
     <Modal open={open} onClose={onClose} title="면접 필터">
       <div className="flex flex-col gap-5">
-        <div className="flex items-center justify-between rounded-xl border border-gray-100 bg-gray-50 px-4 py-3">
-          <div className="flex flex-col">
-            <span className="caption-l-semibold text-gray-800">선택된 필터</span>
-            <span className="caption-m-medium text-gray-500">정렬은 유지하고 필터만 초기화됩니다.</span>
-          </div>
-          <span className="body-s-bold text-gray-white rounded-2xl bg-gray-800 px-2.5 py-1">{selectedCount}</span>
-        </div>
         <CheckboxGroup
           label="면접 형태"
           items={INTERVIEW_TYPE_OPTIONS}
@@ -64,10 +57,12 @@ export default function InterviewFilterModalContent({ open, filter, onApply, onC
           onToggle={(v) => toggleItem('resultStatus', v as InterviewFilter['resultStatus'][number])}
         />
         <div className="flex flex-col gap-3 rounded-xl border border-gray-100 p-4">
-          <div className="flex items-center justify-between">
+          <div className="flex min-h-6 items-center justify-between">
             <span className="caption-l-medium">기간</span>
             {(draft.startDate || draft.endDate) && (
-              <span className="caption-m-semibold rounded-2xl bg-orange-100 px-2 py-0.5 text-orange-500">선택됨</span>
+              <span className="caption-m-semibold rounded-2xl bg-orange-100 px-2 py-0.5 text-orange-500">
+                선택됨
+              </span>
             )}
           </div>
           <div className="flex items-center gap-2">
@@ -82,13 +77,18 @@ export default function InterviewFilterModalContent({ open, filter, onApply, onC
             />
           </div>
         </div>
-        <div className="flex justify-end gap-3">
-          <Button variant="outline-gray-100" size="sm" onClick={handleReset}>
-            초기화
-          </Button>
-          <Button variant="fill-orange-500" size="sm" onClick={handleApply}>
-            적용
-          </Button>
+        <div className="flex items-center justify-between border-t border-gray-100 pt-3">
+          <span className="caption-m-semibold rounded-2xl bg-gray-100 px-2.5 py-1 text-gray-700">
+            선택 {selectedCount}개
+          </span>
+          <div className="flex gap-3">
+            <Button variant="outline-gray-100" size="sm" onClick={handleReset}>
+              초기화
+            </Button>
+            <Button variant="fill-orange-500" size="sm" onClick={handleApply}>
+              적용
+            </Button>
+          </div>
         </div>
       </div>
     </Modal>
@@ -113,7 +113,7 @@ function CheckboxGroup({ label, items, columns, selected, onToggle }: CheckboxGr
 
   return (
     <div className="flex flex-col gap-3 rounded-xl border border-gray-100 p-4">
-      <div className="flex items-center justify-between">
+      <div className="flex min-h-6 items-center justify-between">
         <span className="caption-l-medium">{label}</span>
         {selected.length > 0 && (
           <span className="caption-m-semibold rounded-2xl bg-orange-100 px-2 py-0.5 text-orange-500">
