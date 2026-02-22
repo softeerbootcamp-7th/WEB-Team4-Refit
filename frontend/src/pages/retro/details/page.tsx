@@ -50,7 +50,12 @@ function RetroDetailContent() {
             scrollContainerRef={scrollContainerRef}
           />
         </div>
-        <RetroPdfPanel interviewId={id} hasPdf={hasUploadedPdf} qnaSetIds={qnaSets.map((qna) => qna.qnaSetId)} />
+        <RetroPdfPanel
+          interviewId={id}
+          hasPdf={hasUploadedPdf}
+          qnaSetIds={qnaSets.map((qna) => qna.qnaSetId)}
+          startPage="first"
+        />
       </div>
     )
   }
