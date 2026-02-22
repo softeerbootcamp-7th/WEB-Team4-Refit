@@ -1,18 +1,17 @@
 import { CalendarStarIcon } from '@/designs/assets'
+import Button from '@/designs/components/button'
 import { CalendarInterviewCard } from '@/features/dashboard/_index/components/interview-calendar/CalendarInterviewCard'
 import type { CalendarInterviewItem } from '@/features/dashboard/_index/hooks/useInterviewCalendar'
 
 interface CalendarFooterProps {
-  selectedDate: { year: number; month: number; day: number }
   items: CalendarInterviewItem[]
   isLoading: boolean
   isError: boolean
   onItemClick: (interview: CalendarInterviewItem['interview']) => void
+  onEmptyActionClick: () => void
 }
 
-export function CalendarFooter({ selectedDate, items, isLoading, isError, onItemClick }: CalendarFooterProps) {
-  const selectedDateLabel = `${selectedDate.month + 1}월 ${selectedDate.day}일`
-
+export function CalendarFooter({ items, isLoading, isError, onItemClick, onEmptyActionClick }: CalendarFooterProps) {
   if (isLoading) {
     return (
       <div className="rounded-[10px] bg-gray-100 px-5 py-4">
@@ -33,8 +32,16 @@ export function CalendarFooter({ selectedDate, items, isLoading, isError, onItem
     return (
       <div className="flex flex-col items-center gap-1.5 rounded-[10px] bg-gray-100 px-5 py-6">
         <CalendarStarIcon className="h-8 w-8 text-gray-300" />
-        <p className="body-s-medium text-gray-400">{selectedDateLabel}의 면접 정보가 없어요</p>
-        <p className="caption-m-medium text-gray-300">+ 버튼으로 면접 일정을 추가해보세요.</p>
+        <p className="body-s-medium text-gray-400">해당 일자의 면접 정보가 없어요</p>
+        <Button
+          type="button"
+          variant="outline-gray-150"
+          size="xs"
+          className="mt-2 px-4 text-gray-700"
+          onClick={onEmptyActionClick}
+        >
+          면접 일정 추가하기
+        </Button>
       </div>
     )
   }

@@ -39,7 +39,7 @@ export default function InterviewScheduleModal() {
   })
   if (!modalContext) return null
 
-  const { isOpen, closeModal, step, setStep } = modalContext
+  const { isOpen, closeModal, step, setStep, pastOnly, initialScheduleValues } = modalContext
   const config = SCHEDULE_MODAL_STEP_CONFIG[step]
 
   const handleSubmit = (values: ScheduleFormSubmitValues) => {
@@ -69,7 +69,14 @@ export default function InterviewScheduleModal() {
 
   return (
     <Modal open={isOpen} onClose={closeModal} title={config.title} description={config.description}>
-      <ScheduleModalContent step={step} onStepChange={setStep} onSubmit={handleSubmit} isSubmitting={isPending} />
+      <ScheduleModalContent
+        step={step}
+        onStepChange={setStep}
+        onSubmit={handleSubmit}
+        isSubmitting={isPending}
+        pastOnly={pastOnly}
+        initialScheduleValues={initialScheduleValues}
+      />
     </Modal>
   )
 }
