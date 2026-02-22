@@ -1,6 +1,5 @@
-import { useMemo, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { Button } from '@/designs/components'
-import { useHighlightContext } from '@/features/record/link/contexts'
 import { PdfNavigation } from './PdfNavigation'
 import { PdfPage } from './PdfPage'
 import { useContainerSize } from './useContainerSize'
@@ -14,35 +13,14 @@ type PdfViewerProps = {
   onZoomChange: (zoom: number) => void
 }
 
-export function PdfViewer({
-  pdfUrl,
-  onRemovePdf,
-  isPdfBusy,
-  zoom,
-  onZoomChange,
-}: PdfViewerProps) {
+export function PdfViewer({ pdfUrl, onRemovePdf, isPdfBusy, zoom, onZoomChange }: PdfViewerProps) {
   const { pdf, isLoading, error } = usePdfLoader(pdfUrl)
   const [selectedPage, setSelectedPage] = useState<number | null>(null)
   const viewerRef = useRef<HTMLDivElement>(null)
   const containerSize = useContainerSize(viewerRef)
-  const { highlights } = useHighlightContext()
-
-  const firstHighlightedPage = useMemo(() => {
-    let minPage = Number.POSITIVE_INFINITY
-
-    for (const highlight of highlights.values()) {
-      for (const rect of highlight.rects) {
-        if (rect.pageNumber > 0 && rect.pageNumber < minPage) {
-          minPage = rect.pageNumber
-        }
-      }
-    }
-
-    return Number.isFinite(minPage) ? minPage : null
-  }, [highlights])
 
   const totalPages = pdf?.numPages ?? 0
-  const defaultPage = firstHighlightedPage ?? 1
+  const defaultPage = 1
   const resolvedPage = selectedPage ?? defaultPage
   const currentPage = totalPages > 0 ? Math.min(Math.max(resolvedPage, 1), totalPages) : 1
   const isReady = pdf && containerSize.width > 0 && containerSize.height > 0
