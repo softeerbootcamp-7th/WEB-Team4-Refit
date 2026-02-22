@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react'
 import { Button } from '@/designs/components'
-import TermsModal from '@/features/dashboard/trend-questions/components/list/terms-modal/TermsModal'
+import { OptionalTermsAgreeModal } from '@/features/dashboard/_common/profile'
 
 interface TermsLockedOverlayProps {
   isLocked: boolean
@@ -38,7 +38,7 @@ export default function TermsLockedOverlay({
           </div>
         </div>
       </div>
-      <TermsModal open={isTermsModalOpen} onClose={() => setIsTermsModalOpen(false)} />
+      <OptionalTermsAgreeModal open={isTermsModalOpen} onClose={() => setIsTermsModalOpen(false)} />
     </>
   )
 }

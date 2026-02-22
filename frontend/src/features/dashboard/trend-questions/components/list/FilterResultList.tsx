@@ -1,9 +1,7 @@
-import { useState } from 'react'
-import { Button } from '@/designs/components'
+import TermsLockedOverlay from '@/features/dashboard/_index/components/terms-lock/TermsLockedOverlay'
 import FilterBadges from '@/features/dashboard/trend-questions/components/filter/filter-badges/FilterBadges'
 import type { IndustryJobFilterState } from '@/features/dashboard/trend-questions/hooks/useIndustryJobFilter'
 import TrendQuestionCard from './question-card/TrendQuestionCard'
-import TermsModal from './terms-modal/TermsModal'
 import { useTrendFrequentQuestions } from './useTrendFrequentQuestions'
 
 type FilterResultListProps = {
@@ -12,7 +10,6 @@ type FilterResultListProps = {
 }
 
 export default function FilterResultList({ filter, isBlurred = false }: FilterResultListProps) {
-  const [isTermsModalOpen, setIsTermsModalOpen] = useState(false)
   const { badges, removeBadge, clearAll } = filter
   const { loadMoreRef, frequentQuestions, totalCount, isPending, isFetchingNextPage } = useTrendFrequentQuestions({
     industryIds: filter.industryIds,
@@ -31,12 +28,9 @@ export default function FilterResultList({ filter, isBlurred = false }: FilterRe
       </div>
       <div className="relative">
         {isBlurred ? (
-          <>
-            <div className="pointer-events-none blur-sm">
-              <DummyCardList />
-            </div>
-            <BlurOverlay onAgreeClick={() => setIsTermsModalOpen(true)} />
-          </>
+          <TermsLockedOverlay isLocked={isBlurred}>
+            <DummyCardList />
+          </TermsLockedOverlay>
         ) : (
           <ListContent
             isLoading={isLoading}
@@ -47,7 +41,6 @@ export default function FilterResultList({ filter, isBlurred = false }: FilterRe
           />
         )}
       </div>
-      <TermsModal open={isTermsModalOpen} onClose={() => setIsTermsModalOpen(false)} />
     </section>
   )
 }
@@ -98,19 +91,6 @@ function DummyCardList() {
           }}
         />
       ))}
-    </div>
-  )
-}
-
-function BlurOverlay({ onAgreeClick }: { onAgreeClick: () => void }) {
-  return (
-    <div className="absolute inset-0 z-10 flex items-center justify-center rounded-xl bg-white/40 px-4 text-center">
-      <div className="flex flex-col items-center gap-4">
-        <p className="body-l-semibold text-gray-500">나의 질문 공개에 동의하고 관심 직무의 빈출 질문을 알아보세요!</p>
-        <Button size="sm" variant="fill-gray-800" onClick={onAgreeClick}>
-          동의하고 질문 확인하기
-        </Button>
-      </div>
     </div>
   )
 }
