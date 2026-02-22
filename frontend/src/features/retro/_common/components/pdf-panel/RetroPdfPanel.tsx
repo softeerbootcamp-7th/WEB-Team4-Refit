@@ -83,9 +83,13 @@ export function RetroPdfPanel({
   const firstHighlightedPage = savedRects.length > 0 ? Math.max(1, savedRects[0].pageNumber) : 1
   const defaultPage = startPage === 'first' ? 1 : firstHighlightedPage
   const currentPage = selectedPage?.key === qnaSetIdsKey ? selectedPage.page : defaultPage
-  const isReady = !!pdf && containerSize.width > 0 && containerSize.height > 0
+  const shouldWaitForInitialHighlightPage =
+    startPage === 'first-highlight' &&
+    selectedPage?.key !== qnaSetIdsKey &&
+    highlightQueries.some((query) => query.isPending)
+  const isReady = !!pdf && !shouldWaitForInitialHighlightPage && containerSize.width > 0 && containerSize.height > 0
 
-  const isLoading = isDownloadFetching || isPdfLoading
+  const isLoading = isDownloadFetching || isPdfLoading || shouldWaitForInitialHighlightPage
   const hasError = !!pdfLoadError
 
   if (!hasPdf) {
@@ -98,7 +102,7 @@ export function RetroPdfPanel({
 
   return (
     <div className="flex h-full min-h-0 flex-col bg-gray-100 p-6 pr-0">
-      {pdf && (
+      {pdf && !shouldWaitForInitialHighlightPage && (
         <PdfNavigation
           currentPage={currentPage}
           totalPages={totalPages}
