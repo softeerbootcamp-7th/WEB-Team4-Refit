@@ -117,6 +117,7 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
                 .from(qnaSet)
                 .where(whereConditions)
                 .groupBy(qnaSet.qnaSetCategory)
+                .orderBy(qnaSet.count().desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

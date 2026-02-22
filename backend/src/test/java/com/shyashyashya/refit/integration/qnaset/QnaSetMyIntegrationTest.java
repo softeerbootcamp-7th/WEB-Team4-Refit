@@ -144,25 +144,17 @@ public class QnaSetMyIntegrationTest extends IntegrationTest {
 
             createAndSaveQnaSet(new QnaSetCreateRequest("q text", "a text"), interview);
 
-            createAndSaveQnaSet(
-                    new QnaSetCreateRequest("q text2", "a text"),
-                    interview,
-                    qnaSetCategory1);
+            createAndSaveQnaSet(new QnaSetCreateRequest("q text1-1", "a text"), interview, qnaSetCategory1);
+            createAndSaveQnaSet(new QnaSetCreateRequest("q text1-2", "a text"), interview, qnaSetCategory1);
 
-            createAndSaveQnaSet(
-                    new QnaSetCreateRequest("q text3", "a text"),
-                    interview,
-                    qnaSetCategory1);
+            createAndSaveQnaSet(new QnaSetCreateRequest("q text2-1", "a text"), interview, qnaSetCategory2);
+            createAndSaveQnaSet(new QnaSetCreateRequest("q text2-2", "a text"), interview, qnaSetCategory2);
+            createAndSaveQnaSet(new QnaSetCreateRequest("q text2-3", "a text"), interview, qnaSetCategory2);
 
-            createAndSaveQnaSet(
-                    new QnaSetCreateRequest("q text3", "a text"),
-                    interview,
-                    qnaSetCategory1);
-
-            createAndSaveQnaSet(
-                    new QnaSetCreateRequest("q text3", "a text"),
-                    interview,
-                    qnaSetCategory3);
+            createAndSaveQnaSet(new QnaSetCreateRequest("q text3-1", "a text"), interview, qnaSetCategory3);
+            createAndSaveQnaSet(new QnaSetCreateRequest("q text3-2", "a text"), interview, qnaSetCategory3);
+            createAndSaveQnaSet(new QnaSetCreateRequest("q text3-3", "a text"), interview, qnaSetCategory3);
+            createAndSaveQnaSet(new QnaSetCreateRequest("q text3-4", "a text"), interview, qnaSetCategory3);
         }
 
         @Test
@@ -177,7 +169,14 @@ public class QnaSetMyIntegrationTest extends IntegrationTest {
                     .statusCode(200)
                     .body("code", equalTo(COMMON200.name()))
                     .body("message", equalTo(COMMON200.getMessage()))
-                    .body("result", notNullValue());
+                    .body("result", notNullValue())
+                    .body("result.content", hasSize(3))
+                    .body("result.content[0].categoryId", equalTo(qnaSetCategory3.getId().intValue()))
+                    .body("result.content[0].frequentCount", equalTo(4))
+                    .body("result.content[1].categoryId", equalTo(qnaSetCategory2.getId().intValue()))
+                    .body("result.content[1].frequentCount", equalTo(3))
+                    .body("result.content[2].categoryId", equalTo(qnaSetCategory1.getId().intValue()))
+                    .body("result.content[2].frequentCount", equalTo(2));
         }
     }
 
