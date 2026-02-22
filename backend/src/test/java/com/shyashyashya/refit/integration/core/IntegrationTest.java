@@ -24,6 +24,7 @@ import com.shyashyashya.refit.domain.qnaset.repository.QnaSetCategoryRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
+import com.shyashyashya.refit.global.auth.repository.RefreshTokenRepository;
 import com.shyashyashya.refit.global.auth.service.JwtEncoder;
 import com.shyashyashya.refit.global.config.TestQdrantConfig;
 import com.shyashyashya.refit.global.config.TestRedisConfig;
@@ -42,6 +43,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -90,6 +92,9 @@ public abstract class IntegrationTest {
 
     @Autowired
     protected UserRepository userRepository;
+
+    @MockitoBean
+    protected RefreshTokenRepository refreshTokenRepository;
 
     @Autowired
     private IndustryRepository industryRepository;
