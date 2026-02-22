@@ -4,13 +4,20 @@ import java.time.Instant;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.TimeToLive;
+import org.springframework.data.redis.core.index.Indexed;
 
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
+@RedisHash(value = "RT")
 public class RefreshToken {
 
+    @Id
     private String token;
 
+    @Indexed
     private String email;
 
     private Instant expiryDate;
@@ -21,5 +28,10 @@ public class RefreshToken {
                 .email(email)
                 .expiryDate(expiryDate)
                 .build();
+    }
+
+    @TimeToLive
+    public long getTimeToLive() {
+        return Math.max(0, java.time.Duration.between(Instant.now(), expiryDate).getSeconds());
     }
 }
