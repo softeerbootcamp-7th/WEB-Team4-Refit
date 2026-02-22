@@ -41,9 +41,9 @@ function RecordLinkContent() {
 
   return (
     <HighlightProvider qnaSetIds={qnaSetIds} hasPdf={data.hasPdfResourceKey}>
-      <div className="grid h-full grid-cols-[80px_1.2fr_1fr]">
+      <div className="mx-auto grid h-full w-7xl grid-cols-[80px_1fr_1.2fr]">
         <RecordLinkSidebar items={sidebarItems} activeIndex={activeIndex} onItemClick={handleItemClick} />
-        <div className="flex h-full flex-col gap-5 overflow-hidden py-6 pl-6">
+        <div className="flex h-full flex-col gap-5 overflow-hidden py-6">
           <div>
             <h1 className="title-l-bold">면접에서 나온 질문과 자기소개서를 연결해보세요.</h1>
             <p className="body-s-regular mt-1 text-gray-400">

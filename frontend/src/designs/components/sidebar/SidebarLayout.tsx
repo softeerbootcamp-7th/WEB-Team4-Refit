@@ -8,7 +8,7 @@ export const SidebarLayout = ({ children }: { children: React.ReactNode }) => {
 
 export const MinimizedSidebarLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <aside className="bg-gray-white no-scrollbar my-6.75 ml-6 flex w-14 flex-1 flex-col items-center gap-4 overflow-y-auto rounded-xl px-1.25 py-3.75">
+    <aside className="bg-gray-white no-scrollbar my-6.75 flex w-14 flex-1 flex-col items-center gap-4 overflow-y-auto rounded-xl px-1.25 py-3.75">
       {children}
     </aside>
   )
