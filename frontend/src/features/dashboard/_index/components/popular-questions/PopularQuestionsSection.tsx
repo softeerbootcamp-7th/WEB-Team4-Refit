@@ -1,11 +1,25 @@
 import { useNavigate } from 'react-router'
 import { ArrowRightIcon, NoteIcon } from '@/designs/assets'
+import TermsLockedOverlay from '@/features/dashboard/_index/components/terms-lock/TermsLockedOverlay'
 import { ROUTES } from '@/routes/routes'
 import { usePopularQuestions, type PopularQuestionItem } from '../../hooks/usePopularQuestions'
 
-export default function PopularQuestionsSection() {
-  const { data, nickname } = usePopularQuestions()
+interface PopularQuestionsSectionProps {
+  isTermsLocked: boolean
+}
+
+const DUMMY_POPULAR_QUESTIONS: PopularQuestionItem[] = Array.from({ length: 10 }, (_, index) => ({
+  id: index + 1,
+  rank: index + 1,
+  category: '약관 동의가 필요합니다.',
+  industry: '약관 동의 필요',
+  jobCategory: '약관 동의 필요',
+}))
+
+export default function PopularQuestionsSection({ isTermsLocked }: PopularQuestionsSectionProps) {
+  const { data, nickname } = usePopularQuestions({ isTermsLocked })
   const navigate = useNavigate()
+  const rows = isTermsLocked ? DUMMY_POPULAR_QUESTIONS : data
 
   return (
     <section className="flex flex-col rounded-2xl bg-white p-6">
@@ -23,16 +37,18 @@ export default function PopularQuestionsSection() {
           <ArrowRightIcon className="shrink-0" />
         </button>
       </div>
-      {data.length === 0 ? (
+      {!isTermsLocked && data.length === 0 ? (
         <div className="body-m-medium flex min-h-32 items-center justify-center text-center text-gray-400">
           아직 빈출 질문 데이터가 없어요.
         </div>
       ) : (
-        <div className="overflow-hidden rounded-xl">
-          {data.map((item, i) => (
-            <PopularQuestionRow key={item.id} item={item} index={i} />
-          ))}
-        </div>
+        <TermsLockedOverlay isLocked={isTermsLocked} overlayClassName="rounded-xl">
+          <div className="overflow-hidden rounded-xl">
+            {rows.map((item, i) => (
+              <PopularQuestionRow key={item.id} item={item} index={i} />
+            ))}
+          </div>
+        </TermsLockedOverlay>
       )}
     </section>
   )

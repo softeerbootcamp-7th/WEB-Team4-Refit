@@ -1,4 +1,4 @@
-import { useGetUpcomingInterviews } from '@/apis'
+import { getGetUpcomingInterviewsQueryKey, useGetUpcomingInterviews } from '@/apis'
 import type { DashboardUpcomingInterviewResponse, InterviewDto } from '@/apis'
 import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
 import type { UpcomingInterviewData } from '../components/upcoming-interview/types'
@@ -72,14 +72,21 @@ function mapUpcomingInterview(item: DashboardUpcomingInterviewResponse): Upcomin
   }
 }
 
-export const useUpcomingInterviews = () => {
+interface UseUpcomingInterviewsParams {
+  isTermsLocked: boolean
+}
+
+export const useUpcomingInterviews = ({ isTermsLocked }: UseUpcomingInterviewsParams) => {
+  const params = {
+    page: 0,
+    size: 10,
+  } as const
+
   const { data: response } = useGetUpcomingInterviews(
-    {
-      page: 0,
-      size: 10,
-    },
+    params,
     {
       query: {
+        queryKey: [...getGetUpcomingInterviewsQueryKey(params), { isTermsLocked }],
         select: (data): { content: DashboardUpcomingInterviewResponse[]; totalElements: number } => ({
           content: data?.result?.content ?? [],
           totalElements: data?.result?.totalElements ?? 0,
