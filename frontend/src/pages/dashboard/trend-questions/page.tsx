@@ -51,7 +51,7 @@ function TrendQuestionsPageContent() {
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-2.5">
           <SmallLogoIcon className="h-6 w-6" />
-          <h1 className="title-l-bold">산업/직군별 질문 모아보기</h1>
+          <h1 className="title-l-bold">산업군&middot;직군별 질문 모아보기</h1>
         </div>
         <IndustryJobFilter filter={filter} />
       </div>
@@ -66,7 +66,7 @@ function TrendQuestionsPageSkeleton() {
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-2.5">
           <SmallLogoIcon className="h-6 w-6" />
-          <h1 className="title-l-bold">산업/직군별 질문 모아보기</h1>
+          <h1 className="title-l-bold">산업군&middot;직군별 질문 모아보기</h1>
         </div>
         <div className="bg-gray-white flex h-82.5 animate-pulse items-end gap-8 rounded-xl border border-gray-200 p-6">
           <div className="h-full w-1/3 animate-pulse rounded-xl bg-gray-100" />
