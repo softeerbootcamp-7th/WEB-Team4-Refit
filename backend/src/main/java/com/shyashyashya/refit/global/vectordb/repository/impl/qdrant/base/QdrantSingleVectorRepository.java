@@ -2,6 +2,7 @@ package com.shyashyashya.refit.global.vectordb.repository.impl.qdrant.base;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.shyashyashya.refit.global.property.QdrantProperty;
+import com.shyashyashya.refit.global.vectordb.model.ScoredVector;
 import com.shyashyashya.refit.global.vectordb.model.SingleVectorDocument;
 import com.shyashyashya.refit.global.vectordb.repository.VectorRepository;
 import io.qdrant.client.QdrantClient;
@@ -143,7 +144,7 @@ public abstract class QdrantSingleVectorRepository<K, V extends SingleVectorDocu
     }
 
     @Override
-    public List<K> searchSimilar(List<Float> queryVector, int topK) {
+    public List<ScoredVector<K>> searchSimilar(List<Float> queryVector, int topK) {
         Points.SearchPoints searchPoints = Points.SearchPoints.newBuilder()
                 .setCollectionName(collectionName)
                 .addAllVector(queryVector)
@@ -156,7 +157,7 @@ public abstract class QdrantSingleVectorRepository<K, V extends SingleVectorDocu
                 block(qdrantClient.searchAsync(searchPoints, timeout), "search similar points (top " + topK + ")");
 
         return results.stream()
-                .map(scoredPoint -> convertPointIdToId(scoredPoint.getId()))
+                .map(scoredPoint -> ScoredVector.of(convertPointIdToId(scoredPoint.getId()), scoredPoint.getScore()))
                 .collect(Collectors.toList());
     }
 
