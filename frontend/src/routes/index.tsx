@@ -14,6 +14,7 @@ import {
   MobileUnrecordedPage,
   MyCollectionsPage,
   MyInterviewsPage,
+  MyPage,
   NotFound,
   RecordConfirmPage,
   RecordLinkPage,
@@ -106,6 +107,10 @@ const router = createBrowserRouter([
                     Component: CollectionDetailPage,
                   },
                 ],
+              },
+              {
+                path: getChildPath(ROUTES.DASHBOARD_MY_PAGE, ROUTES.DASHBOARD),
+                Component: MyPage,
               },
             ],
           },

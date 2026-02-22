@@ -1,0 +1,1 @@
+export { useMyPageProfile } from './useMyPageProfile'
