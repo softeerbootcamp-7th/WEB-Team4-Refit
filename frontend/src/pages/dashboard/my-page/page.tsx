@@ -9,7 +9,7 @@ export default function MyPage() {
     <div className="mx-auto w-full max-w-3xl">
       <MyPageHeader />
       <MyPageProfileForm {...formProps} />
-      <OptionalTermsModal open={isTermsModalOpen} onClose={closeTermsModal} title="선택 약관" isEscapeKeyClosable={false} />
+      <OptionalTermsModal open={isTermsModalOpen} onClose={closeTermsModal} title="선택 약관" />
     </div>
   )
 }

@@ -66,10 +66,13 @@ const INSTANT_RECORD_ALLOWED_BASE_PATHS = [
   ROUTES.DASHBOARD_MY_INTERVIEWS,
   ROUTES.DASHBOARD_TREND_QUESTIONS,
   ROUTES.DASHBOARD_MY_COLLECTIONS,
+  ROUTES.DASHBOARD_MY_PAGE,
 ] as const
 
 function isAllowedInstantRecordPath(pathname: string) {
   if (pathname === ROUTES.DASHBOARD) return true
 
-  return INSTANT_RECORD_ALLOWED_BASE_PATHS.some((basePath) => pathname === basePath || pathname.startsWith(`${basePath}/`))
+  return INSTANT_RECORD_ALLOWED_BASE_PATHS.some(
+    (basePath) => pathname === basePath || pathname.startsWith(`${basePath}/`),
+  )
 }
