@@ -16,7 +16,7 @@ function mapReviewWaitingInterview(item: DashboardDebriefIncompletedInterviewRes
     id: interview?.interviewId ?? 0,
     reviewStatus: interview?.interviewReviewStatus ?? 'NOT_LOGGED',
     status: INTERVIEW_REVIEW_STATUS_LABEL[interview?.interviewReviewStatus ?? 'NOT_LOGGED'],
-    elapsedText: `면접 끝난지 ${item.passedDays ?? 0}일 지남`,
+    elapsedText: `면접 종료 후 ${item.passedDays ?? 0}일 경과`,
     companyName: interview?.companyName ?? '',
     companyLogoUrl: interview?.companyLogoUrl,
     industry: interview?.companyName === '현대자동차' ? '제조업' : 'IT/플랫폼',
@@ -26,7 +26,13 @@ function mapReviewWaitingInterview(item: DashboardDebriefIncompletedInterviewRes
 }
 
 export const useReviewWaitingInterviews = () => {
-  const { data: pages, isPending, isFetchingNextPage, hasNextPage, fetchNextPage } = useInfiniteQuery({
+  const {
+    data: pages,
+    isPending,
+    isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage,
+  } = useInfiniteQuery({
     queryKey: ['dashboard', 'review-waiting-interviews'],
     initialPageParam: 0,
     queryFn: ({ pageParam }) =>
@@ -48,9 +54,7 @@ export const useReviewWaitingInterviews = () => {
 
   const data: ReviewWaitingData[] = useMemo(
     () =>
-      (pages?.pages ?? [])
-        .flatMap((page) => page.result?.content ?? [])
-        .map((item) => mapReviewWaitingInterview(item)),
+      (pages?.pages ?? []).flatMap((page) => page.result?.content ?? []).map((item) => mapReviewWaitingInterview(item)),
     [pages?.pages],
   )
 
