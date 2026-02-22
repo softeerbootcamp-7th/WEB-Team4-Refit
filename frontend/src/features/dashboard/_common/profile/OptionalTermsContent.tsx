@@ -1,6 +1,6 @@
 export default function OptionalTermsContent() {
   return (
-    <div className="flex max-h-[46vh] flex-col gap-4 overflow-y-auto rounded-xl bg-gray-100 p-5">
+    <div className="flex max-h-[48vh] flex-col gap-4 overflow-y-auto rounded-xl bg-gray-100 p-5">
       <div className="flex flex-col gap-2">
         <p className="body-l-semibold">1. 이용 목적</p>
         <p className="body-m-medium text-gray-700">
