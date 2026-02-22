@@ -38,9 +38,9 @@ function RetroDetailContent() {
 
   if (isPdfOpen) {
     return (
-      <div className="grid h-full grid-cols-[80px_1fr_1fr]">
+      <div className="mx-auto grid h-full w-7xl grid-cols-[80px_1.2fr_1fr]">
         <DetailMinimizedSidebar qnaSets={qnaSets} activeIndex={activeIndex} onItemClick={handleItemClick} />
-        <div className="flex h-full flex-col gap-5 overflow-hidden p-6">
+        <div className="flex h-full flex-col gap-5 overflow-hidden p-6 pl-0">
           <DetailHeader title={title} isPdfOpen={isPdfOpen} onTogglePdf={togglePdf} />
           <RetroDetailSection
             interviewId={id}
