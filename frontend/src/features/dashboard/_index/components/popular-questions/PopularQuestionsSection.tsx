@@ -8,7 +8,13 @@ interface PopularQuestionsSectionProps {
   isTermsLocked: boolean
 }
 
-const DUMMY_POPULAR_QUESTIONS: PopularQuestionItem[] = Array.from({ length: 10 }, (_, index) => ({
+interface PopularQuestionRowItem extends PopularQuestionItem {
+  isPlaceholder?: boolean
+}
+
+const MAX_POPULAR_ROWS = 10
+
+const DUMMY_POPULAR_QUESTIONS: PopularQuestionRowItem[] = Array.from({ length: MAX_POPULAR_ROWS }, (_, index) => ({
   id: index + 1,
   rank: index + 1,
   category: '약관 동의가 필요합니다.',
@@ -19,7 +25,7 @@ const DUMMY_POPULAR_QUESTIONS: PopularQuestionItem[] = Array.from({ length: 10 }
 export default function PopularQuestionsSection({ isTermsLocked }: PopularQuestionsSectionProps) {
   const { data, nickname } = usePopularQuestions({ isTermsLocked })
   const navigate = useNavigate()
-  const rows = isTermsLocked ? DUMMY_POPULAR_QUESTIONS : data
+  const rows = isTermsLocked ? DUMMY_POPULAR_QUESTIONS : fillPopularQuestionPlaceholders(data)
 
   return (
     <section className="flex flex-col rounded-2xl bg-white p-6">
@@ -54,13 +60,37 @@ export default function PopularQuestionsSection({ isTermsLocked }: PopularQuesti
   )
 }
 
-function PopularQuestionRow({ item, index }: { item: PopularQuestionItem; index: number }) {
+function PopularQuestionRow({ item, index }: { item: PopularQuestionRowItem; index: number }) {
+  const rankTextClass = item.isPlaceholder ? 'text-gray-400' : 'text-gray-800'
+  const categoryTextClass = item.isPlaceholder ? 'text-gray-400' : 'text-gray-900'
+  const metaTextClass = item.isPlaceholder ? 'text-gray-300' : 'text-gray-500'
+
   return (
     <div className={`flex items-center gap-4 rounded-lg px-4 py-3 ${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}`}>
-      <span className="body-s-semibold w-8 shrink-0 text-gray-800">{item.rank}</span>
-      <span className="body-s-semibold min-w-0 flex-1 text-gray-900">{item.category}</span>
-      <span className="caption-l-medium shrink-0 text-gray-500">{item.industry}</span>
-      <span className="caption-l-medium shrink-0 text-gray-500">{item.jobCategory}</span>
+      <span className={`body-s-semibold w-8 shrink-0 ${rankTextClass}`}>{item.rank}</span>
+      <span className={`body-s-semibold min-w-0 flex-1 ${categoryTextClass}`}>{item.category}</span>
+      <span className={`caption-l-medium shrink-0 ${metaTextClass}`}>{item.industry}</span>
+      <span className={`caption-l-medium shrink-0 ${metaTextClass}`}>{item.jobCategory}</span>
     </div>
   )
+}
+
+function fillPopularQuestionPlaceholders(items: PopularQuestionItem[]): PopularQuestionRowItem[] {
+  if (items.length >= MAX_POPULAR_ROWS) return items.slice(0, MAX_POPULAR_ROWS)
+  if (items.length === 0) return items
+
+  const placeholders: PopularQuestionRowItem[] = Array.from({ length: MAX_POPULAR_ROWS - items.length }, (_, index) => {
+    const rank = items.length + index + 1
+
+    return {
+      id: 1000 + rank,
+      rank,
+      category: '데이터가 부족합니다.',
+      industry: '',
+      jobCategory: '',
+      isPlaceholder: true,
+    }
+  })
+
+  return [...items, ...placeholders]
 }
