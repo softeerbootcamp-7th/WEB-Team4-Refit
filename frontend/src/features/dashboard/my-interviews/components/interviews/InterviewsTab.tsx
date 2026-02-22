@@ -46,7 +46,7 @@ export default function InterviewsTab() {
           ) : (
             <h2 className="title-s-bold">내가 복기 완료한 면접</h2>
           )}
-          <FilterSortControls filter={activeFilter} onFilterChange={setActiveFilter} />
+          <FilterSortControls filter={activeFilter} onFilterChange={setActiveFilter} isSearching={isSearching} />
         </div>
         <InterviewListSection filter={activeFilter} />
       </section>
