@@ -27,7 +27,6 @@ import com.shyashyashya.refit.domain.user.repository.UserRepository;
 import com.shyashyashya.refit.global.auth.repository.RefreshTokenRepository;
 import com.shyashyashya.refit.global.auth.service.JwtEncoder;
 import com.shyashyashya.refit.global.config.TestQdrantConfig;
-import com.shyashyashya.refit.global.config.TestRedisConfig;
 import com.shyashyashya.refit.global.constant.AuthConstant;
 import com.shyashyashya.refit.global.util.HangulUtil;
 import io.restassured.RestAssured;
@@ -55,7 +54,7 @@ import java.util.List;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-@Import({ TestQdrantConfig.class, TestRedisConfig.class })
+@Import(TestQdrantConfig.class)
 public abstract class IntegrationTest {
 
     protected static final LocalDateTime NOW = LocalDateTime.now();
