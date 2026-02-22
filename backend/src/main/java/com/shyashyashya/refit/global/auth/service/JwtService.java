@@ -13,7 +13,6 @@ import java.time.Instant;
 import java.util.concurrent.locks.ReentrantLock;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,20 +23,23 @@ public class JwtService {
     private final AuthJwtProperty authJwtProperty;
     private final KeyLockUtil<String> keyLockUtil;
 
-    @Transactional
     public TokenPairDto publishTokenPair(@NotNull String email, @Nullable Long userId) {
-        Instant issuedAt = Instant.now();
-        String accessToken = jwtEncoder.encodeAccessJwt(email, userId, issuedAt);
-        String refreshToken = jwtEncoder.encodeRefreshJwt(email, userId, issuedAt);
+        ReentrantLock lock = keyLockUtil.acquire(email);
+        try {
+            Instant issuedAt = Instant.now();
+            String accessToken = jwtEncoder.encodeAccessJwt(email, userId, issuedAt);
+            String refreshToken = jwtEncoder.encodeRefreshJwt(email, userId, issuedAt);
 
-        Instant refreshTokenExpiration =
-                issuedAt.plus(authJwtProperty.tokenExpiration().refreshToken());
-        refreshTokenRepository.save(RefreshToken.create(refreshToken, email, refreshTokenExpiration, issuedAt));
+            Instant refreshTokenExpiration =
+                    issuedAt.plus(authJwtProperty.tokenExpiration().refreshToken());
+            refreshTokenRepository.save(RefreshToken.create(refreshToken, email, refreshTokenExpiration, issuedAt));
 
-        return TokenPairDto.of(accessToken, refreshToken);
+            return TokenPairDto.of(accessToken, refreshToken);
+        } finally {
+            keyLockUtil.release(email, lock);
+        }
     }
 
-    @Transactional
     public TokenReissueResultDto rotateRefreshToken(
             @NotNull String encodedRefreshJwt, @NotNull String email, @Nullable Long userId) {
         ReentrantLock lock = keyLockUtil.acquire(email);
