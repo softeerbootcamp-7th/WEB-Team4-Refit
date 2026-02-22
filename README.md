@@ -33,24 +33,12 @@
 
 ## 📋 목차
 
-1. [기술 아티클](#-기술-아티클)
-2. [서비스 소개](#-서비스-소개)
+1. [서비스 소개](#-서비스-소개)
+2. [팀원 소개](#-팀원-소개)
 3. [협업](#-협업)
 4. [프론트엔드](#-프론트엔드)
 5. [백엔드](#-백엔드)
-6. [팀원 소개](#-팀원-소개)
 
-<br/>
-
-## 📚 기술 아티클 
-|파트|제목|작성자|
-|---|---|---| 
-|공통|작성 예정|홍지운|
-|FE|작성 예정|홍지운|
-|FE|작성 예정|황주희|
-|BE|작성 예정|권찬|
-|BE|작성 예정|송영범|
-|BE|작성 예정|이장안|
 <br/>
 
 ## 🎤 서비스 소개
@@ -76,16 +64,26 @@
 * 내 기록뿐만 아니라, 다른 유저들이 공유한 면접 질문도 확인할 수 있어요.
 <br/>
 
+## 💻 팀원 소개
+
+| [권찬](https://github.com/kckc0608) | [송영범](https://github.com/zxc534) | [이장안](https://github.com/lja3723) | [홍지운](https://github.com/forhyundaisofteer) | [황주희](https://github.com/HIHJH) |
+|:--:|:--:|:--:|:--:|:--:|
+| <img width="160" src="https://ca.slack-edge.com/T09M55L7F6Y-U0A4HAETKM5-62e6d3ed8b99-512" /> | <img width="160" src="https://ca.slack-edge.com/T09M55L7F6Y-U0A5SBGK2HE-b41f95559171-512" /> | <img width="160" src="https://ca.slack-edge.com/T09M55L7F6Y-U0A4FKK090X-9bb3c968f4fb-512" /> | <img width="160" src="https://ca.slack-edge.com/T09M55L7F6Y-U0A597QMUKT-7b06f93d26d0-512" /> | <img width="160" src="https://ca.slack-edge.com/T09M55L7F6Y-U0A489XSA2H-1b753408a2fc-512" /> |
+| **BE** | **BE** | **BE** | **Lead / FE** | **FE** |
+
+<br/>
+
 ## 🤝 협업
 ### 스프린트
 리핏 팀은 Jira를 기반으로 업무를 관리하고, 1주 단위로 스프린트를 운영해요. 
 <br/>
 
-| 스프린트 명 | 스프린트 기간 | 백로그 |
-|---|---|---|
-| Refit 1주차 | 26-01-19 ~ 26-01-25 | [Refit 1주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20%22DEV%22%20AND%20sprint%20%3D%204%20ORDER%20BY%20created%20DESC)|
-| Refit 2주차 | 26-01-26 ~ 26-02-02 | [Refit 2주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%20AND%20sprint%20%3D%2039%20ORDER%20BY%20created%20DESC)|
-
+| 스프린트 명 | 스프린트 기간 | 스프린트 목표 | 백로그 |
+|---|---|---|---|
+| Refit 1주차 | 26-01-19 ~ 26-01-25 | | [Refit 1주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20%22DEV%22%20AND%20sprint%20%3D%204%20ORDER%20BY%20created%20DESC)|
+| Refit 2주차 | 26-01-26 ~ 26-02-02 | | [Refit 2주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%20AND%20sprint%20%3D%2039%20ORDER%20BY%20created%20DESC)|
+ 
+ <!--
 #### Refit 1주차
 - [공통] 디자인 핸드오프 파일 보면서 애매한 기획/디자인 모두 픽스 
 - [공통] Jira Automation를 이용한 workflow 개발
@@ -98,9 +96,10 @@
 - [FE] 캘린더, 녹음, 기록 확인, 이력서 연결 뷰 개발 
 - [FE] 공통 컴포넌트 개발 
 - [FE] Vercel을 이용한 CI/CD 개발 
-- [BE] OAuth 구글 로그인 개발- [BE] Whisper, Google STT API 검토  
+- [BE] OAuth 구글 로그인 개발- [BE] Whisper, Google STT API 검토   
+-->
 
-### Jira Workflow
+<!-- ### Jira Workflow
 Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git 컨벤션을 일관되게 유지하기 위해 Jira Automation을 이용해 Workflow를 구현했어요. 혼란을 방지하기 위해 Jira에서 발생한 변경만 GitHub에 반영하는 단방향 흐름으로 설계했고, 커스텀 필드들을 만들어 활용했어요.
 
 #### Jira 티켓이 생성될 때
@@ -117,7 +116,7 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
 
 <img width="451" height="710" alt="Screenshot 2026-01-27 at 4 01 53 PM" src="https://github.com/user-attachments/assets/ec9ad1d4-d5f0-412e-a676-99b5e083e664" />
 
-
+-->
 
 
 
@@ -125,6 +124,13 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
 
 
 ## 🐥 프론트엔드
+
+### 📚 기술 아티클 
+|파트|제목|작성자|
+|---|---|---| 
+|FE|작성 예정|홍지운|
+|FE|작성 예정|황주희|
+
 ### 기술 스택
 <table>
     <thead>
@@ -197,6 +203,12 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
 
 
 ## 💾 백엔드
+### 📚 기술 아티클 
+|파트|제목|작성자|
+|---|---|---| 
+|BE|작성 예정|권찬|
+|BE|작성 예정|송영범|
+|BE|작성 예정|이장안|
 ### 기술 스택
 <table>
     <thead>
@@ -247,11 +259,4 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
 ### ERD
 <img src="https://github.com/user-attachments/assets/eed01b33-b71e-4882-b6d2-83331ad5249a"/>
 <br/>
-
-## 💻 팀원 소개
-
-| [권찬](https://github.com/kckc0608) | [송영범](https://github.com/zxc534) | [이장안](https://github.com/lja3723) | [홍지운](https://github.com/forhyundaisofteer) | [황주희](https://github.com/HIHJH) |
-|:--:|:--:|:--:|:--:|:--:|
-| <img width="160" src="https://ca.slack-edge.com/T09M55L7F6Y-U0A4HAETKM5-62e6d3ed8b99-512" /> | <img width="160" src="https://ca.slack-edge.com/T09M55L7F6Y-U0A5SBGK2HE-b41f95559171-512" /> | <img width="160" src="https://ca.slack-edge.com/T09M55L7F6Y-U0A4FKK090X-9bb3c968f4fb-512" /> | <img width="160" src="https://ca.slack-edge.com/T09M55L7F6Y-U0A597QMUKT-7b06f93d26d0-512" /> | <img width="160" src="https://ca.slack-edge.com/T09M55L7F6Y-U0A489XSA2H-1b753408a2fc-512" /> |
-| **BE** | **BE** | **BE** | **Lead / FE** | **FE** |
 
