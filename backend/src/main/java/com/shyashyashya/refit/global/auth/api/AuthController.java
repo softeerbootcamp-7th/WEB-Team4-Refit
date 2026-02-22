@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -53,5 +54,21 @@ public class AuthController {
                 .header(HttpHeaders.SET_COOKIE, accessTokenCookie)
                 .header(HttpHeaders.SET_COOKIE, refreshTokenCookie)
                 .body(response);
+    }
+
+    @Operation(summary = "로그아웃", description = "엑세스 토큰과 리프레시 토큰 쿠키를 삭제하고, DB의 리프레시 토큰을 폐기합니다.")
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<Void>> logout(
+            @CookieValue(value = AuthConstant.REFRESH_TOKEN, required = false) String refreshTokenFromHeader) {
+
+        authService.logout(refreshTokenFromHeader);
+
+        String deleteAccessTokenCookie = cookieUtil.deleteCookie(AuthConstant.ACCESS_TOKEN);
+        String deleteRefreshTokenCookie = cookieUtil.deleteCookie(AuthConstant.REFRESH_TOKEN);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, deleteAccessTokenCookie)
+                .header(HttpHeaders.SET_COOKIE, deleteRefreshTokenCookie)
+                .body(ApiResponse.success(COMMON200));
     }
 }
