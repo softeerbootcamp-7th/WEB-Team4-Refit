@@ -4,6 +4,7 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.INDUSTRY_NOT_FOU
 import static com.shyashyashya.refit.global.exception.ErrorCode.JOB_CATEGORY_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.USER_NICKNAME_CONFLICT;
 import static com.shyashyashya.refit.global.exception.ErrorCode.USER_SIGNUP_EMAIL_CONFLICT;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static com.shyashyashya.refit.unit.fixture.IndustryFixture.TEST_INDUSTRY;
 import static com.shyashyashya.refit.unit.fixture.JobCategoryFixture.TEST_JOB_CATEGORY;
@@ -16,6 +17,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -223,6 +225,33 @@ class UserServiceTest {
             // then
             verify(userValidator, times(1)).validateNicknameNotConflict(anyString());
             verify(user, times(1)).updateMyPage(anyString(), any(), any());
+        }
+
+        @Test
+        void 프로필_정보_수정시_요청_일부가_null이면_해당_필드는_수정을_하지_않는다() {
+            // given
+            String newNickname = "updatedNickname";
+            MyProfileUpdateRequest request = new MyProfileUpdateRequest(
+                    newNickname,
+                    null,
+                    null);
+            User user = mock(User.class);
+
+            given(requestUserContext.getRequestUser()).willReturn(user);
+
+            // when
+            userService.updateMyProfile(request);
+
+            // then
+            verify(userValidator, times(1)).validateNicknameNotConflict(newNickname);
+
+            verify(industryRepository, never()).findById(anyLong());
+            verify(jobCategoryRepository, never()).findById(anyLong());
+            verify(user, times(1)).updateMyPage(
+                    eq(newNickname),
+                    eq(null),
+                    eq(null)
+            );
         }
 
         @Test
