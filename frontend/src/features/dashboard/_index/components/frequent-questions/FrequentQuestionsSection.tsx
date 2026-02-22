@@ -42,16 +42,13 @@ export default function FrequentQuestionsSection({ isTermsLocked }: FrequentQues
   )
 
   const categoriesToRender = isTermsLocked ? DUMMY_CATEGORIES : fillCategoryPlaceholders(categories)
-  const maxCount = Math.max(
-    ...categoriesToRender.filter((item) => !item.isPlaceholder).map((item) => item.count),
-    0,
-  )
+  const maxCount = Math.max(...categoriesToRender.filter((item) => !item.isPlaceholder).map((item) => item.count), 0)
 
   return (
     <section className="flex flex-col rounded-2xl bg-white p-6">
       <div className="mb-6 flex items-center gap-2">
         <NoteIcon className="h-6 w-6 text-gray-400" />
-        <h2 className="body-l-semibold text-gray-900">빈출 카테고리 질문 TOP 5</h2>
+        <h2 className="body-l-semibold text-gray-900">빈출 질문 카테고리 TOP 5</h2>
       </div>
       {!isTermsLocked && categories.length === 0 ? (
         <div className="body-m-medium flex min-h-28 items-center justify-center text-center text-gray-400">
@@ -82,7 +79,12 @@ function CategoryList({ categories, maxCount }: { categories: QuestionCategory[]
               <span className="body-s-medium text-gray-900">{item.count}개</span>
             </div>
           )}
-          <CategoryBar count={item.count} maxCount={maxCount} colorClass={item.colorClass} isPlaceholder={item.isPlaceholder} />
+          <CategoryBar
+            count={item.count}
+            maxCount={maxCount}
+            colorClass={item.colorClass}
+            isPlaceholder={item.isPlaceholder}
+          />
         </div>
       ))}
     </div>
@@ -119,12 +121,15 @@ function CategoryBar({
 function fillCategoryPlaceholders(categories: QuestionCategory[]): QuestionCategory[] {
   if (categories.length >= MAX_CATEGORY_ROWS) return categories.slice(0, MAX_CATEGORY_ROWS)
 
-  const placeholders: QuestionCategory[] = Array.from({ length: MAX_CATEGORY_ROWS - categories.length }, (_, index) => ({
-    label: `placeholder-${index}`,
-    count: 0,
-    colorClass: '',
-    isPlaceholder: true,
-  }))
+  const placeholders: QuestionCategory[] = Array.from(
+    { length: MAX_CATEGORY_ROWS - categories.length },
+    (_, index) => ({
+      label: `placeholder-${index}`,
+      count: 0,
+      colorClass: '',
+      isPlaceholder: true,
+    }),
+  )
 
   return [...categories, ...placeholders]
 }
