@@ -14,6 +14,7 @@ import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetReviewUpdateReques
 import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetResponse;
 import com.shyashyashya.refit.domain.qnaset.dto.response.QnaSetScrapFolderResponse;
+import com.shyashyashya.refit.domain.qnaset.event.QuestionEmbeddingDeletionEvent;
 import com.shyashyashya.refit.domain.qnaset.event.QuestionEmbeddingEvent;
 import com.shyashyashya.refit.domain.qnaset.model.PdfHighlighting;
 import com.shyashyashya.refit.domain.qnaset.model.PdfHighlightingRect;
@@ -117,6 +118,7 @@ public class QnaSetService {
         }
 
         qnaSetRepository.delete(qnaSet);
+        eventPublisher.publishEvent(QuestionEmbeddingDeletionEvent.of(qnaSetId));
     }
 
     @Transactional
