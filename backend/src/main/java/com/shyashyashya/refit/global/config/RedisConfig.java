@@ -24,9 +24,9 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
 
         // Instant, LocalDateTime 등 Java 8 날짜/시간 타입을 지원하는 ObjectMapper 설정
         ObjectMapper objectMapper = new ObjectMapper();
