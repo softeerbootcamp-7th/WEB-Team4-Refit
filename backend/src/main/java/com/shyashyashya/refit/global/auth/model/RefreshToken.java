@@ -1,5 +1,6 @@
 package com.shyashyashya.refit.global.auth.model;
 
+import java.time.Duration;
 import java.time.Instant;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -31,7 +32,7 @@ public class RefreshToken {
     }
 
     @TimeToLive
-    public long getTimeToLive() {
-        return Math.max(0, java.time.Duration.between(Instant.now(), expiryDate).getSeconds());
+    public long getTimeToLive(Instant now) {
+        return Math.max(0, Duration.between(now, expiryDate).getSeconds());
     }
 }
