@@ -41,7 +41,7 @@ public class JwtService {
         // TODO: 서버가 리프레시토큰 테이블을 주기적으로 만료된 것들을 청소한다고 할때, 아래 경우를 고려해야 됨
         // TODO: n개의 기기를 가진 사용자가 그 중 1개의 기기에서 RT가 만료된다면? 이미 서버에 의해 삭제된 RT를 사용자가 보내는 경우인데
         // TODO: 이것을 과연 '탈취'라고 말할 수 있을까? 이런 경우를 구분한다면 어떻게 해야할까
-        if (!refreshTokenRepository.existsByToken(encodedRefreshJwt)) {
+        if (!refreshTokenRepository.existsById(encodedRefreshJwt)) {
             refreshTokenRepository.deleteByEmail(email);
             throw new RefreshTokenTheftException();
         }
@@ -54,7 +54,7 @@ public class JwtService {
         Instant refreshTokenExpiration =
                 issuedAt.plus(authJwtProperty.tokenExpiration().refreshToken());
 
-        refreshTokenRepository.deleteByTokenAndEmail(encodedRefreshJwt, email);
+        refreshTokenRepository.deleteById(encodedRefreshJwt);
         refreshTokenRepository.save(RefreshToken.create(newRefreshToken, email, refreshTokenExpiration));
 
         return TokenReissueResultDto.createReissueProcessed(userId, newAccessToken, newRefreshToken);

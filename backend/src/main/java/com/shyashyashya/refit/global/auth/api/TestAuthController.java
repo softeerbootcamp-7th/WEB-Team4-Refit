@@ -75,7 +75,7 @@ public class TestAuthController {
         String deleteRefreshTokenCookie = cookieUtil.deleteCookie(AuthConstant.REFRESH_TOKEN);
 
         if (refreshToken != null) {
-            refreshTokenRepository.deleteByToken(refreshToken);
+            refreshTokenRepository.deleteById(refreshToken);
         }
 
         var response = ApiResponse.success(COMMON200);
