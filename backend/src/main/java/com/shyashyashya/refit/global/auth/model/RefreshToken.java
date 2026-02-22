@@ -23,16 +23,16 @@ public class RefreshToken {
 
     private Instant expiryDate;
 
-    public static RefreshToken create(String token, String email, Instant expiryDate) {
+    @TimeToLive
+    private long timeToLive;
+
+    public static RefreshToken create(String token, String email, Instant expiryDate, Instant issuedAt) {
+        long ttlSeconds = Math.max(0, Duration.between(issuedAt, expiryDate).getSeconds());
         return RefreshToken.builder()
                 .token(token)
                 .email(email)
                 .expiryDate(expiryDate)
+                .timeToLive(ttlSeconds)
                 .build();
-    }
-
-    @TimeToLive
-    public long getTimeToLive(Instant now) {
-        return Math.max(0, Duration.between(now, expiryDate).getSeconds());
     }
 }

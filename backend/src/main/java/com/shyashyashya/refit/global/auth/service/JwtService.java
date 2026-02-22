@@ -32,7 +32,7 @@ public class JwtService {
 
         Instant refreshTokenExpiration =
                 issuedAt.plus(authJwtProperty.tokenExpiration().refreshToken());
-        refreshTokenRepository.save(RefreshToken.create(refreshToken, email, refreshTokenExpiration));
+        refreshTokenRepository.save(RefreshToken.create(refreshToken, email, refreshTokenExpiration, issuedAt));
 
         return TokenPairDto.of(accessToken, refreshToken);
     }
@@ -60,7 +60,7 @@ public class JwtService {
                     issuedAt.plus(authJwtProperty.tokenExpiration().refreshToken());
 
             refreshTokenRepository.deleteById(encodedRefreshJwt);
-            refreshTokenRepository.save(RefreshToken.create(newRefreshToken, email, refreshTokenExpiration));
+            refreshTokenRepository.save(RefreshToken.create(newRefreshToken, email, refreshTokenExpiration, issuedAt));
 
             return TokenReissueResultDto.createReissueProcessed(userId, newAccessToken, newRefreshToken);
         } finally {
