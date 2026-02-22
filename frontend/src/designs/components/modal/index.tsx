@@ -21,6 +21,7 @@ export interface ModalProps {
   size?: ModalSize
   className?: string
   isOutsideClickClosable?: boolean
+  isEscapeKeyClosable?: boolean
 }
 
 const Modal = ({
@@ -33,6 +34,7 @@ const Modal = ({
   className = '',
   size = 'md',
   isOutsideClickClosable = false,
+  isEscapeKeyClosable = true,
 }: ModalProps) => {
   const contentRef = useRef<HTMLDivElement>(null)
   const titleId = useId()
@@ -51,6 +53,7 @@ const Modal = ({
     document.body.style.overflow = 'hidden'
 
     const handleEsc = (e: KeyboardEvent) => {
+      if (!isEscapeKeyClosable) return
       if (e.key === 'Escape') onClose()
     }
     window.addEventListener('keydown', handleEsc)
@@ -59,7 +62,7 @@ const Modal = ({
       document.body.style.overflow = prevOverflow
       window.removeEventListener('keydown', handleEsc)
     }
-  }, [open, onClose])
+  }, [open, onClose, isEscapeKeyClosable])
 
   if (!open) return null
   const portalRoot = document.getElementById('modal-root')

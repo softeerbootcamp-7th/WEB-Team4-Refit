@@ -1,4 +1,5 @@
-import { MyPageHeader, MyPageProfileForm, MyPageTermsModal } from '@/features/dashboard/my-page/components'
+import { OptionalTermsModal } from '@/features/dashboard/_common/profile'
+import { MyPageHeader, MyPageProfileForm } from '@/features/dashboard/my-page/components'
 import { useMyPageProfile } from '@/features/dashboard/my-page/hooks'
 
 export default function MyPage() {
@@ -8,7 +9,7 @@ export default function MyPage() {
     <div className="mx-auto w-full max-w-3xl">
       <MyPageHeader />
       <MyPageProfileForm {...formProps} />
-      <MyPageTermsModal open={isTermsModalOpen} onClose={closeTermsModal} />
+      <OptionalTermsModal open={isTermsModalOpen} onClose={closeTermsModal} title="선택 약관" isEscapeKeyClosable={false} />
     </div>
   )
 }
