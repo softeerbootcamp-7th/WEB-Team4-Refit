@@ -17,6 +17,7 @@ import com.shyashyashya.refit.global.auth.dto.TokenPairDto;
 import com.shyashyashya.refit.global.auth.service.JwtService;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.util.RequestUserContext;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,13 +76,15 @@ public class UserService {
     public void updateMyProfile(MyProfileUpdateRequest myProfileUpdateRequest) {
         User user = requestUserContext.getRequestUser();
 
-        Industry industry = industryRepository
-                .findById(myProfileUpdateRequest.industryId())
-                .orElseThrow(() -> new CustomException(INDUSTRY_NOT_FOUND));
+        Industry industry = Optional.ofNullable(myProfileUpdateRequest.industryId())
+                .map(id -> industryRepository.findById(id).orElseThrow(() -> new CustomException(INDUSTRY_NOT_FOUND)))
+                .orElse(null);
 
-        JobCategory jobCategory = jobCategoryRepository
-                .findById(myProfileUpdateRequest.jobCategoryId())
-                .orElseThrow(() -> new CustomException(JOB_CATEGORY_NOT_FOUND));
+        JobCategory jobCategory = Optional.ofNullable(myProfileUpdateRequest.jobCategoryId())
+                .map(id -> jobCategoryRepository
+                        .findById(id)
+                        .orElseThrow(() -> new CustomException(JOB_CATEGORY_NOT_FOUND)))
+                .orElse(null);
 
         userValidator.validateNicknameNotConflict(myProfileUpdateRequest.nickname());
         user.updateMyPage(myProfileUpdateRequest.nickname(), industry, jobCategory);
