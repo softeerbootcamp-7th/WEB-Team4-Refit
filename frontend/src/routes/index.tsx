@@ -7,6 +7,8 @@ import {
   CollectionDetailPage,
   DashboardPage,
   DifficultQuestionPage,
+  Forbidden,
+  InterviewNotFound,
   LandingPage,
   MobilePage,
   MobileRecordPage,
@@ -25,6 +27,7 @@ import {
   SignupPage,
   TrendQuestionsPage,
 } from '@/pages'
+import InterviewRouteErrorBoundary from '@/routes/InterviewRouteErrorBoundary'
 import { handleAuthRouting, HandleMobileRouting } from '@/routes/middleware'
 import { ROUTES } from '@/routes/routes'
 
@@ -64,6 +67,7 @@ const router = createBrowserRouter([
           {
             path: getChildPath(ROUTES.MOBILE_RECORD, ROUTES.MOBILE),
             Component: MobileRecordPage,
+            ErrorBoundary: InterviewRouteErrorBoundary,
           },
         ],
       },
@@ -111,6 +115,7 @@ const router = createBrowserRouter([
           },
           {
             path: ROUTES.RECORD,
+            ErrorBoundary: InterviewRouteErrorBoundary,
             children: [
               { index: true, Component: RecordPage },
               {
@@ -125,6 +130,7 @@ const router = createBrowserRouter([
           },
           {
             path: ROUTES.RETRO,
+            ErrorBoundary: InterviewRouteErrorBoundary,
             children: [
               {
                 index: true,
@@ -137,6 +143,14 @@ const router = createBrowserRouter([
             ],
           },
         ],
+      },
+      {
+        path: ROUTES.FORBIDDEN,
+        Component: Forbidden,
+      },
+      {
+        path: ROUTES.INTERVIEW_NOT_FOUND,
+        Component: InterviewNotFound,
       },
       {
         path: '*',
