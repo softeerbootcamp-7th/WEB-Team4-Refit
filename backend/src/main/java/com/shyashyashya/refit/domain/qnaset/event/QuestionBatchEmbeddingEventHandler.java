@@ -35,12 +35,17 @@ public class QuestionBatchEmbeddingEventHandler {
 
     @Async("embeddingTaskExecutor")
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void handleQuestionDeletedEvent(QuestionBatchEmbeddingEvent event) {
+    public void handleQuestionBatchEmbeddingEvent(QuestionBatchEmbeddingEvent event) {
         try {
-            List<List<Float>> vectors = generateEmbeddings(event.qnaSets());
-            log.info(
-                    "[handleQuestionDeletedEvent] 질답세트 ID {}의 Gemini API로부터 임베딩 응답 수신 성공",
-                    event.qnaSets().get(0));
+            List<QnaSet> qnaSets = event.qnaSets();
+
+            if (qnaSets == null || qnaSets.isEmpty()) {
+                log.info("[handleQuestionDeletedEvent] 질답 세트가 비어있으므로 임베딩 생성 이벤트를 조기 종료합니다.");
+                return;
+            }
+
+            List<List<Float>> vectors = generateEmbeddings(qnaSets);
+            log.info("[handleQuestionDeletedEvent] Gemini API로부터 임베딩 배치 생성 응답 수신 성공");
 
             for (int i = 0; i < vectors.size(); i++) {
                 QnaSet qnaSet = event.qnaSets().get(i);
@@ -60,7 +65,7 @@ public class QuestionBatchEmbeddingEventHandler {
                 }
             }
         } catch (Throwable e) {
-            log.error("[handleQuestionDeletedEvent] 질답세트들의 질문 임베딩 생성 및 카테고리 분류 작업 중 오류 발생", e);
+            log.error("[handleQuestionDeletedEvent] 질답세트들의 질문 임베딩 배치 생성 및 카테고리 분류 작업 중 오류 발생", e);
             throw e;
         }
     }
