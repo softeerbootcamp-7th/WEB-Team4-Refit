@@ -30,6 +30,8 @@ export function PdfPage({ pdf, pageNumber, containerSize, zoom }: PdfPageProps) 
     isLinkingMode,
     pendingSelection,
     setPendingSelection,
+    highlights,
+    linkingQnaSetId,
   })
 
   useEffect(() => {

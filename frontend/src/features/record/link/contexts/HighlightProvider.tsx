@@ -45,6 +45,12 @@ export function HighlightProvider({ qnaSetIds, hasPdf: initialHasPdf, children }
     if (linkingQnaSetId === null) return
     const prevHighlight = highlights.get(linkingQnaSetId)
 
+    if (prevHighlight && isHighlightEqual(prevHighlight, data)) {
+      setLinkingQnaSetId(null)
+      setPendingSelection(null)
+      return
+    }
+
     setHighlights((prev) => new Map(prev).set(linkingQnaSetId, data))
     setSaveErrors((prev) => {
       const next = new Map(prev)
@@ -162,4 +168,17 @@ function buildInitialHighlights(
   })
 
   return map
+}
+
+function isHighlightEqual(a: HighlightData, b: HighlightData): boolean {
+  if (a.text !== b.text) return false
+  if (a.rects.length !== b.rects.length) return false
+  return a.rects.every(
+    (r, i) =>
+      r.pageNumber === b.rects[i].pageNumber &&
+      r.x === b.rects[i].x &&
+      r.y === b.rects[i].y &&
+      r.width === b.rects[i].width &&
+      r.height === b.rects[i].height,
+  )
 }
