@@ -70,10 +70,9 @@ public class JwtService {
         }
     }
 
-    @Transactional
     public void deleteRefreshToken(String refreshToken) {
         if (refreshToken != null) {
-            refreshTokenRepository.deleteByToken(refreshToken);
+            refreshTokenRepository.deleteById(refreshToken);
         }
     }
 }
