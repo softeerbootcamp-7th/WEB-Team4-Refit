@@ -460,14 +460,21 @@ public class QnaSetIntegrationTest extends IntegrationTest {
             createAndSavePdfHighlighting(pdfHighlightUpdateRequest, qnaSetWithPdfHighlighting);
         }
 
-        @Test
-        void 인터뷰가_질답_세트_검토_중_상태이면_질답_세트_삭제에_성공한다() {
+        @ParameterizedTest
+        @EnumSource(value = InterviewReviewStatus.class, names = {"QNA_SET_DRAFT", "DEBRIEF_COMPLETED"})
+        void 인터뷰가_질답_세트_검토_중_또는_회고_완료_상태이면_질답_세트_삭제에_성공한다(InterviewReviewStatus reviewStatus) {
             // given
+            var interviewCreateRequest1 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview interview = createAndSaveInterview(interviewCreateRequest1, reviewStatus);
+
+            var qnaSetCreateRequest1 = new QnaSetCreateRequest("test question text", "test answer text");
+            QnaSet qnaSet = createAndSaveQnaSet(qnaSetCreateRequest1, interview, true);
 
             // when & then
             given(spec)
             .when()
-                    .delete("/qna-set/" + qnaSetDraftQnaSetId)
+                    .delete("/qna-set/" + qnaSet.getId())
             .then()
                     .statusCode(200)
                     .body("code", equalTo(COMMON204.name()))
@@ -475,14 +482,21 @@ public class QnaSetIntegrationTest extends IntegrationTest {
                     .body("result", nullValue());
         }
 
-        @Test
-        void 인터뷰가_질답_세트_검토_중_상태가_아니면_질답_세트_삭제에_실패한다() {
+        @ParameterizedTest
+        @EnumSource(value = InterviewReviewStatus.class, mode = EnumSource.Mode.EXCLUDE, names = {"QNA_SET_DRAFT", "DEBRIEF_COMPLETED"})
+        void 인터뷰가_질답_세트_검토_중_또는_회고_완료_상태가_아니면_질답_세트_삭제에_실패한다(InterviewReviewStatus reviewStatus) {
             // given
+            var interviewCreateRequest1 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview interview = createAndSaveInterview(interviewCreateRequest1, reviewStatus);
+
+            var qnaSetCreateRequest1 = new QnaSetCreateRequest("test question text", "test answer text");
+            QnaSet qnaSet = createAndSaveQnaSet(qnaSetCreateRequest1, interview, true);
 
             // when & then
             given(spec)
             .when()
-                    .delete("/qna-set/" + debriefCompletedQnaSetId)
+                    .delete("/qna-set/" + qnaSet.getId())
             .then()
                     .statusCode(400)
                     .body("code", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.name()))
