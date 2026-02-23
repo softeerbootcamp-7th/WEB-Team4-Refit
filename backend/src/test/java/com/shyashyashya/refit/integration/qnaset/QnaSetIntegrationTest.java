@@ -1408,9 +1408,9 @@ public class QnaSetIntegrationTest extends IntegrationTest {
         @EnumSource(
                 value = InterviewReviewStatus.class,
                 mode = EnumSource.Mode.EXCLUDE,
-                names = "QNA_SET_DRAFT"
+                names = {"QNA_SET_DRAFT", "DEBRIEF_COMPLETED"}
         )
-        void 인터뷰가_질답_세트_검토_중_상태가_아니면_PDF_하이라이팅_전체_삭제에_실패한다(InterviewReviewStatus reviewStatus) {
+        void 인터뷰가_질답_세트_검토_중_또는_회고_완료_상태가_아니면_PDF_하이라이팅_전체_삭제에_실패한다(InterviewReviewStatus reviewStatus) {
             // given
             var interviewCreateRequest = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0),
