@@ -6,15 +6,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.MDC;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+@Component
 @Slf4j
-@RequiredArgsConstructor
 public class LoggingFilter extends OncePerRequestFilter {
 
     private static final String TRACE_ID = "traceId";
@@ -37,7 +38,7 @@ public class LoggingFilter extends OncePerRequestFilter {
         String queryString = request.getQueryString();
         String decodedQueryString = "";
         if (queryString != null && !queryString.isEmpty()) {
-            decodedQueryString = "?" + URLDecoder.decode(queryString, java.nio.charset.StandardCharsets.UTF_8);
+            decodedQueryString = "?" + URLDecoder.decode(queryString, StandardCharsets.UTF_8);
         }
         String requestUriWithQuery = uri + decodedQueryString;
 
@@ -55,22 +56,21 @@ public class LoggingFilter extends OncePerRequestFilter {
     }
 
     private String getClientIp(HttpServletRequest request) {
-        String ip = request.getHeader("X-Forwarded-For");
-        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("Proxy-Client-IP");
+        String[] headers = {
+            "X-Forwarded-For", "Proxy-Client-IP", "WL-Proxy-Client-IP", "HTTP_CLIENT_IP", "HTTP_X_FORWARDED_FOR"
+        };
+
+        for (String header : headers) {
+            String ip = request.getHeader(header);
+
+            if (ip != null && !ip.isEmpty() && !"unknown".equalsIgnoreCase(ip)) {
+                if ("X-Forwarded-For".equals(header) && ip.contains(",")) {
+                    return ip.split(",")[0].trim();
+                }
+                return ip;
+            }
         }
-        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_CLIENT_IP");
-        }
-        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
-        }
-        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getRemoteAddr();
-        }
-        return ip;
+
+        return request.getRemoteAddr();
     }
 }
