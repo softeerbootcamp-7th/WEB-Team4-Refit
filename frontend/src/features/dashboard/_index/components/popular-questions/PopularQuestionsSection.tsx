@@ -32,7 +32,7 @@ export default function PopularQuestionsSection({ isTermsLocked }: PopularQuesti
       <div className="mb-5 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <NoteIcon className="h-6 w-6 text-gray-400" />
-          <h2 className="body-l-semibold text-gray-900">{nickname}님의 관심 산업 및 직군에서 많이 나온 질문 TOP 10</h2>
+          <h2 className="body-l-semibold text-gray-900">{nickname}님의 관심 산업 및 직군의 최신 질문 TOP 10</h2>
         </div>
         <button
           type="button"
