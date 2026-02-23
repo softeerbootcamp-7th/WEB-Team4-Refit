@@ -16,6 +16,7 @@ type RetroPdfPanelProps = {
   hasPdf: boolean
   qnaSetIds: number[]
   startPage?: 'first' | 'first-highlight'
+  onHighlightRectClick?: (qnaSetId: number) => void
 }
 
 export function RetroPdfPanel({
@@ -23,6 +24,7 @@ export function RetroPdfPanel({
   hasPdf: initialHasPdf,
   qnaSetIds,
   startPage = 'first-highlight',
+  onHighlightRectClick,
 }: RetroPdfPanelProps) {
   const [hasPdf, setHasPdf] = useState(initialHasPdf)
   const [selectedPage, setSelectedPage] = useState<{ key: string; page: number } | null>(null)
@@ -125,6 +127,7 @@ export function RetroPdfPanel({
             containerSize={containerSize}
             savedRects={savedRects}
             zoom={zoom}
+            onHighlightRectClick={onHighlightRectClick}
           />
         )}
       </div>

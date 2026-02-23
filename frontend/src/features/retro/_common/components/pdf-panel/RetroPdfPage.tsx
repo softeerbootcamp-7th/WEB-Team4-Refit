@@ -13,9 +13,17 @@ type RetroPdfPageProps = {
   containerSize: ContainerSize
   savedRects: SavedRect[]
   zoom: number
+  onHighlightRectClick?: (qnaSetId: number) => void
 }
 
-export function RetroPdfPage({ pdf, pageNumber, containerSize, savedRects, zoom }: RetroPdfPageProps) {
+export function RetroPdfPage({
+  pdf,
+  pageNumber,
+  containerSize,
+  savedRects,
+  zoom,
+  onHighlightRectClick,
+}: RetroPdfPageProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const textLayerRef = useRef<HTMLDivElement>(null)
@@ -83,7 +91,7 @@ export function RetroPdfPage({ pdf, pageNumber, containerSize, savedRects, zoom 
       <div ref={pdfContentRef} className="relative m-auto shrink-0 overflow-hidden bg-white">
         <canvas ref={canvasRef} className="block bg-white" />
         <div ref={textLayerRef} className="textLayer absolute inset-0" />
-        <HighlightLayer savedRects={pageRects} pendingRects={[]} />
+        <HighlightLayer savedRects={pageRects} pendingRects={[]} onSavedRectClick={onHighlightRectClick} />
         {!hasSelectableText && (
           <p className="body-s-medium pointer-events-none absolute right-2 bottom-2 rounded bg-white/90 px-2 py-1 text-gray-500">
             이미지 기반 PDF라 텍스트 선택이 어려울 수 있어요.

@@ -5,13 +5,19 @@ type SavedRect = HighlightRect & { qnaSetId: number; rectIndex: number }
 type HighlightLayerProps = {
   savedRects: SavedRect[]
   pendingRects: HighlightRect[]
+  onSavedRectClick?: (qnaSetId: number) => void
 }
 
-export function HighlightLayer({ savedRects, pendingRects }: HighlightLayerProps) {
+export function HighlightLayer({ savedRects, pendingRects, onSavedRectClick }: HighlightLayerProps) {
   return (
     <>
       {savedRects.map((rect) => (
-        <HighlightRectDiv key={`saved-${rect.qnaSetId}-${rect.rectIndex}`} rect={rect} variant="saved" />
+        <HighlightRectDiv
+          key={`saved-${rect.qnaSetId}-${rect.rectIndex}`}
+          rect={rect}
+          variant="saved"
+          onClick={onSavedRectClick ? () => onSavedRectClick(rect.qnaSetId) : undefined}
+        />
       ))}
       {pendingRects.map((rect, i) => (
         <HighlightRectDiv key={`pending-${i}`} rect={rect} variant="pending" />
@@ -23,16 +29,19 @@ export function HighlightLayer({ savedRects, pendingRects }: HighlightLayerProps
 type HighlightRectDivProps = {
   rect: HighlightRect
   variant: 'saved' | 'pending'
+  onClick?: () => void
 }
 
-function HighlightRectDiv({ rect, variant }: HighlightRectDivProps) {
-  // TODO: 색상 변경 (현재는 pending: gray, saved: yellow)
+function HighlightRectDiv({ rect, variant, onClick }: HighlightRectDivProps) {
   const bgColor = variant === 'saved' ? 'bg-yellow-400/40' : 'bg-gray-300/40'
+  const interactiveClassName = onClick
+    ? 'pointer-events-auto cursor-pointer hover:bg-yellow-400/55'
+    : 'pointer-events-none'
 
   return (
-    // TODO: div 대신 absolute position된 canvas로 변경 고려 / transform 등 GPU 가속 활용 고민
     <div
-      className={`pointer-events-none absolute ${bgColor}`}
+      className={`absolute transition-colors ${bgColor} ${interactiveClassName}`}
+      onClick={onClick}
       style={{
         left: `${rect.x * 100}%`,
         top: `${rect.y * 100}%`,
