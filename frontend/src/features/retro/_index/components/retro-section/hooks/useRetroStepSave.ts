@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react'
-import { useUpdateKptSelfReview } from '@/apis/generated/interview-api/interview-api'
+import { useQueryClient } from '@tanstack/react-query'
+import { getGetInterviewFullQueryKey, useUpdateKptSelfReview } from '@/apis/generated/interview-api/interview-api'
 import { useUpdateQnaSetSelfReview } from '@/apis/generated/qna-set-api/qna-set-api'
 
 type KptTexts = { keepText?: string; problemText?: string; tryText?: string }
@@ -27,6 +28,7 @@ export function useRetroStepSave({
   markQuestionSaved,
   markKptSaved,
 }: UseRetroStepSaveParams) {
+  const queryClient = useQueryClient()
   const [saveError, setSaveError] = useState<string | null>(null)
   const [isSaving, setIsSaving] = useState(false)
 
@@ -51,6 +53,7 @@ export function useRetroStepSave({
           },
         })
         markKptSaved(kptTexts)
+        void queryClient.invalidateQueries({ queryKey: getGetInterviewFullQueryKey(interviewId) })
       } catch {
         setSaveError('KPT 회고 저장에 실패했습니다. 잠시 후 다시 시도해주세요.')
       } finally {
@@ -67,6 +70,7 @@ export function useRetroStepSave({
     try {
       await updateQnaSetSelfReview({ qnaSetId, data: { selfReviewText: currentRetroText } })
       markQuestionSaved(currentRetroText)
+      void queryClient.invalidateQueries({ queryKey: getGetInterviewFullQueryKey(interviewId) })
     } catch {
       setSaveError('질문 회고 저장에 실패했습니다. 잠시 후 다시 시도해주세요.')
     } finally {

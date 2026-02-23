@@ -1,3 +1,6 @@
+import { useQueryClient } from '@tanstack/react-query'
+import { useParams } from 'react-router'
+import { getGetInterviewFullQueryKey } from '@/apis/generated/interview-api/interview-api'
 import { useMarkDifficultQuestion, useUnmarkDifficultQuestion } from '@/apis/generated/qna-set-api/qna-set-api'
 import {
   useAddQnaSetToScrapFolder,
@@ -40,6 +43,8 @@ export function useScrapModalMutations({
   invalidateAllQnaSetFoldersAndFolderList,
   handleClose,
 }: UseScrapModalMutationsParams) {
+  const { interviewId } = useParams()
+  const queryClient = useQueryClient()
   const { mutateAsync: createScrapFolder, isPending: isCreatingFolderPending } = useCreateScrapFolder()
   const { mutateAsync: markDifficultQuestion } = useMarkDifficultQuestion()
   const { mutateAsync: unmarkDifficultQuestion } = useUnmarkDifficultQuestion()
@@ -73,6 +78,7 @@ export function useScrapModalMutations({
         if (effectiveDifficultSelection) await markDifficultQuestion({ qnaSetId })
         else await unmarkDifficultQuestion({ qnaSetId })
         onDifficultMarkedChange?.(effectiveDifficultSelection)
+        void queryClient.invalidateQueries({ queryKey: getGetInterviewFullQueryKey(Number(interviewId)) })
       }
 
       // 폴더 추가/삭제
