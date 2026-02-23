@@ -134,6 +134,10 @@ export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChan
         savedRetroRef.current = editedRetro
       }
 
+      if (isQnaChanged || isRetroChanged) {
+        void queryClient.invalidateQueries({ queryKey: getGetInterviewFullQueryKey(interviewId) })
+      }
+
       stopEditing()
     } catch {
       setSaveErrorMessage('저장에 실패했어요. 잠시 후 다시 시도해주세요.')
