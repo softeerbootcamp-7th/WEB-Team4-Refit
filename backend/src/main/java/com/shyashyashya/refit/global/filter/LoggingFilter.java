@@ -8,16 +8,18 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.MDC;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
-@Component
+@RequiredArgsConstructor
 @Slf4j
 public class LoggingFilter extends OncePerRequestFilter {
 
+    private final HandlerExceptionResolver handlerExceptionResolver;
     private static final String TRACE_ID = "traceId";
 
     @Override
@@ -47,6 +49,8 @@ public class LoggingFilter extends OncePerRequestFilter {
 
         try {
             filterChain.doFilter(request, response);
+        } catch (Exception e) {
+            handlerExceptionResolver.resolveException(request, response, null, e);
         } finally {
             long duration = System.currentTimeMillis() - startTime;
             int status = response.getStatus();
