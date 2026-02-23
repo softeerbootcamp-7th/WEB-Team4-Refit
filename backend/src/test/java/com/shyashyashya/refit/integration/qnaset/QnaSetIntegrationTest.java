@@ -1336,6 +1336,35 @@ public class QnaSetIntegrationTest extends IntegrationTest {
                     .body("result", hasSize(0));
         }
 
+        @ParameterizedTest
+        @EnumSource(value = InterviewReviewStatus.class, names = {"QNA_SET_DRAFT", "DEBRIEF_COMPLETED"})
+        void 인터뷰가_질답_세트_검토_중_또는_회고_완료_상태이면_PDF_하이라이팅_전체_삭제에_성공한다(InterviewReviewStatus reviewStatus) {
+            // given
+            var interviewCreateRequest = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0),
+                    InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer"
+            );
+            Interview interview = createAndSaveInterview(interviewCreateRequest, reviewStatus);
+
+            var qnaSetCreateRequest = new QnaSetCreateRequest("q", "a");
+            QnaSet qnaSet = createAndSaveQnaSet(qnaSetCreateRequest, interview, false);
+            Long qnaSetId = qnaSet.getId();
+
+            List<PdfHighlightingUpdateRequest> pdfHighlightUpdateRequest = createPdfHighlightUpdateRequest();
+            createAndSavePdfHighlighting(pdfHighlightUpdateRequest, qnaSet);
+
+            // when & then
+            given(spec)
+            .when()
+                    .delete("/qna-set/" + qnaSetId + "/pdf-highlighting")
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON204.name()))
+                    .body("message", equalTo(COMMON204.getMessage()))
+                    .body("result", nullValue());
+        }
+
+
         @Test
         void 이미_비어있는_PDF_하이라이팅_전체_삭제도_성공한다() {
             // given
