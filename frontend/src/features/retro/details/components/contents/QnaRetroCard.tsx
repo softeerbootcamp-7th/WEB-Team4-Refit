@@ -29,6 +29,7 @@ type QnaRetroCardProps = {
 
 const SCRAP_FOLDERS_STALE_TIME = 1000 * 60 * 30
 const QNA_DELETE_FAILED_PDF_HIGHLIGHTING_EXISTS = 'QNA_DELETE_FAILED_PDF_HIGHLIGHTING_EXISTS'
+const DELETE_ERROR_MESSAGE = '질문 삭제에 실패했어요. 잠시 후 다시 시도해주세요.'
 
 export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChange }: QnaRetroCardProps) {
   const { interviewId, qnaSetId, questionText, answerText, qnaSetSelfReviewText, starAnalysis, isMarkedDifficult } =
@@ -168,7 +169,10 @@ export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChan
         setIsDeleteWithHighlightConfirmOpen(false)
         return invalidateAfterDelete()
       })
-      .catch(() => {})
+      .catch(() => {
+        console.error(DELETE_ERROR_MESSAGE)
+        setIsDeleteWithHighlightConfirmOpen(false)
+      })
   }
 
   const handleScrap = () => {
