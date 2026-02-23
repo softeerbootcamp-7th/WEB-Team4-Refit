@@ -36,6 +36,7 @@ import com.shyashyashya.refit.domain.interview.service.validator.InterviewValida
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
 import com.shyashyashya.refit.domain.qnaset.dto.StarAnalysisDto;
+import com.shyashyashya.refit.domain.qnaset.event.QuestionEmbeddingDeletionEvent;
 import com.shyashyashya.refit.domain.qnaset.event.QuestionEmbeddingEvent;
 import com.shyashyashya.refit.domain.qnaset.model.PdfHighlighting;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
@@ -180,6 +181,8 @@ public class InterviewService {
         deleteAllPdfHighlighting(interview);
         starAnalysisRepository.deleteAllByInterview(interview);
         qnaSetSelfReviewRepository.deleteAllByInterview(interview);
+        qnaSetRepository.findAllByInterview(interview).forEach(qnaSet ->
+                eventPublisher.publishEvent(QuestionEmbeddingDeletionEvent.of(qnaSet.getId())));
         qnaSetRepository.deleteAllByInterview(interview);
         interviewSelfReviewRepository.deleteByInterview(interview);
         interviewRepository.delete(interview);
