@@ -165,7 +165,8 @@ public class QnaSetService {
     public void deletePdfHighlighting(Long qnaSetId) {
         QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
         interviewValidator.validateInterviewReviewStatus(
-                qnaSet.getInterview(), List.of(InterviewReviewStatus.QNA_SET_DRAFT));
+                qnaSet.getInterview(),
+                List.of(InterviewReviewStatus.QNA_SET_DRAFT, InterviewReviewStatus.DEBRIEF_COMPLETED));
         pdfHighlightingRepository.deleteAllByQnaSet(qnaSet);
     }
 
