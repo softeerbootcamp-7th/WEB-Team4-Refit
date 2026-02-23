@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react'
 import * as pdfjsLib from 'pdfjs-dist'
 import type { PDFDocumentProxy } from 'pdfjs-dist'
-
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString()
+
+const PDFJS_CDN_BASE = 'https://unpkg.com/pdfjs-dist@5.4.530'
+const STANDARD_FONT_DATA_URL = `${PDFJS_CDN_BASE}/standard_fonts/`
+const CMAP_URL = `${PDFJS_CDN_BASE}/cmaps/`
 
 type PdfLoadState = {
   pdf: PDFDocumentProxy | null
@@ -26,7 +29,13 @@ export function usePdfLoader(pdfUrl: string): PdfLoadState {
       setState({ pdf: null, isLoading: true, error: null })
 
       try {
-        const doc = await pdfjsLib.getDocument(pdfUrl).promise
+        const doc = await pdfjsLib.getDocument({
+          url: pdfUrl,
+          useSystemFonts: true,
+          standardFontDataUrl: STANDARD_FONT_DATA_URL,
+          cMapUrl: CMAP_URL,
+          cMapPacked: true,
+        }).promise
         if (!cancelled) {
           setState({ pdf: doc, isLoading: false, error: null })
         }
