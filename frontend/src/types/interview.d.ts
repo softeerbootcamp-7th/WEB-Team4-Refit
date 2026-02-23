@@ -35,7 +35,10 @@ export type StarAnalysisResult = {
   overallSummary: string
 }
 
-export type InterviewInfoType = Pick<InterviewFullType, 'companyName' | 'jobRole' | 'interviewType' | 'interviewStartAt'>
+export type InterviewInfoType = Pick<
+  InterviewFullType,
+  'companyName' | 'jobRole' | 'interviewType' | 'interviewStartAt'
+>
 
 type InterviewFullType = {
   interviewId: number
@@ -59,6 +62,7 @@ export type InterviewFilter = {
   keyword: string
   interviewType: NonNullable<InterviewSearchRequest['searchFilter']['interviewType']>
   resultStatus: NonNullable<InterviewSearchRequest['searchFilter']['interviewResultStatus']>
+  interviewReviewStatus: NonNullable<InterviewSearchRequest['searchFilter']['interviewReviewStatus']>
   startDate: string
   endDate: string
   sort: string

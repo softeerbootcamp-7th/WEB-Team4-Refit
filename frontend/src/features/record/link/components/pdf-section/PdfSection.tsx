@@ -143,7 +143,7 @@ export function PdfSection() {
   })()
 
   return (
-    <div className={`relative flex h-full flex-col gap-5 p-6 ${isLinking ? 'z-50 bg-gray-100' : ''}`}>
+    <div className={`relative flex h-full flex-col gap-5 p-6 pr-0 ${isLinking ? 'z-50 bg-gray-100' : ''}`}>
       <input
         ref={fileInputRef}
         type="file"

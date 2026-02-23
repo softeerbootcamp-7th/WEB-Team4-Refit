@@ -122,7 +122,7 @@ function RetroQuestionContent() {
   }
 
   return (
-    <div className="grid h-full grid-cols-[80px_1fr_1fr]">
+    <div className="mx-auto grid h-full w-7xl grid-cols-[80px_1.2fr_1fr]">
       <RetroMinimizedSidebar
         items={minimizedItems}
         activeIndex={currentIndex}
@@ -130,7 +130,7 @@ function RetroQuestionContent() {
           void handleIndexChange(nextIndex)
         }}
       />
-      <div className="flex h-full flex-col gap-5 overflow-hidden p-6">
+      <div className="flex h-full flex-col gap-5 overflow-hidden p-6 pl-0">
         {header}
         <RetroSection
           interviewId={id}

@@ -1,6 +1,6 @@
 import { Suspense, useState } from 'react'
 import { Navigate, useNavigate, useParams } from 'react-router'
-import { InterviewDtoInterviewReviewStatus, useConvertRawTextToQnaSet, useUpdateRawText } from '@/apis'
+import { InterviewDtoInterviewReviewStatus, useRequestConvert, useUpdateRawText } from '@/apis'
 import { getInterviewNavigationPath } from '@/constants/interviewReviewStatusRoutes'
 import ConfirmModal from '@/designs/components/modal/ConfirmModal'
 import SidebarLayoutSkeleton from '@/features/_common/components/sidebar/SidebarLayoutSkeleton'
@@ -37,7 +37,7 @@ function RecordPageContentContainer({ interviewId }: RecordPageContentContainerP
       initialText: isLoggingDraft ? data.interviewRawText : '',
     })
   const { mutateAsync: completeRawText } = useUpdateRawText()
-  const { mutateAsync: convertRawTextToQnaSet } = useConvertRawTextToQnaSet()
+  const { mutateAsync: requestConvert } = useRequestConvert()
   const blockedRecordPath = getBlockedRecordPath(interviewId, data.interviewReviewStatus)
 
   const getMergedText = () => `${text}${realtimeText ? `${text ? ' ' : ''}${realtimeText}` : ''}`.trim()
@@ -81,7 +81,7 @@ function RecordPageContentContainer({ interviewId }: RecordPageContentContainerP
           interviewId: Number(interviewId),
           data: { rawText: mergedText },
         })
-        await convertRawTextToQnaSet({ interviewId: Number(interviewId) })
+        await requestConvert({ interviewId: Number(interviewId) })
         navigate(ROUTES.RECORD_CONFIRM.replace(':interviewId', interviewId), { replace: true })
       } catch {
         setIsCompleting(false)

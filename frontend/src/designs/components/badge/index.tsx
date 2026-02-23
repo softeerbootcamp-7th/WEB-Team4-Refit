@@ -36,6 +36,7 @@ const TYPE_STYLES = {
 
 const THEME_STYLES = {
   'gray-100': 'bg-gray-100 text-gray-500',
+  'gray-150': 'bg-gray-150 text-gray-500',
   'gray-600': 'bg-gray-600 text-gray-white',
   'gray-white-outline': 'border border-gray-150 bg-gray-white text-gray-600',
   'gray-outline': 'border border-gray-150 text-gray-600',

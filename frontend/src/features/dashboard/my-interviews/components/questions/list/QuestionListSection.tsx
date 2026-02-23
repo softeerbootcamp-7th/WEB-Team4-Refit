@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
+import { getInterviewNavigationPath } from '@/constants/interviewReviewStatusRoutes'
 import RetroDetailModal from '@/features/_common/components/retro-detail-modal/RetroDetailModal'
 import QnaCard from '@/features/dashboard/my-interviews/components/questions/list/qna-card/QnaCard'
-import { ROUTES } from '@/routes/routes'
 import type { QuestionFilter } from '@/types/interview'
 import { useInfiniteQuestionList } from './useInfiniteQuestionList'
 import type { QnaCardItemModel } from '../mappers'
@@ -45,7 +45,7 @@ export default function QuestionListSection({ filter }: QuestionListSectionProps
           interviewId={selectedCard.interviewId}
           qnaSetId={selectedCard.qnaSetId}
           onMoveToDetails={() =>
-            navigate(ROUTES.RETRO_DETAILS.replace(':interviewId', String(selectedCard.interviewId)))
+            navigate(getInterviewNavigationPath(selectedCard.interviewId, selectedCard.interviewReviewStatus))
           }
         />
       )}

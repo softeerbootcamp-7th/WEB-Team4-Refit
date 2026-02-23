@@ -8,12 +8,17 @@ import InterviewFilterModal from './InterviewFilterModal'
 type FilterSortControlsProps = {
   filter: InterviewFilter
   onFilterChange: (filter: InterviewFilter) => void
+  isSearching?: boolean
 }
 
-export default function FilterSortControls({ filter, onFilterChange }: FilterSortControlsProps) {
+export default function FilterSortControls({ filter, onFilterChange, isSearching = false }: FilterSortControlsProps) {
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const filterCount =
-    filter.interviewType.length + filter.resultStatus.length + (filter.startDate ? 1 : 0) + (filter.endDate ? 1 : 0)
+    filter.interviewType.length +
+    filter.resultStatus.length +
+    (isSearching ? filter.interviewReviewStatus.length : 0) +
+    (filter.startDate ? 1 : 0) +
+    (filter.endDate ? 1 : 0)
   const hasFilter = filterCount > 0
   const filterCountLabel = filterCount > 9 ? '9+' : String(filterCount)
 
@@ -51,6 +56,7 @@ export default function FilterSortControls({ filter, onFilterChange }: FilterSor
         onClose={() => setIsFilterOpen(false)}
         filter={filter}
         onApply={onFilterChange}
+        isSearching={isSearching}
       />
     </div>
   )

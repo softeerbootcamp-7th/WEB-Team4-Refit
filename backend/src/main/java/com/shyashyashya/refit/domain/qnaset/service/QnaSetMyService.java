@@ -37,8 +37,7 @@ public class QnaSetMyService {
     @Transactional(readOnly = true)
     public Page<FrequentQnaSetCategoryResponse> getFrequentQnaSetCategories(Pageable pageable) {
         User requestUser = requestUserContext.getRequestUser();
-        // TODO : 사용자의 약관 동의 여부 검증
-
+        // TODO : 유저의 정책 동의 검증
         return qnaSetRepository.findFrequentQnaSetCategoryByUser(requestUser, pageable);
     }
 

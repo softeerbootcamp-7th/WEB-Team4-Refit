@@ -78,14 +78,14 @@ export function RetroPdfPanel({ interviewId, hasPdf: initialHasPdf, qnaSetIds }:
 
   if (!hasPdf) {
     return (
-      <div className="flex h-full items-center justify-center bg-gray-100 p-6">
+      <div className="flex h-full items-center justify-center bg-gray-100 p-6 pr-0">
         <p className="body-s-medium text-gray-500">업로드된 자기소개서 PDF가 없습니다.</p>
       </div>
     )
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-gray-100 p-6">
+    <div className="flex h-full min-h-0 flex-col bg-gray-100 p-6 pr-0">
       {pdf && (
         <PdfNavigation
           currentPage={currentPage}

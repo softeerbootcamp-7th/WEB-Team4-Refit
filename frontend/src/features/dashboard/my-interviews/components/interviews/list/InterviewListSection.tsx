@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router'
-import { ROUTES } from '@/routes/routes'
+import { getInterviewNavigationPath } from '@/constants/interviewReviewStatusRoutes'
 import type { InterviewFilter } from '@/types/interview'
 import InterviewCard from './interview-card/InterviewCard'
 import { useInfiniteInterviewList } from './useInfiniteInterviewList'
@@ -26,7 +26,7 @@ export default function InterviewListSection({ filter }: InterviewListSectionPro
       <InterviewCard
         key={item.interviewId}
         {...item}
-        onClick={() => navigate(ROUTES.RETRO_DETAILS.replace(':interviewId', String(item.interviewId)))}
+        onClick={() => navigate(getInterviewNavigationPath(item.interviewId, item.interviewReviewStatus))}
       />
     ))
   }

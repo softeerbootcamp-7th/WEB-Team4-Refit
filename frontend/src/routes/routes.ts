@@ -24,4 +24,7 @@ export const ROUTES = {
 
   RETRO: '/retro/:interviewId',
   RETRO_DETAILS: '/retro/:interviewId/details',
+
+  FORBIDDEN: '/forbidden',
+  INTERVIEW_NOT_FOUND: '/interview-not-found',
 } as const
