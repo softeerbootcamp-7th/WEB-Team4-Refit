@@ -54,7 +54,7 @@ const FolderModal = ({
           type="submit"
           className="flex-1"
           variant="fill-orange-500"
-          size="lg"
+          size="md"
           disabled={!name.trim()}
           isLoading={isSubmitting}
         >
