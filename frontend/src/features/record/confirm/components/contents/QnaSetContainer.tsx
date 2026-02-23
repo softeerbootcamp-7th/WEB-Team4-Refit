@@ -110,6 +110,7 @@ export function QnaSetContainer({
         hasCancelButton={true}
         cancelText="취소"
         title={`질문을 정말\n삭제하시겠어요?`}
+        description="삭제 후에는 되돌릴 수 없어요."
         okText="삭제하기"
         okButtonVariant="fill-gray-800"
         okButtonLoading={isDeleting}
