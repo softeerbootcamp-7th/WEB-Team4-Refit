@@ -86,7 +86,6 @@ public class UserService {
                         .orElseThrow(() -> new CustomException(JOB_CATEGORY_NOT_FOUND)))
                 .orElse(null);
 
-        userValidator.validateNicknameNotConflict(myProfileUpdateRequest.nickname());
         user.updateMyPage(myProfileUpdateRequest.nickname(), industry, jobCategory);
     }
 }
