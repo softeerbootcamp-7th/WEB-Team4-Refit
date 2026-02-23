@@ -14,6 +14,7 @@ export class HttpError<T = unknown> extends Error {
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || ''
 const REISSUE_PATH = '/auth/reissue'
+const REISSUE_URL = `${REISSUE_PATH}?originType=${encodeURIComponent(import.meta.env.VITE_APP_ENV || '')}`
 let reissuePromise: Promise<void> | null = null
 
 export const customFetch = async <T>(urlWithoutBase: string, initOptions: RequestInit): Promise<T> => {
@@ -68,7 +69,7 @@ const requestJson = async <T>(urlWithoutBase: string, options: RequestInit = {})
 }
 
 const reissueTokens = async (): Promise<void> => {
-  reissuePromise ??= requestJson(REISSUE_PATH, { method: 'GET' })
+  reissuePromise ??= requestJson(REISSUE_URL, { method: 'GET' })
     .then((reissueResponse) => {
       const responseCode =
         reissueResponse && typeof reissueResponse === 'object'
