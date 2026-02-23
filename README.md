@@ -266,3 +266,7 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
 <a href="https://api.refit.my/swagger-ui/index.html">ERD Cloud</a>
 <br/>
 
+### 서버 아키텍처
+<img width="897" height="601" alt="image" src="https://github.com/user-attachments/assets/685898c8-3207-4701-a541-75e37a7a6841" />
+
+
