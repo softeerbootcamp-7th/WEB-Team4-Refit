@@ -5,6 +5,7 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 
 import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
@@ -16,15 +17,9 @@ import com.shyashyashya.refit.global.exception.ErrorCode;
 import com.shyashyashya.refit.integration.core.IntegrationTest;
 import io.restassured.http.ContentType;
 import java.time.Instant;
-import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.NullSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 
 class UserIntegrationTest extends IntegrationTest {
@@ -213,15 +208,13 @@ class UserIntegrationTest extends IntegrationTest {
         }
 
         @Test
-        void 중복된_닉네임으로_수정하면_409_Conflict_반환한다() {
+        void 중복된_닉네임으로_수정가능하다() {
             // given
             createAndSaveUser("other@test.com", "duplicateNick", industry1, jobCategory1);
-
             MyProfileUpdateRequest request = new MyProfileUpdateRequest(
                     "duplicateNick",
                     industry1.getId(),
                     jobCategory1.getId());
-
             // when & then
             given(spec)
                     .contentType(ContentType.JSON)
@@ -230,8 +223,11 @@ class UserIntegrationTest extends IntegrationTest {
                     .put("/user/my")
             .then()
                     .log().all()
-                    .statusCode(HttpStatus.CONFLICT.value())
-                    .body("code", equalTo(ErrorCode.USER_NICKNAME_CONFLICT.name()));
+                    // 기존의 409 CONFLICT 대신 성공 응답(200 OK)을 기대합니다.
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("message", equalTo(COMMON200.getMessage()))
+                    .body("result", nullValue());
         }
     }
 }
