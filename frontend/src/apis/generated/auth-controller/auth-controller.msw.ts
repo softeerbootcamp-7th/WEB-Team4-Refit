@@ -7,9 +7,19 @@
 import { faker } from '@faker-js/faker'
 
 import { HttpResponse, http } from 'msw'
-import type { ApiResponseTokenReissueResponse } from '../refit-api.schemas'
+import type { ApiResponseTokenReissueResponse, ApiResponseVoid } from '../refit-api.schemas'
 import type { RequestHandlerOptions } from 'msw'
 
+
+export const getLogoutResponseMock = (
+  overrideResponse: Partial<Extract<ApiResponseVoid, object>> = {},
+): ApiResponseVoid => ({
+  isSuccess: faker.datatype.boolean(),
+  code: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  message: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  result: faker.helpers.arrayElement([{}, undefined]),
+  ...overrideResponse,
+})
 
 export const getReissueResponseMock = (
   overrideResponse: Partial<Extract<ApiResponseTokenReissueResponse, object>> = {},
@@ -23,6 +33,28 @@ export const getReissueResponseMock = (
   ]),
   ...overrideResponse,
 })
+
+export const getLogoutMockHandler = (
+  overrideResponse?:
+    | ApiResponseVoid
+    | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<ApiResponseVoid> | ApiResponseVoid),
+  options?: RequestHandlerOptions,
+) => {
+  return http.post(
+    '*/auth/logout',
+    async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+      return HttpResponse.json(
+        overrideResponse !== undefined
+          ? typeof overrideResponse === 'function'
+            ? await overrideResponse(info)
+            : overrideResponse
+          : getLogoutResponseMock(),
+        { status: 200 },
+      )
+    },
+    options,
+  )
+}
 
 export const getReissueMockHandler = (
   overrideResponse?:
@@ -47,4 +79,4 @@ export const getReissueMockHandler = (
     options,
   )
 }
-export const getAuthControllerMock = () => [getReissueMockHandler()]
+export const getAuthControllerMock = () => [getLogoutMockHandler(), getReissueMockHandler()]
