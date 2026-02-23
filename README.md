@@ -132,7 +132,7 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
 |제목|작성자|
 |---|---| 
 |Claude Code 개념부터 활용까지 (Harness, Context, Skills) (작성 예정)|홍지운, 황주희|
-|Orval과 n8n을 활용한 OpenAPI Driven Development (작성 예정)|홍지운, 황주희|
+|Orval과 n8n을 활용한 OpenAPI 주도 개발 (작성 예정)|홍지운, 황주희|
 |Web Speech API: 서버 구축 없이 Realtime STT 구현하기 (작성 예정)|홍지운|
 |PDF.js 기반 대용량 문서 하이라이팅 구현 및 렌더링 이슈 개선(작성 예정)|황주희|
 
