@@ -38,7 +38,8 @@ public class AuthController {
             @RequestParam(required = false) String originType) {
 
         ClientOriginType clientOriginType = ClientOriginType.fromOriginTypeString(originType);
-        TokenReissueResultDto result = authService.reissue(accessTokenFromHeader, refreshTokenFromHeader);
+        TokenReissueResultDto result =
+                authService.reissue(accessTokenFromHeader, refreshTokenFromHeader, clientOriginType);
 
         var response = ApiResponse.success(COMMON200, TokenReissueResponse.from(result));
         if (!result.isReissueProcessed()) {
@@ -59,12 +60,14 @@ public class AuthController {
     @Operation(summary = "로그아웃", description = "엑세스 토큰과 리프레시 토큰 쿠키를 삭제하고, Redis의 리프레시 토큰을 폐기합니다.")
     @PostMapping("/logout")
     public ResponseEntity<ApiResponse<Void>> logout(
-            @CookieValue(value = AuthConstant.REFRESH_TOKEN, required = false) String refreshTokenFromHeader) {
+            @CookieValue(value = AuthConstant.REFRESH_TOKEN, required = false) String refreshTokenFromHeader,
+            @RequestParam(required = false) String originType) {
 
+        ClientOriginType clientOriginType = ClientOriginType.fromOriginTypeString(originType);
         authService.logout(refreshTokenFromHeader);
 
-        String deleteAccessTokenCookie = cookieUtil.deleteCookie(AuthConstant.ACCESS_TOKEN);
-        String deleteRefreshTokenCookie = cookieUtil.deleteCookie(AuthConstant.REFRESH_TOKEN);
+        String deleteAccessTokenCookie = cookieUtil.deleteCookie(AuthConstant.ACCESS_TOKEN, clientOriginType);
+        String deleteRefreshTokenCookie = cookieUtil.deleteCookie(AuthConstant.REFRESH_TOKEN, clientOriginType);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, deleteAccessTokenCookie)
