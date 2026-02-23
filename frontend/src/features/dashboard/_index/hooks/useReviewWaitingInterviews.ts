@@ -1,6 +1,9 @@
 import { useEffect, useMemo } from 'react'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { getDebriefIncompletedInterviews } from '@/apis/generated/dashboard-api/dashboard-api'
+import {
+  getDebriefIncompletedInterviews,
+  getGetDebriefIncompletedInterviewsQueryKey,
+} from '@/apis/generated/dashboard-api/dashboard-api'
 import type { DashboardDebriefIncompletedInterviewResponse } from '@/apis/generated/refit-api.schemas'
 import { INTERVIEW_REVIEW_STATUS_LABEL } from '@/constants/interviewReviewStatus'
 import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
@@ -33,7 +36,7 @@ export const useReviewWaitingInterviews = () => {
     hasNextPage,
     fetchNextPage,
   } = useInfiniteQuery({
-    queryKey: ['dashboard', 'review-waiting-interviews'],
+    queryKey: getGetDebriefIncompletedInterviewsQueryKey(),
     initialPageParam: 0,
     queryFn: ({ pageParam }) =>
       getDebriefIncompletedInterviews({
