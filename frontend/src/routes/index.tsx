@@ -7,7 +7,6 @@ import {
   CollectionDetailPage,
   DashboardPage,
   DifficultQuestionPage,
-  LandingPage,
   MobilePage,
   MobileRecordPage,
   MobileSignupPage,
@@ -21,7 +20,6 @@ import {
   RecordPage,
   RetroDetailPage,
   RetroQuestionPage,
-  SharedComponentExample,
   SigninPage,
   SignupPage,
   TrendQuestionsPage,
@@ -34,10 +32,6 @@ const getChildPath = (fullPath: string, rootPath: string): string => {
 }
 
 const router = createBrowserRouter([
-  {
-    path: ROUTES.LANDING,
-    Component: LandingPage,
-  },
   {
     middleware: [handleAuthRouting],
     children: [
@@ -147,7 +141,6 @@ const router = createBrowserRouter([
         path: '*',
         Component: NotFound,
       },
-      { path: 'component-test', Component: SharedComponentExample },
     ],
   },
 ])
