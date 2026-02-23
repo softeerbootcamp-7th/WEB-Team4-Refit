@@ -68,7 +68,7 @@ function PopularQuestionRow({ item, index }: { item: PopularQuestionRowItem; ind
   return (
     <div className={`flex items-center gap-4 rounded-lg px-4 py-3 ${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}`}>
       <span className={`body-s-semibold w-8 shrink-0 ${rankTextClass}`}>{item.rank}</span>
-      <span className={`body-s-semibold min-w-0 flex-1 ${categoryTextClass}`}>{item.category}</span>
+      <span className={`body-s-semibold min-w-0 flex-1 truncate break-all ${categoryTextClass}`}>{item.category}</span>
       <span className={`caption-l-medium shrink-0 ${metaTextClass}`}>{item.industry}</span>
       <span className={`caption-l-medium shrink-0 ${metaTextClass}`}>{item.jobCategory}</span>
     </div>
