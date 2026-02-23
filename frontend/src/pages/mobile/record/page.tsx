@@ -4,6 +4,7 @@ import { useGetInterview, useStartLogging, useUpdateRawText } from '@/apis'
 import { LoadingSpinner } from '@/designs/assets'
 import ConfirmModal from '@/designs/components/modal/ConfirmModal'
 import { RecordPageContent } from '@/features/mobile/record/components'
+import { shouldThrowInterviewRouteError } from '@/routes/interviewErrorRoute'
 
 export default function MobileRecordPage() {
   const { interviewId } = useParams<{ interviewId: string }>()
@@ -13,6 +14,7 @@ export default function MobileRecordPage() {
   const { data } = useGetInterview(numericInterviewId, {
     query: {
       enabled: isInterviewIdValid,
+      throwOnError: shouldThrowInterviewRouteError,
       select: (response) => {
         const interview = response.result
         if (!interview) throw new Error('인터뷰 데이터가 존재하지 않습니다.')
