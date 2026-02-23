@@ -24,6 +24,7 @@ import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRectReposi
 import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetSelfReviewRepository;
+import com.shyashyashya.refit.domain.qnaset.repository.StarAnalysisRepository;
 import com.shyashyashya.refit.domain.scrapfolder.repository.QnaSetScrapFolderRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
@@ -50,6 +51,7 @@ public class QnaSetService {
     private final PdfHighlightingRepository pdfHighlightingRepository;
     private final QnaSetScrapFolderRepository qnaSetScrapFolderRepository;
     private final PdfHighlightingRectRepository pdfHighlightingRectRepository;
+    private final StarAnalysisRepository starAnalysisRepository;
     private final RequestUserContext requestUserContext;
     private final InterviewValidator interviewValidator;
     private final IndustryValidator industryValidator;
@@ -119,6 +121,7 @@ public class QnaSetService {
         }
 
         qnaSetSelfReviewRepository.deleteByQnaSet(qnaSet);
+        starAnalysisRepository.deleteByQnaSet(qnaSet);
         qnaSetScrapFolderRepository.deleteAllByQnaSet(qnaSet);
         qnaSetRepository.delete(qnaSet);
         eventPublisher.publishEvent(QuestionEmbeddingDeletionEvent.of(qnaSetId));
