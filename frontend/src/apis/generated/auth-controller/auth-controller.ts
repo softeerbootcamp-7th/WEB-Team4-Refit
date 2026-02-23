@@ -6,7 +6,12 @@
  */
 import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { customFetch } from '../../custom-fetch'
-import type { ApiResponseTokenReissueResponse, ApiResponseVoid, ReissueParams } from '../refit-api.schemas'
+import type {
+  ApiResponseTokenReissueResponse,
+  ApiResponseVoid,
+  LogoutParams,
+  ReissueParams,
+} from '../refit-api.schemas'
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -32,21 +37,31 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
  * 엑세스 토큰과 리프레시 토큰 쿠키를 삭제하고, Redis의 리프레시 토큰을 폐기합니다.
  * @summary 로그아웃
  */
-export const getLogoutUrl = () => {
-  return `/auth/logout`
+export const getLogoutUrl = (params?: LogoutParams) => {
+  const normalizedParams = new URLSearchParams()
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  })
+
+  const stringifiedParams = normalizedParams.toString()
+
+  return stringifiedParams.length > 0 ? `/auth/logout?${stringifiedParams}` : `/auth/logout`
 }
 
-export const logout = async (options?: RequestInit): Promise<ApiResponseVoid> => {
-  return customFetch<ApiResponseVoid>(getLogoutUrl(), {
+export const logout = async (params?: LogoutParams, options?: RequestInit): Promise<ApiResponseVoid> => {
+  return customFetch<ApiResponseVoid>(getLogoutUrl(params), {
     ...options,
     method: 'POST',
   })
 }
 
 export const getLogoutMutationOptions = <TError = unknown, TContext = unknown>(options?: {
-  mutation?: UseMutationOptions<Awaited<ReturnType<typeof logout>>, TError, void, TContext>
+  mutation?: UseMutationOptions<Awaited<ReturnType<typeof logout>>, TError, { params?: LogoutParams }, TContext>
   request?: SecondParameter<typeof customFetch>
-}): UseMutationOptions<Awaited<ReturnType<typeof logout>>, TError, void, TContext> => {
+}): UseMutationOptions<Awaited<ReturnType<typeof logout>>, TError, { params?: LogoutParams }, TContext> => {
   const mutationKey = ['logout']
   const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
@@ -54,8 +69,10 @@ export const getLogoutMutationOptions = <TError = unknown, TContext = unknown>(o
       : { ...options, mutation: { ...options.mutation, mutationKey } }
     : { mutation: { mutationKey }, request: undefined }
 
-  const mutationFn: MutationFunction<Awaited<ReturnType<typeof logout>>, void> = () => {
-    return logout(requestOptions)
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof logout>>, { params?: LogoutParams }> = (props) => {
+    const { params } = props ?? {}
+
+    return logout(params, requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -70,11 +87,11 @@ export type LogoutMutationError = unknown
  */
 export const useLogout = <TError = unknown, TContext = unknown>(
   options?: {
-    mutation?: UseMutationOptions<Awaited<ReturnType<typeof logout>>, TError, void, TContext>
+    mutation?: UseMutationOptions<Awaited<ReturnType<typeof logout>>, TError, { params?: LogoutParams }, TContext>
     request?: SecondParameter<typeof customFetch>
   },
   queryClient?: QueryClient,
-): UseMutationResult<Awaited<ReturnType<typeof logout>>, TError, void, TContext> => {
+): UseMutationResult<Awaited<ReturnType<typeof logout>>, TError, { params?: LogoutParams }, TContext> => {
   return useMutation(getLogoutMutationOptions(options), queryClient)
 }
 /**

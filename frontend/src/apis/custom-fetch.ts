@@ -31,8 +31,7 @@ export const customFetch = async <T>(urlWithoutBase: string, initOptions: Reques
     }
     return data
   } catch (error) {
-    const shouldReissue =
-      error instanceof HttpError && error.status === 401
+    const shouldReissue = error instanceof HttpError && error.status === 401
 
     if (isReissueRequest || !shouldReissue) {
       throw error
@@ -43,6 +42,19 @@ export const customFetch = async <T>(urlWithoutBase: string, initOptions: Reques
   }
 }
 export default customFetch
+
+const getReissueUrlWithOrigin = (): string => {
+  const normalizedParams = new URLSearchParams()
+  const originType = import.meta.env.VITE_APP_ENV
+
+  if (originType !== undefined) {
+    normalizedParams.append('originType', originType)
+  }
+
+  const stringifiedParams = normalizedParams.toString()
+
+  return stringifiedParams.length > 0 ? `${REISSUE_PATH}?${stringifiedParams}` : REISSUE_PATH
+}
 
 const withDefaultOptions = (options: RequestInit = {}): RequestInit => {
   const headers = new Headers(options.headers)
@@ -68,7 +80,7 @@ const requestJson = async <T>(urlWithoutBase: string, options: RequestInit = {})
 }
 
 const reissueTokens = async (): Promise<void> => {
-  reissuePromise ??= requestJson(REISSUE_PATH, { method: 'GET' })
+  reissuePromise ??= requestJson(getReissueUrlWithOrigin(), { method: 'GET' })
     .then((reissueResponse) => {
       const responseCode =
         reissueResponse && typeof reissueResponse === 'object'

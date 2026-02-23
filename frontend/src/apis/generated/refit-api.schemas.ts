@@ -1148,6 +1148,10 @@ export type SearchInterviewsParams = {
   sort?: string[]
 }
 
+export type LogoutParams = {
+  originType?: string
+}
+
 export type PublishTokenParams = {
   email: string
   originType?: string
