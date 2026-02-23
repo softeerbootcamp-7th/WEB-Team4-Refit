@@ -69,9 +69,9 @@ export default function MyCollectionsPage() {
         </div>
       </aside>
 
-      <main className="h-full flex-1 overflow-hidden">
+      <section className="h-full flex-1 overflow-hidden">
         <Outlet context={{ folderName: selectedFolder?.name }} />
-      </main>
+      </section>
 
       <FolderModal
         key={modal.activeModal === 'create' ? 'create-open' : 'create-closed'}
