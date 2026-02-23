@@ -21,7 +21,9 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
+import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
 import com.shyashyashya.refit.domain.user.dto.request.MyProfileUpdateRequest;
 import com.shyashyashya.refit.domain.user.dto.request.UserSignUpRequest;
@@ -36,9 +38,14 @@ import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.exception.ErrorCode;
 import com.shyashyashya.refit.global.util.RequestUserContext;
 import java.util.Optional;
+import java.util.stream.Stream;
+
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -227,31 +234,54 @@ class UserServiceTest {
             verify(user, times(1)).updateMyPage(anyString(), any(), any());
         }
 
-        @Test
-        void 프로필_정보_수정시_요청_일부가_null이면_해당_필드는_수정을_하지_않는다() {
-            // given
-            String newNickname = "updatedNickname";
-            MyProfileUpdateRequest request = new MyProfileUpdateRequest(
-                    newNickname,
-                    null,
-                    null);
-            User user = mock(User.class);
+        static Stream<Arguments> profileUpdateRequestCases() {
+            return Stream.of(
+                    Arguments.of(null, null, null),
+                    Arguments.of(null, null, 2L),
+                    Arguments.of(null, 1L, null),
+                    Arguments.of(null, 1L, 2L),
+                    Arguments.of("nick", null, null),
+                    Arguments.of("nick", null, 2L),
+                    Arguments.of("nick", 1L, null),
+                    Arguments.of("nick", 1L, 2L)
+            );
+        }
 
+        @ParameterizedTest(name = "[{index}] nickname={0}, industryId={1}, jobCategoryId={2}")
+        @MethodSource("profileUpdateRequestCases")
+        void 프로필_정보_수정시_null_조합에_따라_해당_필드만_처리된다(
+                String nickname,
+                Long industryId,
+                Long jobCategoryId
+        ) {
+            // given
+            MyProfileUpdateRequest request = new MyProfileUpdateRequest(nickname, industryId, jobCategoryId);
+            User user = mock(User.class);
             given(requestUserContext.getRequestUser()).willReturn(user);
+            if (industryId != null) {
+                given(industryRepository.findById(industryId)).willReturn(Optional.of(mock(Industry.class)));
+            }
+            if (jobCategoryId != null) {
+                given(jobCategoryRepository.findById(jobCategoryId)).willReturn(Optional.of(mock(JobCategory.class)));
+            }
 
             // when
             userService.updateMyProfile(request);
 
             // then
-            verify(userValidator, times(1)).validateNicknameNotConflict(newNickname);
+            verify(userValidator, times(1)).validateNicknameNotConflict(nickname);
+            if (industryId != null) {
+                verify(industryRepository, times(1)).findById(industryId);
+            } else {
+                verify(industryRepository, never()).findById(anyLong());
+            }
+            if (jobCategoryId != null) {
+                verify(jobCategoryRepository, times(1)).findById(jobCategoryId);
+            } else {
+                verify(jobCategoryRepository, never()).findById(anyLong());
+            }
 
-            verify(industryRepository, never()).findById(anyLong());
-            verify(jobCategoryRepository, never()).findById(anyLong());
-            verify(user, times(1)).updateMyPage(
-                    eq(newNickname),
-                    eq(null),
-                    eq(null)
-            );
+            verify(user, times(1)).updateMyPage(eq(nickname), any(), any());
         }
 
         @Test
