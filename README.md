@@ -64,6 +64,8 @@
 * 내 기록뿐만 아니라, 다른 유저들이 공유한 면접 질문도 확인할 수 있어요.
 <br/>
 
+Refit의 사용 방법은 [위키](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki)를 참고하시면 더 알차게 이용하실 수 있어요. 😀
+
 ## 💻 팀원 소개
 
 | [권찬](https://github.com/kckc0608) | [송영범](https://github.com/zxc534) | [이장안](https://github.com/lja3723) | [홍지운](https://github.com/forhyundaisofteer) | [황주희](https://github.com/HIHJH) |
