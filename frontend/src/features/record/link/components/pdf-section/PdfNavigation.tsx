@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
-import { CaretUpIcon } from '@/designs/assets'
-import { Button } from '@/designs/components'
+import { CaretUpIcon } from '@/ui/assets'
+import { Button } from '@/ui/components'
 
 const ZOOM_STEPS = [0.5, 0.75, 1, 1.25, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
 

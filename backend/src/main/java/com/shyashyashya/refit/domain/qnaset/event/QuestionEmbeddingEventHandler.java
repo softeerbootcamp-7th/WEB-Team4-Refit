@@ -46,6 +46,7 @@ public class QuestionEmbeddingEventHandler {
             updateCategoryIfSimilar(event.qnaSetId(), vector);
         } catch (Throwable e) {
             log.error("질답세트 ID {}의 질문 임베딩 생성 및 카테고리 분류 작업 중 오류 발생", event.qnaSetId(), e);
+            throw e;
         }
     }
 

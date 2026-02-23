@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { getInterviewNavigationPath } from '@/constants/interviewReviewStatusRoutes'
-import RetroDetailModal from '@/features/_common/components/retro-detail-modal/RetroDetailModal'
+import RetroDetailModal from '@/features/_common/_index/components/retro-detail-modal/RetroDetailModal'
 import QnaCard from '@/features/dashboard/my-interviews/components/questions/list/qna-card/QnaCard'
 import type { QuestionFilter } from '@/types/interview'
 import { useInfiniteQuestionList } from './useInfiniteQuestionList'

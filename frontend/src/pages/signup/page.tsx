@@ -1,7 +1,7 @@
-import { Logo } from '@/designs/assets'
-import { Button, Input, NativeCombobox } from '@/designs/components'
 import { useSignupForm } from '@/features/_common/auth'
 import { ROUTES } from '@/routes/routes'
+import { Logo } from '@/ui/assets'
+import { Button, Input, NativeCombobox } from '@/ui/components'
 
 export default function SignupPage() {
   const {

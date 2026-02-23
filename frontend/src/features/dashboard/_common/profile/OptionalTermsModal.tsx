@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, Checkbox, Modal } from '@/designs/components'
+import { Button, Checkbox, Modal } from '@/ui/components'
 import OptionalTermsContent from './OptionalTermsContent'
 
 type OptionalTermsModalProps = {

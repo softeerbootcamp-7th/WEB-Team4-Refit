@@ -1,5 +1,5 @@
 import { Button, Heading, useLocale } from 'react-aria-components'
-import { CaretDownIcon, PlusIcon } from '@/designs/assets'
+import { CaretDownIcon, PlusIcon } from '@/ui/assets'
 
 interface CalendarHeaderProps {
   onAddClick: () => void

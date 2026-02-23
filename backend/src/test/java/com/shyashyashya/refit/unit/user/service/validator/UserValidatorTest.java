@@ -7,8 +7,10 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.USER_SIGNUP_EMAI
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -61,7 +63,6 @@ class UserValidatorTest {
     void 닉네임이_이미_존재하면_USER_NICKNAME_CONFLICT_예외가_발생한다() {
         // given
         String nickname = "duplicate_nickname";
-        // existsByNickname이 true를 반환하도록 스텁 설정
         given(userRepository.existsByNickname(nickname)).willReturn(true);
 
         // when & then
@@ -76,12 +77,21 @@ class UserValidatorTest {
     void 닉네임이_존재하지_않으면_예외가_발생하지_않는다() {
         // given
         String nickname = "unique_nickname";
-        // existsByNickname이 false를 반환하도록 스텁 설정
         given(userRepository.existsByNickname(nickname)).willReturn(false);
 
         // when & then
         assertDoesNotThrow(() -> userValidator.validateNicknameNotConflict(nickname));
         verify(userRepository, times(1)).existsByNickname(nickname);
+    }
+
+    @Test
+    void 닉네임이_null이면_유효성_검증을_수행하지_않고_통과한다() {
+        // given
+        String nickname = null;
+
+        // when & then
+        assertDoesNotThrow(() -> userValidator.validateNicknameNotConflict(nickname));
+        verify(userRepository, never()).existsByNickname(anyString());
     }
 
     @Test

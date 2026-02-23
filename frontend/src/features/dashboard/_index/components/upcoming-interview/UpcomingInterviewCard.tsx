@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router'
-import { CalendarStarIcon, SmallLogoIcon } from '@/designs/assets'
-import { Badge } from '@/designs/components'
-import Button from '@/designs/components/button'
 import TermsLockedOverlay from '@/features/dashboard/_index/components/terms-lock/TermsLockedOverlay'
 import { ROUTES } from '@/routes/routes'
+import { CalendarStarIcon, SmallLogoIcon } from '@/ui/assets'
+import { Badge } from '@/ui/components'
+import Button from '@/ui/components/button'
 import type { UpcomingInterviewData } from './types'
 
 interface UpcomingInterviewCardProps {

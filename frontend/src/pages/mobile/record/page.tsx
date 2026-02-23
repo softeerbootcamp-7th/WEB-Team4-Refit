@@ -1,10 +1,10 @@
 import { useCallback, useRef, useState } from 'react'
 import { useParams } from 'react-router'
 import { useGetInterview, useStartLogging, useUpdateRawText } from '@/apis'
-import { LoadingSpinner } from '@/designs/assets'
-import ConfirmModal from '@/designs/components/modal/ConfirmModal'
 import { RecordPageContent } from '@/features/mobile/record/components'
 import { shouldThrowInterviewRouteError } from '@/routes/interviewErrorRoute'
+import { LoadingSpinner } from '@/ui/assets'
+import ConfirmModal from '@/ui/components/modal/ConfirmModal'
 
 export default function MobileRecordPage() {
   const { interviewId } = useParams<{ interviewId: string }>()

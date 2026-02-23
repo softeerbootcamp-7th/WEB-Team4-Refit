@@ -1,12 +1,12 @@
 import { useState, type RefObject } from 'react'
 import { useNavigate } from 'react-router'
-import { CaretDownIcon } from '@/designs/assets'
-import { Button, PlainCombobox } from '@/designs/components'
-import RetroDetailModal from '@/features/_common/components/retro-detail-modal/RetroDetailModal'
+import RetroDetailModal from '@/features/_common/_index/components/retro-detail-modal/RetroDetailModal'
 import QnaCard from '@/features/dashboard/my-interviews/components/questions/list/qna-card/QnaCard'
 import type { InterviewResultStatus } from '@/features/dashboard/my-interviews/constants/constants'
 import { ROUTES } from '@/routes/routes'
 import type { InterviewType } from '@/types/interview'
+import { CaretDownIcon } from '@/ui/assets'
+import { Button, PlainCombobox } from '@/ui/components'
 
 export type QnaCardListItem = {
   id: number | string

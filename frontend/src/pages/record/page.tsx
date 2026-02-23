@@ -2,12 +2,12 @@ import { Suspense, useState } from 'react'
 import { Navigate, useNavigate, useParams } from 'react-router'
 import { InterviewDtoInterviewReviewStatus, useRequestConvert, useUpdateRawText } from '@/apis'
 import { getInterviewNavigationPath } from '@/constants/interviewReviewStatusRoutes'
-import ConfirmModal from '@/designs/components/modal/ConfirmModal'
-import SidebarLayoutSkeleton from '@/features/_common/components/sidebar/SidebarLayoutSkeleton'
+import SidebarLayoutSkeleton from '@/features/_common/_index/components/sidebar/SidebarLayoutSkeleton'
 import { RecordPageContent } from '@/features/record/_index'
 import { useRecordAutoSave } from '@/features/record/_index/hooks/useRecordAutoSave'
 import { useRecordPageData } from '@/features/record/_index/hooks/useRecordPageData'
 import { ROUTES } from '@/routes/routes'
+import ConfirmModal from '@/ui/components/modal/ConfirmModal'
 
 export default function RecordPage() {
   const { interviewId } = useParams<{ interviewId: string }>()

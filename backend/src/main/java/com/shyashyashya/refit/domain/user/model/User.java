@@ -56,9 +56,15 @@ public class User extends BaseEntity {
     }
 
     public void updateMyPage(String nickname, Industry industry, JobCategory jobCategory) {
-        this.nickname = nickname;
-        this.industry = industry;
-        this.jobCategory = jobCategory;
+        if (nickname != null) {
+            this.nickname = nickname;
+        }
+        if (industry != null) {
+            this.industry = industry;
+        }
+        if (jobCategory != null) {
+            this.jobCategory = jobCategory;
+        }
     }
 
     /*

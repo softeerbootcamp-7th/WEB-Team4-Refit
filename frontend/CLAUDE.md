@@ -35,7 +35,7 @@ pnpm orval        # Fetch latest API spec and regenerate API client code
 src/
   apis/           # API layer: Orval-generated code + custom fetch
   constants/      # App-wide constants (interview types, routes, etc.)
-  designs/        # Design system: reusable components and SVG assets
+  ui/             # Design system: reusable components and SVG assets
   features/       # Feature-specific UI logic, grouped by domain
   layouts/        # Layout shell components (Main, Dashboard, Mobile)
   mocks/          # MSW browser worker setup
@@ -79,9 +79,9 @@ Features are grouped by domain: `retro`, `record`, `dashboard`, `mobile`, `signi
 
 Pages in `src/pages/` are thin wrappers that wrap feature components in `<Suspense>` and extract URL params.
 
-### Design System (`src/designs/`)
+### Design System (`src/ui/`)
 
-Reusable UI components are in `src/designs/components/` and exported from `src/designs/components/index.ts`:
+Reusable UI components are in `src/ui/components/` and exported from `src/ui/components/index.ts`:
 
 - `Button`, `Input`, `Modal`, `Badge`, `Border`, `Checkbox`
 - `NativeCombobox`, `SearchableCombobox`, `PlainCombobox`
@@ -89,7 +89,7 @@ Reusable UI components are in `src/designs/components/` and exported from `src/d
 - `SidebarLayout`, `MinimizedSidebarLayout`, sidebar container components
 - `TabBar`, `Table` family, `FadeScrollArea`
 
-SVG assets are in `src/designs/assets/` and imported as React components via `vite-plugin-svgr`.
+SVG assets are in `src/ui/assets/` and imported as React components via `vite-plugin-svgr`.
 
 ### Styling
 

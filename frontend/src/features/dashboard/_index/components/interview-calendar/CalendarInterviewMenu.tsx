@@ -12,7 +12,7 @@ export const CalendarInterviewMenu = forwardRef<HTMLDivElement, CalendarIntervie
     <div
       ref={ref}
       data-more-trigger="true"
-      className="fixed z-[1000] min-w-30 overflow-hidden rounded-lg border border-gray-100 bg-white shadow-lg ring-1 ring-black/5"
+      className="fixed z-40 min-w-30 overflow-hidden rounded-lg border border-gray-100 bg-white shadow-lg ring-1 ring-black/5"
       style={{
         top: menuPosition?.top ?? 0,
         left: menuPosition?.left ?? 0,

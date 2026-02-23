@@ -1,6 +1,6 @@
-import { Button, Input, NativeCombobox } from '@/designs/components'
 import { useSignupForm } from '@/features/_common/auth'
 import { ROUTES } from '@/routes/routes'
+import { Button, Input, NativeCombobox } from '@/ui/components'
 
 export default function MobileSignupPage() {
   const {

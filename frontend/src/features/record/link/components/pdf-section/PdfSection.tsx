@@ -7,12 +7,12 @@ import {
   useCompleteQnaSetDraft,
   useDeleteInterviewPdf,
 } from '@/apis/generated/interview-api/interview-api'
-import { FilePlusIcon, LoadingSpinner } from '@/designs/assets'
-import { Button } from '@/designs/components'
-import ConfirmModal from '@/designs/components/modal/ConfirmModal'
-import { useInterviewNavigate } from '@/features/_common/hooks/useInterviewNavigation'
+import { useInterviewNavigate } from '@/features/_common/_index/hooks/useInterviewNavigation'
 import { useHighlightContext } from '@/features/record/link/contexts'
 import { ROUTES } from '@/routes/routes'
+import { FilePlusIcon, LoadingSpinner } from '@/ui/assets'
+import { Button } from '@/ui/components'
+import ConfirmModal from '@/ui/components/modal/ConfirmModal'
 import { PdfViewer } from './PdfViewer'
 import { clearPdfObjectUrlCache, getPdfObjectUrlKey, usePdfCachedUrl } from './usePdfCachedUrl'
 

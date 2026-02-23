@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import { SpeakingChickIcon } from '@/designs/assets'
-import { Button } from '@/designs/components'
 import { useGoogleOAuthLogin } from '@/features/signin/_index/hooks'
 import { ROUTES } from '@/routes/routes'
+import { SpeakingChickIcon } from '@/ui/assets'
+import { Button } from '@/ui/components'
 
 function fadeUpClass(isVisible: boolean, delay: string) {
   const motion = isVisible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'

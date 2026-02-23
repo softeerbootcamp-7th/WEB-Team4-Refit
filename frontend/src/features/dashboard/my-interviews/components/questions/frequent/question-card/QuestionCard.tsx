@@ -1,16 +1,20 @@
 import { memo } from 'react'
 import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
-import { SmallLogoIcon } from '@/designs/assets'
-import { formatDate } from '@/features/_common/utils/date'
+import { formatDate } from '@/features/_common/_index/utils/date'
+import { SmallLogoIcon } from '@/ui/assets'
 import type { QuestionCardModel } from '../../mappers'
 
 function QuestionCard({ card }: { card: QuestionCardModel }) {
   return (
     <div className="flex cursor-pointer flex-col gap-2 rounded-xl border border-gray-100 p-4 transition-colors hover:bg-gray-100">
       <div className="flex flex-wrap items-center gap-2">
-        <div className="flex h-7.5 w-7.5 shrink-0 items-center justify-center rounded-full border border-gray-150 bg-white">
+        <div className="border-gray-150 flex h-7.5 w-7.5 shrink-0 items-center justify-center rounded-full border bg-white">
           {card.companyLogoUrl ? (
-            <img src={card.companyLogoUrl} alt={card.companyName} className="h-full w-full rounded-full object-contain" />
+            <img
+              src={card.companyLogoUrl}
+              alt={card.companyName}
+              className="h-full w-full rounded-full object-contain"
+            />
           ) : (
             <SmallLogoIcon className="h-4 w-4 text-gray-400" />
           )}

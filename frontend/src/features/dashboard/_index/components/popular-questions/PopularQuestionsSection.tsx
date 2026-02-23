@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router'
-import { ArrowRightIcon, NoteIcon } from '@/designs/assets'
 import TermsLockedOverlay from '@/features/dashboard/_index/components/terms-lock/TermsLockedOverlay'
 import { ROUTES } from '@/routes/routes'
+import { ArrowRightIcon, NoteIcon } from '@/ui/assets'
 import { usePopularQuestions, type PopularQuestionItem } from '../../hooks/usePopularQuestions'
 
 interface PopularQuestionsSectionProps {
@@ -32,7 +32,7 @@ export default function PopularQuestionsSection({ isTermsLocked }: PopularQuesti
       <div className="mb-5 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <NoteIcon className="h-6 w-6 text-gray-400" />
-          <h2 className="body-l-semibold text-gray-900">{nickname}님의 관심 산업 및 직군에서 많이 나온 질문 TOP 10</h2>
+          <h2 className="body-l-semibold text-gray-900">{nickname}님의 관심 산업 및 직군의 최신 질문 TOP 10</h2>
         </div>
         <button
           type="button"
@@ -68,7 +68,7 @@ function PopularQuestionRow({ item, index }: { item: PopularQuestionRowItem; ind
   return (
     <div className={`flex items-center gap-4 rounded-lg px-4 py-3 ${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}`}>
       <span className={`body-s-semibold w-8 shrink-0 ${rankTextClass}`}>{item.rank}</span>
-      <span className={`body-s-semibold min-w-0 flex-1 ${categoryTextClass}`}>{item.category}</span>
+      <span className={`body-s-semibold min-w-0 flex-1 truncate break-all ${categoryTextClass}`}>{item.category}</span>
       <span className={`caption-l-medium shrink-0 ${metaTextClass}`}>{item.industry}</span>
       <span className={`caption-l-medium shrink-0 ${metaTextClass}`}>{item.jobCategory}</span>
     </div>

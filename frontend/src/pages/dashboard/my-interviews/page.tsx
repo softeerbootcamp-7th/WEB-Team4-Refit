@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { FileSaveIcon } from '@/designs/assets'
-import TabBar from '@/designs/components/tab'
 import InterviewsTab from '@/features/dashboard/my-interviews/components/interviews/InterviewsTab'
 import QuestionsTab from '@/features/dashboard/my-interviews/components/questions/QuestionsTab'
 import { TAB_ITEMS } from '@/features/dashboard/my-interviews/constants/constants'
+import { FileSaveIcon } from '@/ui/assets'
+import TabBar from '@/ui/components/tab'
 
 export default function MyInterviewsPage() {
   const [activeTab, setActiveTab] = useState<'interviews' | 'questions'>('interviews')

@@ -1,5 +1,5 @@
-import { PencilIcon } from '@/designs/assets'
-import { Button } from '@/designs/components'
+import { PencilIcon } from '@/ui/assets'
+import { Button } from '@/ui/components'
 
 type LinkingButtonsProps = {
   pendingSelection: unknown

@@ -64,11 +64,13 @@
 * 내 기록뿐만 아니라, 다른 유저들이 공유한 면접 질문도 확인할 수 있어요.
 <br/>
 
+Refit의 사용 방법은 [위키](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki)를 참고하시면 더 알차게 이용하실 수 있어요. 😀
+
 ## 💻 팀원 소개
 
 | [권찬](https://github.com/kckc0608) | [송영범](https://github.com/zxc534) | [이장안](https://github.com/lja3723) | [홍지운](https://github.com/forhyundaisofteer) | [황주희](https://github.com/HIHJH) |
 |:--:|:--:|:--:|:--:|:--:|
-| <img width="160" src="https://ca.slack-edge.com/T09M55L7F6Y-U0A4HAETKM5-62e6d3ed8b99-512" /> | <img width="160" src="https://ca.slack-edge.com/T09M55L7F6Y-U0A5SBGK2HE-b41f95559171-512" /> | <img width="160" src="https://ca.slack-edge.com/T09M55L7F6Y-U0A4FKK090X-9bb3c968f4fb-512" /> | <img width="160" src="https://ca.slack-edge.com/T09M55L7F6Y-U0A597QMUKT-7b06f93d26d0-512" /> | <img width="160" src="https://ca.slack-edge.com/T09M55L7F6Y-U0A489XSA2H-1b753408a2fc-512" /> |
+| <img width="160" src="https://ca.slack-edge.com/T09M55L7F6Y-U0A4HAETKM5-62e6d3ed8b99-512" /> | <img width="160" src="https://ca.slack-edge.com/T09M55L7F6Y-U0A5SBGK2HE-b41f95559171-512" /> | <img width="160" src="https://ca.slack-edge.com/T09M55L7F6Y-U0A4FKK090X-9bb3c968f4fb-512" /> | <img width="160" src="https://github.com/user-attachments/assets/37039f1a-b1df-472c-85bd-9d751acf5781" /> | <img width="160" src="https://ca.slack-edge.com/T09M55L7F6Y-U0A489XSA2H-1b753408a2fc-512" /> |
 | **BE** | **BE** | **BE** | **Lead / FE** | **FE** |
 
 <br/>
@@ -78,13 +80,13 @@
 리핏 팀은 Jira를 기반으로 업무를 관리하고, 1주 단위로 스프린트를 운영해요. 
 <br/>
 
-| 스프린트 명 | 스프린트 기간 | 스프린트 목표 | 백로그 |
-|---|---|---|---|
-| Refit 1주차 | 26-01-19 ~ 26-01-25 | | [Refit 1주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20%22DEV%22%20AND%20sprint%20%3D%204%20ORDER%20BY%20created%20DESC)|
-| Refit 2주차 | 26-01-26 ~ 26-02-01 | | [Refit 2주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%20AND%20sprint%20%3D%2039%20ORDER%20BY%20created%20DESC)|
-| Refit 3주차 | 26-02-02 ~ 26-02-08 | | Refit 3주차 백로그|
-| Refit 4주차 | 26-02-09 ~ 26-02-15 | | Refit 4주차 백로그|
-| Refit 5주차 | 26-02-16 ~ 26-02-22 | | Refit 5주차 백로그|
+| 스프린트 기간 | 스프린트 목표 | 백로그 |
+|---|--------|---|
+| 01/19 ~ 01/25 | - [공통] Git 컨벤션 설정 및 프로젝트 초기 환경 구축<br/> - [공통] 디자인 핸드오프 기반 기획 최종 검토 및 싱크| [Refit 1주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20%22DEV%22%20AND%20sprint%20%3D%204%20ORDER%20BY%20created%20DESC)|
+| 01/26 ~ 02/01 |- [공통] Jira Automation을 활용한 프로젝트 워크플로우 설계 및 구현<br/> - [FE] 공통 UI 컴포넌트 설계 및 프로젝트 라우팅 아키텍처 구축<br/> - [FE] Fetch API 기반 HTTP 클라이언트 설계 및 구현<br/> - [BE] ERD 및 API 명세 설계<br/> - [BE] 서버 공통 로직 개발| [Refit 2주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%20AND%20sprint%20%3D%2039%20ORDER%20BY%20created%20DESC)|
+| 02/02 ~ 02/08 |  - [FE] 서비스 모든 페이지 정적 UI 구현 <br/> - [FE] Orval과 n8n을 활용한 자연어 -> OpenAPI -> React Hook 워크플로우 개발<br/> - [BE] 공통 CRUD API 개발<br/> - [BE] OAuth2 구글 로그인 개발 | [Refit 3주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%0AAND%20assignee%20%3D%20712020%3Aa4e068c2-8139-4e53-88c4-f47f6c6e0bda%0AAND%20status%20%3D%20Done%0AAND%20Sprint%20%3D%20105%0AORDER%20BY%20created%20DESC)|
+| 02/09 ~ 02/15 | - [FE] 서비스 모든 페이지 Mock API 연동<br/> - [BE] 통합 테스트 코드 작성 및 API 로직 고도화| [Refit 4주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%0AAND%20assignee%20%3D%20712020%3Aa4e068c2-8139-4e53-88c4-f47f6c6e0bda%0AAND%20status%20%3D%20Done%0AAND%20Sprint%20%3D%20138%0AORDER%20BY%20created%20DESC)|
+| 02/16 ~ 02/22 | - [FE] 서비스 모든 페이지 API 연동<br/> - [FE] Claude Code를 활용한 웹 접근성 개선 및 E2E 테스팅</br> - [BE] 질문 임베딩 벡터 생성 및 카테고리 분류 배치 로직 개발</br> - [BE] PDF 업로드 및 하이라이팅 등록 로직 고도화 | [Refit 5주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%0AAND%20assignee%20%3D%20712020%3Aa4e068c2-8139-4e53-88c4-f47f6c6e0bda%0AAND%20status%20%3D%20Done%0AAND%20Sprint%20%3D%20171%0AORDER%20BY%20created%20DESC)|
  
  <!--
 #### Refit 1주차
@@ -129,10 +131,12 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
 ## 🐥 프론트엔드
 
 ### 📚 기술 아티클 
-|파트|제목|작성자|
-|---|---|---| 
-|FE|작성 예정|홍지운|
-|FE|작성 예정|황주희|
+|제목|작성자|
+|---|---| 
+|Claude Code 개념부터 활용까지 (Harness, Context, Skills) (작성 예정)|홍지운, 황주희|
+|Orval과 n8n을 활용한 OpenAPI 주도 개발 (작성 예정)|홍지운, 황주희|
+|Web Speech API: 서버 구축 없이 Realtime STT 구현하기 (작성 예정)|홍지운|
+|PDF.js 기반 대용량 문서 하이라이팅 구현 및 렌더링 이슈 개선(작성 예정)|황주희|
 
 ### 기술 스택
 <table>
@@ -160,6 +164,7 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
                   <img src="https://img.shields.io/badge/React_Router-CA4245?logo=react-router&logoColor=white"/>
                   <img src="https://img.shields.io/badge/TanStack_Query-FF4154?logo=react-query&logoColor=white"/>
                   <img src="https://img.shields.io/badge/Orval-F53C56?logo=orval&logoColor=white"/>
+                  <img src="https://img.shields.io/badge/Pdf.js-dist?logo=pdfjs-dist&logoColor=white"/>
             </td>
         </tr>
         <tr>
@@ -172,7 +177,7 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
         </tr>
                 <tr>
             <td>
-                <p>패키지 매니저</p>
+                <p>빌드 툴</p>
             </td>
             <td>
               <img src="https://img.shields.io/badge/Vite-646CFF?logo=Vite&logoColor=white"/>
@@ -184,13 +189,13 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
             </td>
             <td>
               <img src="https://img.shields.io/badge/Vercel-000000?logo=Vercel&logoColor=white"/>
-<img src="https://img.shields.io/badge/GitHub_Actions-2088FF?logo=github-actions&logoColor=white"/>
             </td>
         </tr>
     </tbody>
 </table>
 
-### n8n과 Oval를 활용한 API 명세 자동화
+
+### n8n과 Orval를 활용한 API 명세 자동화
 한 달 남짓인 소프티어 프로젝트 개발 기간에서 **API 배포 전까지 프론트엔드 개발을 할 수 없는 것은 큰 병목**이에요. 이를 해결하기 위해 다음과 같은 워크플로우를 도입했어요.
 1. **워크플로우 트리거:** Slack의 `/openapi` 명령어를 통해 n8n 자동화 워크플로우를 호출해요.
 2. **데이터 추출:** Notion API를 활용하여 자연어로 작성된 노션 API 명세 문서를 정형화된 JSON 데이터로 추출해요.
@@ -208,9 +213,11 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
 ### 📚 기술 아티클 
 |파트|제목|작성자|
 |---|---|---| 
-|BE|작성 예정|권찬|
-|BE|작성 예정|송영범|
-|BE|작성 예정|이장안|
+|BE|질문 카테고리 분류를 위한 클러스터링 배치 로직 설계 과정 (작성 예정)|권찬|
+|BE|면접 기록의 질답 변환이 실패하는 문제의 해결 과정 (작성 예정)|권찬|
+|BE|rest client와 web client의 성능 비교(작성 예정)|송영범|
+|BE|벡터 데이터베이스 활용을 위한 객체지향적인 인터페이스 설계 과정 (작성 예정)|이장안|
+
 ### 기술 스택
 <table>
     <thead>
@@ -258,7 +265,12 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
     </tbody>
 </table>
 
-### ERD
-<img src="https://github.com/user-attachments/assets/eed01b33-b71e-4882-b6d2-83331ad5249a"/>
+### ERD (<a href="https://www.erdcloud.com/p/XM5R6iwvfSMfEnPik">링크</a>)
+<img width="2568" height="1272" alt="refit-2" src="https://github.com/user-attachments/assets/bf4180af-3810-4175-8aa1-563f226fdea9" />
 <br/>
+
+### 서버 아키텍처
+<img width="734" height="401" alt="image" src="https://github.com/user-attachments/assets/5c51ad6e-f10d-4eb5-a452-8ed92a239d4b" />
+
+
 

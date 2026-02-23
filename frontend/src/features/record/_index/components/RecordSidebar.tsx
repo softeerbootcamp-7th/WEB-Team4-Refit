@@ -1,7 +1,7 @@
-import { NoteIcon } from '@/designs/assets'
-import { SidebarLayout } from '@/designs/components'
-import { InterviewInfoSection } from '@/features/_common/components/sidebar'
+import { InterviewInfoSection } from '@/features/_common/_index/components/sidebar'
 import type { InterviewInfoType } from '@/types/interview'
+import { NoteIcon } from '@/ui/assets'
+import { SidebarLayout } from '@/ui/components'
 
 type RecordSidebarProps = {
   infoItems: InterviewInfoType
@@ -16,9 +16,7 @@ export function RecordSidebar({ infoItems }: RecordSidebarProps) {
       </div>
       <InterviewInfoSection {...infoItems} />
       <div className="rounded-xl bg-gray-100 px-4 py-3">
-        <p className="body-s-regular text-gray-600">
-          화면에서 내가 말하는 내용을 바로 확인할 수 있어요!
-        </p>
+        <p className="body-s-regular text-gray-600">화면에서 내가 말하는 내용을 바로 확인할 수 있어요!</p>
       </div>
     </SidebarLayout>
   )

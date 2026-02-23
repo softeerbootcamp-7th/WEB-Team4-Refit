@@ -1,6 +1,6 @@
 import { useGetMyFrequentQnaSetCategories } from '@/apis'
-import { NoteIcon } from '@/designs/assets'
 import TermsLockedOverlay from '@/features/dashboard/_index/components/terms-lock/TermsLockedOverlay'
+import { NoteIcon } from '@/ui/assets'
 
 interface QuestionCategory {
   label: string

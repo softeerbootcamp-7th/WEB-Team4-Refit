@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createRoot } from 'react-dom/client'
-import { shouldRetryApiQuery } from '@/features/_common/utils/queryRetry'
+import { shouldRetryApiQuery } from '@/features/_common/_index/utils/queryRetry'
 import Router from '@/routes/index.tsx'
 import '@/styles/index.css'
 

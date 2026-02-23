@@ -1,5 +1,5 @@
-import type { BadgeTheme } from '@/designs/components/badge'
 import type { StarStatus } from '@/types/interview'
+import type { BadgeTheme } from '@/ui/components/badge'
 
 export const KPT_SECTIONS = [
   { key: 'keepText' as const, label: 'Keep', question: '계속 유지하고 싶은 것은 무엇인가요?' },

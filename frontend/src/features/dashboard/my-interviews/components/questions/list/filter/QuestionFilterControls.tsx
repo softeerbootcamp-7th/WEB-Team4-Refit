@@ -1,6 +1,4 @@
 import { useMemo, useState } from 'react'
-import { CaretDownIcon, FilterIcon } from '@/designs/assets'
-import { Button, Checkbox, Modal, PlainCombobox } from '@/designs/components'
 import {
   EMPTY_STAR_LEVELS,
   EMPTY_QUESTION_FILTER,
@@ -8,6 +6,8 @@ import {
   STAR_LEVEL_OPTIONS,
 } from '@/features/dashboard/my-interviews/constants/constants'
 import type { QuestionFilter, StarLevel } from '@/types/interview'
+import { CaretDownIcon, FilterIcon } from '@/ui/assets'
+import { Button, Checkbox, Modal, PlainCombobox } from '@/ui/components'
 
 type Props = {
   filter: QuestionFilter

@@ -1,4 +1,4 @@
-import { Button, Checkbox, Input, NativeCombobox } from '@/designs/components'
+import { Button, Checkbox, Input, NativeCombobox } from '@/ui/components'
 import type { FormOption, FormValues, SaveFeedback } from './types'
 
 type MyPageProfileFormProps = {

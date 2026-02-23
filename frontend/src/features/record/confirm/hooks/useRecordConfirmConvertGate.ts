@@ -1,5 +1,5 @@
 import { useWaitConvertResult } from '@/apis'
-import { getApiErrorCode } from '@/features/_common/utils/error'
+import { getApiErrorCode } from '@/features/_common/_index/utils/error'
 import { shouldThrowInterviewRouteError } from '@/routes/interviewErrorRoute'
 
 const CONVERT_PENDING_ERROR_CODE = 'INTERVIEW_CONVERTING_STATUS_IS_PENDING'

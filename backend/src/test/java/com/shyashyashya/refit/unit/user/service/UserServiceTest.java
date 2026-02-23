@@ -4,6 +4,7 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.INDUSTRY_NOT_FOU
 import static com.shyashyashya.refit.global.exception.ErrorCode.JOB_CATEGORY_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.USER_NICKNAME_CONFLICT;
 import static com.shyashyashya.refit.global.exception.ErrorCode.USER_SIGNUP_EMAIL_CONFLICT;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static com.shyashyashya.refit.unit.fixture.IndustryFixture.TEST_INDUSTRY;
 import static com.shyashyashya.refit.unit.fixture.JobCategoryFixture.TEST_JOB_CATEGORY;
@@ -16,10 +17,13 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.industry.repository.IndustryRepository;
+import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
 import com.shyashyashya.refit.domain.user.dto.request.MyProfileUpdateRequest;
 import com.shyashyashya.refit.domain.user.dto.request.UserSignUpRequest;
@@ -34,9 +38,14 @@ import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.exception.ErrorCode;
 import com.shyashyashya.refit.global.util.RequestUserContext;
 import java.util.Optional;
+import java.util.stream.Stream;
+
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -223,6 +232,56 @@ class UserServiceTest {
             // then
             verify(userValidator, times(1)).validateNicknameNotConflict(anyString());
             verify(user, times(1)).updateMyPage(anyString(), any(), any());
+        }
+
+        static Stream<Arguments> profileUpdateRequestCases() {
+            return Stream.of(
+                    Arguments.of(null, null, null),
+                    Arguments.of(null, null, 2L),
+                    Arguments.of(null, 1L, null),
+                    Arguments.of(null, 1L, 2L),
+                    Arguments.of("nick", null, null),
+                    Arguments.of("nick", null, 2L),
+                    Arguments.of("nick", 1L, null),
+                    Arguments.of("nick", 1L, 2L)
+            );
+        }
+
+        @ParameterizedTest(name = "[{index}] nickname={0}, industryId={1}, jobCategoryId={2}")
+        @MethodSource("profileUpdateRequestCases")
+        void 프로필_정보_수정시_null_조합에_따라_해당_필드만_처리된다(
+                String nickname,
+                Long industryId,
+                Long jobCategoryId
+        ) {
+            // given
+            MyProfileUpdateRequest request = new MyProfileUpdateRequest(nickname, industryId, jobCategoryId);
+            User user = mock(User.class);
+            given(requestUserContext.getRequestUser()).willReturn(user);
+            if (industryId != null) {
+                given(industryRepository.findById(industryId)).willReturn(Optional.of(mock(Industry.class)));
+            }
+            if (jobCategoryId != null) {
+                given(jobCategoryRepository.findById(jobCategoryId)).willReturn(Optional.of(mock(JobCategory.class)));
+            }
+
+            // when
+            userService.updateMyProfile(request);
+
+            // then
+            verify(userValidator, times(1)).validateNicknameNotConflict(nickname);
+            if (industryId != null) {
+                verify(industryRepository, times(1)).findById(industryId);
+            } else {
+                verify(industryRepository, never()).findById(anyLong());
+            }
+            if (jobCategoryId != null) {
+                verify(jobCategoryRepository, times(1)).findById(jobCategoryId);
+            } else {
+                verify(jobCategoryRepository, never()).findById(anyLong());
+            }
+
+            verify(user, times(1)).updateMyPage(eq(nickname), any(), any());
         }
 
         @Test

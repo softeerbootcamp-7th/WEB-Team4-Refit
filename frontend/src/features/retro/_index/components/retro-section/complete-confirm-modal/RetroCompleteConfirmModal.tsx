@@ -1,4 +1,4 @@
-import ConfirmModal from '@/designs/components/modal/ConfirmModal'
+import ConfirmModal from '@/ui/components/modal/ConfirmModal'
 
 type RetroCompleteConfirmModalProps = {
   open: boolean

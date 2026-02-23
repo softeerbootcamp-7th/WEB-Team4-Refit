@@ -1,5 +1,5 @@
-import { CloseIcon } from '@/designs/assets'
 import { type FilterBadge, type FilterType } from '@/features/dashboard/trend-questions/constants/constants'
+import { CloseIcon } from '@/ui/assets'
 
 const MAX_VISIBLE_BADGES = 7
 

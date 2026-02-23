@@ -4,17 +4,20 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { customFetch } from '../../custom-fetch'
-import type { ApiResponseTokenReissueResponse, ReissueParams } from '../refit-api.schemas'
+import type { ApiResponseTokenReissueResponse, ApiResponseVoid, ReissueParams } from '../refit-api.schemas'
 import type {
   DataTag,
   DefinedInitialDataOptions,
   DefinedUseQueryResult,
+  MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
+  UseMutationOptions,
+  UseMutationResult,
   UseQueryOptions,
   UseQueryResult,
   UseSuspenseQueryOptions,
@@ -25,6 +28,55 @@ import type {
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
 
+/**
+ * 엑세스 토큰과 리프레시 토큰 쿠키를 삭제하고, Redis의 리프레시 토큰을 폐기합니다.
+ * @summary 로그아웃
+ */
+export const getLogoutUrl = () => {
+  return `/auth/logout`
+}
+
+export const logout = async (options?: RequestInit): Promise<ApiResponseVoid> => {
+  return customFetch<ApiResponseVoid>(getLogoutUrl(), {
+    ...options,
+    method: 'POST',
+  })
+}
+
+export const getLogoutMutationOptions = <TError = unknown, TContext = unknown>(options?: {
+  mutation?: UseMutationOptions<Awaited<ReturnType<typeof logout>>, TError, void, TContext>
+  request?: SecondParameter<typeof customFetch>
+}): UseMutationOptions<Awaited<ReturnType<typeof logout>>, TError, void, TContext> => {
+  const mutationKey = ['logout']
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
+
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof logout>>, void> = () => {
+    return logout(requestOptions)
+  }
+
+  return { mutationFn, ...mutationOptions }
+}
+
+export type LogoutMutationResult = NonNullable<Awaited<ReturnType<typeof logout>>>
+
+export type LogoutMutationError = unknown
+
+/**
+ * @summary 로그아웃
+ */
+export const useLogout = <TError = unknown, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<Awaited<ReturnType<typeof logout>>, TError, void, TContext>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<Awaited<ReturnType<typeof logout>>, TError, void, TContext> => {
+  return useMutation(getLogoutMutationOptions(options), queryClient)
+}
 /**
  * 리프레시 토큰이 재발급되면, 기존 리프레시 토큰은 폐기됩니다.
  * @summary 리프레시 토큰과 엑세스 토큰을 재발급합니다.

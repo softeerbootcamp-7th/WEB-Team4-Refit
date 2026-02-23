@@ -2,10 +2,10 @@ import { Suspense } from 'react'
 import { useGetIndustriesSuspense } from '@/apis/generated/industry-api/industry-api'
 import { useGetAllJobCategoriesSuspense } from '@/apis/generated/job-category-api/job-category-api'
 import { useGetMyProfileInfoSuspense } from '@/apis/generated/user-api/user-api'
-import { SmallLogoIcon } from '@/designs/assets'
 import IndustryJobFilter from '@/features/dashboard/trend-questions/components/filter/IndustryJobFilter'
 import FilterResultList from '@/features/dashboard/trend-questions/components/list/FilterResultList'
 import { useIndustryJobFilter } from '@/features/dashboard/trend-questions/hooks/useIndustryJobFilter'
+import { SmallLogoIcon } from '@/ui/assets'
 
 export default function TrendQuestionsPage() {
   return (

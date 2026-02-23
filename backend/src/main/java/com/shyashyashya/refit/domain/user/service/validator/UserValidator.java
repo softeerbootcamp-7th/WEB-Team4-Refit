@@ -7,6 +7,7 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.USER_SIGNUP_EMAI
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
 import com.shyashyashya.refit.global.exception.CustomException;
+import jakarta.annotation.Nullable;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -23,8 +24,8 @@ public class UserValidator {
         }
     }
 
-    public void validateNicknameNotConflict(@NonNull String nickname) {
-        if (userRepository.existsByNickname(nickname)) {
+    public void validateNicknameNotConflict(@Nullable String nickname) {
+        if (nickname != null && userRepository.existsByNickname(nickname)) {
             throw new CustomException(USER_NICKNAME_CONFLICT);
         }
     }

@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 import { useGetMyProfileInfo } from '@/apis'
-import { CircleLeftIcon, CircleRightIcon } from '@/designs/assets'
-import { Button } from '@/designs/components'
 import TermsLockedOverlay from '@/features/dashboard/_index/components/terms-lock/TermsLockedOverlay'
 import CategoryList from '@/features/dashboard/my-interviews/components/questions/frequent/category-list/CategoryList'
 import QuestionCard from '@/features/dashboard/my-interviews/components/questions/frequent/question-card/QuestionCard'
 import { DATA_EMPTY_MESSAGE } from '@/features/dashboard/my-interviews/constants/constants'
+import { CircleLeftIcon, CircleRightIcon } from '@/ui/assets'
+import { Button } from '@/ui/components'
 import { useFrequentQuestions } from './useFrequentQuestions'
 import type { FrequentQuestionCategory, QuestionCardModel } from '../mappers'
 

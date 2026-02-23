@@ -1,8 +1,8 @@
-import { NoteIcon } from '@/designs/assets'
-import { SidebarLayout } from '@/designs/components'
-import { InterviewInfoSection, QuestionListSection } from '@/features/_common/components/sidebar'
+import { InterviewInfoSection, QuestionListSection } from '@/features/_common/_index/components/sidebar'
 import type { IdLabelType } from '@/types/global'
 import type { InterviewInfoType } from '@/types/interview'
+import { NoteIcon } from '@/ui/assets'
+import { SidebarLayout } from '@/ui/components'
 
 type RetroSidebarProps = {
   interviewInfo: InterviewInfoType

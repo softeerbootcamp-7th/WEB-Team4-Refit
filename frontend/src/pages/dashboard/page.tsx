@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from 'react'
 import { useGetMyProfileInfo } from '@/apis'
 import DashboardBanner from '@/features/dashboard/_index/components/dashboard-banner/DashboardBanner'
 import InterviewCalendar from '@/features/dashboard/_index/components/interview-calendar/InterviewCalendar'
@@ -16,38 +15,18 @@ export default function DashboardPage() {
       select: (response) => response.result?.isAgreedToTerms ?? false,
     },
   })
-  const leftColumnRef = useRef<HTMLDivElement | null>(null)
-  const [leftColumnHeight, setLeftColumnHeight] = useState<number | null>(null)
   const isTermsLocked = !isAgreedToTerms
-
-  useEffect(() => {
-    const target = leftColumnRef.current
-    if (!target) return
-
-    const updateHeight = () => {
-      setLeftColumnHeight(target.getBoundingClientRect().height)
-    }
-
-    updateHeight()
-    const resizeObserver = new ResizeObserver(updateHeight)
-    resizeObserver.observe(target)
-
-    return () => resizeObserver.disconnect()
-  }, [])
 
   return (
     <ScheduleModalProvider>
       <div className="flex w-full min-w-0 flex-col justify-center gap-10">
         <div className="flex w-full items-stretch gap-6">
-          <div ref={leftColumnRef} className="flex min-h-0 w-225 flex-1 flex-col gap-10">
+          <div className="flex min-h-0 w-225 flex-1 flex-col gap-10">
             <DashboardBanner variant={variant} titleText={titleText} isLoading={isLoading} />
             <ReviewWaitingSection />
             <UpcomingInterviewSection isTermsLocked={isTermsLocked} />
           </div>
-          <div
-            className="bg-gray-150 w-80 shrink-0 overflow-hidden rounded-[20px] px-5 py-7"
-            style={leftColumnHeight ? { height: `${leftColumnHeight}px` } : undefined}
-          >
+          <div className="bg-gray-150 w-80 shrink-0 overflow-hidden rounded-[20px] px-5 py-7">
             <InterviewCalendar />
           </div>
         </div>

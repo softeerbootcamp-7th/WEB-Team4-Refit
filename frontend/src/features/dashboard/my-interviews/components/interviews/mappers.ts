@@ -4,7 +4,7 @@ import type {
   InterviewSimpleDto,
   InterviewSimpleDtoInterviewReviewStatus,
 } from '@/apis/generated/refit-api.schemas'
-import { formatDate } from '@/features/_common/utils/date'
+import { formatDate } from '@/features/_common/_index/utils/date'
 import type { InterviewResultStatus } from '@/features/dashboard/my-interviews/constants/constants'
 import type { InterviewType } from '@/types/interview'
 

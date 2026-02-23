@@ -1,6 +1,6 @@
-import { NotebookChickIcon } from '@/designs/assets'
-import { Button } from '@/designs/components'
-import Modal from '@/designs/components/modal'
+import { NotebookChickIcon } from '@/ui/assets'
+import { Button } from '@/ui/components'
+import Modal from '@/ui/components/modal'
 
 type RetroCompleteResultModalProps = {
   open: boolean
