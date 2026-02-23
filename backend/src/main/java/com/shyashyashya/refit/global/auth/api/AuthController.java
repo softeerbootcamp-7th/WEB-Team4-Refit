@@ -56,7 +56,7 @@ public class AuthController {
                 .body(response);
     }
 
-    @Operation(summary = "로그아웃", description = "엑세스 토큰과 리프레시 토큰 쿠키를 삭제하고, DB의 리프레시 토큰을 폐기합니다.")
+    @Operation(summary = "로그아웃", description = "엑세스 토큰과 리프레시 토큰 쿠키를 삭제하고, Redis의 리프레시 토큰을 폐기합니다.")
     @PostMapping("/logout")
     public ResponseEntity<ApiResponse<Void>> logout(
             @CookieValue(value = AuthConstant.REFRESH_TOKEN, required = false) String refreshTokenFromHeader) {
