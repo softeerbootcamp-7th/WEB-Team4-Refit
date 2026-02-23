@@ -69,23 +69,16 @@ public class GeminiClient {
 
     public CompletableFuture<GeminiBatchEmbeddingResponse> sendAsyncBatchEmbeddingRequest(
             GeminiBatchEmbeddingRequest requestBody) {
-        try {
-            return webClient
-                    .post()
-                    .uri(EMBEDDING_BATCH_ENDPOINT)
-                    .header("x-goog-api-key", geminiProperty.apiKey())
-                    .accept(MediaType.APPLICATION_JSON)
-                    .bodyValue(requestBody)
-                    .retrieve()
-                    .bodyToMono(GeminiBatchEmbeddingResponse.class)
-                    .timeout(Duration.ofSeconds(geminiProperty.webClientRequestTimeoutSec()))
-                    .toFuture();
-        } catch (WebClientResponseException e) {
-            log.error(
-                    "[sendAsyncBatchEmbeddingRequest] Gemini Response Error: response body: {}",
-                    e.getResponseBodyAsString());
-            throw e;
-        }
+        return webClient
+                .post()
+                .uri(EMBEDDING_BATCH_ENDPOINT)
+                .header("x-goog-api-key", geminiProperty.apiKey())
+                .accept(MediaType.APPLICATION_JSON)
+                .bodyValue(requestBody)
+                .retrieve()
+                .bodyToMono(GeminiBatchEmbeddingResponse.class)
+                .timeout(Duration.ofSeconds(geminiProperty.webClientRequestTimeoutSec()))
+                .toFuture();
     }
 
     public GeminiGenerateResponse sendTextGenerateRequest(GeminiGenerateRequest requestBody, GenerateModel model) {
