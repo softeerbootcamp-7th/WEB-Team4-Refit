@@ -16,7 +16,6 @@ function isAbortError(error: unknown): boolean {
 }
 
 function isNetworkError(error: unknown): boolean {
-  if (isAbortError(error)) return false
   if (error instanceof TypeError) return true
   if (error instanceof DOMException && error.name === 'NetworkError') return true
   return false
