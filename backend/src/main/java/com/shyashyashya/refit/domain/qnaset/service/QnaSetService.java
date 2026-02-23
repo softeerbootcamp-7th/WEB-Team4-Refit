@@ -118,6 +118,7 @@ public class QnaSetService {
             throw new CustomException(QNA_DELETE_FAILED_PDF_HIGHLIGHTING_EXISTS);
         }
 
+        qnaSetSelfReviewRepository.deleteByQnaSet(qnaSet);
         qnaSetScrapFolderRepository.deleteAllByQnaSet(qnaSet);
         qnaSetRepository.delete(qnaSet);
         eventPublisher.publishEvent(QuestionEmbeddingDeletionEvent.of(qnaSetId));

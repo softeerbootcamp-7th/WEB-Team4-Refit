@@ -585,6 +585,35 @@ public class QnaSetIntegrationTest extends IntegrationTest {
             assertThat(qnaSetScrapFolderRepository.existsByQnaSetAndScrapFolder(scrapedQnaSet, scrapFolder)).isFalse();
         }
 
+        @Test
+        void 회고가_존재하는_질답_세트_삭제에_성공한다() {
+            // given
+            var interviewCreateRequest = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L,
+                    "BE Developer");
+            Interview interview = createAndSaveInterview(interviewCreateRequest,
+                    InterviewReviewStatus.DEBRIEF_COMPLETED);
+
+            var qnaSetCreateRequest = new QnaSetCreateRequest("test question text", "test answer text");
+            QnaSet qnaSet = createAndSaveQnaSet(qnaSetCreateRequest, interview, true);
+
+            QnaSetSelfReview selfReview = QnaSetSelfReview.create("self review test", qnaSet);
+            qnaSetSelfReviewRepository.save(selfReview);
+
+            // when & then
+            given(spec)
+            .when()
+                    .delete("/qna-set/" + qnaSet.getId())
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON204.name()))
+                    .body("message", equalTo(COMMON204.getMessage()))
+                    .body("result", nullValue());
+
+            assertThat(qnaSetRepository.findById(qnaSet.getId())).isEmpty();
+            assertThat(qnaSetSelfReviewRepository.findById(selfReview.getId())).isEmpty();
+        }
+
     }
 
     @Nested
