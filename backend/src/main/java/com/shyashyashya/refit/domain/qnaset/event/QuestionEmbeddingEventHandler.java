@@ -3,13 +3,13 @@ package com.shyashyashya.refit.domain.qnaset.event;
 import com.shyashyashya.refit.batch.model.QuestionVectorDocument;
 import com.shyashyashya.refit.batch.repository.QuestionCategoryVectorRepository;
 import com.shyashyashya.refit.batch.repository.QuestionVectorRepository;
-import com.shyashyashya.refit.domain.qnaset.constant.QnaSetConstant;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetCategory;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetCategoryRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.global.gemini.GeminiClient;
 import com.shyashyashya.refit.global.gemini.dto.GeminiEmbeddingRequest;
+import com.shyashyashya.refit.global.property.ClusteringProperty;
 import com.shyashyashya.refit.global.vectordb.model.ScoredVector;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +25,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 public class QuestionEmbeddingEventHandler {
 
     private final GeminiClient geminiClient;
+    private final ClusteringProperty clusteringProperty;
     private final QuestionVectorRepository questionVectorRepository;
     private final QuestionCategoryVectorRepository questionCategoryVectorRepository;
     private final QnaSetRepository qnaSetRepository;
@@ -82,7 +83,7 @@ public class QuestionEmbeddingEventHandler {
     }
 
     private void assignCategoryByScore(QnaSet qnaSet, ScoredVector<Long> bestCategory) {
-        if (bestCategory.score() < QnaSetConstant.CATEGORY_SIMILARITY_THRESHOLD) {
+        if (bestCategory.score() < clusteringProperty.categorySimilarityThreshold()) {
             qnaSet.updateCategory(null);
             log.info("질답세트 ID {} 카테고리 매칭: 유사도 임계값 미달로 카테고리 매핑 안 함 (Score: {})", qnaSet.getId(), bestCategory.score());
             return;

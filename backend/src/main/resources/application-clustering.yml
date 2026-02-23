@@ -1,3 +1,4 @@
 clustering:
-  min-points: "${QUESTION_CLUSTERING_MIN_POINTS}"
-  min-size: "${QUESTION_CLUSTERING_MIN_SIZE}"
+  min-points: "${QUESTION_CLUSTERING_MIN_POINTS:3}"
+  min-size: "${QUESTION_CLUSTERING_MIN_SIZE:3}"
+  category-similarity-threshold: "${CATEGORY_SIMILARITY_THRESHOLD:0.7}"
