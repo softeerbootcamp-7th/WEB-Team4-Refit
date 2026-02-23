@@ -8,12 +8,14 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_AC
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_FOUND;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
+import com.shyashyashya.refit.domain.scrapfolder.model.QnaSetScrapFolder;
+import com.shyashyashya.refit.domain.scrapfolder.model.ScrapFolder;
+import com.shyashyashya.refit.domain.scrapfolder.repository.QnaSetScrapFolderRepository;
+import com.shyashyashya.refit.domain.scrapfolder.repository.ScrapFolderRepository;
 import com.shyashyashya.refit.integration.core.IntegrationTest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatusUpdateRequest;
@@ -34,11 +36,8 @@ import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRepository
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetSelfReviewRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.StarAnalysisRepository;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import com.shyashyashya.refit.domain.interview.repository.InterviewRepository;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
@@ -46,13 +45,11 @@ import com.shyashyashya.refit.domain.qnaset.model.QnaSetCategory;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetCategoryRepository;
 import com.shyashyashya.refit.domain.user.model.User;
-import com.shyashyashya.refit.domain.interview.dto.request.InterviewSearchRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class InterviewIntegrationTest extends IntegrationTest {
@@ -80,6 +77,12 @@ public class InterviewIntegrationTest extends IntegrationTest {
 
     @Autowired
     private PdfHighlightingRectRepository pdfHighlightingRectRepository;
+
+    @Autowired
+    private ScrapFolderRepository scrapFolderRepository;
+
+    @Autowired
+    private QnaSetScrapFolderRepository qnaSetScrapFolderRepository;
 
     @Nested
     class 면접_생성_시 {
@@ -320,6 +323,30 @@ public class InterviewIntegrationTest extends IntegrationTest {
                     .body("result", nullValue());
 
             assertThat(interviewSelfReviewRepository.count()).isEqualTo(0);
+        }
+
+        @Test
+        void QnaSet과_스크랩이_존재하는_면접_삭제에_성공한다() {
+            // given
+            QnaSetCreateRequest qnaSetRequest = new QnaSetCreateRequest("question", "answer");
+            Interview interview = interviewRepository.findById(interviewId).get();
+            QnaSet qnaSet = createAndSaveQnaSet(qnaSetRequest, interview);
+
+            ScrapFolder scrapFolder = scrapFolderRepository.save(ScrapFolder.create("스크랩 폴더", requestUser));
+            qnaSetScrapFolderRepository.save(QnaSetScrapFolder.create(qnaSet, scrapFolder));
+
+            // when & then
+            given(spec)
+            .when()
+                    .delete(path + "/" + interviewId)
+            .then()
+                    .assertThat().statusCode(200)
+                    .body("code", equalTo(COMMON204.name()))
+                    .body("message", equalTo(COMMON204.getMessage()))
+                    .body("result", nullValue());
+
+            assertThat(qnaSetRepository.count()).isEqualTo(0);
+            assertThat(qnaSetScrapFolderRepository.count()).isEqualTo(0);
         }
 
         @Test

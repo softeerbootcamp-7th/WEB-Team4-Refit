@@ -45,6 +45,7 @@ import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRepository
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetSelfReviewRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.StarAnalysisRepository;
+import com.shyashyashya.refit.domain.scrapfolder.repository.QnaSetScrapFolderRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.gemini.GeminiClient;
@@ -89,6 +90,7 @@ public class InterviewService {
     private final PdfHighlightingRepository pdfHighlightingRepository;
     private final StarAnalysisRepository starAnalysisRepository;
     private final InterviewSelfReviewRepository interviewSelfReviewRepository;
+    private final QnaSetScrapFolderRepository qnaSetScrapFolderRepository;
 
     private final InterviewValidator interviewValidator;
     private final RequestUserContext requestUserContext;
@@ -181,9 +183,11 @@ public class InterviewService {
         deleteAllPdfHighlighting(interview);
         starAnalysisRepository.deleteAllByInterview(interview);
         qnaSetSelfReviewRepository.deleteAllByInterview(interview);
-        qnaSetRepository
-                .findAllByInterview(interview)
-                .forEach(qnaSet -> eventPublisher.publishEvent(QuestionEmbeddingDeletionEvent.of(qnaSet.getId())));
+        List<QnaSet> qnaSets = qnaSetRepository.findAllByInterview(interview);
+        if (!qnaSets.isEmpty()) {
+            qnaSetScrapFolderRepository.deleteAllByQnaSetIn(qnaSets);
+        }
+        qnaSets.forEach(qnaSet -> eventPublisher.publishEvent(QuestionEmbeddingDeletionEvent.of(qnaSet.getId())));
         qnaSetRepository.deleteAllByInterview(interview);
         interviewSelfReviewRepository.deleteByInterview(interview);
         interviewRepository.delete(interview);
