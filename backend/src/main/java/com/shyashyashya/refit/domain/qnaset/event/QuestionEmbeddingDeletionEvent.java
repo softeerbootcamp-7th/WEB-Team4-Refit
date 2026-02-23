@@ -6,8 +6,6 @@ import lombok.Builder;
 public record QuestionEmbeddingDeletionEvent(Long qnaSetId) {
 
     public static QuestionEmbeddingDeletionEvent of(Long qnaSetId) {
-        return QuestionEmbeddingDeletionEvent.builder()
-                .qnaSetId(qnaSetId)
-                .build();
+        return QuestionEmbeddingDeletionEvent.builder().qnaSetId(qnaSetId).build();
     }
 }

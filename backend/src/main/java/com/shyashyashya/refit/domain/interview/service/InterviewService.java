@@ -181,8 +181,9 @@ public class InterviewService {
         deleteAllPdfHighlighting(interview);
         starAnalysisRepository.deleteAllByInterview(interview);
         qnaSetSelfReviewRepository.deleteAllByInterview(interview);
-        qnaSetRepository.findAllByInterview(interview).forEach(qnaSet ->
-                eventPublisher.publishEvent(QuestionEmbeddingDeletionEvent.of(qnaSet.getId())));
+        qnaSetRepository
+                .findAllByInterview(interview)
+                .forEach(qnaSet -> eventPublisher.publishEvent(QuestionEmbeddingDeletionEvent.of(qnaSet.getId())));
         qnaSetRepository.deleteAllByInterview(interview);
         interviewSelfReviewRepository.deleteByInterview(interview);
         interviewRepository.delete(interview);
