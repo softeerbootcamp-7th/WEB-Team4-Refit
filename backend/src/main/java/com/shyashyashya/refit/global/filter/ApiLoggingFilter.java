@@ -17,7 +17,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 
 @RequiredArgsConstructor
 @Slf4j
-public class LoggingFilter extends OncePerRequestFilter {
+public class ApiLoggingFilter extends OncePerRequestFilter {
 
     private final HandlerExceptionResolver handlerExceptionResolver;
     private static final String TRACE_ID = "traceId";
@@ -39,12 +39,14 @@ public class LoggingFilter extends OncePerRequestFilter {
         String clientIp = getClientIp(request);
         String queryString = request.getQueryString();
         String decodedQueryString = "";
+        MDC.put("clientIp", clientIp);
+
         if (queryString != null && !queryString.isEmpty()) {
             decodedQueryString = "?" + URLDecoder.decode(queryString, StandardCharsets.UTF_8);
         }
         String requestUriWithQuery = uri + decodedQueryString;
 
-        log.info("[Request] {} {} (IP: {})", method, requestUriWithQuery, clientIp);
+        log.info("[Req ] {} {}", method, requestUriWithQuery);
         long startTime = System.currentTimeMillis();
 
         try {
@@ -54,7 +56,8 @@ public class LoggingFilter extends OncePerRequestFilter {
         } finally {
             long duration = System.currentTimeMillis() - startTime;
             int status = response.getStatus();
-            log.info("[Response] HTTP {} ({} {}) - {}ms", status, method, requestUriWithQuery, duration);
+            log.info("[Resp] HTTP {} ({} {}) - {}ms", status, method, requestUriWithQuery, duration);
+            MDC.remove("clientIp");
             MDC.clear();
         }
     }
