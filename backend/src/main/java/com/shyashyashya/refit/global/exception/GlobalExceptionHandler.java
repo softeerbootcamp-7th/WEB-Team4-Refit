@@ -4,6 +4,7 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.LOGIN_REQUIRED_R
 
 import com.shyashyashya.refit.global.constant.AuthConstant;
 import com.shyashyashya.refit.global.dto.ApiResponse;
+import com.shyashyashya.refit.global.model.ClientOriginType;
 import com.shyashyashya.refit.global.util.CookieUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,8 +31,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RefreshTokenTheftException.class)
     private ResponseEntity<ApiResponse<Void>> handleRefreshTokenTheftException(RefreshTokenTheftException e) {
-        String deleteAccessTokenCookie = cookieUtil.deleteCookie(AuthConstant.ACCESS_TOKEN);
-        String deleteRefreshTokenCookie = cookieUtil.deleteCookie(AuthConstant.REFRESH_TOKEN);
+        ClientOriginType originType = e.getOriginType();
+        String deleteAccessTokenCookie = cookieUtil.deleteCookie(AuthConstant.ACCESS_TOKEN, originType);
+        String deleteRefreshTokenCookie = cookieUtil.deleteCookie(AuthConstant.REFRESH_TOKEN, originType);
         log.info("RefreshTokenTheftException occurred");
         var response = ApiResponse.customException(LOGIN_REQUIRED_REFRESH_TOKEN_THEFT_DETECTED);
         return ResponseEntity.status(LOGIN_REQUIRED_REFRESH_TOKEN_THEFT_DETECTED.getHttpStatus())

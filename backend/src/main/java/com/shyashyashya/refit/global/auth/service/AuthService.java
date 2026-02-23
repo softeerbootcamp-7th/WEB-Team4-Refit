@@ -6,6 +6,7 @@ import com.shyashyashya.refit.global.auth.dto.TokenReissueResultDto;
 import com.shyashyashya.refit.global.auth.model.DecodedJwt;
 import com.shyashyashya.refit.global.auth.service.validator.JwtValidator;
 import com.shyashyashya.refit.global.exception.CustomException;
+import com.shyashyashya.refit.global.model.ClientOriginType;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,8 @@ public class AuthService {
     private final JwtValidator jwtValidator;
     private final JwtService jwtService;
 
-    public TokenReissueResultDto reissue(@Nullable String encodedAccessJwt, @Nullable String encodedRefreshJwt) {
+    public TokenReissueResultDto reissue(
+            @Nullable String encodedAccessJwt, @Nullable String encodedRefreshJwt, ClientOriginType originType) {
 
         // RT가 없거나, 서명이 불일치 하거나, 만료되었으면 재로그인 필요
         DecodedJwt refreshToken = jwtDecoder.decodeRefreshJwt(encodedRefreshJwt);
@@ -37,7 +39,7 @@ public class AuthService {
 
         } catch (CustomException e) {
             if (e.getErrorCode() == TOKEN_REISSUE_REQUIRED) {
-                return jwtService.rotateRefreshToken(encodedRefreshJwt, email, userId);
+                return jwtService.rotateRefreshToken(encodedRefreshJwt, email, userId, originType);
             }
 
             // 그 외의 예외는 상위로 던짐
