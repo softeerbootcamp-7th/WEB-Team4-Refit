@@ -133,7 +133,7 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
 ### 📚 기술 아티클 
 |제목|작성자|
 |---|---| 
-|Claude Code 개념부터 활용까지 (Harness, Context, Skills) (작성 예정)|홍지운, 황주희|
+|[Claude Code 개념부터 활용까지 (Harness, Context, Skills)](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%ED%99%8D%EC%A7%80%EC%9A%B4%2C-%ED%99%A9%EC%A3%BC%ED%9D%AC%5D-Claude-Code-%EA%B0%9C%EB%85%90%EB%B6%80%ED%84%B0-%ED%99%9C%EC%9A%A9%EA%B9%8C%EC%A7%80-%28Harness%2C-Context%2C-Skills%29) |홍지운, 황주희|
 |Orval과 n8n을 활용한 OpenAPI 주도 개발 (작성 예정)|홍지운, 황주희|
 |Web Speech API: 서버 구축 없이 Realtime STT 구현하기 (작성 예정)|홍지운|
 |PDF.js 기반 대용량 문서 하이라이팅 구현 및 렌더링 이슈 개선(작성 예정)|황주희|
