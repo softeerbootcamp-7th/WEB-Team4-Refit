@@ -5,7 +5,7 @@
   ### 기억을 기록으로, 면접 복기 서비스 Refit
 
   <p>
-    <a href="https://www.notion.so/API-2f4b4f683005812a91bfe40c54942d77?source=copy_link">API 명세 (임시)</a>
+    <a href="https://api.refit.my/swagger-ui/index.html">Swagger</a>
     &nbsp; | &nbsp; 
     <a href="https://jira.external-share.com/issue/433665/lookback">Jira Board</a>
     &nbsp; | &nbsp;
@@ -81,7 +81,10 @@
 | 스프린트 명 | 스프린트 기간 | 스프린트 목표 | 백로그 |
 |---|---|---|---|
 | Refit 1주차 | 26-01-19 ~ 26-01-25 | | [Refit 1주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20%22DEV%22%20AND%20sprint%20%3D%204%20ORDER%20BY%20created%20DESC)|
-| Refit 2주차 | 26-01-26 ~ 26-02-02 | | [Refit 2주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%20AND%20sprint%20%3D%2039%20ORDER%20BY%20created%20DESC)|
+| Refit 2주차 | 26-01-26 ~ 26-02-01 | | [Refit 2주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%20AND%20sprint%20%3D%2039%20ORDER%20BY%20created%20DESC)|
+| Refit 3주차 | 26-02-02 ~ 26-02-08 | | [Refit 3주차 백로그]|
+| Refit 4주차 | 26-02-09 ~ 26-02-15 | | [Refit 4주차 백로그]|
+| Refit 5주차 | 26-02-16 ~ 26-02-22 | | [Refit 5주차 백로그]|
  
  <!--
 #### Refit 1주차
