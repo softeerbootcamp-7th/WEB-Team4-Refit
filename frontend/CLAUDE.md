@@ -61,6 +61,11 @@ src/
 - [Routing & Auth Middleware](.claude/docs/routing.md) — React Router v7 middleware, auth session
 - [Design System](.claude/docs/design-system.md) — UI 컴포넌트 목록, SVG 에셋
 - [Styling](.claude/docs/styling.md) — Tailwind v4 color tokens, typography classes
+- [Feature: SignIn](.claude/docs/features/signin.md) — OAuth 팝업 플로우, 세션 상태 머신
+- [Feature: Dashboard](.claude/docs/features/dashboard.md) — 배너 상태, 약관 게이팅, 캘린더, 필터
+- [Feature: Record](.claude/docs/features/record.md) — 3단계 기록 플로우, 상태 머신, 자동저장
+- [Feature: Retro](.claude/docs/features/retro.md) — 질문별 회고 + KPT, STAR 분석, 스크랩
+- [Feature: Mobile](.claude/docs/features/mobile.md) — 모바일 녹음, Web Speech API
 
 ## Session Notes
 
