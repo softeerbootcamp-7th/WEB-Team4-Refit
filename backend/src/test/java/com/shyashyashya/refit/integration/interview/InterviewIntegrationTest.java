@@ -794,8 +794,8 @@ public class InterviewIntegrationTest extends IntegrationTest {
         }
 
         @ParameterizedTest
-        @EnumSource(value = InterviewReviewStatus.class, names = { "NOT_LOGGED", "LOG_DRAFT", "QNA_SET_DRAFT", "DEBRIEF_COMPLETED" })
-        void 면접_상태가_회고중이_아닐_때_KPT회고를_업데이트하면_실패한다(InterviewReviewStatus status) {
+        @EnumSource(value = InterviewReviewStatus.class, names = { "NOT_LOGGED", "LOG_DRAFT", "QNA_SET_DRAFT" })
+        void 면접_상태가_회고중_또는_회고_완료가_아닐_때_KPT회고를_업데이트하면_실패한다(InterviewReviewStatus status) {
             // given
             var createRequest = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");

@@ -37,7 +37,6 @@ public enum ErrorCode {
 
     USER_NOT_FOUND(NOT_FOUND, "사용자가 존재하지 않습니다."),
     USER_SIGNUP_EMAIL_CONFLICT(CONFLICT, "이미 사용 중인 이메일입니다."),
-    USER_NICKNAME_CONFLICT(CONFLICT, "이미 사용 중인 닉네임입니다."),
     USER_SIGNUP_REQUIRED(UNAUTHORIZED, "회원가입이 필요합니다."),
     USER_ALREADY_SIGNED_UP(BAD_REQUEST, "이미 회원가입이 완료된 사용자입니다."),
     USER_ALREADY_AGREED_TO_TERMS(BAD_REQUEST, "이미 약관에 동의한 사용자입니다."),

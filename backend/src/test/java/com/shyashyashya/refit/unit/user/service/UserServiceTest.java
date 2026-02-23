@@ -2,8 +2,8 @@ package com.shyashyashya.refit.unit.user.service;
 
 import static com.shyashyashya.refit.global.exception.ErrorCode.INDUSTRY_NOT_FOUND;
 import static com.shyashyashya.refit.global.exception.ErrorCode.JOB_CATEGORY_NOT_FOUND;
-import static com.shyashyashya.refit.global.exception.ErrorCode.USER_NICKNAME_CONFLICT;
 import static com.shyashyashya.refit.global.exception.ErrorCode.USER_SIGNUP_EMAIL_CONFLICT;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static com.shyashyashya.refit.unit.fixture.IndustryFixture.TEST_INDUSTRY;
@@ -230,7 +230,6 @@ class UserServiceTest {
             userService.updateMyProfile(request);
 
             // then
-            verify(userValidator, times(1)).validateNicknameNotConflict(anyString());
             verify(user, times(1)).updateMyPage(anyString(), any(), any());
         }
 
@@ -269,7 +268,6 @@ class UserServiceTest {
             userService.updateMyProfile(request);
 
             // then
-            verify(userValidator, times(1)).validateNicknameNotConflict(nickname);
             if (industryId != null) {
                 verify(industryRepository, times(1)).findById(industryId);
             } else {
@@ -301,7 +299,7 @@ class UserServiceTest {
         }
 
         @Test
-        void 닉네임이_중복되면_예외가_발생한다() {
+        void 닉네임_중복을_허용한다() {
             // given
             MyProfileUpdateRequest request = new MyProfileUpdateRequest(
                     "duplicateNickname",
@@ -310,13 +308,10 @@ class UserServiceTest {
             given(requestUserContext.getRequestUser()).willReturn(TEST_USER_1);
             given(industryRepository.findById(anyLong())).willReturn(Optional.of(TEST_INDUSTRY));
             given(jobCategoryRepository.findById(anyLong())).willReturn(Optional.of(TEST_JOB_CATEGORY));
-            willThrow(new CustomException(USER_NICKNAME_CONFLICT))
-                    .given(userValidator).validateNicknameNotConflict(anyString());
 
             // when & then
-            assertThatThrownBy(() -> userService.updateMyProfile(request))
-                    .isInstanceOf(CustomException.class)
-                    .hasFieldOrPropertyWithValue("errorCode", USER_NICKNAME_CONFLICT);
+            assertThatCode(() -> userService.updateMyProfile(request))
+                    .doesNotThrowAnyException();
         }
     }
 }
