@@ -1,25 +1,23 @@
-import { HttpError } from '@/apis/custom-fetch'
-import { getApiErrorCode } from '@/features/_common/utils/error'
-
 const MAX_API_QUERY_RETRY_COUNT = 2
-const INTERVIEW_NOT_ACCESSIBLE_ERROR_CODE = 'INTERVIEW_NOT_ACCESSIBLE'
-const INTERVIEW_NOT_FOUND_ERROR_CODE = 'INTERVIEW_NOT_FOUND'
 
-// 면접이 존재하지 않거나 접근 권한이 없는 경우에는 재시도하지 않도록 함
+// 네트워크 오류에 대해서만 재시도하고, 그 외 오류는 재시도하지 않도록 함
 export function shouldRetryApiQuery(failureCount: number, error: unknown): boolean {
   if (failureCount >= MAX_API_QUERY_RETRY_COUNT) return false
 
-  if (!(error instanceof HttpError)) return true
+  if (isAbortError(error)) return false
 
-  const errorCode = getApiErrorCode(error)
-  const isInterviewNotAccessibleError = error.status === 403 && errorCode === INTERVIEW_NOT_ACCESSIBLE_ERROR_CODE
-  const isInterviewNotFoundError = error.status === 404 && errorCode === INTERVIEW_NOT_FOUND_ERROR_CODE
+  return isNetworkError(error)
+}
 
-  if (isInterviewNotAccessibleError || isInterviewNotFoundError) return false
+function isAbortError(error: unknown): boolean {
+  if (error instanceof DOMException && error.name === 'AbortError') return true
+  if (error instanceof Error && error.name === 'AbortError') return true
+  return false
+}
 
-  if (error.status === 404) return true
-
-  if (error.status >= 500 || error.status === 429 || error.status === 408) return true
-
+function isNetworkError(error: unknown): boolean {
+  if (isAbortError(error)) return false
+  if (error instanceof TypeError) return true
+  if (error instanceof DOMException && error.name === 'NetworkError') return true
   return false
 }
