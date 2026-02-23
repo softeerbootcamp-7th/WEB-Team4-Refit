@@ -79,12 +79,12 @@
 <br/>
 
 | 스프린트 명 | 스프린트 기간 | 스프린트 목표 | 백로그 |
-|---|---|---|---|
-| Refit 1주차 | 26-01-19 ~ 26-01-25 | | [Refit 1주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20%22DEV%22%20AND%20sprint%20%3D%204%20ORDER%20BY%20created%20DESC)|
-| Refit 2주차 | 26-01-26 ~ 26-02-01 | | [Refit 2주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%20AND%20sprint%20%3D%2039%20ORDER%20BY%20created%20DESC)|
-| Refit 3주차 | 26-02-02 ~ 26-02-08 | | [Refit 3주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%0AAND%20assignee%20%3D%20712020%3Aa4e068c2-8139-4e53-88c4-f47f6c6e0bda%0AAND%20status%20%3D%20Done%0AAND%20Sprint%20%3D%20105%0AORDER%20BY%20created%20DESC)|
-| Refit 4주차 | 26-02-09 ~ 26-02-15 | | [Refit 4주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%0AAND%20assignee%20%3D%20712020%3Aa4e068c2-8139-4e53-88c4-f47f6c6e0bda%0AAND%20status%20%3D%20Done%0AAND%20Sprint%20%3D%20138%0AORDER%20BY%20created%20DESC)|
-| Refit 5주차 | 26-02-16 ~ 26-02-22 | | [Refit 5주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%0AAND%20assignee%20%3D%20712020%3Aa4e068c2-8139-4e53-88c4-f47f6c6e0bda%0AAND%20status%20%3D%20Done%0AAND%20Sprint%20%3D%20171%0AORDER%20BY%20created%20DESC)|
+|---|---|--------|---|
+| Refit 1주차 | 26-01-19 ~ 26-01-25 | - [공통] Git 컨벤션 설정 및 프로젝트 초기 환경 구축<br/> - [공통] 디자인 핸드오프 기반 기획 최종 검토 및 싱크| [Refit 1주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20%22DEV%22%20AND%20sprint%20%3D%204%20ORDER%20BY%20created%20DESC)|
+| Refit 2주차 | 26-01-26 ~ 26-02-01 |- [공통] Jira Automation을 이용한 프로젝트 워크플로우 설계 및 구현<br/> - [FE] 공통 UI 컴포넌트 설계 및 프로젝트 라우팅 아키텍처 구축<br/> - [FE] Fetch API 기반 HTTP 클라이언트 설계 및 구현| [Refit 2주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%20AND%20sprint%20%3D%2039%20ORDER%20BY%20created%20DESC)|
+| Refit 3주차 | 26-02-02 ~ 26-02-08 |  - [FE] 서비스 모든 페이지 정적 UI 구현 <br/> - [FE] n8n과 Orval을 활용한 자연어 -> OpenAPI -> React Hook 워크플로우 개발 | [Refit 3주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%0AAND%20assignee%20%3D%20712020%3Aa4e068c2-8139-4e53-88c4-f47f6c6e0bda%0AAND%20status%20%3D%20Done%0AAND%20Sprint%20%3D%20105%0AORDER%20BY%20created%20DESC)|
+| Refit 4주차 | 26-02-09 ~ 26-02-15 | - [FE] 서비스 모든 페이지 Mock API 연동| [Refit 4주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%0AAND%20assignee%20%3D%20712020%3Aa4e068c2-8139-4e53-88c4-f47f6c6e0bda%0AAND%20status%20%3D%20Done%0AAND%20Sprint%20%3D%20138%0AORDER%20BY%20created%20DESC)|
+| Refit 5주차 | 26-02-16 ~ 26-02-22 | - [FE] 서비스 모든 페이지 API 연동<br/> - [FE] Claude Code를 이용한 접근성 개선 및 테스팅 | [Refit 5주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%0AAND%20assignee%20%3D%20712020%3Aa4e068c2-8139-4e53-88c4-f47f6c6e0bda%0AAND%20status%20%3D%20Done%0AAND%20Sprint%20%3D%20171%0AORDER%20BY%20created%20DESC)|
  
  <!--
 #### Refit 1주차
