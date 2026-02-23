@@ -1,5 +1,5 @@
 import type { Dispatch, SetStateAction } from 'react'
-import { Button } from '@/designs/components'
+import { Button } from '@/ui/components'
 
 type EditStepContentProps = {
   text: string

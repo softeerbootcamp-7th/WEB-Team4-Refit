@@ -1,6 +1,6 @@
 import type { RefObject } from 'react'
-import { FadeScrollArea } from '@/designs/components'
 import type { SimpleQnaType } from '@/types/interview'
+import { FadeScrollArea } from '@/ui/components'
 import { LinkQnaSetCard } from './LinkQnaSetCard'
 
 type QnaListSectionProps = {

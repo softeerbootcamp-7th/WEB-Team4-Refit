@@ -1,4 +1,4 @@
-import { usePagination } from '@/features/_common/hooks/usePagination'
+import { usePagination } from '@/features/_common/_index/hooks/usePagination'
 import { useUpcomingInterviews } from '../../hooks/useUpcomingInterviews'
 import SectionHeader from '../SectionHeader'
 import UpcomingInterviewCard from './UpcomingInterviewCard'

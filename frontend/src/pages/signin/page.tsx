@@ -1,8 +1,8 @@
 import { Link } from 'react-router'
-import { GoogleIcon, Logo } from '@/designs/assets'
-import { Button } from '@/designs/components'
 import { useGoogleOAuthLogin } from '@/features/signin/_index/hooks'
 import { ROUTES } from '@/routes/routes'
+import { GoogleIcon, Logo } from '@/ui/assets'
+import { Button } from '@/ui/components'
 
 const DESKTOP_OAUTH_REDIRECT = {
   signUp: ROUTES.SIGNUP,

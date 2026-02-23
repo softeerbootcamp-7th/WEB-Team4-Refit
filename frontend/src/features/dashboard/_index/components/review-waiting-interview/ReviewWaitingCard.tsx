@@ -2,9 +2,9 @@ import { useNavigate } from 'react-router'
 import type { InterviewDto } from '@/apis'
 import type { InterviewReviewStatusLabel } from '@/constants/interviewReviewStatus'
 import { getInterviewNavigationPath } from '@/constants/interviewReviewStatusRoutes'
-import { SmallLogoIcon } from '@/designs/assets'
-import { Badge } from '@/designs/components'
-import Button from '@/designs/components/button'
+import { SmallLogoIcon } from '@/ui/assets'
+import { Badge } from '@/ui/components'
+import Button from '@/ui/components/button'
 
 export interface ReviewWaitingData {
   id: number

@@ -1,6 +1,6 @@
 import { useRef } from 'react'
-import { SearchIcon } from '@/designs/assets'
 import type { FilterItem } from '@/features/dashboard/trend-questions/constants/constants'
+import { SearchIcon } from '@/ui/assets'
 
 type ColorScheme = 'orange' | 'blue'
 type FilterCardProps = {

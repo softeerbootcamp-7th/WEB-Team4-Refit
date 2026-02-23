@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Outlet, useNavigate } from 'react-router'
-import { MobileNavbar } from '@/designs/components'
-import ConfirmModal from '@/designs/components/modal/ConfirmModal'
+import { MobileNavbar } from '@/ui/components'
+import ConfirmModal from '@/ui/components/modal/ConfirmModal'
 
 const isSpeechRecognitionSupported = () => {
   if (typeof window === 'undefined') return false

@@ -2,11 +2,11 @@ import { useCallback, useMemo, useRef, useState } from 'react'
 import { useQueries } from '@tanstack/react-query'
 import { getGetPdfHighlightingsQueryKey, getPdfHighlightings } from '@/apis/generated/qna-set-api/qna-set-api'
 import type { ApiResponseListPdfHighlightingDto } from '@/apis/generated/refit-api.schemas'
-import { LoadingSpinner } from '@/designs/assets'
 import { PdfNavigation } from '@/features/record/link/components/pdf-section/PdfNavigation'
 import { useContainerSize } from '@/features/record/link/components/pdf-section/useContainerSize'
 import { usePdfCachedUrl } from '@/features/record/link/components/pdf-section/usePdfCachedUrl'
 import { usePdfLoader } from '@/features/record/link/components/pdf-section/usePdfLoader'
+import { LoadingSpinner } from '@/ui/assets'
 import { RetroPdfPage } from './RetroPdfPage'
 
 const PDF_HIGHLIGHTS_STALE_TIME = 1000 * 60 * 30

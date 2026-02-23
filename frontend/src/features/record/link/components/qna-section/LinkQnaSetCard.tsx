@@ -1,5 +1,5 @@
 import type { ReactNode, Ref } from 'react'
-import { QnaSetCard } from '@/features/_common/components/qna-set'
+import { QnaSetCard } from '@/features/_common/_index/components/qna-set'
 import { useHighlightContext } from '@/features/record/link/contexts'
 import type { SimpleQnaType } from '@/types/interview'
 import { DefaultButton, LinkingButtons, ResetButton } from './LinkButtons'

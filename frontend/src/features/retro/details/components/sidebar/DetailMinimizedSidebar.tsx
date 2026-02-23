@@ -1,8 +1,8 @@
-import { NoteIcon } from '@/designs/assets'
-import { Border, MinimizedSidebarLayout } from '@/designs/components'
-import { MinimizedQuestionList } from '@/features/_common/components/sidebar'
+import { MinimizedQuestionList } from '@/features/_common/_index/components/sidebar'
 import type { IdLabelType } from '@/types/global'
 import type { QnaSetType } from '@/types/interview'
+import { NoteIcon } from '@/ui/assets'
+import { Border, MinimizedSidebarLayout } from '@/ui/components'
 
 type DetailMinimizedSidebarProps = {
   qnaSets: QnaSetType[]

@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
-import { FolderIcon, MoreIcon } from '@/designs/assets'
-import { useOnClickOutside } from '@/features/_common/hooks/useOnClickOutside'
+import { useOnClickOutside } from '@/features/_common/_index/hooks/useOnClickOutside'
+import { FolderIcon, MoreIcon } from '@/ui/assets'
 
 interface FolderListItemProps {
   name: string

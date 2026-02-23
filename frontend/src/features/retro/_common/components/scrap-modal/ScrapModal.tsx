@@ -1,6 +1,6 @@
-import { CheckIcon, FolderIcon, PlusIcon } from '@/designs/assets'
-import { Border, Button } from '@/designs/components'
-import Modal from '@/designs/components/modal'
+import { CheckIcon, FolderIcon, PlusIcon } from '@/ui/assets'
+import { Border, Button } from '@/ui/components'
+import Modal from '@/ui/components/modal'
 import { useScrapModalController } from './useScrapModalController'
 
 export type ScrapModalProps = {

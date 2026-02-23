@@ -1,7 +1,7 @@
-import { BubbleTailIcon, PencilChickIcon } from '@/designs/assets'
 import { DASHBOARD_BANNER_VARIANTS } from '@/features/dashboard/_index/constants/dashboardBanner'
 import type { DashboardBannerVariant } from '@/features/dashboard/_index/constants/dashboardBanner'
 import { useDashboardBanner } from '@/features/dashboard/_index/hooks/useDashboardBanner'
+import { BubbleTailIcon, PencilChickIcon } from '@/ui/assets'
 
 interface DashboardBannerProps {
   variant: DashboardBannerVariant

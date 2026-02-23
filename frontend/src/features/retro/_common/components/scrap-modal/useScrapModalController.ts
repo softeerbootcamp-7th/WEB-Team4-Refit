@@ -17,7 +17,8 @@ export function useScrapModalController({
   isMarkedDifficult,
   onDifficultMarkedChange,
 }: UseScrapModalControllerParams) {
-  const { folders, initialSelectedIds, invalidateFolders } = useScrapModalFolders(qnaSetId, isOpen)
+  const { folders, initialSelectedIds, invalidateCurrentQnaSetFolders, invalidateAllQnaSetFoldersAndFolderList } =
+    useScrapModalFolders(qnaSetId, isOpen)
 
   const {
     step,
@@ -55,7 +56,8 @@ export function useScrapModalController({
     setStep,
     setSelectedIds,
     setIsSaving,
-    invalidateFolders,
+    invalidateCurrentQnaSetFolders,
+    invalidateAllQnaSetFoldersAndFolderList,
     handleClose,
   })
 

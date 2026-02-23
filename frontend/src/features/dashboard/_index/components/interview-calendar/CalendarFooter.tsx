@@ -1,7 +1,7 @@
-import { CalendarStarIcon } from '@/designs/assets'
-import Button from '@/designs/components/button'
 import { CalendarInterviewCard } from '@/features/dashboard/_index/components/interview-calendar/CalendarInterviewCard'
 import type { CalendarInterviewItem } from '@/features/dashboard/_index/hooks/useInterviewCalendar'
+import { CalendarStarIcon } from '@/ui/assets'
+import Button from '@/ui/components/button'
 
 interface CalendarFooterProps {
   items: CalendarInterviewItem[]

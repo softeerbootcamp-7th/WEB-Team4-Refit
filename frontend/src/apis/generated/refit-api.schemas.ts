@@ -10,8 +10,8 @@ export interface MyProfileUpdateRequest {
    * @maxLength 30
    */
   nickname: string
-  industryId: number
-  jobCategoryId: number
+  industryId?: number
+  jobCategoryId?: number
 }
 
 export interface ApiResponseVoid {
@@ -302,10 +302,10 @@ export interface SortObject {
 export interface PageableObject {
   offset?: number
   sort?: SortObject
-  paged?: boolean
   pageNumber?: number
-  pageSize?: number
   unpaged?: boolean
+  pageSize?: number
+  paged?: boolean
 }
 
 export interface PageQnaSetSearchResponse {
@@ -315,9 +315,9 @@ export interface PageQnaSetSearchResponse {
   content?: QnaSetSearchResponse[]
   number?: number
   sort?: SortObject
-  pageable?: PageableObject
   first?: boolean
   numberOfElements?: number
+  pageable?: PageableObject
   last?: boolean
   empty?: boolean
 }
@@ -443,9 +443,9 @@ export interface PageInterviewDto {
   content?: InterviewDto[]
   number?: number
   sort?: SortObject
-  pageable?: PageableObject
   first?: boolean
   numberOfElements?: number
+  pageable?: PageableObject
   last?: boolean
   empty?: boolean
 }
@@ -523,9 +523,9 @@ export interface PageScrapFolderResponse {
   content?: ScrapFolderResponse[]
   number?: number
   sort?: SortObject
-  pageable?: PageableObject
   first?: boolean
   numberOfElements?: number
+  pageable?: PageableObject
   last?: boolean
   empty?: boolean
 }
@@ -549,9 +549,9 @@ export interface PageScrapFolderQnaSetResponse {
   content?: ScrapFolderQnaSetResponse[]
   number?: number
   sort?: SortObject
-  pageable?: PageableObject
   first?: boolean
   numberOfElements?: number
+  pageable?: PageableObject
   last?: boolean
   empty?: boolean
 }
@@ -576,9 +576,9 @@ export interface PageQnaSetScrapFolderResponse {
   content?: QnaSetScrapFolderResponse[]
   number?: number
   sort?: SortObject
-  pageable?: PageableObject
   first?: boolean
   numberOfElements?: number
+  pageable?: PageableObject
   last?: boolean
   empty?: boolean
 }
@@ -617,9 +617,9 @@ export interface PageFrequentQnaSetCategoryResponse {
   content?: FrequentQnaSetCategoryResponse[]
   number?: number
   sort?: SortObject
-  pageable?: PageableObject
   first?: boolean
   numberOfElements?: number
+  pageable?: PageableObject
   last?: boolean
   empty?: boolean
 }
@@ -685,9 +685,9 @@ export interface PageFrequentQnaSetCategoryQuestionResponse {
   content?: FrequentQnaSetCategoryQuestionResponse[]
   number?: number
   sort?: SortObject
-  pageable?: PageableObject
   first?: boolean
   numberOfElements?: number
+  pageable?: PageableObject
   last?: boolean
   empty?: boolean
 }
@@ -713,9 +713,9 @@ export interface PageMyDifficultQuestionResponse {
   content?: MyDifficultQuestionResponse[]
   number?: number
   sort?: SortObject
-  pageable?: PageableObject
   first?: boolean
   numberOfElements?: number
+  pageable?: PageableObject
   last?: boolean
   empty?: boolean
 }
@@ -757,9 +757,9 @@ export interface PageFrequentQnaSetResponse {
   content?: FrequentQnaSetResponse[]
   number?: number
   sort?: SortObject
-  pageable?: PageableObject
   first?: boolean
   numberOfElements?: number
+  pageable?: PageableObject
   last?: boolean
   empty?: boolean
 }
@@ -929,9 +929,9 @@ export interface PageInterviewSimpleDto {
   content?: InterviewSimpleDto[]
   number?: number
   sort?: SortObject
-  pageable?: PageableObject
   first?: boolean
   numberOfElements?: number
+  pageable?: PageableObject
   last?: boolean
   empty?: boolean
 }
@@ -968,9 +968,9 @@ export interface PageDashboardUpcomingInterviewResponse {
   content?: DashboardUpcomingInterviewResponse[]
   number?: number
   sort?: SortObject
-  pageable?: PageableObject
   first?: boolean
   numberOfElements?: number
+  pageable?: PageableObject
   last?: boolean
   empty?: boolean
 }
@@ -994,9 +994,9 @@ export interface PageDashboardDebriefIncompletedInterviewResponse {
   content?: DashboardDebriefIncompletedInterviewResponse[]
   number?: number
   sort?: SortObject
-  pageable?: PageableObject
   first?: boolean
   numberOfElements?: number
+  pageable?: PageableObject
   last?: boolean
   empty?: boolean
 }
@@ -1056,9 +1056,9 @@ export interface PageCompanyResponse {
   content?: CompanyResponse[]
   number?: number
   sort?: SortObject
-  pageable?: PageableObject
   first?: boolean
   numberOfElements?: number
+  pageable?: PageableObject
   last?: boolean
   empty?: boolean
 }

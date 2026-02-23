@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react'
-import { Button } from '@/designs/components'
 import { OptionalTermsAgreeModal } from '@/features/dashboard/_common/profile'
+import { Button } from '@/ui/components'
 
 interface TermsLockedOverlayProps {
   isLocked: boolean

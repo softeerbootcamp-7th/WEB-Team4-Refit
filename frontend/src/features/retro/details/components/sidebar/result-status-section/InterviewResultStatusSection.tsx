@@ -4,12 +4,9 @@ import {
   getGetInterviewFullQueryKey,
   useUpdateInterviewResultStatus,
 } from '@/apis/generated/interview-api/interview-api'
-import { CaretDownIcon } from '@/designs/assets'
-import { useOnClickOutside } from '@/features/_common/hooks/useOnClickOutside'
-import {
-  RESULT_STATUS_ITEMS,
-  type InterviewResultStatus,
-} from '@/features/dashboard/my-interviews/constants/constants'
+import { useOnClickOutside } from '@/features/_common/_index/hooks/useOnClickOutside'
+import { RESULT_STATUS_ITEMS, type InterviewResultStatus } from '@/features/dashboard/my-interviews/constants/constants'
+import { CaretDownIcon } from '@/ui/assets'
 
 type InterviewResultStatusSectionProps = {
   interviewId: number

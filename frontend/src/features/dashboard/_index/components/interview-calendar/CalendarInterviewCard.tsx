@@ -11,12 +11,12 @@ import {
 import type { InterviewDto } from '@/apis'
 import { INTERVIEW_REVIEW_STATUS_LABEL } from '@/constants/interviewReviewStatus'
 import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
-import { MoreIcon, SmallLogoIcon } from '@/designs/assets'
-import { Badge } from '@/designs/components'
-import ConfirmModal from '@/designs/components/modal/ConfirmModal'
-import { useMenuPosition } from '@/features/_common/hooks/useMenuPosition'
-import { useOnClickOutside } from '@/features/_common/hooks/useOnClickOutside'
-import { formatDateTime } from '@/features/_common/utils/date'
+import { useMenuPosition } from '@/features/_common/_index/hooks/useMenuPosition'
+import { useOnClickOutside } from '@/features/_common/_index/hooks/useOnClickOutside'
+import { formatDateTime } from '@/features/_common/_index/utils/date'
+import { MoreIcon, SmallLogoIcon } from '@/ui/assets'
+import { Badge } from '@/ui/components'
+import ConfirmModal from '@/ui/components/modal/ConfirmModal'
 import { CalendarInterviewMenu } from './CalendarInterviewMenu'
 
 interface CalendarInterviewCardProps {
@@ -118,7 +118,11 @@ export function CalendarInterviewCard({ interview, onItemClick }: CalendarInterv
         <div className="mb-2 flex items-center gap-1.5">
           <div className="border-gray-150 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border bg-white">
             {interview.companyLogoUrl ? (
-              <img src={interview.companyLogoUrl} alt={interview.companyName} className="h-full w-full rounded-full object-contain" />
+              <img
+                src={interview.companyLogoUrl}
+                alt={interview.companyName}
+                className="h-full w-full rounded-full object-contain"
+              />
             ) : (
               <SmallLogoIcon className="h-3.5 w-3.5 text-gray-400" />
             )}

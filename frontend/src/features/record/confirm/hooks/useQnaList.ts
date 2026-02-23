@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { getGetInterviewFullQueryKey, useCreateQnaSet } from '@/apis/generated/interview-api/interview-api'
 import { useDeletePdfHighlighting, useDeleteQnaSet, useUpdateQnaSet } from '@/apis/generated/qna-set-api/qna-set-api'
-import { getApiErrorCode } from '@/features/_common/utils/error'
+import { getApiErrorCode } from '@/features/_common/_index/utils/error'
 
 const ERROR_MESSAGES = {
   EDIT: '질문/답변 저장에 실패했습니다. 잠시 후 다시 시도해주세요.',

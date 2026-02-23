@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { KPT_SECTIONS } from '@/constants/retro'
-import { Badge, Border } from '@/designs/components'
 import type { KptTextsType } from '@/types/interview'
+import { Badge, Border } from '@/ui/components'
 
 const KPT_INITIAL_VALUE: KptTextsType = { keepText: '', problemText: '', tryText: '' }
 const MAX_KPT_LENGTH = 8000

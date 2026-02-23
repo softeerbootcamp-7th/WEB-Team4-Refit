@@ -1,17 +1,17 @@
 import { Navigate, useParams } from 'react-router'
 import { getInterviewFull, InterviewDtoInterviewReviewStatus, useGetInterviewFull } from '@/apis'
 import { getInterviewNavigationPath } from '@/constants/interviewReviewStatusRoutes'
-import ConfirmModal from '@/designs/components/modal/ConfirmModal'
-import SidebarLayoutSkeleton from '@/features/_common/components/sidebar/SidebarLayoutSkeleton'
-import { useInterviewNavigate } from '@/features/_common/hooks/useInterviewNavigation'
-import { useSectionScroll } from '@/features/_common/hooks/useSectionScroll'
-import LoadingOverlay from '@/features/_common/loading/LoadingOverlay'
+import SidebarLayoutSkeleton from '@/features/_common/_index/components/sidebar/SidebarLayoutSkeleton'
+import { useInterviewNavigate } from '@/features/_common/_index/hooks/useInterviewNavigation'
+import { useSectionScroll } from '@/features/_common/_index/hooks/useSectionScroll'
 import { RecordSection } from '@/features/record/confirm/components/contents/RecordSection'
+import LoadingOverlay from '@/features/record/confirm/components/loading/LoadingOverlay'
 import { RecordConfirmSidebar } from '@/features/record/confirm/components/sidebar/Sidebar'
 import { useQnaList, useRecordConfirmConvertGate } from '@/features/record/confirm/hooks'
 import { CONVERT_FAILED_ERROR_CODE } from '@/features/record/confirm/hooks/useRecordConfirmConvertGate'
 import { ROUTES } from '@/routes/routes'
 import type { InterviewInfoType, InterviewType, SimpleQnaType } from '@/types/interview'
+import ConfirmModal from '@/ui/components/modal/ConfirmModal'
 
 export default function RecordConfirmPage() {
   const { interviewId } = useParams()
