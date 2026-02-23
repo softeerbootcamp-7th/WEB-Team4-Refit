@@ -111,7 +111,8 @@ public class QnaSetService {
     public void deleteQnaSet(Long qnaSetId) {
         QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
         interviewValidator.validateInterviewReviewStatus(
-                qnaSet.getInterview(), List.of(InterviewReviewStatus.QNA_SET_DRAFT));
+                qnaSet.getInterview(),
+                List.of(InterviewReviewStatus.QNA_SET_DRAFT, InterviewReviewStatus.DEBRIEF_COMPLETED));
 
         if (pdfHighlightingRepository.existsByQnaSet(qnaSet)) {
             throw new CustomException(QNA_DELETE_FAILED_PDF_HIGHLIGHTING_EXISTS);
