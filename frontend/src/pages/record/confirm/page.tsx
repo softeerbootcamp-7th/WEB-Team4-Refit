@@ -65,7 +65,7 @@ export default function RecordConfirmPage() {
         description={
           failureCode === CONVERT_FAILED_ERROR_CODE
             ? '기록 화면으로 돌아가 내용을 확인한 뒤 다시 시도해 주세요.'
-            : '변환을 진행할 수 없는 상태예요. 기록 화면으로 이동할게요.'
+            : '변환을 진행할 수 없는 상태예요.\n기록 화면으로 이동할게요.'
         }
         okText="확인"
         okButtonVariant="fill-gray-800"
