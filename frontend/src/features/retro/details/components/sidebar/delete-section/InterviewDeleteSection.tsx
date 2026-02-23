@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { useDeleteInterview } from '@/apis/generated/interview-api/interview-api'
-import { useOnClickOutside } from '@/features/_common/hooks/useOnClickOutside'
+import { useOnClickOutside } from '@/features/_common/_index/hooks/useOnClickOutside'
 import { ROUTES } from '@/routes/routes'
 import { MoreIcon } from '@/ui/assets'
 import ConfirmModal from '@/ui/components/modal/ConfirmModal'

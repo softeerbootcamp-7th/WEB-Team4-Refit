@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type RefObject } from 'react'
-import { QnaSetEditForm } from '@/features/_common/components/qna-set'
-import { SECTION_SCROLL_OFFSET } from '@/features/_common/hooks/useSectionScroll'
+import { QnaSetEditForm } from '@/features/_common/_index/components/qna-set'
+import { SECTION_SCROLL_OFFSET } from '@/features/_common/_index/hooks/useSectionScroll'
 import type { SimpleQnaType } from '@/types/interview'
 import { CirclePlusIcon } from '@/ui/assets'
 import { Button, FadeScrollArea } from '@/ui/components'

@@ -1,4 +1,4 @@
-import { QnaSetCard, StarAnalysisSection } from '@/features/_common/components/qna-set'
+import { QnaSetCard, StarAnalysisSection } from '@/features/_common/_index/components/qna-set'
 import { RetroWriteCard, ScrapModal } from '@/features/retro/_common/components'
 import { BookmarkIcon } from '@/ui/assets'
 import { Border, Button } from '@/ui/components'

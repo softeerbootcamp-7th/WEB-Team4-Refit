@@ -1,7 +1,7 @@
 import { InterviewDtoInterviewReviewStatus } from '@/apis'
 import { INTERVIEW_REVIEW_STATUS_LABEL } from '@/constants/interviewReviewStatus'
 import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
-import { formatDate } from '@/features/_common/utils/date'
+import { formatDate } from '@/features/_common/_index/utils/date'
 import {
   RESULT_LABEL,
   RESULT_THEME,

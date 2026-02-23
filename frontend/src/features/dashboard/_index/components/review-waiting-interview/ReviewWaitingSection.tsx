@@ -1,4 +1,4 @@
-import { usePagination } from '@/features/_common/hooks/usePagination'
+import { usePagination } from '@/features/_common/_index/hooks/usePagination'
 import { useReviewWaitingInterviews } from '../../hooks/useReviewWaitingInterviews'
 import SectionHeader from '../SectionHeader'
 import ReviewWaitingCard from './ReviewWaitingCard'

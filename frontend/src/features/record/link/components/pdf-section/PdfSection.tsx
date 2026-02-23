@@ -7,7 +7,7 @@ import {
   useCompleteQnaSetDraft,
   useDeleteInterviewPdf,
 } from '@/apis/generated/interview-api/interview-api'
-import { useInterviewNavigate } from '@/features/_common/hooks/useInterviewNavigation'
+import { useInterviewNavigate } from '@/features/_common/_index/hooks/useInterviewNavigation'
 import { useHighlightContext } from '@/features/record/link/contexts'
 import { ROUTES } from '@/routes/routes'
 import { FilePlusIcon, LoadingSpinner } from '@/ui/assets'

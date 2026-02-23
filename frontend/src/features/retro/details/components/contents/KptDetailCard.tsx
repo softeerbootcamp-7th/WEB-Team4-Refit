@@ -1,6 +1,6 @@
 import { useRef, useState, type Ref } from 'react'
 import { useUpdateKptSelfReview } from '@/apis/generated/interview-api/interview-api'
-import { useOnClickOutside } from '@/features/_common/hooks/useOnClickOutside'
+import { useOnClickOutside } from '@/features/_common/_index/hooks/useOnClickOutside'
 import { KptWriteCard } from '@/features/retro/_common/components/KptWriteCard'
 import type { KptTextsType } from '@/types/interview'
 import { MoreIcon } from '@/ui/assets'

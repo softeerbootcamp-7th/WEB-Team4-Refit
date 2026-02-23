@@ -1,5 +1,5 @@
 import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
-import { formatDateTime } from '@/features/_common/utils/date'
+import { formatDateTime } from '@/features/_common/_index/utils/date'
 import type { LabelValueType } from '@/types/global'
 import type { InterviewInfoType } from '@/types/interview'
 import { ContainerWithoutHeader } from '@/ui/components'

@@ -1,4 +1,4 @@
-import { InterviewInfoSection, QuestionListSection } from '@/features/_common/components/sidebar'
+import { InterviewInfoSection, QuestionListSection } from '@/features/_common/_index/components/sidebar'
 import type { IdLabelType } from '@/types/global'
 import type { InterviewInfoType, QnaSetType } from '@/types/interview'
 import { NoteIcon } from '@/ui/assets'

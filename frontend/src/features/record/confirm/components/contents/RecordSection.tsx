@@ -1,5 +1,5 @@
 import type { RefObject } from 'react'
-import { useInterviewNavigate } from '@/features/_common/hooks/useInterviewNavigation'
+import { useInterviewNavigate } from '@/features/_common/_index/hooks/useInterviewNavigation'
 import { ROUTES } from '@/routes/routes'
 import type { SimpleQnaType } from '@/types/interview'
 import { Button } from '@/ui/components'

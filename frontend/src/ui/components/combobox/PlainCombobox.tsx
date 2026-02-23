@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState, type ReactNode } from 'react'
-import { useOnClickOutside } from '@/features/_common/hooks/useOnClickOutside'
+import { useOnClickOutside } from '@/features/_common/_index/hooks/useOnClickOutside'
 import type { LabelValueType } from '@/types/global'
 import Border from '@/ui/components/border'
 

@@ -13,7 +13,7 @@ export default function MobileUnrecordedPage() {
 
   return (
     <div className="flex flex-col pb-8">
-      <div className="px-5 pt-[18px]">
+      <div className="px-5 pt-4.5">
         <h1 className="title-l-bold text-gray-800">어떤 면접을 기록할까요?</h1>
       </div>
       <UnrecordedInterviewList items={items} isLoading={isLoading} isError={isError} onItemClick={handleItemClick} />

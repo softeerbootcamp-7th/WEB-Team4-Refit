@@ -1,5 +1,5 @@
 import { forwardRef, useRef, useState } from 'react'
-import { useOnClickOutside } from '@/features/_common/hooks/useOnClickOutside'
+import { useOnClickOutside } from '@/features/_common/_index/hooks/useOnClickOutside'
 import { CaretDownIcon, CheckIcon, SearchIcon } from '@/ui/assets'
 
 export interface SearchableComboboxProps {

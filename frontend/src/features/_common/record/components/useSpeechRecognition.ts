@@ -6,7 +6,10 @@ type UseSpeechRecognitionProps = {
   onRecognitionStatusChange?: (isRecognizing: boolean) => void
 }
 
-export function useSpeechRecognition({ onRealtimeTranscript, onRecognitionStatusChange }: UseSpeechRecognitionProps = {}) {
+export function useSpeechRecognition({
+  onRealtimeTranscript,
+  onRecognitionStatusChange,
+}: UseSpeechRecognitionProps = {}) {
   const recognitionRef = useRef<SpeechRecognition | null>(null)
   const callbackRef = useRef(onRealtimeTranscript)
   const statusCallbackRef = useRef(onRecognitionStatusChange)
@@ -109,7 +112,7 @@ export function useSpeechRecognition({ onRealtimeTranscript, onRecognitionStatus
       emitRecognitionStatus(false)
       return false
     }
-  }, [emitRecognitionStatus])
+  }, [isAndroid, emitRecognitionStatus])
 
   useEffect(() => {
     return () => {

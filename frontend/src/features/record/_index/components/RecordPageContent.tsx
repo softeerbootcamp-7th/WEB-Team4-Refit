@@ -1,5 +1,4 @@
 import { useState, type Dispatch, type SetStateAction } from 'react'
-import LoadingOverlay from '@/features/_common/loading/LoadingOverlay'
 import { LiveAudioVisualizer } from '@/features/_common/record/components'
 import { RecordSidebar } from '@/features/record/_index/components/RecordSidebar'
 import type { InterviewInfoType } from '@/types/interview'
@@ -86,17 +85,6 @@ export function RecordPageContent({
           </div>
         </div>
       </div>
-      {isCompletePending && (
-        <LoadingOverlay
-          text={
-            <>
-              작성해주신 내용을 질문과 답변으로
-              <br />
-              정리하고 있어요!
-            </>
-          }
-        />
-      )}
     </>
   )
 }

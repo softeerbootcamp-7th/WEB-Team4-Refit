@@ -1,5 +1,5 @@
 import { HttpError } from '@/apis/custom-fetch'
-import { getApiErrorCode } from '@/features/_common/utils/error'
+import { getApiErrorCode } from '@/features/_common/_index/utils/error'
 import { ROUTES } from '@/routes/routes'
 
 const INTERVIEW_NOT_FOUND_ERROR_CODE = 'INTERVIEW_NOT_FOUND'

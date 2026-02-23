@@ -7,9 +7,9 @@ import {
   useUpdateQnaSet,
   useUpdateQnaSetSelfReview,
 } from '@/apis/generated/qna-set-api/qna-set-api'
-import { QnaSetCard, QnaSetEditForm, StarAnalysisSection } from '@/features/_common/components/qna-set'
-import { useOnClickOutside } from '@/features/_common/hooks/useOnClickOutside'
-import { getApiErrorCode } from '@/features/_common/utils/error'
+import { QnaSetCard, QnaSetEditForm, StarAnalysisSection } from '@/features/_common/_index/components/qna-set'
+import { useOnClickOutside } from '@/features/_common/_index/hooks/useOnClickOutside'
+import { getApiErrorCode } from '@/features/_common/_index/utils/error'
 import { RetroWriteCard, ScrapModal } from '@/features/retro/_common/components'
 import type { QnaSetType } from '@/types/interview'
 import { BookmarkIcon, MoreIcon } from '@/ui/assets'
