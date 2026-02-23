@@ -96,7 +96,7 @@ export function CalendarInterviewCard({ interview, onItemClick }: CalendarInterv
         <div className="mb-1 flex items-center justify-between gap-1.5">
           <div className="mb-2.5 flex min-w-0 items-center gap-2">
             <Badge content={interviewReviewStatusLabel} type="question-label" theme="gray-100" />
-            <p className="body-s-medium truncate text-gray-300">{formatDateTime(interview.interviewStartAt)}</p>
+            <p className="body-s-medium truncate text-gray-500">{formatDateTime(interview.interviewStartAt)}</p>
           </div>
           <div className="relative shrink-0" data-more-trigger="true">
             <button
@@ -116,8 +116,12 @@ export function CalendarInterviewCard({ interview, onItemClick }: CalendarInterv
         </div>
 
         <div className="mb-2 flex items-center gap-1.5">
-          <div className="border-gray-150 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border bg-gray-100">
-            <SmallLogoIcon className="h-3.5 w-3.5 text-gray-400" />
+          <div className="border-gray-150 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border bg-white">
+            {interview.companyLogoUrl ? (
+              <img src={interview.companyLogoUrl} alt={interview.companyName} className="h-full w-full rounded-full object-contain" />
+            ) : (
+              <SmallLogoIcon className="h-3.5 w-3.5 text-gray-400" />
+            )}
           </div>
           <p className="body-l-bold truncate text-gray-800">{interview.companyName}</p>
         </div>

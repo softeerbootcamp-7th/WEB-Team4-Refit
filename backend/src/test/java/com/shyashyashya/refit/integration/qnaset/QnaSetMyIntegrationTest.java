@@ -42,6 +42,97 @@ public class QnaSetMyIntegrationTest extends IntegrationTest {
     private Interview interview;
 
     @Nested
+    class 내가_어렵게_느낀_질문_조회 {
+
+        private final String path = "/qna-set/my/difficult";
+
+        @Test
+        void 어렵다고_표시한_QnA_리스트를_조회한다() {
+            // given
+            Interview interview = createAndSaveInterview(
+                    new InterviewCreateRequest(
+                            NOW.minusDays(5),
+                            InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+                    ), InterviewReviewStatus.DEBRIEF_COMPLETED);
+
+            QnaSet difficultQna = QnaSet.create("Question 1", "Answer 1", true, interview, null);
+            QnaSet easyQna = QnaSet.create("Question 2", "Answer 2", false, interview, null);
+            qnaSetRepository.save(difficultQna);
+            qnaSetRepository.save(easyQna);
+
+            // when & then
+            given(spec)
+            .when()
+                    .get(path)
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("result.content", hasSize(1))
+                    .body("result.content[0].question", equalTo("Question 1"));
+        }
+
+        @Test
+        void interviewStartAt_오름차순_정렬시_정상적으로_조회된다() {
+            // given
+            Interview interview1 = createAndSaveInterview(
+                    new InterviewCreateRequest(
+                            NOW.minusDays(5),
+                            InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+                    ), InterviewReviewStatus.DEBRIEF_COMPLETED);
+            qnaSetRepository.save(QnaSet.create("Question 1", "Answer 1", true, interview1, null));
+
+            Interview interview2 = createAndSaveInterview(
+                    new InterviewCreateRequest(
+                            NOW.minusDays(2),
+                            InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+                    ), InterviewReviewStatus.DEBRIEF_COMPLETED);
+            qnaSetRepository.save(QnaSet.create("Question 2", "Answer 2", true, interview2, null));
+
+            // when & then
+            given(spec)
+                    .queryParam("sort", "interviewStartAt,asc")
+            .when()
+                    .get(path)
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("result.content", hasSize(2))
+                    .body("result.content[0].question", equalTo("Question 1"))
+                    .body("result.content[1].question", equalTo("Question 2"));
+        }
+
+        @Test
+        void interviewStartAt_내림차순_정렬시_정상적으로_조회된다() {
+            // given
+            Interview interview1 = createAndSaveInterview(
+                    new InterviewCreateRequest(
+                            NOW.minusDays(5),
+                            InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+                    ), InterviewReviewStatus.DEBRIEF_COMPLETED);
+            qnaSetRepository.save(QnaSet.create("Question 1", "Answer 1", true, interview1, null));
+
+            Interview interview2 = createAndSaveInterview(
+                    new InterviewCreateRequest(
+                            NOW.minusDays(2),
+                            InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+                    ), InterviewReviewStatus.DEBRIEF_COMPLETED);
+            qnaSetRepository.save(QnaSet.create("Question 2", "Answer 2", true, interview2, null));
+
+            // when & then
+            given(spec)
+                    .queryParam("sort", "interviewStartAt,desc")
+            .when()
+                    .get(path)
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("result.content", hasSize(2))
+                    .body("result.content[0].question", equalTo("Question 2"))
+                    .body("result.content[1].question", equalTo("Question 1"));
+        }
+    }
+
+    @Nested
     class 빈출_질문_카테고리_조회할_때 {
 
         @BeforeEach
@@ -51,28 +142,19 @@ public class QnaSetMyIntegrationTest extends IntegrationTest {
                             LocalDateTime.of(2023, 1, 10, 10, 0, 0), InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
                     ), InterviewReviewStatus.DEBRIEF_COMPLETED);
 
-            // category가 null인 qnaSet 존재하면 NPE 발생
-            // QnaSet qnaSet1 = createAndSaveQnaSet(new QnaSetCreateRequest("q text", "a text"), interview);
+            createAndSaveQnaSet(new QnaSetCreateRequest("q text", "a text"), interview);
 
-            QnaSet qnaSet2 = createAndSaveQnaSet(
-                    new QnaSetCreateRequest("q text2", "a text"),
-                    interview,
-                    qnaSetCategory1);
+            createAndSaveQnaSet(new QnaSetCreateRequest("q text1-1", "a text"), interview, qnaSetCategory1);
+            createAndSaveQnaSet(new QnaSetCreateRequest("q text1-2", "a text"), interview, qnaSetCategory1);
 
-            QnaSet qnaSet3 = createAndSaveQnaSet(
-                    new QnaSetCreateRequest("q text3", "a text"),
-                    interview,
-                    qnaSetCategory1);
+            createAndSaveQnaSet(new QnaSetCreateRequest("q text2-1", "a text"), interview, qnaSetCategory2);
+            createAndSaveQnaSet(new QnaSetCreateRequest("q text2-2", "a text"), interview, qnaSetCategory2);
+            createAndSaveQnaSet(new QnaSetCreateRequest("q text2-3", "a text"), interview, qnaSetCategory2);
 
-            QnaSet qnaSet4 = createAndSaveQnaSet(
-                    new QnaSetCreateRequest("q text3", "a text"),
-                    interview,
-                    qnaSetCategory1);
-
-            QnaSet qnaSet5 = createAndSaveQnaSet(
-                    new QnaSetCreateRequest("q text3", "a text"),
-                    interview,
-                    qnaSetCategory3);
+            createAndSaveQnaSet(new QnaSetCreateRequest("q text3-1", "a text"), interview, qnaSetCategory3);
+            createAndSaveQnaSet(new QnaSetCreateRequest("q text3-2", "a text"), interview, qnaSetCategory3);
+            createAndSaveQnaSet(new QnaSetCreateRequest("q text3-3", "a text"), interview, qnaSetCategory3);
+            createAndSaveQnaSet(new QnaSetCreateRequest("q text3-4", "a text"), interview, qnaSetCategory3);
         }
 
         @Test
@@ -87,7 +169,14 @@ public class QnaSetMyIntegrationTest extends IntegrationTest {
                     .statusCode(200)
                     .body("code", equalTo(COMMON200.name()))
                     .body("message", equalTo(COMMON200.getMessage()))
-                    .body("result", notNullValue());
+                    .body("result", notNullValue())
+                    .body("result.content", hasSize(3))
+                    .body("result.content[0].categoryId", equalTo(qnaSetCategory3.getId().intValue()))
+                    .body("result.content[0].frequentCount", equalTo(4))
+                    .body("result.content[1].categoryId", equalTo(qnaSetCategory2.getId().intValue()))
+                    .body("result.content[1].frequentCount", equalTo(3))
+                    .body("result.content[2].categoryId", equalTo(qnaSetCategory1.getId().intValue()))
+                    .body("result.content[2].frequentCount", equalTo(2));
         }
     }
 
@@ -101,25 +190,24 @@ public class QnaSetMyIntegrationTest extends IntegrationTest {
                             LocalDateTime.of(2023, 1, 10, 10, 0, 0), InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
                     ), InterviewReviewStatus.DEBRIEF_COMPLETED);
 
-            // category가 null인 qnaSet 존재하면 NPE 발생
-            // QnaSet qnaSet1 = createAndSaveQnaSet(new QnaSetCreateRequest("q text", "a text"), interview);
+            createAndSaveQnaSet(new QnaSetCreateRequest("q text", "a text"), interview);
 
-            QnaSet qnaSet2 = createAndSaveQnaSet(
+            createAndSaveQnaSet(
                     new QnaSetCreateRequest("q text2", "a text"),
                     interview,
                     qnaSetCategory1);
 
-            QnaSet qnaSet3 = createAndSaveQnaSet(
+            createAndSaveQnaSet(
                     new QnaSetCreateRequest("q text3", "a text"),
                     interview,
                     qnaSetCategory1);
 
-            QnaSet qnaSet4 = createAndSaveQnaSet(
+            createAndSaveQnaSet(
                     new QnaSetCreateRequest("q text3", "a text"),
                     interview,
                     qnaSetCategory1);
 
-            QnaSet qnaSet5 = createAndSaveQnaSet(
+            createAndSaveQnaSet(
                     new QnaSetCreateRequest("q text3", "a text"),
                     interview,
                     qnaSetCategory3);

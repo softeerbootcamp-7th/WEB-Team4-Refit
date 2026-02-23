@@ -7,11 +7,16 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_NOT_AC
 import static com.shyashyashya.refit.global.exception.ErrorCode.INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED;
 
 import com.shyashyashya.refit.domain.interview.model.Interview;
+import com.shyashyashya.refit.domain.interview.model.InterviewResultStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.service.validator.InterviewValidator;
 import com.shyashyashya.refit.unit.fixture.InterviewFixture;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+
+import java.util.List;
 
 public class InterviewValidatorTest {
 
@@ -37,25 +42,61 @@ public class InterviewValidatorTest {
                 .hasMessage(INTERVIEW_NOT_ACCESSIBLE.getMessage());
     }
 
-    @Test
-    void 검증하려는_인터뷰_상태가_현재_인터뷰_상태와_동일하면_검증에_성공한다() {
+    @ParameterizedTest
+    @EnumSource(InterviewReviewStatus.class)
+    void 검증하려는_인터뷰_상태가_현재_인터뷰_상태와_동일하면_검증에_성공한다(InterviewReviewStatus reviewStatus) {
         // given
-        Interview interview = InterviewFixture.create_QNA_SET_DRAFT_STATUS_INTERVIEW();
+        Interview interview = InterviewFixture.createInterview(reviewStatus);
 
         // when & then
         Assertions.assertThatNoException().isThrownBy(() -> {
-            interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.QNA_SET_DRAFT);
+            interviewValidator.validateInterviewReviewStatus(interview, List.of(reviewStatus));
         });
     }
 
-    @Test
-    void 검증하려는_인터뷰_상태가_현재_인터뷰_상태와_다르면_검증에_실패한다() {
+    @ParameterizedTest
+    @EnumSource(InterviewReviewStatus.class)
+    void 검증하려는_인터뷰_상태가_현재_인터뷰_상태와_다르면_검증에_실패한다(InterviewReviewStatus reviewStatus) {
         // given
-        Interview interview = InterviewFixture.create_NOT_LOGGED_STATUS_INTERVIEW();
+        Interview interview = InterviewFixture.createInterview(reviewStatus);
 
         // when & then
+        final InterviewReviewStatus differentStatus = reviewStatus == InterviewReviewStatus.NOT_LOGGED ?
+                        InterviewReviewStatus.SELF_REVIEW_DRAFT
+                : InterviewReviewStatus.NOT_LOGGED;
         Assertions.assertThatThrownBy(
-                () -> interviewValidator.validateInterviewReviewStatus(interview, InterviewReviewStatus.QNA_SET_DRAFT))
+                () -> interviewValidator.validateInterviewReviewStatus(interview, List.of(differentStatus)))
                 .hasMessage(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.getMessage());
+    }
+
+    @ParameterizedTest
+    @EnumSource(InterviewReviewStatus.class)
+    void 검증하려는_인터뷰_상태가_현재_인터뷰_상태를_포함하면_검증에_성공한다(InterviewReviewStatus reviewStatus) {
+        // given
+        Interview interview = InterviewFixture.createInterview(reviewStatus);
+
+        // when & then
+        Assertions.assertThatNoException().isThrownBy(() -> {
+            interviewValidator.validateInterviewReviewStatus(interview,
+                    List.of(reviewStatus, InterviewReviewStatus.NOT_LOGGED));
+        });
+    }
+
+    @ParameterizedTest
+    @EnumSource(InterviewReviewStatus.class)
+    void 검증하려는_인터뷰_상태가_현재_인터뷰_상태를_포함하지_않으면_검증에_실패한다(InterviewReviewStatus reviewStatus) {
+        // given
+        Interview interview = InterviewFixture.createInterview(reviewStatus);
+
+        final List<InterviewReviewStatus> differentStatuses =
+                reviewStatus == InterviewReviewStatus.NOT_LOGGED || reviewStatus == InterviewReviewStatus.LOG_DRAFT
+                ? List.of(InterviewReviewStatus.SELF_REVIEW_DRAFT, InterviewReviewStatus.QNA_SET_DRAFT)
+                : List.of(InterviewReviewStatus.NOT_LOGGED, InterviewReviewStatus.LOG_DRAFT);
+
+        // when & then
+        Assertions.assertThatNoException().isThrownBy(() -> {
+            interviewValidator.validateInterviewReviewStatus(interview,
+                    List.of(reviewStatus, InterviewReviewStatus.NOT_LOGGED));
+        });
     }
 }

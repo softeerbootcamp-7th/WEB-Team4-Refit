@@ -44,4 +44,8 @@ public class AuthService {
             throw e;
         }
     }
+
+    public void logout(@Nullable String encodedRefreshJwt) {
+        jwtService.deleteRefreshToken(encodedRefreshJwt);
+    }
 }

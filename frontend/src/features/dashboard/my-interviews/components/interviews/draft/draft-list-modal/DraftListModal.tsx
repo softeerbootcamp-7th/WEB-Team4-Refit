@@ -92,7 +92,7 @@ export default function DraftListModal({ open, onClose, interviewDraftType }: Dr
                   >
                     <TableCell className="body-s-regular text-gray-400">{page * 10 + idx + 1}</TableCell>
                     <TableCell className="body-s-regular text-gray-300">{row.interviewStartAt}</TableCell>
-                    <TableCell className="body-s-semibold">{row.company}</TableCell>
+                    <TableCell className="body-s-semibold">{row.companyName}</TableCell>
                     <TableCell>{row.jobCategoryName}</TableCell>
                     <TableCell>{INTERVIEW_TYPE_LABEL[row.interviewType]}</TableCell>
                     {isEditMode && (
@@ -137,7 +137,7 @@ export default function DraftListModal({ open, onClose, interviewDraftType }: Dr
         hasCancelButton={true}
         cancelText="취소"
         okText="삭제"
-        okButtonVariant="fill-orange-500"
+        okButtonVariant="fill-gray-800"
         okButtonLoading={isDeleting}
         onOk={handleConfirmDelete}
       />

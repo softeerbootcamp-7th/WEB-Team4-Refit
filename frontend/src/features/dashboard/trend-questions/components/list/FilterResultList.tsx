@@ -1,9 +1,7 @@
-import { useState } from 'react'
-import { Button } from '@/designs/components'
+import TermsLockedOverlay from '@/features/dashboard/_index/components/terms-lock/TermsLockedOverlay'
 import FilterBadges from '@/features/dashboard/trend-questions/components/filter/filter-badges/FilterBadges'
 import type { IndustryJobFilterState } from '@/features/dashboard/trend-questions/hooks/useIndustryJobFilter'
 import TrendQuestionCard from './question-card/TrendQuestionCard'
-import TermsModal from './terms-modal/TermsModal'
 import { useTrendFrequentQuestions } from './useTrendFrequentQuestions'
 
 type FilterResultListProps = {
@@ -12,7 +10,6 @@ type FilterResultListProps = {
 }
 
 export default function FilterResultList({ filter, isBlurred = false }: FilterResultListProps) {
-  const [isTermsModalOpen, setIsTermsModalOpen] = useState(false)
   const { badges, removeBadge, clearAll } = filter
   const { loadMoreRef, frequentQuestions, totalCount, isPending, isFetchingNextPage } = useTrendFrequentQuestions({
     industryIds: filter.industryIds,
@@ -30,7 +27,11 @@ export default function FilterResultList({ filter, isBlurred = false }: FilterRe
         <FilterBadges badges={badges} onRemove={removeBadge} onClearAll={clearAll} />
       </div>
       <div className="relative">
-        <div className={isBlurred ? 'pointer-events-none blur-sm' : ''}>
+        {isBlurred ? (
+          <TermsLockedOverlay isLocked={isBlurred}>
+            <DummyCardList />
+          </TermsLockedOverlay>
+        ) : (
           <ListContent
             isLoading={isLoading}
             isEmpty={isEmpty}
@@ -38,10 +39,8 @@ export default function FilterResultList({ filter, isBlurred = false }: FilterRe
             frequentQuestions={frequentQuestions}
             loadMoreRef={loadMoreRef}
           />
-        </div>
-        {isBlurred && <BlurOverlay onAgreeClick={() => setIsTermsModalOpen(true)} />}
+        )}
       </div>
-      <TermsModal open={isTermsModalOpen} onClose={() => setIsTermsModalOpen(false)} />
     </section>
   )
 }
@@ -75,15 +74,23 @@ function ListContent({ isLoading, isEmpty, frequentQuestions, loadMoreRef, showI
   )
 }
 
-function BlurOverlay({ onAgreeClick }: { onAgreeClick: () => void }) {
+const DUMMY_PLACEHOLDER = '약관 동의가 필요합니다'
+
+function DummyCardList() {
   return (
-    <div className="absolute inset-0 z-10 flex items-center justify-center rounded-xl bg-white/40 px-4 text-center">
-      <div className="flex flex-col items-center gap-4">
-        <p className="body-l-semibold text-gray-500">나의 질문 공개에 동의하고 관심 직무의 빈출 질문을 알아보세요!</p>
-        <Button size="sm" variant="fill-gray-800" onClick={onAgreeClick}>
-          동의하고 질문 확인하기
-        </Button>
-      </div>
+    <div className="grid grid-cols-2 gap-4">
+      {Array.from({ length: 4 }, (_, i) => (
+        <TrendQuestionCard
+          key={`dummy-${i}`}
+          item={{
+            question: DUMMY_PLACEHOLDER,
+            industryName: DUMMY_PLACEHOLDER,
+            jobCategoryName: DUMMY_PLACEHOLDER,
+            interviewType: 'FIRST',
+            interviewStartAt: DUMMY_PLACEHOLDER,
+          }}
+        />
+      ))}
     </div>
   )
 }

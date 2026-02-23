@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { getGetFrequentQuestionsUrl } from '@/apis'
-import { customFetchWithSerializedQuery } from '@/apis/custom-fetch'
-import type { ApiResponsePageFrequentQnaSetResponse, FrequentQnaSetResponse } from '@/apis/generated/refit-api.schemas'
+import { getFrequentQuestions } from '@/apis/generated/qna-set-api/qna-set-api'
+import type { FrequentQnaSetResponse } from '@/apis/generated/refit-api.schemas'
 
 type UseTrendFrequentQuestionsParams = {
   industryIds: number[]
@@ -15,6 +14,7 @@ const OBSERVER_ROOT_MARGIN = '200px 0px'
 
 export function useTrendFrequentQuestions({ industryIds, jobCategoryIds, isBlurred }: UseTrendFrequentQuestionsParams) {
   const loadMoreRef = useRef<HTMLDivElement | null>(null)
+  const requestSize = isBlurred ? 1 : PAGE_SIZE
 
   const baseParams = useMemo(
     () => ({
@@ -25,14 +25,14 @@ export function useTrendFrequentQuestions({ industryIds, jobCategoryIds, isBlurr
   )
 
   const { data, isPending, isFetchingNextPage, hasNextPage, fetchNextPage } = useInfiniteQuery({
-    queryKey: ['trend-questions', 'frequent', baseParams],
+    queryKey: ['trend-questions', 'frequent', baseParams, requestSize],
     initialPageParam: 0,
     queryFn: ({ pageParam }) =>
-      fetchFrequentQuestionsWithRepeatedParams({
+      getFrequentQuestions({
         industryIds: baseParams.industryIds ?? [],
         jobCategoryIds: baseParams.jobCategoryIds ?? [],
         page: pageParam,
-        size: PAGE_SIZE,
+        size: requestSize,
       }),
     getNextPageParam: (lastPage, _allPages, lastPageParam) => {
       if (isBlurred) return undefined
@@ -57,7 +57,9 @@ export function useTrendFrequentQuestions({ industryIds, jobCategoryIds, isBlurr
     return () => observer.disconnect()
   }, [isBlurred, fetchNextPage, hasNextPage, isFetchingNextPage, isPending])
 
-  const frequentQuestions: FrequentQnaSetResponse[] = data?.pages.flatMap((page) => page.result?.content ?? []) ?? []
+  const frequentQuestions: FrequentQnaSetResponse[] = isBlurred
+    ? []
+    : (data?.pages.flatMap((page) => page.result?.content ?? []) ?? [])
   const totalCount = data?.pages[0]?.result?.totalElements ?? frequentQuestions.length
 
   return {
@@ -67,19 +69,4 @@ export function useTrendFrequentQuestions({ industryIds, jobCategoryIds, isBlurr
     isPending,
     isFetchingNextPage,
   }
-}
-
-type FrequentQuestionsQueryParams = {
-  industryIds: number[]
-  jobCategoryIds: number[]
-  page: number
-  size: number
-}
-
-async function fetchFrequentQuestionsWithRepeatedParams(
-  params: FrequentQuestionsQueryParams,
-): Promise<ApiResponsePageFrequentQnaSetResponse> {
-  return customFetchWithSerializedQuery<ApiResponsePageFrequentQnaSetResponse>(getGetFrequentQuestionsUrl(), params, {
-    method: 'GET',
-  })
 }

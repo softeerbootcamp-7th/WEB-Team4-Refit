@@ -1,9 +1,7 @@
 package com.shyashyashya.refit.domain.interview.repository;
 
-import com.shyashyashya.refit.domain.industry.model.Industry;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
-import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.user.model.User;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,17 +25,19 @@ public interface InterviewRepository extends JpaRepository<Interview, Long>, Int
 
     boolean existsByUserAndReviewStatusIn(User user, List<InterviewReviewStatus> reviewStatuses);
 
-    Page<Interview> findAllByUserAndReviewStatusIn(
-            User user, List<InterviewReviewStatus> reviewStatuses, Pageable pageable);
-
     @Query("""
         SELECT i
           FROM Interview i
          WHERE i.user = :user
-           AND i.industry = :industry
-           AND i.jobCategory = :jobCategory
+           AND i.reviewStatus IN :reviewStatuses
+           AND i.startAt < :now
+         ORDER BY i.startAt DESC
     """)
-    List<Interview> findAllSimilarInterviewsByUser(User user, Industry industry, JobCategory jobCategory);
+    Page<Interview> findMyDebriefIncompletedInterviews(
+            User user, List<InterviewReviewStatus> reviewStatuses, LocalDateTime now, Pageable pageable);
+
+    Page<Interview> findAllByUserAndReviewStatusIn(
+            User user, List<InterviewReviewStatus> reviewStatuses, Pageable pageable);
 
     @Query("""
         SELECT i

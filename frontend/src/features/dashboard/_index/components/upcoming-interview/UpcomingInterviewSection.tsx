@@ -5,8 +5,12 @@ import UpcomingInterviewCard from './UpcomingInterviewCard'
 
 const ITEMS_PER_PAGE = 1
 
-export default function UpcomingInterviewSection() {
-  const { data, count } = useUpcomingInterviews()
+interface UpcomingInterviewSectionProps {
+  isTermsLocked: boolean
+}
+
+export default function UpcomingInterviewSection({ isTermsLocked }: UpcomingInterviewSectionProps) {
+  const { data, count } = useUpcomingInterviews({ isTermsLocked })
   const { pageData, handlePrev, handleNext, hasPrev, hasNext } = usePagination(data, ITEMS_PER_PAGE)
 
   return (
@@ -21,7 +25,7 @@ export default function UpcomingInterviewSection() {
         {pageData.length === 0 ? (
           <UpcomingInterviewEmptyCard />
         ) : (
-          pageData.map((item) => <UpcomingInterviewCard key={item.id} data={item} />)
+          pageData.map((item) => <UpcomingInterviewCard key={item.id} data={item} isTermsLocked={isTermsLocked} />)
         )}
       </div>
     </section>

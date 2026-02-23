@@ -63,6 +63,9 @@ public class Interview extends BaseEntity {
     @Column(columnDefinition = "varchar(200)")
     private String pdfResourceKey;
 
+    @Column(name = "pdf_uploaded_at")
+    private LocalDateTime pdfUploadUrlPublishedAt;
+
     @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
@@ -78,6 +81,10 @@ public class Interview extends BaseEntity {
     @JoinColumn(name = "job_category_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private JobCategory jobCategory;
+
+    @Column(name = "convert_status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private InterviewConvertStatus convertStatus;
 
     /*
      * Static Factory Method
@@ -102,6 +109,7 @@ public class Interview extends BaseEntity {
                 .company(company)
                 .industry(industry)
                 .jobCategory(jobCategory)
+                .convertStatus(InterviewConvertStatus.NOT_CONVERTED)
                 .build();
     }
 
@@ -121,7 +129,8 @@ public class Interview extends BaseEntity {
             User user,
             Company company,
             Industry industry,
-            JobCategory jobCategory) {
+            JobCategory jobCategory,
+            InterviewConvertStatus convertStatus) {
         this.jobRole = jobRole;
         this.reviewStatus = reviewStatus;
         this.resultStatus = resultStatus;
@@ -133,6 +142,7 @@ public class Interview extends BaseEntity {
         this.company = company;
         this.industry = industry;
         this.jobCategory = jobCategory;
+        this.convertStatus = convertStatus;
     }
 
     public void startLogging() {
@@ -149,6 +159,10 @@ public class Interview extends BaseEntity {
             return;
         }
         throw new CustomException(INTERVIEW_REVIEW_STATUS_NOT_UPDATABLE_TO_QNA_SET_DRAFT);
+    }
+
+    public void rollbackToLogDraft() {
+        reviewStatus = InterviewReviewStatus.LOG_DRAFT;
     }
 
     public void completeQnaSetDraft() {
@@ -171,11 +185,19 @@ public class Interview extends BaseEntity {
         this.resultStatus = interviewResultStatus;
     }
 
+    public void updateConvertStatus(InterviewConvertStatus convertStatus) {
+        this.convertStatus = convertStatus;
+    }
+
     public void updatePdfResourceKey(String pdfResourceKey) {
         this.pdfResourceKey = pdfResourceKey;
     }
 
     public void deletePdfResourceKey() {
         this.pdfResourceKey = null;
+    }
+
+    public void updatePdfUploadUrlPublishedTime(LocalDateTime time) {
+        this.pdfUploadUrlPublishedAt = time;
     }
 }

@@ -7,11 +7,12 @@
 import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { customFetch } from '../../custom-fetch'
 import type {
+  ApiResponseConvertResultResponse,
   ApiResponseGuideQuestionResponse,
   ApiResponseInterviewCreateResponse,
   ApiResponseInterviewDto,
   ApiResponseInterviewFullDto,
-  ApiResponsePresignedUrlDto,
+  ApiResponsePdfFilePresignResponse,
   ApiResponseQnaSetCreateResponse,
   ApiResponseVoid,
   InterviewCreateRequest,
@@ -392,9 +393,11 @@ export const useCompleteSelfReview = <TError = unknown, TContext = unknown>(
   return useMutation(getCompleteSelfReviewMutationOptions(options), queryClient)
 }
 /**
- *         변환이 완료되면 면접 상태를 '질답 세트 검토중' 상태로 변화시킵니다. 질답세트를 추가/수정/삭제하려면 반드시 면접 상태가 '질답 세트 검토중' 상태여야 합니다.
-        변환이 실패하면 ? (고도화 예정)
+ *         변환이 완료되면 면접 상태를 '질답 세트 검토중' 상태로 바꿉니다.
+        질답세트를 추가/수정/삭제하려면 반드시 면접 상태가 '질답 세트 검토중' 상태여야 합니다.
+        변환이 실패하면 실패 응답을 반환하고 '기록 중' 상태를 유지합니다.
 
+ * @deprecated
  * @summary 면접 기록을 질문/답변 세트로 변환합니다.
  */
 export const getConvertRawTextToQnaSetUrl = (interviewId: number) => {
@@ -445,6 +448,7 @@ export type ConvertRawTextToQnaSetMutationResult = NonNullable<Awaited<ReturnTyp
 export type ConvertRawTextToQnaSetMutationError = unknown
 
 /**
+ * @deprecated
  * @summary 면접 기록을 질문/답변 세트로 변환합니다.
  */
 export const useConvertRawTextToQnaSet = <TError = unknown, TContext = unknown>(
@@ -460,6 +464,56 @@ export const useConvertRawTextToQnaSet = <TError = unknown, TContext = unknown>(
   queryClient?: QueryClient,
 ): UseMutationResult<Awaited<ReturnType<typeof convertRawTextToQnaSet>>, TError, { interviewId: number }, TContext> => {
   return useMutation(getConvertRawTextToQnaSetMutationOptions(options), queryClient)
+}
+/**
+ * @summary 면접 기록을 질문/답변 세트으로 변환 요청합니다.
+ */
+export const getRequestConvertUrl = (interviewId: number) => {
+  return `/interview/${interviewId}/raw-text/convert/request`
+}
+
+export const requestConvert = async (interviewId: number, options?: RequestInit): Promise<ApiResponseVoid> => {
+  return customFetch<ApiResponseVoid>(getRequestConvertUrl(interviewId), {
+    ...options,
+    method: 'POST',
+  })
+}
+
+export const getRequestConvertMutationOptions = <TError = unknown, TContext = unknown>(options?: {
+  mutation?: UseMutationOptions<Awaited<ReturnType<typeof requestConvert>>, TError, { interviewId: number }, TContext>
+  request?: SecondParameter<typeof customFetch>
+}): UseMutationOptions<Awaited<ReturnType<typeof requestConvert>>, TError, { interviewId: number }, TContext> => {
+  const mutationKey = ['requestConvert']
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
+
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof requestConvert>>, { interviewId: number }> = (props) => {
+    const { interviewId } = props ?? {}
+
+    return requestConvert(interviewId, requestOptions)
+  }
+
+  return { mutationFn, ...mutationOptions }
+}
+
+export type RequestConvertMutationResult = NonNullable<Awaited<ReturnType<typeof requestConvert>>>
+
+export type RequestConvertMutationError = unknown
+
+/**
+ * @summary 면접 기록을 질문/답변 세트으로 변환 요청합니다.
+ */
+export const useRequestConvert = <TError = unknown, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<Awaited<ReturnType<typeof requestConvert>>, TError, { interviewId: number }, TContext>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<Awaited<ReturnType<typeof requestConvert>>, TError, { interviewId: number }, TContext> => {
+  return useMutation(getRequestConvertMutationOptions(options), queryClient)
 }
 /**
  * @summary 면접에 새로운 질답 세트를 추가합니다.
@@ -915,6 +969,187 @@ export const useDeleteInterview = <TError = unknown, TContext = unknown>(
   return useMutation(getDeleteInterviewMutationOptions(options), queryClient)
 }
 /**
+ * @summary 변환 요청 결과를 조회합니다.
+ */
+export const getWaitConvertResultUrl = (interviewId: number) => {
+  return `/interview/${interviewId}/raw-text/convert/result`
+}
+
+export const waitConvertResult = async (
+  interviewId: number,
+  options?: RequestInit,
+): Promise<ApiResponseConvertResultResponse> => {
+  return customFetch<ApiResponseConvertResultResponse>(getWaitConvertResultUrl(interviewId), {
+    ...options,
+    method: 'GET',
+  })
+}
+
+export const getWaitConvertResultQueryKey = (interviewId: number) => {
+  return [`/interview/${interviewId}/raw-text/convert/result`] as const
+}
+
+export const getWaitConvertResultQueryOptions = <
+  TData = Awaited<ReturnType<typeof waitConvertResult>>,
+  TError = unknown,
+>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof waitConvertResult>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getWaitConvertResultQueryKey(interviewId)
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof waitConvertResult>>> = ({ signal }) =>
+    waitConvertResult(interviewId, { signal, ...requestOptions })
+
+  return { queryKey, queryFn, enabled: !!interviewId, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof waitConvertResult>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type WaitConvertResultQueryResult = NonNullable<Awaited<ReturnType<typeof waitConvertResult>>>
+export type WaitConvertResultQueryError = unknown
+
+export function useWaitConvertResult<TData = Awaited<ReturnType<typeof waitConvertResult>>, TError = unknown>(
+  interviewId: number,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof waitConvertResult>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof waitConvertResult>>,
+          TError,
+          Awaited<ReturnType<typeof waitConvertResult>>
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useWaitConvertResult<TData = Awaited<ReturnType<typeof waitConvertResult>>, TError = unknown>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof waitConvertResult>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof waitConvertResult>>,
+          TError,
+          Awaited<ReturnType<typeof waitConvertResult>>
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useWaitConvertResult<TData = Awaited<ReturnType<typeof waitConvertResult>>, TError = unknown>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof waitConvertResult>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 변환 요청 결과를 조회합니다.
+ */
+
+export function useWaitConvertResult<TData = Awaited<ReturnType<typeof waitConvertResult>>, TError = unknown>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof waitConvertResult>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getWaitConvertResultQueryOptions(interviewId, options)
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  return { ...query, queryKey: queryOptions.queryKey }
+}
+
+export const getWaitConvertResultSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof waitConvertResult>>,
+  TError = unknown,
+>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof waitConvertResult>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getWaitConvertResultQueryKey(interviewId)
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof waitConvertResult>>> = ({ signal }) =>
+    waitConvertResult(interviewId, { signal, ...requestOptions })
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof waitConvertResult>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type WaitConvertResultSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof waitConvertResult>>>
+export type WaitConvertResultSuspenseQueryError = unknown
+
+export function useWaitConvertResultSuspense<TData = Awaited<ReturnType<typeof waitConvertResult>>, TError = unknown>(
+  interviewId: number,
+  options: {
+    query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof waitConvertResult>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useWaitConvertResultSuspense<TData = Awaited<ReturnType<typeof waitConvertResult>>, TError = unknown>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof waitConvertResult>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useWaitConvertResultSuspense<TData = Awaited<ReturnType<typeof waitConvertResult>>, TError = unknown>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof waitConvertResult>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 변환 요청 결과를 조회합니다.
+ */
+
+export function useWaitConvertResultSuspense<TData = Awaited<ReturnType<typeof waitConvertResult>>, TError = unknown>(
+  interviewId: number,
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof waitConvertResult>>, TError, TData>>
+    request?: SecondParameter<typeof customFetch>
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getWaitConvertResultSuspenseQueryOptions(interviewId, options)
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as UseSuspenseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  return { ...query, queryKey: queryOptions.queryKey }
+}
+
+/**
  * @summary 면접 및 면접에 관련된 질문, 회고 데이터를 모두 조회합니다.
  */
 export const getGetInterviewFullUrl = (interviewId: number) => {
@@ -1102,8 +1337,8 @@ export const getCreatePdfUploadUrlUrl = (interviewId: number) => {
 export const createPdfUploadUrl = async (
   interviewId: number,
   options?: RequestInit,
-): Promise<ApiResponsePresignedUrlDto> => {
-  return customFetch<ApiResponsePresignedUrlDto>(getCreatePdfUploadUrlUrl(interviewId), {
+): Promise<ApiResponsePdfFilePresignResponse> => {
+  return customFetch<ApiResponsePdfFilePresignResponse>(getCreatePdfUploadUrlUrl(interviewId), {
     ...options,
     method: 'GET',
   })
@@ -1283,8 +1518,8 @@ export const getCreatePdfDownloadUrlUrl = (interviewId: number) => {
 export const createPdfDownloadUrl = async (
   interviewId: number,
   options?: RequestInit,
-): Promise<ApiResponsePresignedUrlDto> => {
-  return customFetch<ApiResponsePresignedUrlDto>(getCreatePdfDownloadUrlUrl(interviewId), {
+): Promise<ApiResponsePdfFilePresignResponse> => {
+  return customFetch<ApiResponsePdfFilePresignResponse>(getCreatePdfDownloadUrlUrl(interviewId), {
     ...options,
     method: 'GET',
   })

@@ -1,15 +1,18 @@
 package com.shyashyashya.refit.unit.user.service.validator;
 
 import static com.shyashyashya.refit.unit.fixture.UserFixture.TEST_USER_1;
+import static com.shyashyashya.refit.global.exception.ErrorCode.USER_ALREADY_AGREED_TO_TERMS;
 import static com.shyashyashya.refit.global.exception.ErrorCode.USER_NICKNAME_CONFLICT;
 import static com.shyashyashya.refit.global.exception.ErrorCode.USER_SIGNUP_EMAIL_CONFLICT;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
 import com.shyashyashya.refit.domain.user.service.validator.UserValidator;
 import com.shyashyashya.refit.global.exception.CustomException;
@@ -36,8 +39,8 @@ class UserValidatorTest {
         given(userRepository.findByEmail(email)).willReturn(Optional.of(TEST_USER_1));
 
         // when & then
-        CustomException exception =
-                assertThrows(CustomException.class, () -> userValidator.validateEmailNotConflict(email));
+        CustomException exception = assertThrows(CustomException.class,
+                () -> userValidator.validateEmailNotConflict(email));
 
         assertEquals(USER_SIGNUP_EMAIL_CONFLICT, exception.getErrorCode());
         verify(userRepository, times(1)).findByEmail(email);
@@ -62,8 +65,8 @@ class UserValidatorTest {
         given(userRepository.existsByNickname(nickname)).willReturn(true);
 
         // when & then
-        CustomException exception =
-                assertThrows(CustomException.class, () -> userValidator.validateNicknameNotConflict(nickname));
+        CustomException exception = assertThrows(CustomException.class,
+                () -> userValidator.validateNicknameNotConflict(nickname));
 
         assertEquals(USER_NICKNAME_CONFLICT, exception.getErrorCode());
         verify(userRepository, times(1)).existsByNickname(nickname);
@@ -79,5 +82,28 @@ class UserValidatorTest {
         // when & then
         assertDoesNotThrow(() -> userValidator.validateNicknameNotConflict(nickname));
         verify(userRepository, times(1)).existsByNickname(nickname);
+    }
+
+    @Test
+    void 이미_약관에_동의했다면_USER_ALREADY_AGREED_TO_TERMS_예외가_발생한다() {
+        // given
+        User user = mock(User.class);
+        given(user.isAgreedToTerms()).willReturn(true);
+
+        // when & then
+        CustomException exception = assertThrows(CustomException.class,
+                () -> userValidator.validateUserNotAgreedToTerms(user));
+
+        assertEquals(USER_ALREADY_AGREED_TO_TERMS, exception.getErrorCode());
+    }
+
+    @Test
+    void 약관에_동의하지_않았다면_예외가_발생하지_않는다() {
+        // given
+        User user = mock(User.class);
+        given(user.isAgreedToTerms()).willReturn(false);
+
+        // when & then
+        assertDoesNotThrow(() -> userValidator.validateUserNotAgreedToTerms(user));
     }
 }

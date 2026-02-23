@@ -1,5 +1,5 @@
 import { useGetMyDifficultQnaSets } from '@/apis'
-import type { DashboardMyDifficultQuestionResponse, InterviewDto } from '@/apis'
+import type { InterviewDto, MyDifficultQuestionResponse } from '@/apis'
 import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
 import type { DifficultQuestionCardData } from '@/features/dashboard/_index/components/difficult-questions/DifficultQuestionCard'
 
@@ -17,12 +17,13 @@ function toInterviewTypeLabel(interviewType: InterviewDto['interviewType']): str
   return INTERVIEW_TYPE_LABEL[interviewType as keyof typeof INTERVIEW_TYPE_LABEL] ?? interviewType
 }
 
-function mapDifficultQuestion(item: DashboardMyDifficultQuestionResponse): DifficultQuestionCardData {
+function mapDifficultQuestion(item: MyDifficultQuestionResponse): DifficultQuestionCardData {
   const interview = item.interview
 
   return {
     id: interview?.interviewId ?? 0,
     companyName: interview?.companyName ?? '',
+    companyLogoUrl: interview?.companyLogoUrl,
     date: formatAppliedDate(interview?.interviewStartAt ?? ''),
     jobCategory: interview?.jobCategoryName ?? '',
     interviewType: toInterviewTypeLabel(interview?.interviewType ?? 'FIRST'),
@@ -39,7 +40,7 @@ export const useDifficultQuestions = () => {
     },
     {
       query: {
-        select: (data): { content: DashboardMyDifficultQuestionResponse[]; totalElements: number } => ({
+        select: (data): { content: MyDifficultQuestionResponse[]; totalElements: number } => ({
           content: data?.result?.content ?? [],
           totalElements: data?.result?.totalElements ?? 0,
         }),

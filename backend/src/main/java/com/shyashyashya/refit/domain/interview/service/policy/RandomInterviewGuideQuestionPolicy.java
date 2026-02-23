@@ -18,7 +18,7 @@ public class RandomInterviewGuideQuestionPolicy implements InterviewGuideQuestio
             "바람직한 사원상은 무엇이라고 생각합니까?");
 
     public String generate(String rawText) {
-        int idx = (int) System.currentTimeMillis() % (GUIDE_QUESTIONS.size());
+        int idx = (int) (System.currentTimeMillis() % GUIDE_QUESTIONS.size());
         return GUIDE_QUESTIONS.get(idx);
     }
 }

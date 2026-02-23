@@ -7,6 +7,7 @@ import { RetroActionBar } from '@/features/retro/_index/components/retro-section
 import type { RetroListItem } from '@/features/retro/_index/components/retro-section/types'
 import { ROUTES } from '@/routes/routes'
 import { RetroCompleteConfirmModal } from './complete-confirm-modal/RetroCompleteConfirmModal'
+import { RetroCompleteResultModal } from './complete-result-modal/RetroCompleteResultModal'
 import { useRetroSectionController } from './hooks/useRetroSectionController'
 import { RetroQuestionStep } from './qna-set-section/RetroQuestionStep'
 
@@ -35,6 +36,7 @@ export function RetroSection({
 }: RetroSectionProps) {
   const navigate = useNavigate()
   const [isCompleteConfirmOpen, setIsCompleteConfirmOpen] = useState(false)
+  const [isCompleteResultOpen, setIsCompleteResultOpen] = useState(false)
   const { mutateAsync: completeSelfReview } = useCompleteSelfReview()
   const retro = useRetroSectionController({
     interviewId,
@@ -60,12 +62,17 @@ export function RetroSection({
       return
     }
     await completeSelfReview({ interviewId })
-    navigate(ROUTES.DASHBOARD)
+    setIsCompleteResultOpen(true)
   }
 
   const handleConfirmComplete = async () => {
     setIsCompleteConfirmOpen(false)
     await completeSelfReview({ interviewId })
+    setIsCompleteResultOpen(true)
+  }
+
+  const handleCompleteResultClose = () => {
+    setIsCompleteResultOpen(false)
     navigate(ROUTES.DASHBOARD)
   }
 
@@ -97,6 +104,11 @@ export function RetroSection({
         missingKptItems={retro.flow.missingKptItems}
         onCancel={() => setIsCompleteConfirmOpen(false)}
         onConfirm={handleConfirmComplete}
+      />
+      <RetroCompleteResultModal
+        open={isCompleteResultOpen}
+        onClose={handleCompleteResultClose}
+        onConfirm={handleCompleteResultClose}
       />
     </>
   )

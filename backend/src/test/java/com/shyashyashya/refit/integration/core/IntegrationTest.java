@@ -24,6 +24,7 @@ import com.shyashyashya.refit.domain.qnaset.repository.QnaSetCategoryRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.domain.user.repository.UserRepository;
+import com.shyashyashya.refit.global.auth.repository.RefreshTokenRepository;
 import com.shyashyashya.refit.global.auth.service.JwtEncoder;
 import com.shyashyashya.refit.global.config.TestQdrantConfig;
 import com.shyashyashya.refit.global.constant.AuthConstant;
@@ -41,6 +42,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -55,11 +57,11 @@ import java.util.List;
 @Import(TestQdrantConfig.class)
 public abstract class IntegrationTest {
 
-    protected static final LocalDateTime NOW = LocalDateTime.of(2026, 2, 16, 10, 0, 0);
+    protected static final LocalDateTime NOW = LocalDateTime.now();
     protected static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     @LocalServerPort
-    private Integer port;
+    protected Integer port;
 
     protected RequestSpecification spec;
 
@@ -79,16 +81,19 @@ public abstract class IntegrationTest {
     protected QnaSetCategory qnaSetCategory3;
 
     @PersistenceContext
-    private EntityManager em;
+    protected EntityManager em;
 
     @Autowired
-    private JwtEncoder jwtEncoder;
+    protected JwtEncoder jwtEncoder;
 
     @Autowired
-    private HangulUtil hangulUtil;
+    protected HangulUtil hangulUtil;
 
     @Autowired
-    private UserRepository userRepository;
+    protected UserRepository userRepository;
+
+    @MockitoBean
+    protected RefreshTokenRepository refreshTokenRepository;
 
     @Autowired
     private IndustryRepository industryRepository;
@@ -133,9 +138,11 @@ public abstract class IntegrationTest {
         qnaSetCategory3 = qnaSetCategoryRepository.save(QnaSetCategory.create("기술 질문", "당신은 기술 있는 사람입니까?", 0.001));
 
         requestUser = createAndSaveUser("test@example.com", "default", industry1, jobCategory1);
+
         Instant issuedAt = Instant.now();
         String accessToken = jwtEncoder.encodeAccessJwt(requestUser.getEmail(), requestUser.getId(), issuedAt);
         String refreshToken = jwtEncoder.encodeRefreshJwt(requestUser.getEmail(), requestUser.getId(), issuedAt);
+
         spec = new RequestSpecBuilder()
                 .setPort(port)
                 .addCookie(AuthConstant.ACCESS_TOKEN, accessToken)
@@ -152,11 +159,11 @@ public abstract class IntegrationTest {
 
             // 모든 테이블 조회
             ResultSet rs = st.executeQuery("""
-                SELECT TABLE_NAME, TABLE_SCHEMA, TABLE_TYPE
-                  FROM INFORMATION_SCHEMA.TABLES
-                 WHERE TABLE_SCHEMA = 'PUBLIC'
-                   AND TABLE_TYPE = 'BASE TABLE'
-            """);
+                        SELECT TABLE_NAME, TABLE_SCHEMA, TABLE_TYPE
+                          FROM INFORMATION_SCHEMA.TABLES
+                         WHERE TABLE_SCHEMA = 'PUBLIC'
+                           AND TABLE_TYPE = 'BASE TABLE'
+                    """);
 
             List<String> tableNames = new ArrayList<>();
             while (rs.next()) {
@@ -183,7 +190,8 @@ public abstract class IntegrationTest {
         return createAndSaveInterview(request, reviewStatus, requestUser);
     }
 
-    protected Interview createAndSaveInterview(InterviewCreateRequest request, InterviewReviewStatus reviewStatus, User user) {
+    protected Interview createAndSaveInterview(InterviewCreateRequest request, InterviewReviewStatus reviewStatus,
+            User user) {
         Company company = companyRepository.findByName(request.companyName()).get();
         Industry industry = industryRepository.findById(request.industryId()).get();
         JobCategory jobCategory = jobCategoryRepository.findById(request.jobCategoryId()).get();
@@ -253,25 +261,25 @@ public abstract class IntegrationTest {
                 request.answerText(),
                 isMarkedDifficult,
                 interview,
-                null
-        );
+                null);
 
         return qnaSetRepository.save(qnaSet);
     }
 
-    protected QnaSet createAndSaveQnaSet(QnaSetCreateRequest request, Interview interview, QnaSetCategory qnaSetCategory) {
+    protected QnaSet createAndSaveQnaSet(QnaSetCreateRequest request, Interview interview,
+            QnaSetCategory qnaSetCategory) {
         QnaSet qnaSet = QnaSet.create(
                 request.questionText(),
                 request.answerText(),
                 false,
                 interview,
-                qnaSetCategory
-        );
+                qnaSetCategory);
 
         return qnaSetRepository.save(qnaSet);
     }
 
-    protected List<PdfHighlighting> createAndSavePdfHighlighting(List<PdfHighlightingUpdateRequest> requests, QnaSet qnaSet) {
+    protected List<PdfHighlighting> createAndSavePdfHighlighting(List<PdfHighlightingUpdateRequest> requests,
+            QnaSet qnaSet) {
         List<PdfHighlighting> result = new ArrayList<>();
 
         requests.forEach(request -> {
@@ -289,8 +297,7 @@ public abstract class IntegrationTest {
                                 pdfHighlighting);
 
                         pdfHighlightingRectRepository.save(rect);
-                    }
-            );
+                    });
         });
 
         return result;

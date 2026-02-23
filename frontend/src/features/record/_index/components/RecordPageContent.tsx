@@ -7,6 +7,7 @@ import { RecordSidebar } from '@/features/record/_index/components/RecordSidebar
 import type { InterviewInfoType } from '@/types/interview'
 
 type AutoSaveStatus = 'idle' | 'saving' | 'saved' | 'error'
+const MAX_RECORD_TEXT_LENGTH = 10_000
 
 type RecordPageContentProps = {
   interviewInfo: InterviewInfoType
@@ -20,6 +21,7 @@ type RecordPageContentProps = {
   isCompletePending: boolean
   canSave: boolean
   autoSaveStatus: AutoSaveStatus
+  autoSaveErrorMessage: string | null
 }
 
 export function RecordPageContent({
@@ -34,6 +36,7 @@ export function RecordPageContent({
   isCompletePending,
   canSave,
   autoSaveStatus,
+  autoSaveErrorMessage,
 }: RecordPageContentProps) {
   const [isRecording, setIsRecording] = useState(false)
   const mergedText = `${text}${realtimeText ? `${text ? ' ' : ''}${realtimeText}` : ''}`
@@ -46,7 +49,7 @@ export function RecordPageContent({
         <div className="flex min-h-0 flex-1 flex-col overflow-auto p-6">
           <div className="mb-5 flex items-center gap-4">
             <h1 className="title-l-bold">면접 기록하기</h1>
-            <AutoSaveStatusBadge status={autoSaveStatus} />
+            <AutoSaveStatusBadge status={autoSaveStatus} errorMessage={autoSaveErrorMessage} />
           </div>
 
           <div className="border-gray-150 flex min-h-0 flex-1 flex-col rounded-xl border bg-white p-6">
@@ -56,6 +59,7 @@ export function RecordPageContent({
               value={text + (realtimeText ? (text ? ' ' : '') + realtimeText : '')}
               onChange={(e) => onTextChange(e.target.value)}
               readOnly={!!realtimeText || isRecording}
+              maxLength={MAX_RECORD_TEXT_LENGTH}
             />
             <div className="mt-4 shrink-0">
               <LiveAudioVisualizer
@@ -77,7 +81,7 @@ export function RecordPageContent({
               disabled={!canSave || isRecording || !canComplete}
               isLoading={isCompletePending}
             >
-              기록 완료
+              다음 단계
             </Button>
           </div>
         </div>
@@ -97,9 +101,15 @@ export function RecordPageContent({
   )
 }
 
-function AutoSaveStatusBadge({ status }: { status: AutoSaveStatus }) {
+function AutoSaveStatusBadge({ status, errorMessage }: { status: AutoSaveStatus; errorMessage: string | null }) {
   const label =
-    status === 'saving' ? '저장 중...' : status === 'saved' ? '저장됨' : status === 'error' ? '저장 실패' : '자동 저장'
+    status === 'saving'
+      ? '저장 중...'
+      : status === 'saved'
+        ? '저장됨'
+        : status === 'error'
+          ? (errorMessage ?? '저장 실패')
+          : '자동 저장'
 
   const textColor = status === 'error' ? 'text-red-500' : 'text-gray-500'
 

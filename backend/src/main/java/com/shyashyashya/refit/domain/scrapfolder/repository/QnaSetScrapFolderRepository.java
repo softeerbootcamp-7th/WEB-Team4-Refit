@@ -10,16 +10,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface QnaSetScrapFolderRepository extends JpaRepository<QnaSetScrapFolder, Long> {
+public interface QnaSetScrapFolderRepository
+        extends JpaRepository<QnaSetScrapFolder, Long>, QnaSetScrapFolderCustomRepository {
 
     Long countByScrapFolder(ScrapFolder scrapFolder);
-
-    @Query("""
-    SELECT qssf.qnaSet
-    FROM QnaSetScrapFolder qssf
-    WHERE qssf.scrapFolder = :scrapFolder
-    """)
-    Page<QnaSet> findQnaSetsByScrapFolder(ScrapFolder scrapFolder, Pageable pageable);
 
     // TODO: DTO 프로젝션을 QueryDSL로 변경하기 (추후 별도 이슈로 해결)
     @Query("""

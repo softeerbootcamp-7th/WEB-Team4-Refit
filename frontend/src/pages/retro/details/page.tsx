@@ -4,6 +4,7 @@ import { getInterviewFull, useGetInterviewFullSuspense } from '@/apis/generated/
 import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
 import SidebarLayoutSkeleton from '@/features/_common/components/sidebar/SidebarLayoutSkeleton'
 import { useSectionScroll } from '@/features/_common/hooks/useSectionScroll'
+import { RetroPdfPanel } from '@/features/retro/_common/components/pdf-panel/RetroPdfPanel'
 import { DetailHeader } from '@/features/retro/details/components/contents/DetailHeader'
 import { RetroDetailSection } from '@/features/retro/details/components/contents/RetroDetailSection'
 import { DetailMinimizedSidebar } from '@/features/retro/details/components/sidebar/DetailMinimizedSidebar'
@@ -23,8 +24,8 @@ function RetroDetailContent() {
   const id = Number(interviewId)
   const { data } = useGetInterviewFullSuspense(id, { query: { select: transformInterviewData } })
 
-  const { interviewInfo, interviewResultStatus, qnaSets, interviewSelfReview } = data
-  const { company, interviewType } = interviewInfo
+  const { interviewInfo, interviewResultStatus, qnaSets, interviewSelfReview, hasUploadedPdf } = data
+  const { companyName, interviewType } = interviewInfo
 
   const [isPdfOpen, setIsPdfOpen] = useState(false)
 
@@ -33,13 +34,13 @@ function RetroDetailContent() {
   const togglePdf = () => setIsPdfOpen((v) => !v)
 
   const interviewTypeLabel = INTERVIEW_TYPE_LABEL[interviewType]
-  const title = `${company} ${interviewTypeLabel} 회고 상세 보기`
+  const title = `${companyName} ${interviewTypeLabel} 회고 상세 보기`
 
   if (isPdfOpen) {
     return (
-      <div className="grid h-full grid-cols-[80px_1fr_1fr]">
+      <div className="mx-auto grid h-full w-7xl grid-cols-[80px_1.2fr_1fr]">
         <DetailMinimizedSidebar qnaSets={qnaSets} activeIndex={activeIndex} onItemClick={handleItemClick} />
-        <div className="flex h-full flex-col gap-5 overflow-hidden p-6">
+        <div className="flex h-full flex-col gap-5 overflow-hidden p-6 pl-0">
           <DetailHeader title={title} isPdfOpen={isPdfOpen} onTogglePdf={togglePdf} />
           <RetroDetailSection
             interviewId={id}
@@ -49,7 +50,7 @@ function RetroDetailContent() {
             scrollContainerRef={scrollContainerRef}
           />
         </div>
-        <div className="flex h-full flex-col bg-gray-100">PDF 영역</div>
+        <RetroPdfPanel interviewId={id} hasPdf={hasUploadedPdf} qnaSetIds={qnaSets.map((qna) => qna.qnaSetId)} />
       </div>
     )
   }
@@ -83,7 +84,7 @@ function transformInterviewData(res: Awaited<ReturnType<typeof getInterviewFull>
   if (!interviewFull) throw new Error('인터뷰 데이터가 존재하지 않습니다.')
 
   const interviewInfo: InterviewInfoType = {
-    company: interviewFull.company ?? '',
+    companyName: interviewFull.companyName ?? '',
     jobRole: interviewFull.jobRole ?? '',
     interviewType: interviewFull.interviewType as InterviewType,
     interviewStartAt: interviewFull.interviewStartAt ?? '',
@@ -113,5 +114,6 @@ function transformInterviewData(res: Awaited<ReturnType<typeof getInterviewFull>
     interviewResultStatus,
     qnaSets,
     interviewSelfReview,
+    hasUploadedPdf: Boolean(interviewFull.pdfResourceKey),
   }
 }

@@ -60,7 +60,7 @@ const FolderListItem = ({
             onClick={handleMenuClick}
             className="flex h-6 w-6 items-center justify-center rounded-md text-gray-400 hover:bg-gray-200 hover:text-gray-600"
           >
-            <MoreIcon className="h-4 w-4" />
+            <MoreIcon className="h-6 w-6" />
           </button>
           {isMenuOpen && (
             <div className="absolute top-full right-0 z-10 mt-1 min-w-30 overflow-hidden rounded-lg border border-gray-100 bg-white shadow-lg ring-1 ring-black/5">

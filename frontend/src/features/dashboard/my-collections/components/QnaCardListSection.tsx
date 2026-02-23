@@ -1,15 +1,21 @@
-import type { RefObject } from 'react'
+import { useState, type RefObject } from 'react'
+import { useNavigate } from 'react-router'
 import { CaretDownIcon } from '@/designs/assets'
 import { Button, PlainCombobox } from '@/designs/components'
+import RetroDetailModal from '@/features/_common/components/retro-detail-modal/RetroDetailModal'
 import QnaCard from '@/features/dashboard/my-interviews/components/questions/list/qna-card/QnaCard'
 import type { InterviewResultStatus } from '@/features/dashboard/my-interviews/constants/constants'
+import { ROUTES } from '@/routes/routes'
 import type { InterviewType } from '@/types/interview'
 
 export type QnaCardListItem = {
   id: number | string
+  interviewId: number
+  qnaSetId: number
   resultStatus: InterviewResultStatus
   date: string
-  company: string
+  companyName: string
+  companyLogoUrl?: string
   job: string
   interviewType: InterviewType
   question: string
@@ -48,8 +54,19 @@ export default function QnaCardListSection({
   errorMessage,
   emptyMessage = '아직 저장된 질문이 없어요.',
 }: QnaCardListSectionProps) {
+  const navigate = useNavigate()
+  const [selectedCard, setSelectedCard] = useState<QnaCardListItem | null>(null)
+
   const hasItems = items.length > 0
   const isSortDisabled = isLoading || Boolean(errorMessage) || !hasItems
+
+  const handleCardClick = (item: QnaCardListItem) => {
+    if (item.qnaSetId === 0) {
+      navigate(ROUTES.RETRO_DETAILS.replace(':interviewId', String(item.interviewId)))
+    } else {
+      setSelectedCard(item)
+    }
+  }
 
   return (
     <div className="mx-auto flex h-full w-full justify-center">
@@ -78,9 +95,21 @@ export default function QnaCardListSection({
             hasNextPage={hasNextPage}
             isFetchingNext={isFetchingNext}
             loadMoreRef={loadMoreRef}
+            onCardClick={handleCardClick}
           />
         </div>
       </div>
+      {selectedCard && (
+        <RetroDetailModal
+          open={true}
+          onClose={() => setSelectedCard(null)}
+          interviewId={selectedCard.interviewId}
+          qnaSetId={selectedCard.qnaSetId}
+          onMoveToDetails={() =>
+            navigate(ROUTES.RETRO_DETAILS.replace(':interviewId', String(selectedCard.interviewId)))
+          }
+        />
+      )}
     </div>
   )
 }
@@ -94,6 +123,7 @@ type QnaCardListContentProps = {
   hasNextPage: boolean
   isFetchingNext: boolean
   loadMoreRef?: RefObject<HTMLDivElement | null>
+  onCardClick: (item: QnaCardListItem) => void
 }
 
 function QnaCardListContent({
@@ -105,6 +135,7 @@ function QnaCardListContent({
   hasNextPage,
   isFetchingNext,
   loadMoreRef,
+  onCardClick,
 }: QnaCardListContentProps) {
   if (isLoading) return <QnaCardListSkeleton />
   if (errorMessage) return <StatusText text={errorMessage} />
@@ -117,11 +148,13 @@ function QnaCardListContent({
           key={item.id}
           resultStatus={item.resultStatus}
           date={item.date}
-          company={item.company}
+          companyName={item.companyName}
+          companyLogoUrl={item.companyLogoUrl}
           jobRole={item.job}
           interviewType={item.interviewType}
           question={item.question}
           answer={item.answer ?? ''}
+          onClick={() => onCardClick(item)}
         />
       ))}
       {hasNextPage && <div ref={loadMoreRef} className="h-8 w-full" aria-hidden />}
@@ -131,11 +164,7 @@ function QnaCardListContent({
 }
 
 function StatusText({ text }: { text: string }) {
-  return (
-    <div className="bg-gray-white body-l-medium rounded-xl px-6 py-12 text-center text-gray-400">
-      {text}
-    </div>
-  )
+  return <div className="bg-gray-white body-l-medium rounded-xl px-6 py-12 text-center text-gray-400">{text}</div>
 }
 
 function QnaCardListSkeleton() {

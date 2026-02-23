@@ -1,5 +1,5 @@
 import type {
-  DashboardMyDifficultQuestionResponse,
+  MyDifficultQuestionResponse,
   ScrapFolderQnaSetResponse,
   ScrapFolderResponse,
 } from '@/apis/generated/refit-api.schemas'
@@ -31,9 +31,12 @@ export function mapScrapFolderToCollectionFolder(item: ScrapFolderResponse): Col
 export function mapScrapFolderQnaToCardItem(item: ScrapFolderQnaSetResponse): QnaCardListItem {
   return {
     id: item.qnaSet.qnaSetId,
+    interviewId: item.interview.interviewId,
+    qnaSetId: item.qnaSet.qnaSetId,
     resultStatus: toInterviewResultStatus(item.interview.interviewResultStatus),
-    date: formatInterviewDateLabel(item.interview.interviewStartAt),
-    company: item.interview.companyName,
+    date: item.interview.interviewStartAt,
+    companyName: item.interview.companyName,
+    companyLogoUrl: item.interview.companyLogoUrl,
     job: item.interview.jobCategoryName,
     interviewType: toInterviewType(item.interview.interviewType),
     question: item.qnaSet.questionText,
@@ -42,16 +45,19 @@ export function mapScrapFolderQnaToCardItem(item: ScrapFolderQnaSetResponse): Qn
   }
 }
 
-export function mapDifficultQnaToCardItem(item: DashboardMyDifficultQuestionResponse, index: number): QnaCardListItem {
+export function mapDifficultQnaToCardItem(item: MyDifficultQuestionResponse, index: number): QnaCardListItem {
   return {
     id: `${item.interview.interviewId}-${index}`,
+    interviewId: item.interview.interviewId,
+    qnaSetId: item.qnaSetId,
     resultStatus: toInterviewResultStatus(item.interview.interviewResultStatus),
-    date: formatInterviewDateLabel(item.interview.interviewStartAt),
-    company: item.interview.companyName,
+    date: item.interview.interviewStartAt,
+    companyName: item.interview.companyName,
+    companyLogoUrl: item.interview.companyLogoUrl,
     job: item.interview.jobCategoryName,
     interviewType: toInterviewType(item.interview.interviewType),
     question: item.question,
-    answer: '',
+    answer: item.answer,
     createdAt: item.interview.interviewStartAt,
   }
 }

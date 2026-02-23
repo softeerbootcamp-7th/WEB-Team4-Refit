@@ -1,5 +1,5 @@
 import { useState, type PropsWithChildren } from 'react'
-import { useSuspenseQueries } from '@tanstack/react-query'
+import { useQueryClient, useSuspenseQueries } from '@tanstack/react-query'
 import {
   getGetPdfHighlightingsQueryKey,
   getPdfHighlightings,
@@ -9,23 +9,26 @@ import { HighlightContext, type HighlightContextType, type HighlightData } from 
 
 type HighlightProviderProps = PropsWithChildren<{
   qnaSetIds: number[]
+  hasPdf: boolean
 }>
 
-export function HighlightProvider({ qnaSetIds, children }: HighlightProviderProps) {
+export function HighlightProvider({ qnaSetIds, hasPdf: initialHasPdf, children }: HighlightProviderProps) {
+  const queryClient = useQueryClient()
+  const [hasPdf, setHasPdf] = useState(initialHasPdf)
   const highlightResults = useSuspenseQueries({
-    queries: qnaSetIds.map((qnaSetId) => ({
+    queries: (hasPdf ? qnaSetIds : []).map((qnaSetId) => ({
       queryKey: getGetPdfHighlightingsQueryKey(qnaSetId),
       queryFn: () => getPdfHighlightings(qnaSetId),
     })),
   })
 
-  const [hasPdf, setHasPdf] = useState(false)
   const [linkingQnaSetId, setLinkingQnaSetId] = useState<number | null>(null)
   const [highlights, setHighlights] = useState<Map<number, HighlightData>>(() =>
     buildInitialHighlights(qnaSetIds, highlightResults),
   )
 
   const [pendingSelection, setPendingSelection] = useState<HighlightData | null>(null)
+  const [saveErrors, setSaveErrors] = useState<Map<number, string>>(new Map())
   const { mutate: updatePdfHighlighting } = useUpdatePdfHighlighting()
 
   const startLinking = (qnaSetId: number) => {
@@ -40,23 +43,53 @@ export function HighlightProvider({ qnaSetIds, children }: HighlightProviderProp
 
   const saveHighlight = (data: HighlightData) => {
     if (linkingQnaSetId === null) return
-    setHighlights((prev) => new Map(prev).set(linkingQnaSetId, data))
+    const prevHighlight = highlights.get(linkingQnaSetId)
 
-    updatePdfHighlighting({
-      qnaSetId: linkingQnaSetId,
-      data: [
-        {
-          highlightingText: data.text,
-          rects: data.rects.map((r) => ({
-            x: r.x,
-            y: r.y,
-            width: r.width,
-            height: r.height,
-            pageNumber: r.pageNumber,
-          })),
-        },
-      ],
+    setHighlights((prev) => new Map(prev).set(linkingQnaSetId, data))
+    setSaveErrors((prev) => {
+      const next = new Map(prev)
+      next.delete(linkingQnaSetId)
+      return next
     })
+
+    updatePdfHighlighting(
+      {
+        qnaSetId: linkingQnaSetId,
+        data: [
+          {
+            highlightingText: data.text,
+            rects: data.rects.map((r) => ({
+              x: r.x,
+              y: r.y,
+              width: r.width,
+              height: r.height,
+              pageNumber: r.pageNumber,
+            })),
+          },
+        ],
+      },
+      {
+        onError: () => {
+          setHighlights((prev) => {
+            const next = new Map(prev)
+            if (prevHighlight) {
+              next.set(linkingQnaSetId, prevHighlight)
+            } else {
+              next.delete(linkingQnaSetId)
+            }
+            return next
+          })
+          setSaveErrors((prev) =>
+            new Map(prev).set(linkingQnaSetId, '자기소개서 연결에 실패했습니다. 다시 시도해주세요.'),
+          )
+        },
+        onSettled: () => {
+          queryClient.invalidateQueries({
+            queryKey: getGetPdfHighlightingsQueryKey(linkingQnaSetId),
+          })
+        },
+      },
+    )
 
     setLinkingQnaSetId(null)
     setPendingSelection(null)
@@ -69,14 +102,19 @@ export function HighlightProvider({ qnaSetIds, children }: HighlightProviderProp
       return next
     })
 
-    updatePdfHighlighting({ qnaSetId, data: [] })
+    updatePdfHighlighting(
+      { qnaSetId, data: [] },
+      {
+        onSettled: () => {
+          queryClient.invalidateQueries({
+            queryKey: getGetPdfHighlightingsQueryKey(qnaSetId),
+          })
+        },
+      },
+    )
   }
 
   const clearAllHighlights = () => {
-    // TODO: BE에서 PDF - 하이라이팅 연쇄 삭제 처리하면 제거 예정
-    highlights.forEach((_, qnaSetId) => {
-      updatePdfHighlighting({ qnaSetId, data: [] })
-    })
     setHighlights(new Map())
     setLinkingQnaSetId(null)
     setPendingSelection(null)
@@ -92,6 +130,7 @@ export function HighlightProvider({ qnaSetIds, children }: HighlightProviderProp
     saveHighlight,
     removeHighlight,
     clearAllHighlights,
+    saveErrors,
     pendingSelection,
     setPendingSelection,
   }
@@ -106,7 +145,7 @@ function buildInitialHighlights(
   const map = new Map<number, HighlightData>()
 
   qnaSetIds.forEach((qnaSetId, idx) => {
-    const result = results[idx].data.result
+    const result = results[idx]?.data.result
     if (!result?.length) return
 
     const first = result[0]

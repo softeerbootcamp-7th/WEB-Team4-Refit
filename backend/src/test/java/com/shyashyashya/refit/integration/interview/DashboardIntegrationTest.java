@@ -3,6 +3,7 @@ package com.shyashyashya.refit.integration.interview;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
@@ -228,9 +229,9 @@ public class DashboardIntegrationTest extends IntegrationTest {
         private final String path = "/dashboard/interview/upcoming";
 
         @Test
-        void 곧_있을_면접_리스트를_조회한다() {
+        void 사용자의_산업군_및_직무와_관련있는_질문이_없을_때_곧_있을_면접_리스트를_조회한다() {
             // given
-            LocalDateTime upcomingDate = NOW.plusDays(2);
+            LocalDateTime upcomingDate = LocalDateTime.now().plusDays(2);
 
             createAndSaveInterview(
                 new InterviewCreateRequest(
@@ -246,28 +247,21 @@ public class DashboardIntegrationTest extends IntegrationTest {
                     .statusCode(200)
                     .body("code", equalTo(COMMON200.name()))
                     .body("result.content", hasSize(1))
+                    .body("result.content[0].frequentlyAskedQuestions", empty())
                     .body("result.content[0].upcomingInterview.companyName", equalTo(company1.getName()));
         }
-    }
-
-    @Nested
-    class 내가_어렵게_느낀_질문_조회 {
-
-        private final String path = "/dashboard/qna-set/my/difficult";
 
         @Test
-        void 어렵다고_표시한_QnA_리스트를_조회한다() {
+        void 약관에_동의하지_않은_사용자는_유사_질답_세트가_빈_리스트로_조회된다() {
             // given
+            LocalDateTime upcomingDate = LocalDateTime.now().plusDays(2);
             Interview interview = createAndSaveInterview(
                 new InterviewCreateRequest(
-                    NOW.minusDays(5),
+                    upcomingDate,
                     InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
-                ), InterviewReviewStatus.DEBRIEF_COMPLETED);
+                ), InterviewReviewStatus.NOT_LOGGED);
 
-            QnaSet difficultQna = QnaSet.create("Question 1", "Answer 1", true, interview, null);
-            QnaSet easyQna = QnaSet.create("Question 2", "Answer 2", false, interview, null);
-            qnaSetRepository.save(difficultQna);
-            qnaSetRepository.save(easyQna);
+            createAndSaveQnaSet(new com.shyashyashya.refit.domain.interview.dto.request.QnaSetCreateRequest("약관 미동의시 안보일 질문", "답변"), interview);
 
             // when & then
             given(spec)
@@ -277,7 +271,34 @@ public class DashboardIntegrationTest extends IntegrationTest {
                     .statusCode(200)
                     .body("code", equalTo(COMMON200.name()))
                     .body("result.content", hasSize(1))
-                    .body("result.content[0].question", equalTo("Question 1"));
+                    .body("result.content[0].frequentlyAskedQuestions", hasSize(0));
+        }
+
+        @Test
+        void 약관에_동의한_사용자는_유사_질답_세트가_조회된다() {
+            // given
+            requestUser.agreeToTerms();
+            userRepository.save(requestUser);
+
+            LocalDateTime upcomingDate = LocalDateTime.now().plusDays(2);
+            Interview interview = createAndSaveInterview(
+                new InterviewCreateRequest(
+                    upcomingDate,
+                    InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+                ), InterviewReviewStatus.NOT_LOGGED);
+
+            createAndSaveQnaSet(new com.shyashyashya.refit.domain.interview.dto.request.QnaSetCreateRequest("약관 동의시 보일 질문", "답변"), interview);
+
+            // when & then
+            given(spec)
+            .when()
+                    .get(path)
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("result.content", hasSize(1))
+                    .body("result.content[0].frequentlyAskedQuestions", hasSize(1))
+                    .body("result.content[0].frequentlyAskedQuestions[0]", equalTo("약관 동의시 보일 질문"));
         }
     }
 
@@ -288,13 +309,19 @@ public class DashboardIntegrationTest extends IntegrationTest {
 
         @ParameterizedTest
         @EnumSource(value = InterviewReviewStatus.class, names = {"NOT_LOGGED", "LOG_DRAFT", "QNA_SET_DRAFT", "SELF_REVIEW_DRAFT"})
-        void 복기가_완료되지_않은_면접_리스트를_조회한다(InterviewReviewStatus reviewStatus) {
+        void 과거의_면접_중_복기가_완료되지_않은_면접_리스트를_조회한다(InterviewReviewStatus reviewStatus) {
             // given
-            int interviewId = createAndSaveInterview(
+            int pastInterviewId = createAndSaveInterview(
                 new InterviewCreateRequest(
                     NOW.minusDays(1),
                     InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
                 ), reviewStatus).getId().intValue();
+
+            createAndSaveInterview(
+                new InterviewCreateRequest(
+                    NOW.plusDays(1),
+                    InterviewType.FIRST, company3.getName(), industry2.getId(), jobCategory2.getId(), "Developer"
+                ), reviewStatus);
 
             createAndSaveInterview(
                 new InterviewCreateRequest(
@@ -310,7 +337,34 @@ public class DashboardIntegrationTest extends IntegrationTest {
                     .statusCode(200)
                     .body("code", equalTo(COMMON200.name()))
                     .body("result.content", hasSize(1))
-                    .body("result.content[0].interview.interviewId", equalTo(interviewId));
+                    .body("result.content[0].interview.interviewId", equalTo(pastInterviewId));
+        }
+
+        @Test
+        void 과거의_면접들은_가장_최근_면접부터_내림차순으로_조회된다() {
+            // given
+            int olderInterviewId = createAndSaveInterview(
+                new InterviewCreateRequest(
+                    NOW.minusDays(5),
+                    InterviewType.FIRST, company1.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+                ), InterviewReviewStatus.NOT_LOGGED).getId().intValue();
+
+            int newerInterviewId = createAndSaveInterview(
+                new InterviewCreateRequest(
+                    NOW.minusDays(1),
+                    InterviewType.FIRST, company2.getName(), industry1.getId(), jobCategory1.getId(), "Developer"
+                ), InterviewReviewStatus.NOT_LOGGED).getId().intValue();
+
+            // when & then
+            given(spec)
+            .when()
+                    .get(path)
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON200.name()))
+                    .body("result.content", hasSize(2))
+                    .body("result.content[0].interview.interviewId", equalTo(newerInterviewId))
+                    .body("result.content[1].interview.interviewId", equalTo(olderInterviewId));
         }
     }
 }

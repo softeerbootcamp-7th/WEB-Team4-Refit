@@ -36,9 +36,14 @@ import type {
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
 
 /**
- * searchFilter 필드는 null 이 될 수 없습니다. 검색 조건이 없는 경우에도 해당 필드를 빈 배열, null 등으로 채워서 보내주세요.
+ * 면접 회고 진행 상태에 상관없이 나의 모든 면접을 대상으로 검색합니다.<br>
+searchFilter 필드는 null 이 될 수 없습니다. 검색 조건이 없는 경우에도 해당 필드를 빈 배열, null 등으로 채워서 보내주세요.<br>
+정렬 기준 (형식: field,asc / field,desc)<br>지원하는 정렬 필드:<br>
+- interviewStartAt (면접일)<br>
+- companyName (기업명)<br>
+- updatedAt (수정일)<br>
 
- * @summary 내가 복기 완료한 면접을 검색합니다.
+ * @summary 나의 면접을 검색합니다.
  */
 export const getSearchInterviewsUrl = (params?: SearchInterviewsParams) => {
   const normalizedParams = new URLSearchParams()
@@ -105,7 +110,7 @@ export type SearchInterviewsMutationBody = InterviewSearchRequest
 export type SearchInterviewsMutationError = unknown
 
 /**
- * @summary 내가 복기 완료한 면접을 검색합니다.
+ * @summary 나의 면접을 검색합니다.
  */
 export const useSearchInterviews = <TError = unknown, TContext = unknown>(
   options?: {

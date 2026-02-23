@@ -4,6 +4,7 @@ import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON201;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON204;
 
+import com.shyashyashya.refit.domain.interview.constant.InterviewConstant;
 import com.shyashyashya.refit.domain.interview.dto.InterviewDto;
 import com.shyashyashya.refit.domain.interview.dto.InterviewFullDto;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
@@ -11,12 +12,14 @@ import com.shyashyashya.refit.domain.interview.dto.request.InterviewResultStatus
 import com.shyashyashya.refit.domain.interview.dto.request.KptSelfReviewUpdateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.QnaSetCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.RawTextUpdateRequest;
+import com.shyashyashya.refit.domain.interview.dto.response.ConvertResultResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.GuideQuestionResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.InterviewCreateResponse;
-import com.shyashyashya.refit.domain.interview.dto.response.PresignedUrlDto;
+import com.shyashyashya.refit.domain.interview.dto.response.PdfFilePresignResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.QnaSetCreateResponse;
 import com.shyashyashya.refit.domain.interview.service.GuideQuestionService;
 import com.shyashyashya.refit.domain.interview.service.InterviewService;
+import com.shyashyashya.refit.domain.interview.service.RawTextConvertAsyncService;
 import com.shyashyashya.refit.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,6 +35,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.async.DeferredResult;
 
 @Tag(name = "Interview API", description = "면접 기록 및 면접 회고 작성 관련 API 입니다.")
 @RestController
@@ -41,6 +45,7 @@ public class InterviewController {
 
     private final InterviewService interviewService;
     private final GuideQuestionService guideQuestionService;
+    private final RawTextConvertAsyncService convertAsyncService;
 
     @Operation(summary = "면접 데이터를 생성합니다.")
     @PostMapping
@@ -101,15 +106,35 @@ public class InterviewController {
         return ResponseEntity.ok(response);
     }
 
+    @Deprecated
     @Operation(summary = "면접 기록을 질문/답변 세트로 변환합니다.", description = """
-            변환이 완료되면 면접 상태를 '질답 세트 검토중' 상태로 변화시킵니다. 질답세트를 추가/수정/삭제하려면 반드시 면접 상태가 '질답 세트 검토중' 상태여야 합니다.
-            변환이 실패하면 ? (고도화 예정)
+            변환이 완료되면 면접 상태를 '질답 세트 검토중' 상태로 바꿉니다.
+            질답세트를 추가/수정/삭제하려면 반드시 면접 상태가 '질답 세트 검토중' 상태여야 합니다.
+            변환이 실패하면 실패 응답을 반환하고 '기록 중' 상태를 유지합니다.
     """)
     @PostMapping("/{interviewId}/raw-text/convert")
     public ResponseEntity<ApiResponse<Void>> convertRawTextToQnaSet(@PathVariable Long interviewId) {
         interviewService.convertRawTextToQnaSet(interviewId);
         var response = ApiResponse.success(COMMON200);
         return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "면접 기록을 질문/답변 세트으로 변환 요청합니다.")
+    @PostMapping("/{interviewId}/raw-text/convert/request")
+    public ResponseEntity<ApiResponse<Void>> requestConvert(@PathVariable Long interviewId) {
+        convertAsyncService.startRawTextConvertAsync(interviewId);
+        var response = ApiResponse.success(COMMON200);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "변환 요청 결과를 조회합니다.")
+    @GetMapping("/{interviewId}/raw-text/convert/result")
+    public DeferredResult<ResponseEntity<ApiResponse<ConvertResultResponse>>> waitConvertResult(
+            @PathVariable Long interviewId) {
+        DeferredResult<ResponseEntity<ApiResponse<ConvertResultResponse>>> deferredResult =
+                new DeferredResult<>(InterviewConstant.QNA_SET_CONVERT_RESULT_TIMEOUT_MILLISECONDS);
+        convertAsyncService.handleRawTextConvertResultRequest(interviewId, deferredResult);
+        return deferredResult;
     }
 
     @Operation(summary = "면접 기록 녹음/텍스트 작성을 시작합니다.", description = """
@@ -158,7 +183,7 @@ public class InterviewController {
 
     @Operation(summary = "면접 PDF 파일 업로드를 위한 Pre-Signed URL을 요청합니다.")
     @GetMapping("/{interviewId}/pdf/upload-url")
-    public ResponseEntity<ApiResponse<PresignedUrlDto>> createPdfUploadUrl(@PathVariable Long interviewId) {
+    public ResponseEntity<ApiResponse<PdfFilePresignResponse>> createPdfUploadUrl(@PathVariable Long interviewId) {
         var body = interviewService.createPdfUploadUrl(interviewId);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);
@@ -166,7 +191,7 @@ public class InterviewController {
 
     @Operation(summary = "면접 PDF 파일 다운로드를 위한 Pre-Signed URL을 요청합니다.")
     @GetMapping("/{interviewId}/pdf/download-url")
-    public ResponseEntity<ApiResponse<PresignedUrlDto>> createPdfDownloadUrl(@PathVariable Long interviewId) {
+    public ResponseEntity<ApiResponse<PdfFilePresignResponse>> createPdfDownloadUrl(@PathVariable Long interviewId) {
         var body = interviewService.createPdfDownloadUrl(interviewId);
         var response = ApiResponse.success(COMMON200, body);
         return ResponseEntity.ok(response);

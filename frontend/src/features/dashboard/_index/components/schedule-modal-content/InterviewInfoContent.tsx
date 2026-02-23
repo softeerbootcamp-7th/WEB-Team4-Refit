@@ -78,7 +78,7 @@ export function InterviewInfoContent({ values, onChange, onNext }: InterviewInfo
           value={companyName}
           onChange={(e: { target: { value: string } }) => onChange({ ...values, companyName: e.target.value })}
           required
-          searchPlaceholder="Search"
+          searchPlaceholder="검색"
           creatable
         />
         <SearchableCombobox

@@ -69,6 +69,8 @@ const toInterviewSearchRequestBody = (filter: InterviewFilter): InterviewSearchR
     // searchFilter 조건 없어도 null/빈배열로 채워서 전송
     interviewType: filter.interviewType,
     interviewResultStatus: filter.resultStatus,
+    // 검색어 없으면 복기 완료된 면접만 조회
+    interviewReviewStatus: filter.keyword ? filter.interviewReviewStatus : ['DEBRIEF_COMPLETED'],
     startDate: toNullableDate(filter.startDate),
     endDate: toNullableDate(filter.endDate),
   } as InterviewSearchRequest['searchFilter'],
@@ -78,6 +80,7 @@ const hasActiveFilterCondition = (filter: InterviewFilter) =>
   filter.keyword.trim().length > 0 ||
   filter.interviewType.length > 0 ||
   filter.resultStatus.length > 0 ||
+  filter.interviewReviewStatus.length > 0 ||
   filter.startDate.length > 0 ||
   filter.endDate.length > 0
 

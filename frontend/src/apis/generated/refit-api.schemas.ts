@@ -27,6 +27,10 @@ export interface QnaSetUpdateRequest {
    * @maxLength 200
    */
   questionText?: string
+  /**
+   * @minLength 0
+   * @maxLength 10000
+   */
   answerText?: string
 }
 
@@ -269,6 +273,7 @@ export interface InterviewDto {
   interviewReviewStatus: InterviewDtoInterviewReviewStatus
   interviewRawText?: string
   companyName: string
+  companyLogoUrl?: string
   industryId: number
   industryName: string
   jobCategoryId: number
@@ -365,7 +370,10 @@ export interface QnaSetCreateRequest {
    * @maxLength 200
    */
   questionText: string
-  /** @minLength 1 */
+  /**
+   * @minLength 0
+   * @maxLength 10000
+   */
   answerText: string
 }
 
@@ -404,9 +412,21 @@ export const InterviewSearchFilterInterviewResultStatusItem = {
   PASS: 'PASS',
 } as const
 
+export type InterviewSearchFilterInterviewReviewStatusItem =
+  (typeof InterviewSearchFilterInterviewReviewStatusItem)[keyof typeof InterviewSearchFilterInterviewReviewStatusItem]
+
+export const InterviewSearchFilterInterviewReviewStatusItem = {
+  NOT_LOGGED: 'NOT_LOGGED',
+  LOG_DRAFT: 'LOG_DRAFT',
+  QNA_SET_DRAFT: 'QNA_SET_DRAFT',
+  SELF_REVIEW_DRAFT: 'SELF_REVIEW_DRAFT',
+  DEBRIEF_COMPLETED: 'DEBRIEF_COMPLETED',
+} as const
+
 export interface InterviewSearchFilter {
   interviewType?: InterviewSearchFilterInterviewTypeItem[]
   interviewResultStatus?: InterviewSearchFilterInterviewResultStatusItem[]
+  interviewReviewStatus?: InterviewSearchFilterInterviewReviewStatusItem[]
   startDate?: string
   endDate?: string
 }
@@ -679,6 +699,34 @@ export interface ApiResponsePageFrequentQnaSetCategoryQuestionResponse {
   result?: PageFrequentQnaSetCategoryQuestionResponse
 }
 
+export interface MyDifficultQuestionResponse {
+  qnaSetId: number
+  question: string
+  answer: string
+  interview: InterviewDto
+}
+
+export interface PageMyDifficultQuestionResponse {
+  totalElements?: number
+  totalPages?: number
+  size?: number
+  content?: MyDifficultQuestionResponse[]
+  number?: number
+  sort?: SortObject
+  pageable?: PageableObject
+  first?: boolean
+  numberOfElements?: number
+  last?: boolean
+  empty?: boolean
+}
+
+export interface ApiResponsePageMyDifficultQuestionResponse {
+  isSuccess: boolean
+  code: string
+  message: string
+  result?: PageMyDifficultQuestionResponse
+}
+
 export type FrequentQnaSetResponseInterviewType =
   (typeof FrequentQnaSetResponseInterviewType)[keyof typeof FrequentQnaSetResponseInterviewType]
 
@@ -742,6 +790,27 @@ export interface ApiResponseInterviewDto {
   result?: InterviewDto
 }
 
+export type ConvertResultResponseConvertStatus =
+  (typeof ConvertResultResponseConvertStatus)[keyof typeof ConvertResultResponseConvertStatus]
+
+export const ConvertResultResponseConvertStatus = {
+  NOT_CONVERTED: 'NOT_CONVERTED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+} as const
+
+export interface ConvertResultResponse {
+  interviewId: number
+  convertStatus: ConvertResultResponseConvertStatus
+}
+
+export interface ApiResponseConvertResultResponse {
+  isSuccess: boolean
+  code: string
+  message: string
+  result?: ConvertResultResponse
+}
+
 export type InterviewFullDtoInterviewType =
   (typeof InterviewFullDtoInterviewType)[keyof typeof InterviewFullDtoInterviewType]
 
@@ -799,7 +868,8 @@ export interface InterviewFullDto {
   interviewStartAt: string
   interviewReviewStatus: InterviewFullDtoInterviewReviewStatus
   interviewResultStatus: InterviewFullDtoInterviewResultStatus
-  company: string
+  companyName: string
+  companyLogoUrl: string
   industryId: number
   jobCategoryId: number
   jobRole?: string
@@ -822,11 +892,16 @@ export interface PresignedUrlDto {
   expireSeconds: number
 }
 
-export interface ApiResponsePresignedUrlDto {
+export interface PdfFilePresignResponse {
+  presignedUrlDto: PresignedUrlDto
+  pdfUploadUrlPublishedAt: string
+}
+
+export interface ApiResponsePdfFilePresignResponse {
   isSuccess: boolean
   code: string
   message: string
-  result?: PresignedUrlDto
+  result?: PdfFilePresignResponse
 }
 
 export interface GuideQuestionResponse {
@@ -878,32 +953,6 @@ export interface ApiResponseListIndustryResponse {
   code: string
   message: string
   result?: IndustryResponse[]
-}
-
-export interface DashboardMyDifficultQuestionResponse {
-  question: string
-  interview: InterviewDto
-}
-
-export interface PageDashboardMyDifficultQuestionResponse {
-  totalElements?: number
-  totalPages?: number
-  size?: number
-  content?: DashboardMyDifficultQuestionResponse[]
-  number?: number
-  sort?: SortObject
-  pageable?: PageableObject
-  first?: boolean
-  numberOfElements?: number
-  last?: boolean
-  empty?: boolean
-}
-
-export interface ApiResponsePageDashboardMyDifficultQuestionResponse {
-  isSuccess: boolean
-  code: string
-  message: string
-  result?: PageDashboardMyDifficultQuestionResponse
 }
 
 export interface DashboardUpcomingInterviewResponse {
@@ -1176,6 +1225,23 @@ export type GetMyFrequentQnaSetCategoryQuestionsParams = {
   sort?: string[]
 }
 
+export type GetMyDifficultQnaSetsParams = {
+  /**
+   * Zero-based page index (0..N)
+   * @minimum 0
+   */
+  page?: number
+  /**
+   * The size of the page to be returned
+   * @minimum 1
+   */
+  size?: number
+  /**
+   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+   */
+  sort?: string[]
+}
+
 export type GetFrequentQuestionsParams = {
   industryIds?: number[]
   jobCategoryIds?: number[]
@@ -1220,23 +1286,6 @@ export const GetMyInterviewDraftsInterviewDraftType = {
   LOGGING: 'LOGGING',
   REVIEWING: 'REVIEWING',
 } as const
-
-export type GetMyDifficultQnaSetsParams = {
-  /**
-   * Zero-based page index (0..N)
-   * @minimum 0
-   */
-  page?: number
-  /**
-   * The size of the page to be returned
-   * @minimum 1
-   */
-  size?: number
-  /**
-   * Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
-   */
-  sort?: string[]
-}
 
 export type GetUpcomingInterviewsParams = {
   /**

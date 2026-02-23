@@ -8,7 +8,6 @@ import static com.shyashyashya.refit.domain.interview.model.InterviewReviewStatu
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardCalendarResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardDebriefIncompletedInterviewResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardHeadlineResponse;
-import com.shyashyashya.refit.domain.interview.dto.response.DashboardMyDifficultQuestionResponse;
 import com.shyashyashya.refit.domain.interview.dto.response.DashboardUpcomingInterviewResponse;
 import com.shyashyashya.refit.domain.interview.model.Interview;
 import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
@@ -75,21 +74,15 @@ public class DashboardService {
         return interviewRepository
                 .getUpcomingInterview(requestUser, now, now.plusDays(7), pageable)
                 .map(interview -> {
-                    List<QnaSet> similarTrendQuestions = qnaSetRepository.findAllByIndustryAndJobCategory(
-                            interview.getIndustry(), interview.getJobCategory());
+                    List<QnaSet> similarTrendQuestions = List.of();
+                    if (requestUser.isAgreedToTerms()) {
+                        similarTrendQuestions = qnaSetRepository.findAllByIndustryAndJobCategory(
+                                interview.getIndustry(), interview.getJobCategory());
+                    }
                     List<Interview> similarInterviews = interviewRepository.findAllSimilarInterviewsByUser(
                             requestUser, interview.getIndustry(), interview.getJobCategory());
                     return DashboardUpcomingInterviewResponse.of(interview, similarTrendQuestions, similarInterviews);
                 });
-    }
-
-    @Transactional(readOnly = true)
-    public Page<DashboardMyDifficultQuestionResponse> getMyDifficultQnaSets(Pageable pageable) {
-        User requestUser = requestUserContext.getRequestUser();
-
-        return qnaSetRepository
-                .findAllDifficultByUser(requestUser, pageable)
-                .map(DashboardMyDifficultQuestionResponse::from);
     }
 
     @Transactional(readOnly = true)
@@ -116,7 +109,7 @@ public class DashboardService {
 
         LocalDateTime now = LocalDateTime.now();
         return interviewRepository
-                .findAllByUserAndReviewStatusIn(requestUser, REVIEW_NEEDED_STATUSES, pageable)
+                .findMyDebriefIncompletedInterviews(requestUser, REVIEW_NEEDED_STATUSES, now, pageable)
                 .map(interview ->
                         DashboardDebriefIncompletedInterviewResponse.of(interview, -getInterviewDday(now, interview)));
     }

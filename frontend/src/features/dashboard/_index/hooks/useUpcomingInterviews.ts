@@ -1,4 +1,4 @@
-import { useGetUpcomingInterviews } from '@/apis'
+import { getGetUpcomingInterviewsQueryKey, useGetUpcomingInterviews } from '@/apis'
 import type { DashboardUpcomingInterviewResponse, InterviewDto } from '@/apis'
 import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
 import type { UpcomingInterviewData } from '../components/upcoming-interview/types'
@@ -32,17 +32,14 @@ function formatDateTime(dateString: string): string {
   const date = new Date(dateString)
   if (!isValidDate(date)) return '-'
 
-  const datePart = date.toLocaleDateString('ko-KR', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
+  return date.toLocaleString('ko-KR', {
+    year: '2-digit',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
   })
-  const timePart = date.toLocaleTimeString('ko-KR', {
-    hour: 'numeric',
-    hour12: true,
-  })
-
-  return `${datePart} ${timePart}`.trim()
 }
 
 function formatUpdatedTime(dateString: string): string {
@@ -63,6 +60,7 @@ function mapUpcomingInterview(item: DashboardUpcomingInterviewResponse): Upcomin
     id: interview.interviewId,
     dDay: getDdayLabel(interview.interviewStartAt),
     companyName: interview.companyName,
+    companyLogoUrl: interview.companyLogoUrl,
     jobCategoryName: interview.jobCategoryName,
     position: `${interview.jobCategoryName} ${toInterviewTypeLabel(interview.interviewType)}`,
     datetime: formatDateTime(interview.interviewStartAt),
@@ -74,15 +72,21 @@ function mapUpcomingInterview(item: DashboardUpcomingInterviewResponse): Upcomin
   }
 }
 
-export const useUpcomingInterviews = () => {
+interface UseUpcomingInterviewsParams {
+  isTermsLocked: boolean
+}
+
+export const useUpcomingInterviews = ({ isTermsLocked }: UseUpcomingInterviewsParams) => {
+  const params = {
+    page: 0,
+    size: 10,
+  } as const
+
   const { data: response } = useGetUpcomingInterviews(
-    {
-      page: 0,
-      size: 10,
-      sort: ['interviewStartAt,asc'],
-    },
+    params,
     {
       query: {
+        queryKey: [...getGetUpcomingInterviewsQueryKey(params), { isTermsLocked }],
         select: (data): { content: DashboardUpcomingInterviewResponse[]; totalElements: number } => ({
           content: data?.result?.content ?? [],
           totalElements: data?.result?.totalElements ?? 0,

@@ -3,11 +3,12 @@ import { CloseIcon, SearchIcon } from '@/designs/assets'
 import { Button } from '@/designs/components'
 
 type SearchBarProps = {
+  placeholder?: string
   keyword: string
   onSearch: (query: string) => void
 }
 
-export default function SearchBar({ keyword, onSearch }: SearchBarProps) {
+export default function SearchBar({ placeholder = '검색하기', keyword, onSearch }: SearchBarProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(keyword.length > 0)
   const [searchQuery, setSearchQuery] = useState(keyword)
   const searchInputRef = useRef<HTMLInputElement>(null)
@@ -37,16 +38,16 @@ export default function SearchBar({ keyword, onSearch }: SearchBarProps) {
 
   if (!isSearchOpen) {
     return (
-      <Button size="xs" variant="outline-gray-100" onClick={handleSearchOpen}>
-        <SearchIcon className="h-4 w-4" />
-        검색하기
+      <Button size="xs" variant="outline-gray-white" onClick={handleSearchOpen}>
+        <SearchIcon className="h-4 w-4 text-gray-600" />
+        {placeholder}
       </Button>
     )
   }
 
   return (
     <form
-      className="flex items-center gap-2"
+      className="flex w-80 items-center gap-2"
       onSubmit={(e) => {
         e.preventDefault()
         handleSearchSubmit()
@@ -56,14 +57,14 @@ export default function SearchBar({ keyword, onSearch }: SearchBarProps) {
         ref={searchInputRef}
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        className="body-m-medium bg-gray-white w-full rounded-lg border border-gray-200 px-4 py-1 outline-none placeholder:text-gray-300"
-        placeholder="검색어를 입력하세요"
+        className="body-s-medium bg-gray-white w-full rounded-lg border border-gray-200 px-4 py-1 outline-none placeholder:text-gray-300"
+        placeholder={placeholder}
       />
       <Button size="xs" variant="outline-gray-100" type="submit">
-        <SearchIcon className="h-4 w-4" />
+        <SearchIcon className="h-4 w-4 text-gray-600" />
       </Button>
       <Button size="xs" variant="outline-gray-100" type="button" onClick={handleSearchClose}>
-        <CloseIcon className="h-4 w-4" />
+        <CloseIcon className="h-4 w-4 text-gray-600" />
       </Button>
     </form>
   )

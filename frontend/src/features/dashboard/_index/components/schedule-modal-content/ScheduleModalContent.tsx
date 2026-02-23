@@ -7,14 +7,28 @@ import type { ScheduleModalStep } from '@/features/dashboard/_index/constants/in
 
 export interface ScheduleFormSubmitValues extends InterviewInfoFormValues, InterviewScheduleFormValues {}
 
+interface ScheduleModalInitialValues {
+  interviewDate: string
+  interviewTime: string
+}
+
 export interface ScheduleModalContentProps {
   step: ScheduleModalStep
   onStepChange: (step: ScheduleModalStep) => void
   onSubmit?: (values: ScheduleFormSubmitValues) => void
   isSubmitting?: boolean
+  pastOnly?: boolean
+  initialScheduleValues?: ScheduleModalInitialValues
 }
 
-export function ScheduleModalContent({ step, onStepChange, onSubmit, isSubmitting }: ScheduleModalContentProps) {
+export function ScheduleModalContent({
+  step,
+  onStepChange,
+  onSubmit,
+  isSubmitting,
+  pastOnly,
+  initialScheduleValues,
+}: ScheduleModalContentProps) {
   const [interviewInfoValues, setInterviewInfoValues] = useState<InterviewInfoFormValues>({
     companyName: '',
     industryId: '',
@@ -23,8 +37,8 @@ export function ScheduleModalContent({ step, onStepChange, onSubmit, isSubmittin
   })
   const [interviewScheduleValues, setInterviewScheduleValues] = useState<InterviewScheduleFormValues>({
     interviewType: '',
-    interviewDate: '',
-    interviewTime: '',
+    interviewDate: initialScheduleValues?.interviewDate ?? '',
+    interviewTime: initialScheduleValues?.interviewTime ?? '',
   })
 
   const handleSubmit = () => {
@@ -39,6 +53,7 @@ export function ScheduleModalContent({ step, onStepChange, onSubmit, isSubmittin
         onPrev={() => onStepChange('info')}
         onNext={handleSubmit}
         isSubmitting={isSubmitting}
+        pastOnly={pastOnly}
       />
     )
   }

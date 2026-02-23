@@ -1,6 +1,7 @@
 package com.shyashyashya.refit.domain.interview.dto.request;
 
 import com.shyashyashya.refit.domain.interview.model.InterviewResultStatus;
+import com.shyashyashya.refit.domain.interview.model.InterviewReviewStatus;
 import com.shyashyashya.refit.domain.interview.model.InterviewType;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -13,6 +14,7 @@ public record InterviewSearchRequest(
     public record InterviewSearchFilter(
             Set<InterviewType> interviewType,
             Set<InterviewResultStatus> interviewResultStatus,
+            Set<InterviewReviewStatus> interviewReviewStatus,
             LocalDate startDate,
             LocalDate endDate) {}
 }
