@@ -17,13 +17,8 @@ export function useRecordConfirmConvertGate({ interviewId }: UseRecordConfirmCon
     query: {
       retry: false,
       refetchInterval: (query) => {
-        const convertStatus = query.state.data?.result?.convertStatus
         const errorCode = getApiErrorCode(query.state.error)
-        if (
-          convertStatus === 'IN_PROGRESS' ||
-          errorCode === CONVERT_PENDING_ERROR_CODE ||
-          errorCode === CONVERT_IN_PROGRESS_ERROR_CODE
-        ) {
+        if (errorCode === CONVERT_PENDING_ERROR_CODE || errorCode === CONVERT_IN_PROGRESS_ERROR_CODE) {
           return REFETCH_INTERVAL_MS
         }
         return false
@@ -35,7 +30,7 @@ export function useRecordConfirmConvertGate({ interviewId }: UseRecordConfirmCon
   const errorCode = getApiErrorCode(error)
   const isPollingByErrorCode = errorCode === CONVERT_PENDING_ERROR_CODE || errorCode === CONVERT_IN_PROGRESS_ERROR_CODE
   const isConvertFailed = errorCode === CONVERT_FAILED_ERROR_CODE
-  const isPolling = isPending || convertStatus === 'IN_PROGRESS' || isPollingByErrorCode
+  const isPolling = isPending || isPollingByErrorCode
 
   const state: ConvertGateState = (() => {
     if (isPolling) return 'loading'
