@@ -29,7 +29,7 @@ export default function InterviewsTab() {
       </div>
       {!isSearching && (
         <section className="flex flex-col gap-3">
-          <h2 className="title-s-bold">임시저장 항목</h2>
+          <h2 className="title-s-bold">복기 중인 면접</h2>
           <div className="flex gap-4">
             <DraftSection interviewDraftType="LOGGING" />
             <DraftSection interviewDraftType="REVIEWING" />
@@ -39,12 +39,9 @@ export default function InterviewsTab() {
       <section className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           {isSearching ? (
-            <SearchResultBar
-              query={searchFilter.keyword}
-              onClose={() => handleSearch('')}
-            />
+            <SearchResultBar query={searchFilter.keyword} onClose={() => handleSearch('')} />
           ) : (
-            <h2 className="title-s-bold">내가 복기 완료한 면접</h2>
+            <h2 className="title-s-bold">복기 완료한 면접</h2>
           )}
           <FilterSortControls filter={activeFilter} onFilterChange={setActiveFilter} isSearching={isSearching} />
         </div>

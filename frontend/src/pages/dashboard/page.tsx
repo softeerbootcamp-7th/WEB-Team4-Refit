@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useGetMyProfileInfo } from '@/apis'
 import DashboardBanner from '@/features/dashboard/_index/components/dashboard-banner/DashboardBanner'
 import InterviewCalendar from '@/features/dashboard/_index/components/interview-calendar/InterviewCalendar'
 import InterviewScheduleModal from '@/features/dashboard/_index/components/interview-calendar/InterviewScheduleModal'
@@ -10,8 +11,14 @@ import { useDashboardHeadline } from '@/features/dashboard/_index/hooks/useDashb
 
 export default function DashboardPage() {
   const { variant, titleText, isLoading } = useDashboardHeadline()
+  const { data: isAgreedToTerms = false } = useGetMyProfileInfo({
+    query: {
+      select: (response) => response.result?.isAgreedToTerms ?? false,
+    },
+  })
   const leftColumnRef = useRef<HTMLDivElement | null>(null)
   const [leftColumnHeight, setLeftColumnHeight] = useState<number | null>(null)
+  const isTermsLocked = !isAgreedToTerms
 
   useEffect(() => {
     const target = leftColumnRef.current
@@ -35,7 +42,7 @@ export default function DashboardPage() {
           <div ref={leftColumnRef} className="flex min-h-0 w-225 flex-1 flex-col gap-10">
             <DashboardBanner variant={variant} titleText={titleText} isLoading={isLoading} />
             <ReviewWaitingSection />
-            <UpcomingInterviewSection />
+            <UpcomingInterviewSection isTermsLocked={isTermsLocked} />
           </div>
           <div
             className="bg-gray-150 w-80 shrink-0 overflow-hidden rounded-[20px] px-5 py-7"
@@ -44,7 +51,7 @@ export default function DashboardPage() {
             <InterviewCalendar />
           </div>
         </div>
-        <PersonalizedQuestionsSection />
+        <PersonalizedQuestionsSection isTermsLocked={isTermsLocked} />
       </div>
       <InterviewScheduleModal />
     </ScheduleModalProvider>

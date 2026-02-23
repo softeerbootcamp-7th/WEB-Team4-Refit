@@ -8,7 +8,11 @@ export interface PopularQuestionItem {
   jobCategory: string
 }
 
-export const usePopularQuestions = () => {
+interface UsePopularQuestionsParams {
+  isTermsLocked: boolean
+}
+
+export const usePopularQuestions = ({ isTermsLocked }: UsePopularQuestionsParams) => {
   const { data: profile, isSuccess: isProfileLoaded } = useGetMyProfileInfo({
     query: {
       select: (response) => ({
@@ -28,7 +32,7 @@ export const usePopularQuestions = () => {
     },
     {
       query: {
-        enabled: isProfileLoaded,
+        enabled: isProfileLoaded && !isTermsLocked,
         select: (response): PopularQuestionItem[] =>
           (response.result?.content ?? []).map((item, index) => ({
             id: index + 1,
@@ -42,7 +46,7 @@ export const usePopularQuestions = () => {
   )
 
   return {
-    data: rows,
+    data: isTermsLocked ? [] : rows,
     nickname: profile?.nickname ?? '회원',
   }
 }

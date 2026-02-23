@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { NavLink } from 'react-router'
+import { NavLink, useLocation } from 'react-router'
 import { LightningIcon, Logo } from '@/designs/assets'
 import Button from '@/designs/components/button'
 import { ROUTES } from '@/routes/routes'
@@ -15,6 +15,8 @@ const navItems = [
 
 export default function Navbar() {
   const [isInstantRecordOpen, setIsInstantRecordOpen] = useState(false)
+  const { pathname } = useLocation()
+  const showInstantRecordButton = isAllowedInstantRecordPath(pathname)
 
   return (
     <>
@@ -35,10 +37,12 @@ export default function Navbar() {
           <div className="flex-1" />
 
           <div className="flex items-center gap-4">
-            <Button variant="fill-orange-500" size="xs" onClick={() => setIsInstantRecordOpen(true)}>
-              <LightningIcon className="w- h-4" />
-              면접 바로 복기하기
-            </Button>
+            {showInstantRecordButton && (
+              <Button variant="fill-orange-500" size="xs" onClick={() => setIsInstantRecordOpen(true)}>
+                <LightningIcon className="w- h-4" />
+                면접 바로 복기하기
+              </Button>
+            )}
             <UserProfile />
           </div>
         </div>
@@ -56,4 +60,19 @@ const getNavLinkClassName = ({ isActive }: { isActive: boolean }) => {
   const inactiveStyles = 'body-m-medium text-gray-400 hover:text-gray-800'
 
   return isActive ? `${baseStyles} ${activeStyles}` : `${baseStyles} ${inactiveStyles}`
+}
+
+const INSTANT_RECORD_ALLOWED_BASE_PATHS = [
+  ROUTES.DASHBOARD_MY_INTERVIEWS,
+  ROUTES.DASHBOARD_TREND_QUESTIONS,
+  ROUTES.DASHBOARD_MY_COLLECTIONS,
+  ROUTES.DASHBOARD_MY_PAGE,
+] as const
+
+function isAllowedInstantRecordPath(pathname: string) {
+  if (pathname === ROUTES.DASHBOARD) return true
+
+  return INSTANT_RECORD_ALLOWED_BASE_PATHS.some(
+    (basePath) => pathname === basePath || pathname.startsWith(`${basePath}/`),
+  )
 }

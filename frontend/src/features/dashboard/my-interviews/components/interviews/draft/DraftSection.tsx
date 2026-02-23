@@ -33,7 +33,7 @@ export default function DraftSection({ interviewDraftType }: DraftSectionProps) 
             전체보기
           </Button>
         </div>
-        <h3 className="body-l-semibold mb-5">임시저장한 {draftType}</h3>
+        <h3 className="body-l-semibold mb-5">{draftType} 중인 면접</h3>
         <Table>
           <TableHeader>
             <TableRow>
@@ -61,7 +61,14 @@ export default function DraftSection({ interviewDraftType }: DraftSectionProps) 
               </TableRow>
             ) : (
               items.map(
-                ({ interviewId, interviewReviewStatus, interviewStartAt, companyName, jobCategoryName, interviewType }) => (
+                ({
+                  interviewId,
+                  interviewReviewStatus,
+                  interviewStartAt,
+                  companyName,
+                  jobCategoryName,
+                  interviewType,
+                }) => (
                   <TableRow
                     key={interviewId}
                     className="cursor-pointer hover:bg-gray-50"

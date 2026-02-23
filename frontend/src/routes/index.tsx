@@ -9,20 +9,19 @@ import {
   DifficultQuestionPage,
   Forbidden,
   InterviewNotFound,
-  LandingPage,
   MobilePage,
   MobileRecordPage,
   MobileSignupPage,
   MobileUnrecordedPage,
   MyCollectionsPage,
   MyInterviewsPage,
+  MyPage,
   NotFound,
   RecordConfirmPage,
   RecordLinkPage,
   RecordPage,
   RetroDetailPage,
   RetroQuestionPage,
-  SharedComponentExample,
   SigninPage,
   SignupPage,
   TrendQuestionsPage,
@@ -36,10 +35,6 @@ const getChildPath = (fullPath: string, rootPath: string): string => {
 }
 
 const router = createBrowserRouter([
-  {
-    path: ROUTES.LANDING,
-    Component: LandingPage,
-  },
   {
     middleware: [handleAuthRouting],
     children: [
@@ -111,6 +106,10 @@ const router = createBrowserRouter([
                   },
                 ],
               },
+              {
+                path: getChildPath(ROUTES.DASHBOARD_MY_PAGE, ROUTES.DASHBOARD),
+                Component: MyPage,
+              },
             ],
           },
           {
@@ -156,7 +155,6 @@ const router = createBrowserRouter([
         path: '*',
         Component: NotFound,
       },
-      { path: 'component-test', Component: SharedComponentExample },
     ],
   },
 ])
