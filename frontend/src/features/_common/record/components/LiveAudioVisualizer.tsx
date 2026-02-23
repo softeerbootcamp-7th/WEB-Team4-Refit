@@ -1,7 +1,7 @@
-import { useEffect, type Dispatch, type SetStateAction } from 'react'
+import { useEffect, type Dispatch, type RefObject, type SetStateAction } from 'react'
 import { MicIcon } from '@/designs/assets'
 import { Button } from '@/designs/components'
-import { useAudioRecorder } from '@/features/_common/auth/hooks'
+import { useAudioRecorder } from '@/features/_common/record/components/useAudioRecorder'
 
 type LiveAudioVisualizerProps = {
   onCancel?: () => void
@@ -20,7 +20,7 @@ export default function LiveAudioVisualizer({
   uiType,
   onRecordingChange,
 }: LiveAudioVisualizerProps) {
-  const { canvasRef, isRecording, timerText, isRequestingPermission, startRecording, cancel, complete } =
+  const { canvasRef, isRecording, timerText, isAndroid, isRequestingPermission, startRecording, cancel, complete } =
     useAudioRecorder({ onCancel, onComplete, onRealtimeTranscript })
 
   const isMobile = uiType === 'mobile'
@@ -64,9 +64,7 @@ export default function LiveAudioVisualizer({
         >
           <span className="body-m-semibold shrink-0 text-orange-500 tabular-nums">{timerText}</span>
           <div className="flex min-w-0 flex-1 items-center overflow-hidden px-2">
-            <div className="flex w-full min-w-0 items-center justify-center rounded-[100px] bg-gray-800 px-5 py-1.5">
-              <canvas ref={canvasRef} width={200} height={32} className="h-8 max-w-full min-w-0" aria-hidden />
-            </div>
+            {isAndroid ? <StaticRecordingIndicator /> : <DynamicRecordingIndicator canvasRef={canvasRef} />}
           </div>
           <div className="flex shrink-0 gap-4">
             <button type="button" onClick={cancel} className="body-m-semibold cursor-pointer text-gray-400">
@@ -78,6 +76,33 @@ export default function LiveAudioVisualizer({
           </div>
         </div>
       )}
+    </div>
+  )
+}
+
+type DynamicRecordingIndicatorProps = {
+  canvasRef: RefObject<HTMLCanvasElement | null>
+}
+
+function DynamicRecordingIndicator({ canvasRef }: DynamicRecordingIndicatorProps) {
+  return (
+    <div className="flex w-full min-w-0 items-center justify-center rounded-[100px] bg-gray-800 px-5 py-1.5">
+      <canvas ref={canvasRef} width={200} height={32} className="h-8 max-w-full min-w-0" aria-hidden />
+    </div>
+  )
+}
+
+function StaticRecordingIndicator() {
+  return (
+    <div className="flex w-full min-w-0 items-center justify-center rounded-[100px] bg-gray-800 px-5 py-2">
+      <span className="caption-l-semibold px-3 tracking-[0.22em] text-orange-500" aria-label="녹음 중">
+        REC
+      </span>
+      <span
+        className="h-2.5 w-2.5 animate-pulse rounded-full bg-orange-500"
+        style={{ animationDelay: '350ms' }}
+        aria-hidden
+      />
     </div>
   )
 }

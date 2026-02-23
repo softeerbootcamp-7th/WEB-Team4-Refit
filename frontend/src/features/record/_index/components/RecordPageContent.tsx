@@ -1,8 +1,8 @@
 import { useState, type Dispatch, type SetStateAction } from 'react'
 import { CloudSaveIcon, LoadingSpinner } from '@/designs/assets'
 import { Button } from '@/designs/components'
-import LiveAudioVisualizer from '@/features/_common/auth/components/LiveAudioVisualizer'
 import LoadingOverlay from '@/features/_common/loading/LoadingOverlay'
+import { LiveAudioVisualizer } from '@/features/_common/record/components'
 import { RecordSidebar } from '@/features/record/_index/components/RecordSidebar'
 import type { InterviewInfoType } from '@/types/interview'
 
