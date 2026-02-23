@@ -129,10 +129,12 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
 ## 🐥 프론트엔드
 
 ### 📚 기술 아티클 
-|파트|제목|작성자|
-|---|---|---| 
-|FE|작성 예정|홍지운|
-|FE|작성 예정|황주희|
+|제목|작성자|
+|---|---| 
+|Claude Code 개념부터 활용까지 (Harness, Context, Skills) (작성 예정)|홍지운, 황주희|
+|Orval과 n8n을 활용한 OpenAPI Driven Development (작성 예정)|홍지운, 황주희|
+|Web Speech API: 서버 구축 없이 Realtime STT 구현하기 (작성 예정)|홍지운|
+|PDF.js 기반 대용량 문서 하이라이팅 구현 및 렌더링 이슈 개선(작성 예정)|황주희|
 
 ### 기술 스택
 <table>
@@ -160,6 +162,7 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
                   <img src="https://img.shields.io/badge/React_Router-CA4245?logo=react-router&logoColor=white"/>
                   <img src="https://img.shields.io/badge/TanStack_Query-FF4154?logo=react-query&logoColor=white"/>
                   <img src="https://img.shields.io/badge/Orval-F53C56?logo=orval&logoColor=white"/>
+                  <img src="https://img.shields.io/badge/Pdf.js-dist?logo=pdfjs-dist&logoColor=white"/>
             </td>
         </tr>
         <tr>
@@ -172,7 +175,7 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
         </tr>
                 <tr>
             <td>
-                <p>패키지 매니저</p>
+                <p>빌드 툴</p>
             </td>
             <td>
               <img src="https://img.shields.io/badge/Vite-646CFF?logo=Vite&logoColor=white"/>
@@ -184,13 +187,13 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
             </td>
             <td>
               <img src="https://img.shields.io/badge/Vercel-000000?logo=Vercel&logoColor=white"/>
-<img src="https://img.shields.io/badge/GitHub_Actions-2088FF?logo=github-actions&logoColor=white"/>
             </td>
         </tr>
     </tbody>
 </table>
 
-### n8n과 Oval를 활용한 API 명세 자동화
+
+### n8n과 Orval를 활용한 API 명세 자동화
 한 달 남짓인 소프티어 프로젝트 개발 기간에서 **API 배포 전까지 프론트엔드 개발을 할 수 없는 것은 큰 병목**이에요. 이를 해결하기 위해 다음과 같은 워크플로우를 도입했어요.
 1. **워크플로우 트리거:** Slack의 `/openapi` 명령어를 통해 n8n 자동화 워크플로우를 호출해요.
 2. **데이터 추출:** Notion API를 활용하여 자연어로 작성된 노션 API 명세 문서를 정형화된 JSON 데이터로 추출해요.
