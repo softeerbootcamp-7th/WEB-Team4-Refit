@@ -1,5 +1,6 @@
 import { useWaitConvertResult } from '@/apis'
 import { getApiErrorCode } from '@/features/_common/utils/error'
+import { shouldThrowInterviewRouteError } from '@/routes/interviewErrorRoute'
 
 const CONVERT_PENDING_ERROR_CODE = 'INTERVIEW_CONVERTING_STATUS_IS_PENDING'
 const CONVERT_IN_PROGRESS_ERROR_CODE = 'INTERVIEW_CONVERTING_IN_PROGRESS'
@@ -15,7 +16,7 @@ type UseRecordConfirmConvertGateOptions = {
 export function useRecordConfirmConvertGate({ interviewId }: UseRecordConfirmConvertGateOptions) {
   const { data, error, isPending, isError, refetch } = useWaitConvertResult(interviewId, {
     query: {
-      retry: false,
+      throwOnError: shouldThrowInterviewRouteError,
       refetchInterval: (query) => {
         const errorCode = getApiErrorCode(query.state.error)
         if (errorCode === CONVERT_PENDING_ERROR_CODE || errorCode === CONVERT_IN_PROGRESS_ERROR_CODE) {
