@@ -14,7 +14,6 @@ export class HttpError<T = unknown> extends Error {
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || ''
 const REISSUE_PATH = '/auth/reissue'
-const REISSUE_URL = `${REISSUE_PATH}?originType=${encodeURIComponent(import.meta.env.VITE_APP_ENV || '')}`
 let reissuePromise: Promise<void> | null = null
 
 export const customFetch = async <T>(urlWithoutBase: string, initOptions: RequestInit): Promise<T> => {
@@ -32,8 +31,7 @@ export const customFetch = async <T>(urlWithoutBase: string, initOptions: Reques
     }
     return data
   } catch (error) {
-    const shouldReissue =
-      error instanceof HttpError && error.status === 401
+    const shouldReissue = error instanceof HttpError && error.status === 401
 
     if (isReissueRequest || !shouldReissue) {
       throw error
@@ -44,6 +42,19 @@ export const customFetch = async <T>(urlWithoutBase: string, initOptions: Reques
   }
 }
 export default customFetch
+
+const getReissueUrlWithOrigin = (): string => {
+  const normalizedParams = new URLSearchParams()
+  const originType = import.meta.env.VITE_APP_ENV
+
+  if (originType !== undefined) {
+    normalizedParams.append('originType', originType)
+  }
+
+  const stringifiedParams = normalizedParams.toString()
+
+  return stringifiedParams.length > 0 ? `${REISSUE_PATH}?${stringifiedParams}` : REISSUE_PATH
+}
 
 const withDefaultOptions = (options: RequestInit = {}): RequestInit => {
   const headers = new Headers(options.headers)
@@ -69,7 +80,7 @@ const requestJson = async <T>(urlWithoutBase: string, options: RequestInit = {})
 }
 
 const reissueTokens = async (): Promise<void> => {
-  reissuePromise ??= requestJson(REISSUE_URL, { method: 'GET' })
+  reissuePromise ??= requestJson(getReissueUrlWithOrigin(), { method: 'GET' })
     .then((reissueResponse) => {
       const responseCode =
         reissueResponse && typeof reissueResponse === 'object'
