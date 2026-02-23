@@ -4,6 +4,7 @@ import {
   getGetScrapFoldersContainingQnaSetQueryKey,
   useGetScrapFoldersContainingQnaSet,
 } from '@/apis/generated/qna-set-api/qna-set-api'
+import { getGetMyScrapFoldersQueryKey } from '@/apis/generated/scrap-folder-api/scrap-folder-api'
 
 const SCRAP_FOLDERS_STALE_TIME = 1000 * 60 * 30
 const FOLDER_QUERY_PARAMS = { page: 0, size: 10 } as const
@@ -28,7 +29,7 @@ export function useScrapModalFolders(qnaSetId: number, isOpen: boolean) {
     [folders],
   )
 
-  const invalidateFolders = useCallback(
+  const invalidateCurrentQnaSetFolders = useCallback(
     () =>
       queryClient.invalidateQueries({
         queryKey: getGetScrapFoldersContainingQnaSetQueryKey(qnaSetId, FOLDER_QUERY_PARAMS),
@@ -36,9 +37,26 @@ export function useScrapModalFolders(qnaSetId: number, isOpen: boolean) {
     [qnaSetId, queryClient],
   )
 
+  const invalidateAllQnaSetFoldersAndFolderList = useCallback(
+    () =>
+      Promise.all([
+        queryClient.invalidateQueries({
+          predicate: (query) => {
+            const [head] = query.queryKey
+            return typeof head === 'string' && head.startsWith('/qna-set/') && head.endsWith('/scrap-folder')
+          },
+        }),
+        queryClient.invalidateQueries({
+          queryKey: getGetMyScrapFoldersQueryKey(),
+        }),
+      ]),
+    [queryClient],
+  )
+
   return {
     folders,
     initialSelectedIds,
-    invalidateFolders,
+    invalidateCurrentQnaSetFolders,
+    invalidateAllQnaSetFoldersAndFolderList,
   }
 }

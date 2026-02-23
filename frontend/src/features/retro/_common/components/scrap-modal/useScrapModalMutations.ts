@@ -18,7 +18,8 @@ type UseScrapModalMutationsParams = {
   setStep: (step: 'list' | 'create') => void
   setSelectedIds: (value: Set<number> | null | ((prev: Set<number> | null) => Set<number> | null)) => void
   setIsSaving: (value: boolean) => void
-  invalidateFolders: () => Promise<unknown>
+  invalidateCurrentQnaSetFolders: () => Promise<unknown>
+  invalidateAllQnaSetFoldersAndFolderList: () => Promise<unknown>
   handleClose: () => void
 }
 
@@ -35,7 +36,8 @@ export function useScrapModalMutations({
   setStep,
   setSelectedIds,
   setIsSaving,
-  invalidateFolders,
+  invalidateCurrentQnaSetFolders,
+  invalidateAllQnaSetFoldersAndFolderList,
   handleClose,
 }: UseScrapModalMutationsParams) {
   const { mutateAsync: createScrapFolder, isPending: isCreatingFolderPending } = useCreateScrapFolder()
@@ -53,7 +55,7 @@ export function useScrapModalMutations({
 
     try {
       await createScrapFolder({ data: { scrapFolderName: trimmedName } })
-      await invalidateFolders()
+      await invalidateAllQnaSetFoldersAndFolderList()
       setSelectedIds(null)
       setFolderName('')
       setStep('list')
@@ -76,13 +78,16 @@ export function useScrapModalMutations({
       // 폴더 추가/삭제
       const addedIds = [...effectiveSelectedIds].filter((id) => !initialSelectedIds.has(id))
       const removedIds = [...initialSelectedIds].filter((id) => !effectiveSelectedIds.has(id))
+      const hasFolderSelectionChanged = addedIds.length > 0 || removedIds.length > 0
 
       await Promise.all([
         ...addedIds.map((scrapFolderId) => addQnaSetToFolder({ scrapFolderId, qnaSetId })),
         ...removedIds.map((scrapFolderId) => removeQnaSetFromFolder({ scrapFolderId, qnaSetId })),
       ])
 
-      await invalidateFolders()
+      if (hasFolderSelectionChanged) {
+        await invalidateCurrentQnaSetFolders()
+      }
     } catch {
       setErrorMessage('스크랩 저장에 실패했습니다. 잠시 후 다시 시도해주세요.')
       setIsSaving(false)
