@@ -69,4 +69,10 @@ public class JwtService {
             keyLockUtil.release(email, lock);
         }
     }
+
+    public void deleteRefreshToken(String refreshToken) {
+        if (refreshToken != null) {
+            refreshTokenRepository.deleteById(refreshToken);
+        }
+    }
 }
