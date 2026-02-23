@@ -1,8 +1,10 @@
 package com.shyashyashya.refit.domain.qnaset.constant;
 
-public final class QnaSetConstant {
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-    private QnaSetConstant() {}
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class QnaSetConstant {
 
     public static final int QUESTION_TEXT_MAX_LENGTH = 200;
     public static final int ANSWER_TEXT_MAX_LENGTH = 10_000;

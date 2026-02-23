@@ -1,5 +1,6 @@
 package com.shyashyashya.refit.global.vectordb.repository;
 
+import com.shyashyashya.refit.global.vectordb.model.ScoredVector;
 import com.shyashyashya.refit.global.vectordb.model.VectorDocumentBase;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +17,7 @@ public interface VectorRepository<K, V extends VectorDocumentBase<K>> {
 
     void deleteAll();
 
-    List<K> searchSimilar(List<Float> queryVector, int topK);
+    List<ScoredVector<K>> searchSimilar(List<Float> queryVector, int topK);
 
     Optional<V> findById(K id);
 
