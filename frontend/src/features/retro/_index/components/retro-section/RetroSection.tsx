@@ -73,7 +73,7 @@ export function RetroSection({
 
   const handleCompleteResultClose = () => {
     setIsCompleteResultOpen(false)
-    navigate(ROUTES.DASHBOARD)
+    navigate(ROUTES.DASHBOARD_MY_INTERVIEWS)
   }
 
   return (

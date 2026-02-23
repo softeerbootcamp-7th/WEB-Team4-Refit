@@ -9,18 +9,27 @@ import { usePdfCachedUrl } from '@/features/record/link/components/pdf-section/u
 import { usePdfLoader } from '@/features/record/link/components/pdf-section/usePdfLoader'
 import { RetroPdfPage } from './RetroPdfPage'
 
+const PDF_HIGHLIGHTS_STALE_TIME = 1000 * 60 * 30
+
 type RetroPdfPanelProps = {
   interviewId: number
   hasPdf: boolean
   qnaSetIds: number[]
+  startPage?: 'first' | 'first-highlight'
 }
 
-export function RetroPdfPanel({ interviewId, hasPdf: initialHasPdf, qnaSetIds }: RetroPdfPanelProps) {
+export function RetroPdfPanel({
+  interviewId,
+  hasPdf: initialHasPdf,
+  qnaSetIds,
+  startPage = 'first-highlight',
+}: RetroPdfPanelProps) {
   const [hasPdf, setHasPdf] = useState(initialHasPdf)
-  const [selectedPage, setSelectedPage] = useState<number | null>(null)
+  const [selectedPage, setSelectedPage] = useState<{ key: string; page: number } | null>(null)
   const [zoom, setZoom] = useState(1)
   const viewerRef = useRef<HTMLDivElement>(null)
   const containerSize = useContainerSize(viewerRef)
+  const qnaSetIdsKey = qnaSetIds.join(',')
 
   const handleDownloadSuccess = useCallback(() => setHasPdf(true), [])
   const handleDownloadError = useCallback(() => setHasPdf(false), [])
@@ -35,6 +44,8 @@ export function RetroPdfPanel({ interviewId, hasPdf: initialHasPdf, qnaSetIds }:
   const highlightQueries = useQueries({
     queries: (hasPdf ? qnaSetIds : []).map((qnaSetId) => ({
       queryKey: getGetPdfHighlightingsQueryKey(qnaSetId),
+      staleTime: PDF_HIGHLIGHTS_STALE_TIME,
+      refetchOnWindowFocus: false,
       queryFn: async () => {
         try {
           return await getPdfHighlightings(qnaSetId)
@@ -70,10 +81,15 @@ export function RetroPdfPanel({ interviewId, hasPdf: initialHasPdf, qnaSetIds }:
   const { pdf, isLoading: isPdfLoading, error: pdfLoadError } = usePdfLoader(resolvedPdfUrl ?? '')
   const totalPages = pdf?.numPages ?? 0
   const firstHighlightedPage = savedRects.length > 0 ? Math.max(1, savedRects[0].pageNumber) : 1
-  const currentPage = selectedPage ?? firstHighlightedPage
-  const isReady = !!pdf && containerSize.width > 0 && containerSize.height > 0
+  const defaultPage = startPage === 'first' ? 1 : firstHighlightedPage
+  const currentPage = selectedPage?.key === qnaSetIdsKey ? selectedPage.page : defaultPage
+  const shouldWaitForInitialHighlightPage =
+    startPage === 'first-highlight' &&
+    selectedPage?.key !== qnaSetIdsKey &&
+    highlightQueries.some((query) => query.isPending)
+  const isReady = !!pdf && !shouldWaitForInitialHighlightPage && containerSize.width > 0 && containerSize.height > 0
 
-  const isLoading = isDownloadFetching || isPdfLoading
+  const isLoading = isDownloadFetching || isPdfLoading || shouldWaitForInitialHighlightPage
   const hasError = !!pdfLoadError
 
   if (!hasPdf) {
@@ -86,11 +102,11 @@ export function RetroPdfPanel({ interviewId, hasPdf: initialHasPdf, qnaSetIds }:
 
   return (
     <div className="flex h-full min-h-0 flex-col bg-gray-100 p-6 pr-0">
-      {pdf && (
+      {pdf && !shouldWaitForInitialHighlightPage && (
         <PdfNavigation
           currentPage={currentPage}
           totalPages={totalPages}
-          onPageChange={setSelectedPage}
+          onPageChange={(page) => setSelectedPage({ key: qnaSetIdsKey, page })}
           zoom={zoom}
           onZoomChange={setZoom}
         />

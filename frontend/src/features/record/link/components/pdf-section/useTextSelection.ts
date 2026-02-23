@@ -7,6 +7,8 @@ type UseTextSelectionParams = {
   isLinkingMode: boolean
   pendingSelection: HighlightData | null
   setPendingSelection: (data: HighlightData | null) => void
+  highlights: Map<number, HighlightData>
+  linkingQnaSetId: number | null
 }
 
 export function useTextSelection({
@@ -15,6 +17,8 @@ export function useTextSelection({
   isLinkingMode,
   pendingSelection,
   setPendingSelection,
+  highlights,
+  linkingQnaSetId,
 }: UseTextSelectionParams) {
   const handleMouseUp = useCallback(() => {
     if (!isLinkingMode) {
@@ -44,13 +48,44 @@ export function useTextSelection({
       pageNumber,
     }))
 
-    const merged: HighlightData = pendingSelection
-      ? { text: pendingSelection.text + '\n' + text, rects: [...pendingSelection.rects, ...rects] }
-      : { text, rects }
+    // 같은 qnaSet에 이미 저장된 하이라이트에 포함된 선택이면 무시
+    const currentHighlight = linkingQnaSetId !== null ? highlights.get(linkingQnaSetId) : undefined
+    if (currentHighlight && areAllRectsAlreadyIn(rects, currentHighlight.rects)) {
+      selection.removeAllRanges()
+      return
+    }
+
+    // 현재 pending에 이미 포함된 선택이면 무시
+    if (pendingSelection && areAllRectsAlreadyIn(rects, pendingSelection.rects)) {
+      selection.removeAllRanges()
+      return
+    }
+
+    const merged: HighlightData = {
+      text: pendingSelection ? `${pendingSelection.text}\n${text}` : text,
+      rects: [...(pendingSelection?.rects ?? []), ...rects],
+    }
 
     setPendingSelection(merged)
     selection.removeAllRanges()
-  }, [isLinkingMode, pageNumber, setPendingSelection, pendingSelection, containerRef])
+  }, [isLinkingMode, pageNumber, setPendingSelection, pendingSelection, containerRef, highlights, linkingQnaSetId])
 
   return { handleMouseUp }
+}
+
+// 브라우저 getBoundingClientRect()의 부동소수점 오차(~1e-10 ~ 1e-6)를 흡수하기 위한 허용 범위
+const EPSILON = 1e-4
+
+// 새로 선택한 rect가 모두 기존 rect 목록에 이미 존재하면 true
+function areAllRectsAlreadyIn(newRects: HighlightRect[], existing: HighlightRect[]): boolean {
+  return newRects.every((nr) =>
+    existing.some(
+      (er) =>
+        er.pageNumber === nr.pageNumber &&
+        Math.abs(er.x - nr.x) < EPSILON &&
+        Math.abs(er.y - nr.y) < EPSILON &&
+        Math.abs(er.width - nr.width) < EPSILON &&
+        Math.abs(er.height - nr.height) < EPSILON,
+    ),
+  )
 }
