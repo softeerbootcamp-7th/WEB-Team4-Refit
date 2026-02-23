@@ -1,6 +1,7 @@
 import { Suspense, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
+import { useLogout } from '@/apis'
 import { useGetMyProfileInfoSuspense } from '@/apis/generated/user-api/user-api'
 import { useOnClickOutside } from '@/features/_common/hooks/useOnClickOutside'
 import { markUnauthenticated } from '@/routes/middleware/auth-session'
@@ -22,6 +23,15 @@ function UserProfileContent() {
   const queryClient = useQueryClient()
   const containerRef = useRef<HTMLDivElement>(null)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { mutate: requestLogout, isPending: isLoggingOut } = useLogout({
+    mutation: {
+      onSettled: () => {
+        markUnauthenticated()
+        queryClient.clear()
+        navigate(ROUTES.SIGNIN, { replace: true })
+      },
+    },
+  })
 
   const { data: profile } = useGetMyProfileInfoSuspense({
     query: {
@@ -45,10 +55,9 @@ function UserProfileContent() {
   }
 
   const handleLogout = () => {
+    if (isLoggingOut) return
     setIsMenuOpen(false)
-    markUnauthenticated()
-    queryClient.clear()
-    navigate(ROUTES.SIGNIN, { replace: true })
+    requestLogout()
   }
 
   return (
@@ -79,11 +88,12 @@ function UserProfileContent() {
           </button>
           <button
             type="button"
+            disabled={isLoggingOut}
             className="body-s-medium flex w-full cursor-pointer items-center gap-2 px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
             onClick={handleLogout}
           >
             <LogoutIcon className="h-3.5 w-3.5 text-gray-500" />
-            로그아웃
+            {isLoggingOut ? '로그아웃 중...' : '로그아웃'}
           </button>
         </div>
       )}
