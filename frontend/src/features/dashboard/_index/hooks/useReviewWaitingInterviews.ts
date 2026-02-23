@@ -1,47 +1,67 @@
-import { useGetDebriefIncompletedInterviews } from '@/apis/generated/dashboard-api/dashboard-api'
+import { useEffect, useMemo } from 'react'
+import { useInfiniteQuery } from '@tanstack/react-query'
+import { getDebriefIncompletedInterviews } from '@/apis/generated/dashboard-api/dashboard-api'
 import type { DashboardDebriefIncompletedInterviewResponse } from '@/apis/generated/refit-api.schemas'
 import { INTERVIEW_REVIEW_STATUS_LABEL } from '@/constants/interviewReviewStatus'
 import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
 import type { ReviewWaitingData } from '../components/review-waiting-interview/ReviewWaitingCard'
 
+const PAGE_SIZE = 10
+
+function mapReviewWaitingInterview(item: DashboardDebriefIncompletedInterviewResponse): ReviewWaitingData {
+  const interview = item.interview
+  const interviewTypeKey = interview?.interviewType as keyof typeof INTERVIEW_TYPE_LABEL | undefined
+
+  return {
+    id: interview?.interviewId ?? 0,
+    reviewStatus: interview?.interviewReviewStatus ?? 'NOT_LOGGED',
+    status: INTERVIEW_REVIEW_STATUS_LABEL[interview?.interviewReviewStatus ?? 'NOT_LOGGED'],
+    elapsedText: `면접 종료 후 ${item.passedDays ?? 0}일 경과`,
+    companyName: interview?.companyName ?? '',
+    companyLogoUrl: interview?.companyLogoUrl,
+    industry: interview?.companyName === '현대자동차' ? '제조업' : 'IT/플랫폼',
+    jobCategory: interview?.jobCategoryName ?? '',
+    interviewType: interviewTypeKey ? INTERVIEW_TYPE_LABEL[interviewTypeKey] : (interview?.interviewType ?? ''),
+  }
+}
+
 export const useReviewWaitingInterviews = () => {
-  const { data: response } = useGetDebriefIncompletedInterviews(
-    {
-      page: 0,
-      size: 10,
+  const {
+    data: pages,
+    isPending,
+    isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage,
+  } = useInfiniteQuery({
+    queryKey: ['dashboard', 'review-waiting-interviews'],
+    initialPageParam: 0,
+    queryFn: ({ pageParam }) =>
+      getDebriefIncompletedInterviews({
+        page: pageParam,
+        size: PAGE_SIZE,
+      }),
+    getNextPageParam: (lastPage, _allPages, lastPageParam) => {
+      const totalPages = lastPage.result?.totalPages ?? 0
+      const nextPage = lastPageParam + 1
+      return nextPage < totalPages ? nextPage : undefined
     },
-    {
-      query: {
-        select: (data): { content: DashboardDebriefIncompletedInterviewResponse[]; totalElements: number } => ({
-          content: data?.result?.content ?? [],
-          totalElements: data?.result?.totalElements ?? 0,
-        }),
-      },
-    },
+  })
+
+  useEffect(() => {
+    if (!hasNextPage || isPending || isFetchingNextPage) return
+    void fetchNextPage()
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage, isPending])
+
+  const data: ReviewWaitingData[] = useMemo(
+    () =>
+      (pages?.pages ?? []).flatMap((page) => page.result?.content ?? []).map((item) => mapReviewWaitingInterview(item)),
+    [pages?.pages],
   )
 
-  // API 데이터가 없으면 빈 배열 반환
-  const content = response?.content ?? []
-
-  const data: ReviewWaitingData[] = content.map((item) => {
-    const interview = item.interview
-    const interviewTypeKey = interview?.interviewType as keyof typeof INTERVIEW_TYPE_LABEL | undefined
-    return {
-      id: interview?.interviewId ?? 0,
-      reviewStatus: interview?.interviewReviewStatus ?? 'NOT_LOGGED',
-      status: INTERVIEW_REVIEW_STATUS_LABEL[interview?.interviewReviewStatus ?? 'NOT_LOGGED'],
-      // passedDays가 0일 때 처리 (오늘 완료됨 등) 로직은 기획에 따라 다를 수 있음
-      elapsedText: `면접 끝난지 ${item.passedDays ?? 0}일 지남`,
-      companyName: interview?.companyName ?? '',
-      // Industry 정보가 API에 없으므로 임시 하드코딩 또는 빈 문자열
-      industry: interview?.companyName === '현대자동차' ? '제조업' : 'IT/플랫폼',
-      jobCategory: interview?.jobCategoryName ?? '',
-      interviewType: interviewTypeKey ? INTERVIEW_TYPE_LABEL[interviewTypeKey] : (interview?.interviewType ?? ''),
-    }
-  })
+  const count = pages?.pages[0]?.result?.totalElements ?? data.length
 
   return {
     data,
-    count: response?.totalElements ?? 0,
+    count,
   }
 }

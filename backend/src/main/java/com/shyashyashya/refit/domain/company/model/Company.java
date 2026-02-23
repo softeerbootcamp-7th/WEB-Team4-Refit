@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -13,7 +14,9 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "companies")
+@Table(
+        name = "companies",
+        indexes = {@Index(name = "idx_company_search_composite", columnList = "is_search_allowed, search_name")})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Company {
 
@@ -25,26 +28,35 @@ public class Company {
     @Column(name = "company_name", columnDefinition = "varchar(20)", unique = true)
     private String name;
 
+    @Column(name = "search_name", columnDefinition = "varchar(80)")
+    private String decomposedName;
+
     @Column(name = "company_logo_url", columnDefinition = "varchar(2048)")
     private String logoUrl;
 
-    @Column(nullable = false)
+    @Column(name = "is_search_allowed", nullable = false)
     private boolean isSearchAllowed;
+
+    public void allowSearch() {
+        this.isSearchAllowed = true;
+    }
 
     /*
      Factory Method
     */
-    public static Company create(String name, String logoUrl, boolean isSearchAllowed) {
+    public static Company create(String name, String decomposedName, String logoUrl) {
         return Company.builder()
                 .name(name)
+                .decomposedName(decomposedName)
                 .logoUrl(logoUrl)
-                .isSearchAllowed(isSearchAllowed)
+                .isSearchAllowed(false)
                 .build();
     }
 
     @Builder(access = AccessLevel.PRIVATE)
-    private Company(String name, String logoUrl, boolean isSearchAllowed) {
+    private Company(String name, String decomposedName, String logoUrl, boolean isSearchAllowed) {
         this.name = name;
+        this.decomposedName = decomposedName;
         this.logoUrl = logoUrl;
         this.isSearchAllowed = isSearchAllowed;
     }

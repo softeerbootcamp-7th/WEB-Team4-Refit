@@ -1,6 +1,9 @@
-import { NavLink } from 'react-router'
-import { Logo } from '@/designs/assets'
+import { useState } from 'react'
+import { NavLink, useLocation } from 'react-router'
+import { LightningIcon, Logo } from '@/designs/assets'
+import Button from '@/designs/components/button'
 import { ROUTES } from '@/routes/routes'
+import InstantRecordModal from './InstantRecordModal'
 import UserProfile from './UserProfile'
 
 const navItems = [
@@ -11,30 +14,65 @@ const navItems = [
 ]
 
 export default function Navbar() {
+  const [isInstantRecordOpen, setIsInstantRecordOpen] = useState(false)
+  const { pathname } = useLocation()
+  const showInstantRecordButton = isAllowedInstantRecordPath(pathname)
+
   return (
-    <nav className="bg-gray-white fixed top-0 right-0 left-0 z-50 flex h-15 items-center gap-6 px-6">
-      <NavLink to={ROUTES.DASHBOARD} className="flex items-center">
-        <Logo className="h-6 w-auto text-orange-500" />
-      </NavLink>
-
-      <div className="flex h-full items-center gap-2">
-        {navItems.map((item) => (
-          <NavLink key={item.to} to={item.to} end={item.end} className={getNavLinkClassName}>
-            {item.label}
+    <>
+      <nav className="bg-gray-white fixed top-0 right-0 left-0 z-50 h-15 border-b border-gray-100">
+        <div className="mx-auto flex h-full w-7xl items-center gap-8">
+          <NavLink to={ROUTES.DASHBOARD} className="flex items-center">
+            <Logo className="h-6 w-auto text-orange-500" />
           </NavLink>
-        ))}
-      </div>
 
-      <UserProfile />
-    </nav>
+          <div className="flex h-full items-center gap-2">
+            {navItems.map((item) => (
+              <NavLink key={item.to} to={item.to} end={item.end} className={getNavLinkClassName}>
+                {item.label}
+              </NavLink>
+            ))}
+          </div>
+
+          <div className="flex-1" />
+
+          <div className="flex items-center gap-4">
+            {showInstantRecordButton && (
+              <Button variant="fill-orange-500" size="xs" onClick={() => setIsInstantRecordOpen(true)}>
+                <LightningIcon className="w- h-4" />
+                면접 바로 복기하기
+              </Button>
+            )}
+            <UserProfile />
+          </div>
+        </div>
+      </nav>
+
+      <InstantRecordModal open={isInstantRecordOpen} onClose={() => setIsInstantRecordOpen(false)} />
+    </>
   )
 }
 
 const getNavLinkClassName = ({ isActive }: { isActive: boolean }) => {
-  const baseStyles = 'relative flex h-full items-center px-7 transition-colors'
+  const baseStyles = 'relative flex h-full items-center px-4 transition-colors'
   const activeStyles =
     'body-m-semibold text-gray-800 after:absolute after:right-0 after:bottom-0 after:left-0 after:h-0.5 after:bg-orange-500 after:content-[""]'
   const inactiveStyles = 'body-m-medium text-gray-400 hover:text-gray-800'
 
   return isActive ? `${baseStyles} ${activeStyles}` : `${baseStyles} ${inactiveStyles}`
+}
+
+const INSTANT_RECORD_ALLOWED_BASE_PATHS = [
+  ROUTES.DASHBOARD_MY_INTERVIEWS,
+  ROUTES.DASHBOARD_TREND_QUESTIONS,
+  ROUTES.DASHBOARD_MY_COLLECTIONS,
+  ROUTES.DASHBOARD_MY_PAGE,
+] as const
+
+function isAllowedInstantRecordPath(pathname: string) {
+  if (pathname === ROUTES.DASHBOARD) return true
+
+  return INSTANT_RECORD_ALLOWED_BASE_PATHS.some(
+    (basePath) => pathname === basePath || pathname.startsWith(`${basePath}/`),
+  )
 }

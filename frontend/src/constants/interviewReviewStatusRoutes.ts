@@ -6,9 +6,12 @@ export const INTERVIEW_ROUTE_BY_REVIEW_STATUS: Record<InterviewDtoInterviewRevie
   LOG_DRAFT: ROUTES.RECORD,
   QNA_SET_DRAFT: ROUTES.RECORD_CONFIRM,
   SELF_REVIEW_DRAFT: ROUTES.RETRO,
-  DEBRIEF_COMPLETED: ROUTES.RETRO,
+  DEBRIEF_COMPLETED: ROUTES.RETRO_DETAILS,
 }
 
-export function getInterviewNavigationPath(interviewId: number | string, reviewStatus: InterviewDtoInterviewReviewStatus) {
+export function getInterviewNavigationPath(
+  interviewId: number | string,
+  reviewStatus: InterviewDtoInterviewReviewStatus,
+) {
   return INTERVIEW_ROUTE_BY_REVIEW_STATUS[reviewStatus].replace(':interviewId', String(interviewId))
 }

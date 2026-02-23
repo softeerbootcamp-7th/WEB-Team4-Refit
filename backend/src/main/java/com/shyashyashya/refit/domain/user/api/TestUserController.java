@@ -1,6 +1,5 @@
 package com.shyashyashya.refit.domain.user.api;
 
-import static com.shyashyashya.refit.domain.qnaset.constant.StarAnalysisConstant.STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC;
 import static com.shyashyashya.refit.global.exception.ErrorCode.TEXT_EMBEDDING_CREATE_FAILED;
 import static com.shyashyashya.refit.global.exception.ErrorCode.USER_NOT_FOUND;
 import static com.shyashyashya.refit.global.model.ResponseCode.COMMON200;
@@ -11,8 +10,9 @@ import com.shyashyashya.refit.global.auth.repository.RefreshTokenRepository;
 import com.shyashyashya.refit.global.dto.ApiResponse;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.gemini.GeminiClient;
-import com.shyashyashya.refit.global.gemini.GeminiEmbeddingRequest;
-import com.shyashyashya.refit.global.gemini.GeminiEmbeddingResponse;
+import com.shyashyashya.refit.global.gemini.dto.GeminiEmbeddingRequest;
+import com.shyashyashya.refit.global.gemini.dto.GeminiEmbeddingResponse;
+import com.shyashyashya.refit.global.property.GeminiProperty;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Email;
@@ -42,6 +42,7 @@ public class TestUserController {
     private final RefreshTokenRepository refreshTokenRepository;
     private final GeminiClient geminiClient;
     private final Executor geminiPostProcessExecutor;
+    private final GeminiProperty geminiProperty;
 
     @Operation(summary = "(테스트용) 유저를 이메일로 찾아 삭제합니다.")
     @DeleteMapping
@@ -86,8 +87,7 @@ public class TestUserController {
         GeminiEmbeddingRequest requestBody = GeminiEmbeddingRequest.of(
                 text, GeminiEmbeddingRequest.TaskType.CLUSTERING, GeminiEmbeddingRequest.OutputDimensionality.D128);
 
-        CompletableFuture<GeminiEmbeddingResponse> reqFuture =
-                geminiClient.sendAsyncEmbeddingRequest(requestBody, STAR_ANALYSIS_CREATE_REQUEST_TIMEOUT_SEC);
+        CompletableFuture<GeminiEmbeddingResponse> reqFuture = geminiClient.sendAsyncEmbeddingRequest(requestBody);
 
         CompletableFuture<GeminiEmbeddingResponse> result = reqFuture
                 .thenApplyAsync(response -> response, geminiPostProcessExecutor)

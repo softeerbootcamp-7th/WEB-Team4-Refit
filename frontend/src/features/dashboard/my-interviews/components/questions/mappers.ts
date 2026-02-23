@@ -1,6 +1,7 @@
 import type {
   FrequentQnaSetCategoryQuestionResponse,
   FrequentQnaSetCategoryResponse,
+  InterviewDtoInterviewReviewStatus,
   InterviewSearchFilterInterviewResultStatusItem,
   QnaSetSearchResponse,
 } from '@/apis/generated/refit-api.schemas'
@@ -14,7 +15,7 @@ export type FrequentQuestionCategory = {
 
 export type QuestionCardModel = {
   question: string
-  company: string
+  companyName: string
   companyLogoUrl: string
   date: string
   jobRole: string
@@ -22,9 +23,13 @@ export type QuestionCardModel = {
 }
 
 export type QnaCardItemModel = {
+  interviewId: number
+  qnaSetId: number
+  interviewReviewStatus: InterviewDtoInterviewReviewStatus
   resultStatus: InterviewSearchFilterInterviewResultStatusItem
   date: string
-  company: string
+  companyName: string
+  companyLogoUrl?: string
   jobRole: string
   interviewType: InterviewType
   question: string
@@ -42,7 +47,7 @@ export function mapFrequentCategory(item: FrequentQnaSetCategoryResponse): Frequ
 export function mapFrequentQuestion(item: FrequentQnaSetCategoryQuestionResponse): QuestionCardModel {
   return {
     question: item.question ?? '',
-    company: item.interviewInfo?.companyInfo?.companyName ?? '',
+    companyName: item.interviewInfo?.companyInfo?.companyName ?? '',
     companyLogoUrl: item.interviewInfo?.companyInfo?.companyLogoUrl ?? '',
     date: item.interviewInfo?.updatedAt ?? '',
     jobRole: item.interviewInfo?.jobCategoryName ?? '',
@@ -52,9 +57,13 @@ export function mapFrequentQuestion(item: FrequentQnaSetCategoryQuestionResponse
 
 export function mapSearchQuestionToQnaCard(item: QnaSetSearchResponse): QnaCardItemModel {
   return {
+    interviewId: item.interviewInfo?.interviewId ?? 0,
+    qnaSetId: item.qnaSetInfo?.qnaSetId ?? 0,
+    interviewReviewStatus: item.interviewInfo?.interviewReviewStatus ?? 'DEBRIEF_COMPLETED',
     resultStatus: item.interviewInfo?.interviewResultStatus ?? 'WAIT',
     date: item.interviewInfo?.updatedAt ?? '',
-    company: item.interviewInfo?.companyName ?? '',
+    companyName: item.interviewInfo?.companyName ?? '',
+    companyLogoUrl: item.interviewInfo?.companyLogoUrl,
     jobRole: item.interviewInfo?.jobCategoryName ?? '',
     interviewType: item.interviewInfo?.interviewType ?? 'FIRST',
     question: item.qnaSetInfo?.questionText ?? '',

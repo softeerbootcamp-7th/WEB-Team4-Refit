@@ -5,21 +5,16 @@ import static com.shyashyashya.refit.global.exception.ErrorCode.QNA_SET_CATEGORY
 import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetSearchRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetCategoryQuestionResponse;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetCategoryResponse;
+import com.shyashyashya.refit.domain.qnaset.dto.response.MyDifficultQuestionResponse;
 import com.shyashyashya.refit.domain.qnaset.dto.response.QnaSetSearchResponse;
-import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetCategory;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetCategoryRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.util.RequestUserContext;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,17 +28,17 @@ public class QnaSetMyService {
     private final QnaSetCategoryRepository qnaSetCategoryRepository;
 
     @Transactional(readOnly = true)
-    public Page<FrequentQnaSetCategoryResponse> getFrequentQnaSetCategories(Pageable pageable) {
+    public Page<MyDifficultQuestionResponse> getMyDifficultQnaSets(Pageable pageable) {
         User requestUser = requestUserContext.getRequestUser();
 
-        // TODO : 로직 고도화 (쿼리로 한번에 조회할 수 있도록)
-        List<QnaSet> qna = qnaSetRepository.findAllByUser(requestUser);
-        Map<QnaSetCategory, Long> qnaSetCategoryCounts =
-                qna.stream().collect(Collectors.groupingBy(QnaSet::getQnaSetCategory, Collectors.counting()));
+        return qnaSetRepository.findAllDifficultByUser(requestUser, pageable).map(MyDifficultQuestionResponse::from);
+    }
 
-        List<FrequentQnaSetCategoryResponse> pageContent = getPageContent(pageable, qnaSetCategoryCounts);
-
-        return new PageImpl<>(pageContent, pageable, qnaSetCategoryCounts.size());
+    @Transactional(readOnly = true)
+    public Page<FrequentQnaSetCategoryResponse> getFrequentQnaSetCategories(Pageable pageable) {
+        User requestUser = requestUserContext.getRequestUser();
+        // TODO : 유저의 정책 동의 검증
+        return qnaSetRepository.findFrequentQnaSetCategoryByUser(requestUser, pageable);
     }
 
     @Transactional(readOnly = true)
@@ -75,19 +70,5 @@ public class QnaSetMyService {
                         request.searchFilter().rInclusionLevels(),
                         pageable)
                 .map(QnaSetSearchResponse::from);
-    }
-
-    private List<FrequentQnaSetCategoryResponse> getPageContent(
-            Pageable pageable, Map<QnaSetCategory, Long> qnaSetCategoryCounts) {
-        var sortedList = qnaSetCategoryCounts.entrySet().stream()
-                .sorted(Map.Entry.<QnaSetCategory, Long>comparingByValue(Comparator.reverseOrder())
-                        .thenComparing(entry -> entry.getKey().getCategoryName()))
-                .map((entry) -> FrequentQnaSetCategoryResponse.of(entry.getKey(), entry.getValue()))
-                .toList();
-
-        int start = (int) pageable.getOffset();
-        int end = Math.min(start + pageable.getPageSize(), sortedList.size());
-
-        return sortedList.subList(start, end);
     }
 }

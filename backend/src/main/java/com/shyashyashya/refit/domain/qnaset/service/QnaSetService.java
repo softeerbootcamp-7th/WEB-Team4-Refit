@@ -1,5 +1,6 @@
 package com.shyashyashya.refit.domain.qnaset.service;
 
+import static com.shyashyashya.refit.global.exception.ErrorCode.QNA_DELETE_FAILED_PDF_HIGHLIGHTING_EXISTS;
 import static com.shyashyashya.refit.global.exception.ErrorCode.QNA_SET_NOT_FOUND;
 
 import com.shyashyashya.refit.domain.industry.service.validator.IndustryValidator;
@@ -13,6 +14,7 @@ import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetReviewUpdateReques
 import com.shyashyashya.refit.domain.qnaset.dto.request.QnaSetUpdateRequest;
 import com.shyashyashya.refit.domain.qnaset.dto.response.FrequentQnaSetResponse;
 import com.shyashyashya.refit.domain.qnaset.dto.response.QnaSetScrapFolderResponse;
+import com.shyashyashya.refit.domain.qnaset.event.QuestionEmbeddingEvent;
 import com.shyashyashya.refit.domain.qnaset.model.PdfHighlighting;
 import com.shyashyashya.refit.domain.qnaset.model.PdfHighlightingRect;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
@@ -31,7 +33,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,12 +53,20 @@ public class QnaSetService {
     private final InterviewValidator interviewValidator;
     private final IndustryValidator industryValidator;
     private final JobCategoryValidator jobCategoryValidator;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional(readOnly = true)
     public Page<FrequentQnaSetResponse> getFrequentQuestions(
             Set<Long> industryIds, Set<Long> jobCategoryIds, Pageable pageable) {
+        User requestUser = requestUserContext.getRequestUser();
+
         industryValidator.validateIndustriesAllExist(industryIds);
         jobCategoryValidator.validateJobCategoriesAllExist(jobCategoryIds);
+
+        if (!requestUser.isAgreedToTerms()) {
+            long qnaSetCount = qnaSetRepository.countByIndustriesAndJobCategories(industryIds, jobCategoryIds);
+            return new PageImpl<>(List.of(), pageable, qnaSetCount);
+        }
 
         return qnaSetRepository
                 .searchByIndustriesAndJobCategories(industryIds, jobCategoryIds, pageable)
@@ -77,15 +89,33 @@ public class QnaSetService {
     public void updateQnaSet(Long qnaSetId, QnaSetUpdateRequest request) {
         QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
 
-        interviewValidator.validateInterviewReviewStatus(qnaSet.getInterview(), InterviewReviewStatus.QNA_SET_DRAFT);
+        interviewValidator.validateInterviewReviewStatus(
+                qnaSet.getInterview(),
+                List.of(
+                        InterviewReviewStatus.QNA_SET_DRAFT,
+                        InterviewReviewStatus.SELF_REVIEW_DRAFT,
+                        InterviewReviewStatus.DEBRIEF_COMPLETED));
+
+        boolean isQuestionTextChanged =
+                request.questionText() == null || !qnaSet.getQuestionText().equals(request.questionText());
         qnaSet.updateQuestionText(request.questionText());
         qnaSet.updateAnswerText(request.answerText());
+
+        if (isQuestionTextChanged) {
+            eventPublisher.publishEvent(QuestionEmbeddingEvent.of(qnaSetId, request.questionText()));
+        }
     }
 
     @Transactional
     public void deleteQnaSet(Long qnaSetId) {
         QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
-        interviewValidator.validateInterviewReviewStatus(qnaSet.getInterview(), InterviewReviewStatus.QNA_SET_DRAFT);
+        interviewValidator.validateInterviewReviewStatus(
+                qnaSet.getInterview(), List.of(InterviewReviewStatus.QNA_SET_DRAFT));
+
+        if (pdfHighlightingRepository.existsByQnaSet(qnaSet)) {
+            throw new CustomException(QNA_DELETE_FAILED_PDF_HIGHLIGHTING_EXISTS);
+        }
+
         qnaSetRepository.delete(qnaSet);
     }
 
@@ -94,15 +124,17 @@ public class QnaSetService {
         QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
 
         interviewValidator.validateInterviewReviewStatus(
-                qnaSet.getInterview(), InterviewReviewStatus.SELF_REVIEW_DRAFT);
+                qnaSet.getInterview(),
+                List.of(InterviewReviewStatus.SELF_REVIEW_DRAFT, InterviewReviewStatus.DEBRIEF_COMPLETED));
         updateOrCreateSelfReview(qnaSet, request.selfReviewText());
     }
 
     @Transactional
     public void updatePdfHighlighting(Long qnaSetId, List<PdfHighlightingUpdateRequest> request) {
         QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
-        interviewValidator.validateInterviewReviewStatus(qnaSet.getInterview(), InterviewReviewStatus.QNA_SET_DRAFT);
-        deleteAllHighlightingsAndRects(qnaSet);
+        interviewValidator.validateInterviewReviewStatus(
+                qnaSet.getInterview(), List.of(InterviewReviewStatus.QNA_SET_DRAFT));
+        pdfHighlightingRepository.deleteAllByQnaSet(qnaSet);
         saveAllHighlightings(qnaSet, request);
     }
 
@@ -123,6 +155,14 @@ public class QnaSetService {
                         highlighting,
                         rectsByHighlighting.getOrDefault(highlighting, java.util.Collections.emptyList())))
                 .toList();
+    }
+
+    @Transactional
+    public void deletePdfHighlighting(Long qnaSetId) {
+        QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
+        interviewValidator.validateInterviewReviewStatus(
+                qnaSet.getInterview(), List.of(InterviewReviewStatus.QNA_SET_DRAFT));
+        pdfHighlightingRepository.deleteAllByQnaSet(qnaSet);
     }
 
     @Transactional(readOnly = true)
@@ -164,11 +204,6 @@ public class QnaSetService {
                 .ifPresentOrElse(
                         selfReview -> selfReview.updateSelfReviewText(reqSelfReviewText),
                         () -> qnaSetSelfReviewRepository.save(QnaSetSelfReview.create(reqSelfReviewText, qnaSet)));
-    }
-
-    private void deleteAllHighlightingsAndRects(QnaSet qnaSet) {
-        pdfHighlightingRectRepository.deleteAllByQnaSet(qnaSet);
-        pdfHighlightingRepository.deleteAllByQnaSet(qnaSet);
     }
 
     private void saveAllHighlightings(QnaSet qnaSet, List<PdfHighlightingUpdateRequest> request) {

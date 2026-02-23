@@ -1,7 +1,9 @@
 import type { HighlightRect } from '@/features/record/link/contexts'
 
+type SavedRect = HighlightRect & { qnaSetId: number; rectIndex: number }
+
 type HighlightLayerProps = {
-  savedRects: HighlightRect[]
+  savedRects: SavedRect[]
   pendingRects: HighlightRect[]
 }
 
@@ -9,7 +11,7 @@ export function HighlightLayer({ savedRects, pendingRects }: HighlightLayerProps
   return (
     <>
       {savedRects.map((rect) => (
-        <HighlightRectDiv key={`saved-${rect.pageNumber}-${rect.x}-${rect.y}`} rect={rect} variant="saved" />
+        <HighlightRectDiv key={`saved-${rect.qnaSetId}-${rect.rectIndex}`} rect={rect} variant="saved" />
       ))}
       {pendingRects.map((rect, i) => (
         <HighlightRectDiv key={`pending-${i}`} rect={rect} variant="pending" />

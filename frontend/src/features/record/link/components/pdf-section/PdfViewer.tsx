@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { Button } from '@/designs/components'
 import { PdfNavigation } from './PdfNavigation'
 import { PdfPage } from './PdfPage'
 import { useContainerSize } from './useContainerSize'
@@ -6,24 +7,46 @@ import { usePdfLoader } from './usePdfLoader'
 
 type PdfViewerProps = {
   pdfUrl: string
+  onRemovePdf?: () => void
+  isPdfBusy?: boolean
+  zoom: number
+  onZoomChange: (zoom: number) => void
 }
 
-export function PdfViewer({ pdfUrl }: PdfViewerProps) {
+export function PdfViewer({ pdfUrl, onRemovePdf, isPdfBusy, zoom, onZoomChange }: PdfViewerProps) {
   const { pdf, isLoading, error } = usePdfLoader(pdfUrl)
-  const [currentPage, setCurrentPage] = useState(1)
+  const [selectedPage, setSelectedPage] = useState<number | null>(null)
   const viewerRef = useRef<HTMLDivElement>(null)
   const containerSize = useContainerSize(viewerRef)
 
   const totalPages = pdf?.numPages ?? 0
+  const defaultPage = 1
+  const resolvedPage = selectedPage ?? defaultPage
+  const currentPage = totalPages > 0 ? Math.min(Math.max(resolvedPage, 1), totalPages) : 1
   const isReady = pdf && containerSize.width > 0 && containerSize.height > 0
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      {pdf && <PdfNavigation currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />}
+      {pdf && (
+        <PdfNavigation
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setSelectedPage}
+          zoom={zoom}
+          onZoomChange={onZoomChange}
+          actions={
+            onRemovePdf && (
+              <Button variant="outline-gray-100" onClick={onRemovePdf} size="xs" disabled={isPdfBusy}>
+                업로드 해제
+              </Button>
+            )
+          }
+        />
+      )}
       <div ref={viewerRef} className="relative min-h-0 flex-1 overflow-hidden">
         {isLoading && <p className="body-m-regular py-10 text-center text-gray-400">PDF 로딩 중...</p>}
         {error && <p className="body-m-regular py-10 text-center text-red-400">{error}</p>}
-        {isReady && <PdfPage pdf={pdf} pageNumber={currentPage} containerSize={containerSize} />}
+        {isReady && <PdfPage pdf={pdf} pageNumber={currentPage} containerSize={containerSize} zoom={zoom} />}
       </div>
     </div>
   )

@@ -1,23 +1,30 @@
 import { useRef, useState, type Ref } from 'react'
-import { useParams } from 'react-router'
-import { MOCK_KPT_DATA } from '@/constants/example'
+import { useUpdateKptSelfReview } from '@/apis/generated/interview-api/interview-api'
 import { MoreIcon } from '@/designs/assets'
 import { Button } from '@/designs/components'
 import { useOnClickOutside } from '@/features/_common/hooks/useOnClickOutside'
 import { KptWriteCard } from '@/features/retro/_common/components/KptWriteCard'
+import type { KptTextsType } from '@/types/interview'
+
+const isSameKptTexts = (current: KptTextsType, saved: KptTextsType) =>
+  current.keepText === saved.keepText && current.problemText === saved.problemText && current.tryText === saved.tryText
 
 type KptDetailCardProps = {
   ref?: Ref<HTMLDivElement>
+  interviewId: number
+  kptTexts: KptTextsType
   isOtherEditing?: boolean
   onEditingIdChange?: (editingId: string | null) => void
 }
 
-export function KptDetailCard({ ref, isOtherEditing, onEditingIdChange }: KptDetailCardProps) {
-  const { interviewId } = useParams<{ interviewId: string }>()
-  const kptData = MOCK_KPT_DATA
+export function KptDetailCard({ ref, interviewId, kptTexts, isOtherEditing, onEditingIdChange }: KptDetailCardProps) {
+  const { mutateAsync: updateKptSelfReview, isPending: isSaving } = useUpdateKptSelfReview()
 
   const [isEditing, setIsEditing] = useState(false)
+  const [editedKpt, setEditedKpt] = useState<KptTextsType>(kptTexts)
+  const savedKptRef = useRef<KptTextsType>(kptTexts)
   const [resetKey, setResetKey] = useState(0)
+  const [saveErrorMessage, setSaveErrorMessage] = useState<string | null>(null)
 
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
@@ -25,20 +32,43 @@ export function KptDetailCard({ ref, isOtherEditing, onEditingIdChange }: KptDet
 
   const handleStartEdit = () => {
     setIsEditing(true)
+    setSaveErrorMessage(null)
     setIsMenuOpen(false)
     onEditingIdChange?.('kpt')
   }
 
   const handleCancel = () => {
     setIsEditing(false)
+    setSaveErrorMessage(null)
+    setEditedKpt(savedKptRef.current)
     setResetKey((prev) => prev + 1)
     onEditingIdChange?.(null)
   }
 
-  const handleSave = () => {
-    setIsEditing(false)
-    onEditingIdChange?.(null)
-    console.log(interviewId)
+  const handleSave = async () => {
+    if (isSaving) return
+    setSaveErrorMessage(null)
+    if (isSameKptTexts(editedKpt, savedKptRef.current)) {
+      setIsEditing(false)
+      onEditingIdChange?.(null)
+      return
+    }
+
+    try {
+      await updateKptSelfReview({
+        interviewId,
+        data: {
+          keepText: editedKpt.keepText,
+          problemText: editedKpt.problemText,
+          tryText: editedKpt.tryText,
+        },
+      })
+      savedKptRef.current = editedKpt
+      setIsEditing(false)
+      onEditingIdChange?.(null)
+    } catch {
+      setSaveErrorMessage('저장에 실패했어요. 잠시 후 다시 시도해주세요.')
+    }
   }
 
   const containerClassName = [
@@ -57,7 +87,7 @@ export function KptDetailCard({ ref, isOtherEditing, onEditingIdChange }: KptDet
             <Button size="xs" variant="outline-gray-100" onClick={handleCancel}>
               취소
             </Button>
-            <Button size="xs" variant="outline-orange-100" onClick={handleSave}>
+            <Button size="xs" variant="outline-orange-100" onClick={handleSave} isLoading={isSaving}>
               저장
             </Button>
           </>
@@ -82,7 +112,13 @@ export function KptDetailCard({ ref, isOtherEditing, onEditingIdChange }: KptDet
           </div>
         )}
       </div>
-      <KptWriteCard key={resetKey} defaultValue={kptData} readOnly={!isEditing} />
+      <KptWriteCard
+        key={resetKey}
+        defaultValue={editedKpt}
+        readOnly={!isEditing}
+        onChange={setEditedKpt}
+        saveErrorMessage={saveErrorMessage}
+      />
     </div>
   )
 }

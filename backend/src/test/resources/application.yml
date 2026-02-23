@@ -4,6 +4,11 @@ spring:
   profiles:
     active: TEST
     include:
-      - auth
-      - gemini
       - s3
+      - auth
+      - redis
+      - vectorstore
+      - clustering
+      - gemini
+  main:
+    allow-bean-definition-overriding: true

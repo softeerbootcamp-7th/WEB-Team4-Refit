@@ -1,11 +1,8 @@
 import { useEffect } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
-import {
-  getGetAllJobCategoriesQueryOptions,
-  getGetIndustriesQueryOptions,
-  useBuildOAuth2LoginUrl,
-} from '@/apis'
+import { getGetAllJobCategoriesQueryOptions, getGetIndustriesQueryOptions, useBuildOAuth2LoginUrl } from '@/apis'
+import { resetAuthSessionStatus } from '@/routes/middleware/auth-session'
 
 const POPUP_NAME = 'google-oauth-login'
 const POPUP_WIDTH = 500
@@ -45,8 +42,10 @@ export function useGoogleOAuthLogin(options: UseGoogleOAuthLoginOptions) {
       if (event.origin !== window.location.origin || event.data?.type !== 'oauth-callback') return
       const { status, nickname, profileImageUrl } = event.data
       if (status === 'loginSuccess') {
+        resetAuthSessionStatus()
         navigate(successPath, { replace: true })
       } else if (status === 'signUpRequired') {
+        resetAuthSessionStatus()
         navigate(signUpPath, { state: { nickname, profileImageUrl }, replace: true })
       }
     }

@@ -1,19 +1,28 @@
-import { MOCK_INTERVIEW_DETAIL } from '@/constants/example'
 import { NoteIcon } from '@/designs/assets'
 import { SidebarLayout } from '@/designs/components'
 import { InterviewInfoSection, QuestionListSection } from '@/features/_common/components/sidebar'
 import type { IdLabelType } from '@/types/global'
-import type { QnaSetType } from '@/types/interview'
+import type { InterviewInfoType, QnaSetType } from '@/types/interview'
+import { InterviewDeleteSection } from './delete-section/InterviewDeleteSection'
+import { InterviewResultStatusSection } from './result-status-section/InterviewResultStatusSection'
 
 type DetailSidebarProps = {
+  interviewId: number
+  interviewInfo: InterviewInfoType
+  interviewResultStatus: string
   qnaSets: QnaSetType[]
   activeIndex: number
   onItemClick: (index: number) => void
 }
 
-export function DetailSidebar({ qnaSets, activeIndex, onItemClick }: DetailSidebarProps) {
-  const infoItems = MOCK_INTERVIEW_DETAIL
-
+export function DetailSidebar({
+  interviewId,
+  interviewInfo,
+  interviewResultStatus,
+  qnaSets,
+  activeIndex,
+  onItemClick,
+}: DetailSidebarProps) {
   const questionItems: IdLabelType[] = [
     ...qnaSets.map(({ qnaSetId, questionText }, index) => ({
       id: qnaSetId,
@@ -24,12 +33,15 @@ export function DetailSidebar({ qnaSets, activeIndex, onItemClick }: DetailSideb
 
   return (
     <SidebarLayout>
-      <div className="inline-flex gap-2">
-        <NoteIcon width="24" height="24" />
-        <span className="body-l-semibold">내 면접 정보</span>
+      <div className="flex items-center justify-between">
+        <div className="inline-flex gap-2">
+          <NoteIcon width="24" height="24" />
+          <span className="body-l-semibold">내 면접 정보</span>
+        </div>
+        <InterviewDeleteSection interviewId={interviewId} />
       </div>
-      <InterviewResultStatusSection />
-      <InterviewInfoSection {...infoItems} />
+      <InterviewResultStatusSection interviewId={interviewId} initialStatus={interviewResultStatus} />
+      <InterviewInfoSection {...interviewInfo} />
       <QuestionListSection
         title="회고 리스트"
         items={questionItems}
@@ -38,16 +50,5 @@ export function DetailSidebar({ qnaSets, activeIndex, onItemClick }: DetailSideb
         className="overflow-y-auto"
       />
     </SidebarLayout>
-  )
-}
-
-function InterviewResultStatusSection() {
-  return (
-    <div className="bg-gray-white rounded-lg p-4">
-      <div className="flex gap-2">
-        <span className="body-s-semibold w-18.5 text-gray-300">결과</span>
-        <span className="body-s-medium w-33.75 text-gray-800">합격</span>
-      </div>
-    </div>
   )
 }

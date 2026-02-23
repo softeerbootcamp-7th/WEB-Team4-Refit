@@ -3,24 +3,23 @@ import { KPT_SECTIONS } from '@/constants/retro'
 import { Badge, Border } from '@/designs/components'
 import type { KptTextsType } from '@/types/interview'
 
-const KPT_MAX_LENGTH = 400
 const KPT_INITIAL_VALUE: KptTextsType = { keepText: '', problemText: '', tryText: '' }
+const MAX_KPT_LENGTH = 8000
 
 type KptWriteCardProps = {
   defaultValue?: KptTextsType
   readOnly?: boolean
   onChange?: (kptTexts: KptTextsType) => void
+  saveErrorMessage?: string | null
 }
 
-export function KptWriteCard({ defaultValue, readOnly = false, onChange }: KptWriteCardProps) {
+export function KptWriteCard({ defaultValue, readOnly = false, onChange, saveErrorMessage }: KptWriteCardProps) {
   const [kptTexts, setKptTexts] = useState<KptTextsType>(defaultValue ?? KPT_INITIAL_VALUE)
 
   const handleChange = (key: keyof KptTextsType, value: string) => {
-    if (value.length <= KPT_MAX_LENGTH) {
-      const updated = { ...kptTexts, [key]: value }
-      setKptTexts(updated)
-      onChange?.(updated)
-    }
+    const updated = { ...kptTexts, [key]: value }
+    setKptTexts(updated)
+    onChange?.(updated)
   }
 
   return (
@@ -40,6 +39,7 @@ export function KptWriteCard({ defaultValue, readOnly = false, onChange }: KptWr
           readOnly={readOnly}
         />
       ))}
+      {saveErrorMessage && <p className="body-s-medium text-red-500">{saveErrorMessage}</p>}
     </div>
   )
 }
@@ -60,7 +60,7 @@ function KptSection({ label, question, value, onChange, readOnly }: KptSectionPr
         <span className="body-l-semibold">{question}</span>
       </div>
       {readOnly ? (
-        <span className="mb-6">{value}</span>
+        <span className="mb-6 max-h-50 overflow-y-scroll break-all whitespace-pre-wrap">{value}</span>
       ) : (
         <div className="relative">
           <textarea
@@ -68,11 +68,11 @@ function KptSection({ label, question, value, onChange, readOnly }: KptSectionPr
             value={value}
             onChange={(e) => onChange(e.target.value)}
             readOnly={readOnly}
+            maxLength={MAX_KPT_LENGTH}
             placeholder={readOnly ? undefined : `${label}에 대해 작성해주세요.`}
-            maxLength={KPT_MAX_LENGTH}
           />
-          <span className="body-s-regular absolute right-4 bottom-4 text-gray-300">
-            {value.length}/{KPT_MAX_LENGTH}
+          <span className="body-s-regular bg-gray-white/80 pointer-events-none absolute right-3 bottom-4 rounded px-2 text-gray-300">
+            {value.length}/{MAX_KPT_LENGTH}
           </span>
         </div>
       )}

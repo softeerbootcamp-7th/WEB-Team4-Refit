@@ -1,28 +1,32 @@
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router'
+
 import { DashboardLayout, MobileLayout } from '@/layouts'
 import MainLayout from '@/layouts/MainLayout'
 import {
   AuthCallbackPage,
+  CollectionDetailPage,
   DashboardPage,
+  DifficultQuestionPage,
+  Forbidden,
+  InterviewNotFound,
+  MobilePage,
+  MobileRecordPage,
+  MobileSignupPage,
+  MobileUnrecordedPage,
+  MyCollectionsPage,
+  MyInterviewsPage,
+  MyPage,
+  NotFound,
   RecordConfirmPage,
   RecordLinkPage,
   RecordPage,
   RetroDetailPage,
   RetroQuestionPage,
-  NotFound,
-  SharedComponentExample,
   SigninPage,
   SignupPage,
-  MobilePage,
-  MobileSignupPage,
-  MobileUnrecordedPage,
-  MobileRecordPage,
-  MyCollectionsPage,
-  CollectionDetailPage,
-  DifficultQuestionPage,
-  MyInterviewsPage,
   TrendQuestionsPage,
 } from '@/pages'
+import InterviewRouteErrorBoundary from '@/routes/InterviewRouteErrorBoundary'
 import { handleAuthRouting, HandleMobileRouting } from '@/routes/middleware'
 import { ROUTES } from '@/routes/routes'
 
@@ -58,6 +62,7 @@ const router = createBrowserRouter([
           {
             path: getChildPath(ROUTES.MOBILE_RECORD, ROUTES.MOBILE),
             Component: MobileRecordPage,
+            ErrorBoundary: InterviewRouteErrorBoundary,
           },
         ],
       },
@@ -101,10 +106,15 @@ const router = createBrowserRouter([
                   },
                 ],
               },
+              {
+                path: getChildPath(ROUTES.DASHBOARD_MY_PAGE, ROUTES.DASHBOARD),
+                Component: MyPage,
+              },
             ],
           },
           {
             path: ROUTES.RECORD,
+            ErrorBoundary: InterviewRouteErrorBoundary,
             children: [
               { index: true, Component: RecordPage },
               {
@@ -119,6 +129,7 @@ const router = createBrowserRouter([
           },
           {
             path: ROUTES.RETRO,
+            ErrorBoundary: InterviewRouteErrorBoundary,
             children: [
               {
                 index: true,
@@ -133,10 +144,17 @@ const router = createBrowserRouter([
         ],
       },
       {
+        path: ROUTES.FORBIDDEN,
+        Component: Forbidden,
+      },
+      {
+        path: ROUTES.INTERVIEW_NOT_FOUND,
+        Component: InterviewNotFound,
+      },
+      {
         path: '*',
         Component: NotFound,
       },
-      { path: 'component-test', Component: SharedComponentExample },
     ],
   },
 ])

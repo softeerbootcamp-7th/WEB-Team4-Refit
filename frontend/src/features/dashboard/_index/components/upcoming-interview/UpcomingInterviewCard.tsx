@@ -1,21 +1,36 @@
-import { CalendarStarIcon, NoteIcon, SmallLogoIcon } from '@/designs/assets'
+import { useNavigate } from 'react-router'
+import { CalendarStarIcon, SmallLogoIcon } from '@/designs/assets'
 import { Badge } from '@/designs/components'
 import Button from '@/designs/components/button'
+import TermsLockedOverlay from '@/features/dashboard/_index/components/terms-lock/TermsLockedOverlay'
+import { ROUTES } from '@/routes/routes'
 import type { UpcomingInterviewData } from './types'
 
 interface UpcomingInterviewCardProps {
   data: UpcomingInterviewData
+  isTermsLocked: boolean
 }
 
-const DefaultCompanyLogo = () => <SmallLogoIcon className="h-6 w-6 text-gray-400" />
-const DefaultMiniLogo = () => <SmallLogoIcon className="h-4 w-4 text-gray-400" />
+const DUMMY_QUESTIONS = [
+  { id: 1, text: '약관 동의가 필요합니다.' },
+  { id: 2, text: '약관 동의가 필요합니다.' },
+  { id: 3, text: '약관 동의가 필요합니다.' },
+]
 
-export default function UpcomingInterviewCard({ data }: UpcomingInterviewCardProps) {
+export default function UpcomingInterviewCard({ data, isTermsLocked }: UpcomingInterviewCardProps) {
+  const navigate = useNavigate()
+  const questions = isTermsLocked ? DUMMY_QUESTIONS : data.recentQuestions.slice(0, 3)
+  const isQuestionEmpty = !isTermsLocked && data.recentQuestions.length === 0
+
   return (
-    <div className="flex w-full flex-col gap-5 rounded-2xl bg-white p-6">
+    <div className="flex h-full w-full flex-col gap-5 rounded-2xl bg-white p-6">
       <div className="flex items-start gap-4">
-        <div className="border-gray-150 flex size-13 shrink-0 items-center justify-center overflow-hidden rounded-full border bg-white">
-          {data.companyLogo ?? <DefaultCompanyLogo />}
+        <div className="border-gray-150 flex size-13 shrink-0 items-center justify-center rounded-full border bg-white">
+          {data.companyLogoUrl ? (
+            <img src={data.companyLogoUrl} alt={data.companyName} className="h-full w-full rounded-full object-contain" />
+          ) : (
+            <SmallLogoIcon className="h-6 w-6 text-gray-400" />
+          )}
         </div>
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
@@ -30,61 +45,34 @@ export default function UpcomingInterviewCard({ data }: UpcomingInterviewCardPro
 
       <hr className="bg-gray-150 h-px border-0" />
 
-      <div className="flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1.5">
-            <CalendarStarIcon className="h-6 w-6 text-gray-400" />
-            <span className="body-l-semibold text-gray-800">최근 등록된 {data.companyName} 면접질문</span>
-          </div>
-        </div>
-        <div className="flex flex-col gap-2">
-          {data.recentQuestions.map((q) => (
-            <div key={q.id} className="flex items-start gap-2">
-              <span className="body-m-semibold text-gray-300">Q.</span>
-              <p className="body-m-medium line-clamp-1 text-gray-900">{q.text}</p>
+      <TermsLockedOverlay isLocked={isTermsLocked} overlayClassName="rounded-xl">
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <CalendarStarIcon className="h-6 w-6 text-gray-400" />
+              <span className="body-l-semibold text-gray-800">{data.jobCategoryName} 면접 기출 질문</span>
             </div>
-          ))}
-        </div>
-
-        <Button variant="outline-gray-white" size="sm" className="w-full">
-          비슷한 면접 질문 더 보러가기
-        </Button>
-      </div>
-
-      <div className="flex flex-col gap-3">
-        <div className="flex items-center gap-1.5">
-          <NoteIcon className="h-6 w-6 text-gray-400" />
-          <span className="body-l-semibold text-gray-800">유사한 나의 과거 면접</span>
-        </div>
-        <div className="grid grid-cols-2 gap-3">
-          {data.similarInterviews.map((interview) => (
-            <button
-              key={interview.id}
-              className="flex cursor-pointer flex-col gap-3 rounded-lg bg-gray-100 p-4"
-              onClick={() => {}}
-            >
-              <span className="body-s-medium w-fit text-gray-300">{interview.date} 응시</span>
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-2">
-                  <div className="border-gray-150 flex h-8.5 w-8.5 items-center justify-center rounded-full border bg-white">
-                    {interview.logo ?? <DefaultMiniLogo />}
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="title-s-semibold text-gray-900">{interview.companyName}</span>
-                    <span className="body-m-medium text-gray-400">{interview.industry}</span>
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-1.5">
-                  <span className="body-m-medium text-gray-700">{interview.jobCategory}</span>
-                  <span className="h-3 w-px shrink-0 bg-gray-300" aria-hidden />
-                  <span className="body-m-medium text-gray-700">{interview.interviewType}</span>
-                </div>
+          </div>
+          <div className="flex flex-col gap-3">
+            {isQuestionEmpty && <p className="body-m-medium my-9 text-center text-gray-400">아직 기출 질문 데이터가 없어요.</p>}
+            {questions.map((q, index) => (
+              <div key={`${q.id}-${index}`} className="flex items-start gap-2">
+                <span className="body-m-semibold text-gray-300">Q.</span>
+                <p className="body-m-medium line-clamp-1 break-all text-gray-900">{q.text}</p>
               </div>
-            </button>
-          ))}
+            ))}
+          </div>
+
+          <Button
+            variant="outline-gray-white"
+            size="sm"
+            className="w-full"
+            onClick={() => navigate(ROUTES.DASHBOARD_TREND_QUESTIONS)}
+          >
+            비슷한 면접 질문 더 보러가기
+          </Button>
         </div>
-      </div>
+      </TermsLockedOverlay>
     </div>
   )
 }

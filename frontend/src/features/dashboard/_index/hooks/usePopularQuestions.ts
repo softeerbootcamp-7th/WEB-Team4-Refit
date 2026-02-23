@@ -1,3 +1,5 @@
+import { useGetFrequentQuestions, useGetMyProfileInfo } from '@/apis'
+
 export interface PopularQuestionItem {
   id: number
   rank: number
@@ -6,19 +8,45 @@ export interface PopularQuestionItem {
   jobCategory: string
 }
 
-const MOCK_POPULAR_QUESTIONS: PopularQuestionItem[] = [
-  { id: 1, rank: 1, category: '리더십 질문', industry: '연예·엔터테인먼트', jobCategory: '데이터 사이언티스트' },
-  { id: 2, rank: 2, category: '리더십 질문', industry: '연예·엔터테인먼트', jobCategory: '데이터 사이언티스트' },
-  { id: 3, rank: 3, category: '리더십 질문', industry: '연예·엔터테인먼트', jobCategory: '데이터 사이언티스트' },
-  { id: 4, rank: 4, category: '리더십 질문', industry: '연예·엔터테인먼트', jobCategory: '데이터 사이언티스트' },
-  { id: 5, rank: 5, category: '리더십 질문', industry: '연예·엔터테인먼트', jobCategory: '데이터 사이언티스트' },
-  { id: 6, rank: 6, category: '리더십 질문', industry: '연예·엔터테인먼트', jobCategory: '데이터 사이언티스트' },
-  { id: 7, rank: 7, category: '리더십 질문', industry: '연예·엔터테인먼트', jobCategory: '데이터 사이언티스트' },
-  { id: 8, rank: 8, category: '리더십 질문', industry: '연예·엔터테인먼트', jobCategory: '데이터 사이언티스트' },
-  { id: 9, rank: 9, category: '리더십 질문', industry: '연예·엔터테인먼트', jobCategory: '데이터 사이언티스트' },
-  { id: 10, rank: 10, category: '리더십 질문', industry: '연예·엔터테인먼트', jobCategory: '데이터 사이언티스트' },
-]
+interface UsePopularQuestionsParams {
+  isTermsLocked: boolean
+}
 
-export const usePopularQuestions = () => {
-  return { data: MOCK_POPULAR_QUESTIONS }
+export const usePopularQuestions = ({ isTermsLocked }: UsePopularQuestionsParams) => {
+  const { data: profile, isSuccess: isProfileLoaded } = useGetMyProfileInfo({
+    query: {
+      select: (response) => ({
+        nickname: response.result?.nickname?.trim() || '회원',
+        industryId: response.result?.industryId,
+        jobCategoryId: response.result?.jobCategoryId,
+      }),
+    },
+  })
+
+  const { data: rows = [] } = useGetFrequentQuestions(
+    {
+      industryIds: profile?.industryId ? [profile.industryId] : undefined,
+      jobCategoryIds: profile?.jobCategoryId ? [profile.jobCategoryId] : undefined,
+      page: 0,
+      size: 10,
+    },
+    {
+      query: {
+        enabled: isProfileLoaded && !isTermsLocked,
+        select: (response): PopularQuestionItem[] =>
+          (response.result?.content ?? []).map((item, index) => ({
+            id: index + 1,
+            rank: index + 1,
+            category: item.question ?? '',
+            industry: item.industryName ?? '',
+            jobCategory: item.jobCategoryName ?? '',
+          })),
+      },
+    },
+  )
+
+  return {
+    data: isTermsLocked ? [] : rows,
+    nickname: profile?.nickname ?? '회원',
+  }
 }

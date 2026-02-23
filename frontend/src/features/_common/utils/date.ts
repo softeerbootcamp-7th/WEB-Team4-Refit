@@ -1,6 +1,9 @@
 export function formatDateTime(dateString: string): string {
-  return new Date(dateString).toLocaleString('ko-KR', {
-    year: 'numeric',
+  const date = new Date(dateString)
+  if (Number.isNaN(date.getTime())) return '-'
+
+  return date.toLocaleString('ko-KR', {
+    year: '2-digit',
     month: 'long',
     day: 'numeric',
     hour: '2-digit',

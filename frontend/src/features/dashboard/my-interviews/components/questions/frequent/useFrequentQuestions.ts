@@ -5,12 +5,18 @@ import {
 } from '@/apis/generated/qna-set-my-controller/qna-set-my-controller'
 import { mapFrequentCategory, mapFrequentQuestion } from '../mappers'
 
-export function useFrequentQuestions(pageSize = 3) {
+interface UseFrequentQuestionsParams {
+  pageSize?: number
+  enabled?: boolean
+}
+
+export function useFrequentQuestions({ pageSize = 3, enabled = true }: UseFrequentQuestionsParams = {}) {
   const [page, setPage] = useState(1)
   const { data: categories = [] } = useGetMyFrequentQnaSetCategories(
     { page: 0, size: 20 },
     {
       query: {
+        enabled,
         select: (response) => (response.result?.content ?? []).map(mapFrequentCategory),
       },
     },
@@ -28,7 +34,7 @@ export function useFrequentQuestions(pageSize = 3) {
     },
     {
       query: {
-        enabled: resolvedCategoryId !== null,
+        enabled: enabled && resolvedCategoryId !== null,
         select: (response) => ({
           questions: (response.result?.content ?? []).map(mapFrequentQuestion),
           totalPages: response.result?.totalPages ?? 1,

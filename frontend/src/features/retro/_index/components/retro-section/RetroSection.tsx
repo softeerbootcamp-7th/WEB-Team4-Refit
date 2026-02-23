@@ -1,87 +1,114 @@
 import { useState } from 'react'
-import { MOCK_QNA_SET_LIST, type RetroListItem } from '@/constants/example'
-import { BookmarkIcon } from '@/designs/assets'
-import { Border, Button, FadeScrollArea } from '@/designs/components'
-import { QnaSetCard, StarAnalysisSection } from '@/features/_common/components/qna-set'
-import { KptWriteCard, RetroWriteCard } from '@/features/retro/_common/components'
-import { ScrapModal } from '@/features/retro/_common/components/ScrapModal'
-import { RetroActionBar } from '@/features/retro/_index/components/retro-section/RetroActionBar'
-import type { StarAnalysisResult } from '@/types/interview'
+import { useNavigate } from 'react-router'
+import { useCompleteSelfReview } from '@/apis/generated/interview-api/interview-api'
+import { FadeScrollArea } from '@/designs/components'
+import { KptWriteCard } from '@/features/retro/_common/components'
+import { RetroActionBar } from '@/features/retro/_index/components/retro-section/action-bar/RetroActionBar'
+import type { RetroListItem } from '@/features/retro/_index/components/retro-section/types'
+import { ROUTES } from '@/routes/routes'
+import { RetroCompleteConfirmModal } from './complete-confirm-modal/RetroCompleteConfirmModal'
+import { RetroCompleteResultModal } from './complete-result-modal/RetroCompleteResultModal'
+import { useRetroSectionController } from './hooks/useRetroSectionController'
+import { RetroQuestionStep } from './qna-set-section/RetroQuestionStep'
 
 type RetroSectionProps = {
+  interviewId: number
   currentIndex: number
-  currentItem: RetroListItem
+  currentItem?: RetroListItem
+  retroItems: RetroListItem[]
+  isKptStep: boolean
   totalCount: number
-  onIndexChange: (index: number) => void
+  onIndexChange: (index: number) => Promise<void>
+  onRegisterSaveHandler?: (saveHandler: () => Promise<void>) => void
+  initialKptTexts?: { keepText?: string; problemText?: string; tryText?: string }
 }
 
-export function RetroSection({ currentIndex, currentItem, totalCount, onIndexChange }: RetroSectionProps) {
-  // TODO: 훅 분리
-  const [retroTexts, setRetroTexts] = useState<Record<number, string>>({})
-  const [starAnalysis, setStarAnalysis] = useState<Record<number, StarAnalysisResult>>({})
-  const [isScrapModalOpen, setIsScrapModalOpen] = useState(false)
+export function RetroSection({
+  interviewId,
+  currentIndex,
+  currentItem,
+  retroItems,
+  isKptStep,
+  totalCount,
+  onIndexChange,
+  onRegisterSaveHandler,
+  initialKptTexts,
+}: RetroSectionProps) {
+  const navigate = useNavigate()
+  const [isCompleteConfirmOpen, setIsCompleteConfirmOpen] = useState(false)
+  const [isCompleteResultOpen, setIsCompleteResultOpen] = useState(false)
+  const { mutateAsync: completeSelfReview } = useCompleteSelfReview()
+  const retro = useRetroSectionController({
+    interviewId,
+    currentItem,
+    retroItems,
+    isKptStep,
+    initialKptTexts,
+    onRegisterSaveHandler,
+  })
 
-  // TODO: STAR 분석, KPT 자기회고 API 연동 필요
-  // const { mutate: createStarAnalysis } = useCreateStarAnalysis()
-  // const { mutate: updateKptSelfReview } = useUpdateKptSelfReview()
-
-  const { questionText, answerText, qnaSetId, isKpt } = currentItem
-
-  const handleStarButtonClick = () => {
-    // TODO: star 분석 API 연동 필요
-    setStarAnalysis((prev) => ({ ...prev, [qnaSetId]: MOCK_QNA_SET_LIST[currentIndex].starAnalysis }))
+  const handlePrev = async () => {
+    await onIndexChange(currentIndex - 1)
   }
 
-  const handleRetroTextChange = (text: string) => {
-    setRetroTexts((prev) => ({ ...prev, [qnaSetId]: text }))
+  const handleNext = async () => {
+    await onIndexChange(currentIndex + 1)
   }
 
-  const handleSaveRetro = () => {
-    if (isKpt) {
-      // KPT 저장 API
-    } else {
-      // TODO: 회고 수정 API 연동 필요
-      // const selfReviewText = retroTexts[qnaSetId] ?? ''
-      // updateQnaSet({ qnaSetId, data: { selfReviewText } })
+  const handleComplete = async () => {
+    await retro.actions.saveCurrentStep()
+    if (retro.flow.missingRetroNumbers.length > 0 || retro.flow.missingKptItems.length > 0) {
+      setIsCompleteConfirmOpen(true)
+      return
     }
+    await completeSelfReview({ interviewId })
+    setIsCompleteResultOpen(true)
+  }
+
+  const handleConfirmComplete = async () => {
+    setIsCompleteConfirmOpen(false)
+    await completeSelfReview({ interviewId })
+    setIsCompleteResultOpen(true)
+  }
+
+  const handleCompleteResultClose = () => {
+    setIsCompleteResultOpen(false)
+    navigate(ROUTES.DASHBOARD_MY_INTERVIEWS)
   }
 
   return (
     <>
       <FadeScrollArea className="flex flex-1 flex-col gap-5 overflow-y-auto rounded-lg">
-        {isKpt ? (
-          <KptWriteCard />
+        {isKptStep ? (
+          <KptWriteCard defaultValue={retro.steps.kpt.kptTexts} onChange={retro.steps.kpt.setKptTexts} />
         ) : (
-          <>
-            <QnaSetCard
-              key={qnaSetId}
-              idx={currentIndex + 1}
-              questionText={questionText}
-              answerText={answerText}
-              badgeTheme="gray-100"
-              topRightComponent={
-                <Button onClick={() => setIsScrapModalOpen(true)}>
-                  <BookmarkIcon className="h-5 w-5" />
-                </Button>
-              }
-            >
-              <StarAnalysisSection starAnalysis={starAnalysis[qnaSetId]} onAnalyze={handleStarButtonClick} />
-              <Border />
-              <RetroWriteCard
-                idx={currentIndex + 1}
-                value={retroTexts[qnaSetId] ?? ''}
-                onChange={handleRetroTextChange}
-              />
-            </QnaSetCard>
-            <ScrapModal isOpen={isScrapModalOpen} onClose={() => setIsScrapModalOpen(false)} qnaSetId={qnaSetId} />
-          </>
+          <RetroQuestionStep
+            currentIndex={currentIndex}
+            viewModel={retro.steps.question}
+            actions={retro.actions.question}
+          />
         )}
       </FadeScrollArea>
+      {retro.flow.saveError ? <p className="body-s-medium mt-3 text-red-500">{retro.flow.saveError}</p> : null}
       <RetroActionBar
         currentIndex={currentIndex}
         totalCount={totalCount}
-        onIndexChange={onIndexChange}
-        onSaveRetro={handleSaveRetro}
+        onPrev={handlePrev}
+        onNext={handleNext}
+        onComplete={handleComplete}
+        isSaving={retro.flow.isSaving}
+      />
+      <RetroCompleteConfirmModal
+        open={isCompleteConfirmOpen}
+        missingRetroNumbers={retro.flow.missingRetroNumbers}
+        missingKptItems={retro.flow.missingKptItems}
+        onCancel={() => setIsCompleteConfirmOpen(false)}
+        onConfirm={handleConfirmComplete}
+      />
+      <RetroCompleteResultModal
+        open={isCompleteResultOpen}
+        onClose={handleCompleteResultClose}
+        onConfirm={handleCompleteResultClose}
       />
     </>
   )

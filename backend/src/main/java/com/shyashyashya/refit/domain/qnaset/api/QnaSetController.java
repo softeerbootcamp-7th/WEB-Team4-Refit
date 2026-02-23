@@ -14,6 +14,9 @@ import com.shyashyashya.refit.domain.qnaset.service.QnaSetService;
 import com.shyashyashya.refit.domain.qnaset.service.StarAnalysisAsyncService;
 import com.shyashyashya.refit.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.Explode;
+import io.swagger.v3.oas.annotations.enums.ParameterStyle;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -44,13 +47,16 @@ public class QnaSetController {
     private final QnaSetService qnaSetService;
     private final StarAnalysisAsyncService starAnalysisAsyncService;
 
-    @Operation(
-            summary = "지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다.",
-            description = "지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다. 지정하지 않은 필드에 대해서는 전체를 대상으로 조회합니다.")
+    @Operation(summary = "지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다.", description = """
+                    지정한 산업군 / 직무의 빈출 질문 답변 세트를 조회합니다. 지정하지 않은 필드에 대해서는 전체를 대상으로 조회합니다.<br>
+                    약관에 동의하지 않은 사용자가 조회하면 질답 세트 데이터가 조회되지 않고, 조회 결과 개수만 반환합니다.
+            """)
     @GetMapping("/frequent")
     public ResponseEntity<ApiResponse<Page<FrequentQnaSetResponse>>> getFrequentQuestions(
-            @RequestParam(required = false) Set<Long> industryIds,
-            @RequestParam(required = false) Set<Long> jobCategoryIds,
+            @Parameter(style = ParameterStyle.FORM, explode = Explode.TRUE) @RequestParam(required = false)
+                    Set<Long> industryIds,
+            @Parameter(style = ParameterStyle.FORM, explode = Explode.TRUE) @RequestParam(required = false)
+                    Set<Long> jobCategoryIds,
             @ParameterObject Pageable pageable) {
         var body = qnaSetService.getFrequentQuestions(industryIds, jobCategoryIds, pageable);
         var response = ApiResponse.success(COMMON200, body);
@@ -102,7 +108,7 @@ public class QnaSetController {
     @Operation(
             summary = "지정한 질문 답변 세트에 대해 PDF 하이라이팅 정보를 등록/수정합니다.",
             description = "PDF 하이라이팅 정보 등록/수정은 질답 세트 검토 중 상태에서만 가능합니다.")
-    @PutMapping("/{qnaSetId}/pdf-highlightings")
+    @PutMapping("/{qnaSetId}/pdf-highlighting")
     public ResponseEntity<ApiResponse<Void>> updatePdfHighlighting(
             @PathVariable Long qnaSetId, @Valid @RequestBody List<PdfHighlightingUpdateRequest> request) {
         qnaSetService.updatePdfHighlighting(qnaSetId, request);
@@ -111,10 +117,18 @@ public class QnaSetController {
     }
 
     @Operation(summary = "지정한 질문 답변 세트에 대해 등록된 PDF 하이라이팅 정보를 조회합니다.")
-    @GetMapping("/{qnaSetId}/pdf-highlightings")
+    @GetMapping("/{qnaSetId}/pdf-highlighting")
     public ResponseEntity<ApiResponse<List<PdfHighlightingDto>>> getPdfHighlightings(@PathVariable Long qnaSetId) {
         var body = qnaSetService.getPdfHighlightings(qnaSetId);
         var response = ApiResponse.success(COMMON200, body);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "지정한 질문 답변 세트의 PDF 하이라이팅을 모두 삭제합니다.")
+    @DeleteMapping("/{qnaSetId}/pdf-highlighting")
+    public ResponseEntity<ApiResponse<Void>> deletePdfHighlighting(@PathVariable Long qnaSetId) {
+        qnaSetService.deletePdfHighlighting(qnaSetId);
+        var response = ApiResponse.success(COMMON204);
         return ResponseEntity.ok(response);
     }
 

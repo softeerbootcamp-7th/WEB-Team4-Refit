@@ -1,59 +1,38 @@
 package com.shyashyashya.refit.global.auth.model;
 
-import com.shyashyashya.refit.global.model.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Version;
+import java.time.Duration;
 import java.time.Instant;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.TimeToLive;
+import org.springframework.data.redis.core.index.Indexed;
 
 @Getter
-@Entity
-@Table(name = "refresh_tokens")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RefreshToken extends BaseEntity {
+@Builder(access = AccessLevel.PRIVATE)
+@RedisHash(value = "RT")
+public class RefreshToken {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "refresh_token_id")
-    private Long id;
-
-    @Version
-    private Long version;
-
-    @Column(name = "refresh_token", nullable = false, unique = true, columnDefinition = "varchar(2048)")
     private String token;
 
-    @Column(nullable = false)
+    @Indexed
     private String email;
 
-    @Column(nullable = false)
     private Instant expiryDate;
 
-    @Builder(access = AccessLevel.PRIVATE)
-    public RefreshToken(String token, String email, Instant expiryDate) {
-        this.token = token;
-        this.email = email;
-        this.expiryDate = expiryDate;
-    }
+    @TimeToLive
+    private long timeToLive;
 
-    public void rotate(String newRefreshToken, Instant newExpiryDate) {
-        this.token = newRefreshToken;
-        this.expiryDate = newExpiryDate;
-    }
-
-    public static RefreshToken create(String token, String email, Instant expiryDate) {
+    public static RefreshToken create(String token, String email, Instant expiryDate, Instant issuedAt) {
+        long ttlSeconds = Math.max(0, Duration.between(issuedAt, expiryDate).getSeconds());
         return RefreshToken.builder()
                 .token(token)
                 .email(email)
                 .expiryDate(expiryDate)
+                .timeToLive(ttlSeconds)
                 .build();
     }
 }

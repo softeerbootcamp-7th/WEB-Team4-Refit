@@ -2,3 +2,6 @@ spring:
   gemini:
     api-key: "///"
     prompt-path: "src/test/resources/dummyprompt/"
+    rest-client-connect-timeout-sec: 3
+    rest-client-read-timeout-sec: 30
+    web-client-request-timeout-sec: 30

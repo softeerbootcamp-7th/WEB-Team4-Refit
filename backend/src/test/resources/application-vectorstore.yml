@@ -1,0 +1,16 @@
+spring:
+  vectorstore:
+    qdrant:
+      host: "localhost"
+      port: 6334
+      timeout: 10s
+      find-all-default-batch-size: 100
+      collections:
+        qna-set-question:
+          name: "interview_questions"
+          vector-dimension: 768
+          distance: "Cosine"
+        qna-set-category:
+          name: "question_categories"
+          vector-dimension: 768
+          distance: "Cosine"

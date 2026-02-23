@@ -9,6 +9,7 @@ export const ROUTES = {
   DASHBOARD_MY_INTERVIEWS: '/dashboard/my-interviews',
   DASHBOARD_TREND_QUESTIONS: '/dashboard/trend-questions',
   DASHBOARD_MY_COLLECTIONS: '/dashboard/my-collections',
+  DASHBOARD_MY_PAGE: '/dashboard/my-page',
   DASHBOARD_DIFFICULT_QUESTIONS: '/dashboard/my-collections/difficult-questions',
   DASHBOARD_COLLECTION_DETAIL: '/dashboard/my-collections/:folderId',
 
@@ -23,4 +24,7 @@ export const ROUTES = {
 
   RETRO: '/retro/:interviewId',
   RETRO_DETAILS: '/retro/:interviewId/details',
+
+  FORBIDDEN: '/forbidden',
+  INTERVIEW_NOT_FOUND: '/interview-not-found',
 } as const

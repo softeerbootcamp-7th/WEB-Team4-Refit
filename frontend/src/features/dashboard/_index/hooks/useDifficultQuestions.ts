@@ -1,46 +1,57 @@
-import { useState } from 'react'
+import { useGetMyDifficultQnaSets } from '@/apis'
+import type { InterviewDto, MyDifficultQuestionResponse } from '@/apis'
+import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
 import type { DifficultQuestionCardData } from '@/features/dashboard/_index/components/difficult-questions/DifficultQuestionCard'
 
-const MOCK_DIFFICULT_QUESTIONS: DifficultQuestionCardData[] = [
-  {
-    id: 1,
-    companyName: '현대자동차',
-    date: '2024.03.01 응시',
-    jobCategory: 'UI Designer',
-    interviewType: '기술 면접',
-    questionSnippet:
-      'A 프로젝트에서 이렇게 작업한 이유와 작업 과정에서의 힘든 점을 자세하게 설명해주시고, 타파하려고 노력한 본인의 노...',
-  },
-  {
-    id: 2,
-    companyName: '현대자동',
-    date: '2024.03.01 응시',
-    jobCategory: 'UI Designer',
-    interviewType: '기술 면접',
-    questionSnippet:
-      'A 프로젝트에서 이렇게 작업한 이유와 작업 과정에서의 힘든 점을 자세하게 설명해주시고, 타파하려고 노력한 본인의 노...',
-  },
-  {
-    id: 3,
-    companyName: '현대자',
-    date: '2024.03.01 응시',
-    jobCategory: 'UI Designer',
-    interviewType: '기술 면접',
-    questionSnippet:
-      'A 프로젝트에서 이렇게 작업한 이유와 작업 과정에서의 힘든 점을 자세하게 설명해주시고, 타파하려고 노력한 본인의 노...',
-  },
-  {
-    id: 4,
-    companyName: '현대',
-    date: '2024.03.01 응시',
-    jobCategory: 'UI Designer',
-    interviewType: '기술 면접',
-    questionSnippet:
-      'A 프로젝트에서 이렇게 작업한 이유와 작업 과정에서의 힘든 점을 자세하게 설명해주시고, 타파하려고 노력한 본인의 노...',
-  },
-]
+function formatAppliedDate(dateString: string): string {
+  const date = new Date(dateString)
+  if (Number.isNaN(date.getTime())) return '-'
+
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}.${month}.${day} 응시`
+}
+
+function toInterviewTypeLabel(interviewType: InterviewDto['interviewType']): string {
+  return INTERVIEW_TYPE_LABEL[interviewType as keyof typeof INTERVIEW_TYPE_LABEL] ?? interviewType
+}
+
+function mapDifficultQuestion(item: MyDifficultQuestionResponse): DifficultQuestionCardData {
+  const interview = item.interview
+
+  return {
+    id: interview?.interviewId ?? 0,
+    companyName: interview?.companyName ?? '',
+    companyLogoUrl: interview?.companyLogoUrl,
+    date: formatAppliedDate(interview?.interviewStartAt ?? ''),
+    jobCategory: interview?.jobCategoryName ?? '',
+    interviewType: toInterviewTypeLabel(interview?.interviewType ?? 'FIRST'),
+    questionSnippet: item.question ?? '',
+  }
+}
 
 export const useDifficultQuestions = () => {
-  const [data] = useState<DifficultQuestionCardData[]>(MOCK_DIFFICULT_QUESTIONS)
-  return { data, count: data.length }
+  const { data: response } = useGetMyDifficultQnaSets(
+    {
+      page: 0,
+      size: 10,
+      sort: ['interviewStartAt,desc'],
+    },
+    {
+      query: {
+        select: (data): { content: MyDifficultQuestionResponse[]; totalElements: number } => ({
+          content: data?.result?.content ?? [],
+          totalElements: data?.result?.totalElements ?? 0,
+        }),
+      },
+    },
+  )
+
+  const data = (response?.content ?? []).map(mapDifficultQuestion)
+
+  return {
+    data,
+    count: response?.totalElements ?? data.length,
+  }
 }
