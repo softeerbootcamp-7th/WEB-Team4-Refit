@@ -10,9 +10,10 @@ spring:
     include:
       - s3
       - auth
-      - gemini
+      - redis
       - vectorstore
       - clustering
+      - gemini
 
 server:
   tomcat:

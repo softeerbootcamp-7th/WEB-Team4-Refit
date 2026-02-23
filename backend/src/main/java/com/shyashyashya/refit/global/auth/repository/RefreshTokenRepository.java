@@ -1,19 +1,12 @@
 package com.shyashyashya.refit.global.auth.repository;
 
 import com.shyashyashya.refit.global.auth.model.RefreshToken;
-import java.time.Instant;
 import java.util.Optional;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.repository.CrudRepository;
 
-public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
+public interface RefreshTokenRepository extends CrudRepository<RefreshToken, String> {
 
-    Optional<RefreshToken> findByToken(String token);
+    Optional<RefreshToken> findByEmail(String email);
 
     void deleteByEmail(String email);
-
-    void deleteByToken(String token);
-
-    @Modifying
-    void deleteByExpiryDateBefore(Instant expiryDateBefore);
 }
