@@ -1,7 +1,7 @@
 import { memo } from 'react'
 import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
-import { SmallLogoIcon } from '@/designs/assets'
 import { formatDate } from '@/features/_common/utils/date'
+import { SmallLogoIcon } from '@/ui/assets'
 import type { QuestionCardModel } from '../../mappers'
 
 function QuestionCard({ card }: { card: QuestionCardModel }) {

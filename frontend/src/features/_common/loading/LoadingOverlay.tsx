@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import HourGlassIcon from '@/designs/assets/hour_glass_icon.svg?react'
+import HourGlassIcon from '@/ui/assets/hour_glass_icon.svg?react'
 
 type LoadingOverlayProps = {
   text?: ReactNode

@@ -1,7 +1,7 @@
-import { BookmarkIcon } from '@/designs/assets'
-import { Border, Button } from '@/designs/components'
 import { QnaSetCard, StarAnalysisSection } from '@/features/_common/components/qna-set'
 import { RetroWriteCard, ScrapModal } from '@/features/retro/_common/components'
+import { BookmarkIcon } from '@/ui/assets'
+import { Border, Button } from '@/ui/components'
 import type { RetroQuestionStepActions, RetroQuestionStepViewModel } from '../types'
 
 type RetroQuestionStepProps = {

@@ -1,5 +1,5 @@
-import { ListItemSmall } from '@/designs/components'
 import type { IdLabelType } from '@/types/global'
+import { ListItemSmall } from '@/ui/components'
 
 type MinimizedQuestionListProps = {
   items: IdLabelType[]

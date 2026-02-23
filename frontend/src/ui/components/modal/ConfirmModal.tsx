@@ -1,5 +1,5 @@
-import Button, { type VariantType } from '@/designs/components/button'
-import Modal from '@/designs/components/modal'
+import Button, { type VariantType } from '@/ui/components/button'
+import Modal from '@/ui/components/modal'
 
 export interface ConfirmModalBaseProps {
   open: boolean

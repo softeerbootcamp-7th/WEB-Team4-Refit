@@ -1,4 +1,4 @@
-import { Logo } from '@/designs/assets'
+import { Logo } from '@/ui/assets'
 
 export default function MobileNavbar() {
   return (

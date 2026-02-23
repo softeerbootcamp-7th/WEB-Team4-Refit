@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useGetAllJobCategories, useGetIndustries } from '@/apis'
-import { SearchableCombobox } from '@/designs/components'
-import Button from '@/designs/components/button'
+import { SearchableCombobox } from '@/ui/components'
+import Button from '@/ui/components/button'
 
 const FORM_OPTIONS_STALE_TIME = 60 * 60 * 1000
 

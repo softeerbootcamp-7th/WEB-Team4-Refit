@@ -1,10 +1,10 @@
 import { Outlet } from 'react-router'
-import { PlusIcon } from '@/designs/assets'
 import DeleteFolderModal from '@/features/dashboard/my-collections/components/DeleteFolderModal'
 import FolderListItem from '@/features/dashboard/my-collections/components/FolderListItem'
 import FolderListSkeleton from '@/features/dashboard/my-collections/components/FolderListSkeleton'
 import FolderModal from '@/features/dashboard/my-collections/components/FolderModal'
 import { useCollectionFolderMutations, useCollectionFolders } from '@/features/dashboard/my-collections/hooks'
+import { PlusIcon } from '@/ui/assets'
 
 export default function MyCollectionsPage() {
   const {

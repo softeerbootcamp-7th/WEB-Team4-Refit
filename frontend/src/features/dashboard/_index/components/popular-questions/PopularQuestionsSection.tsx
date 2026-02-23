@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router'
-import { ArrowRightIcon, NoteIcon } from '@/designs/assets'
 import TermsLockedOverlay from '@/features/dashboard/_index/components/terms-lock/TermsLockedOverlay'
 import { ROUTES } from '@/routes/routes'
+import { ArrowRightIcon, NoteIcon } from '@/ui/assets'
 import { usePopularQuestions, type PopularQuestionItem } from '../../hooks/usePopularQuestions'
 
 interface PopularQuestionsSectionProps {

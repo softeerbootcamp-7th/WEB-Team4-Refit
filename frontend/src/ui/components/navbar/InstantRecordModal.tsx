@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { InterviewCreateRequestInterviewType, useCreateInterview } from '@/apis'
-import Modal from '@/designs/components/modal'
 import { ScheduleModalContent } from '@/features/dashboard/_index/components/schedule-modal-content/ScheduleModalContent'
 import type { ScheduleFormSubmitValues } from '@/features/dashboard/_index/components/schedule-modal-content/ScheduleModalContent'
 import { SCHEDULE_MODAL_STEP_CONFIG } from '@/features/dashboard/_index/constants/interviewCalendar'
 import type { ScheduleModalStep } from '@/features/dashboard/_index/constants/interviewCalendar'
 import { ROUTES } from '@/routes/routes'
+import Modal from '@/ui/components/modal'
 
 interface InstantRecordModalProps {
   open: boolean

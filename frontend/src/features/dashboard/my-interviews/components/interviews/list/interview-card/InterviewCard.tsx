@@ -1,8 +1,6 @@
 import { InterviewDtoInterviewReviewStatus } from '@/apis'
 import { INTERVIEW_REVIEW_STATUS_LABEL } from '@/constants/interviewReviewStatus'
 import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
-import { SmallLogoIcon } from '@/designs/assets'
-import { Badge, Border } from '@/designs/components'
 import { formatDate } from '@/features/_common/utils/date'
 import {
   RESULT_LABEL,
@@ -10,6 +8,8 @@ import {
   type InterviewResultStatus,
 } from '@/features/dashboard/my-interviews/constants/constants'
 import type { InterviewFilter, InterviewType } from '@/types/interview'
+import { SmallLogoIcon } from '@/ui/assets'
+import { Badge, Border } from '@/ui/components'
 
 type InterviewCardProps = {
   interviewReviewStatus?: InterviewFilter['interviewReviewStatus'][number]

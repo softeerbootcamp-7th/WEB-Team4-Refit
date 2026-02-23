@@ -1,13 +1,13 @@
 import { useGetInterviewFull } from '@/apis/generated/interview-api/interview-api'
 import { INTERVIEW_REVIEW_STATUS_LABEL } from '@/constants/interviewReviewStatus'
 import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
-import { SmallLogoIcon } from '@/designs/assets'
-import { Badge, Border, Button, Modal } from '@/designs/components'
 import { QnaSetCard } from '@/features/_common/components/qna-set'
 import { StarAnalysisResultSection } from '@/features/_common/components/qna-set/StarAnalysisSection'
 import { formatDate } from '@/features/_common/utils/date'
 import { RESULT_LABEL, RESULT_THEME } from '@/features/dashboard/my-interviews/constants/constants'
 import { RetroWriteCard } from '@/features/retro/_common/components'
+import { SmallLogoIcon } from '@/ui/assets'
+import { Badge, Border, Button, Modal } from '@/ui/components'
 
 type RetroDetailModalProps = {
   open: boolean

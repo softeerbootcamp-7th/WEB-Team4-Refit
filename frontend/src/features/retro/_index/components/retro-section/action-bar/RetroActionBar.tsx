@@ -1,4 +1,4 @@
-import { Button } from '@/designs/components'
+import { Button } from '@/ui/components'
 
 type RetroActionBarProps = {
   currentIndex: number

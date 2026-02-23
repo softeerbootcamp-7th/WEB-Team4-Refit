@@ -1,7 +1,7 @@
-import { CircleLeftIcon, CircleRightIcon, MeltIcon } from '@/designs/assets'
 import { useAutoPagination } from '@/features/_common/hooks/useAutoPagination'
 import DifficultQuestionCard from '@/features/dashboard/_index/components/difficult-questions/DifficultQuestionCard'
 import { useDifficultQuestions } from '@/features/dashboard/_index/hooks/useDifficultQuestions'
+import { CircleLeftIcon, CircleRightIcon, MeltIcon } from '@/ui/assets'
 
 const ITEMS_PER_PAGE = 1
 const AUTO_ADVANCE_MS = 3000

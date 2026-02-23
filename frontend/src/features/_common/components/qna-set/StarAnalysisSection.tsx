@@ -1,6 +1,6 @@
 import { STAR_LABELS, STAR_VALUES, STATUS_THEME } from '@/constants/retro'
-import { Badge, Button } from '@/designs/components'
 import type { StarAnalysisResult } from '@/types/interview'
+import { Badge, Button } from '@/ui/components'
 
 type StarAnalysisSectionProps = {
   starAnalysis?: StarAnalysisResult

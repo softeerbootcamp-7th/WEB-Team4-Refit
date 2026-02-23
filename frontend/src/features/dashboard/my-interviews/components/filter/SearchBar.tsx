@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react'
-import { CloseIcon, SearchIcon } from '@/designs/assets'
-import { Button } from '@/designs/components'
+import { CloseIcon, SearchIcon } from '@/ui/assets'
+import { Button } from '@/ui/components'
 
 type SearchBarProps = {
   placeholder?: string

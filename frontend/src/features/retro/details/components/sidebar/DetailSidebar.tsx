@@ -1,8 +1,8 @@
-import { NoteIcon } from '@/designs/assets'
-import { SidebarLayout } from '@/designs/components'
 import { InterviewInfoSection, QuestionListSection } from '@/features/_common/components/sidebar'
 import type { IdLabelType } from '@/types/global'
 import type { InterviewInfoType, QnaSetType } from '@/types/interview'
+import { NoteIcon } from '@/ui/assets'
+import { SidebarLayout } from '@/ui/components'
 import { InterviewDeleteSection } from './delete-section/InterviewDeleteSection'
 import { InterviewResultStatusSection } from './result-status-section/InterviewResultStatusSection'
 

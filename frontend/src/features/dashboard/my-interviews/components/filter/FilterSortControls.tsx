@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { CaretDownIcon, FilterIcon } from '@/designs/assets'
-import { Button, PlainCombobox } from '@/designs/components'
 import { INTERVIEW_SORT_OPTIONS } from '@/features/dashboard/my-interviews/constants/constants'
 import type { InterviewFilter } from '@/types/interview'
+import { CaretDownIcon, FilterIcon } from '@/ui/assets'
+import { Button, PlainCombobox } from '@/ui/components'
 import InterviewFilterModal from './InterviewFilterModal'
 
 type FilterSortControlsProps = {

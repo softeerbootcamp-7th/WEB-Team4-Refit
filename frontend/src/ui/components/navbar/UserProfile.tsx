@@ -2,10 +2,10 @@ import { Suspense, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
 import { useGetMyProfileInfoSuspense } from '@/apis/generated/user-api/user-api'
-import { LogoutIcon, UserIcon } from '@/designs/assets'
 import { useOnClickOutside } from '@/features/_common/hooks/useOnClickOutside'
 import { markUnauthenticated } from '@/routes/middleware/auth-session'
 import { ROUTES } from '@/routes/routes'
+import { LogoutIcon, UserIcon } from '@/ui/assets'
 
 const PROFILE_STALE_TIME = 1000 * 60 * 60 // 1시간
 

@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { NavLink, useLocation } from 'react-router'
-import { LightningIcon, Logo } from '@/designs/assets'
-import Button from '@/designs/components/button'
 import { ROUTES } from '@/routes/routes'
+import { LightningIcon, Logo } from '@/ui/assets'
+import Button from '@/ui/components/button'
 import InstantRecordModal from './InstantRecordModal'
 import UserProfile from './UserProfile'
 

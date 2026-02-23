@@ -1,7 +1,7 @@
-import { NoteIcon } from '@/designs/assets'
-import { Border, MinimizedSidebarLayout } from '@/designs/components'
 import { MinimizedQuestionList } from '@/features/_common/components/sidebar'
 import type { IdLabelType } from '@/types/global'
+import { NoteIcon } from '@/ui/assets'
+import { Border, MinimizedSidebarLayout } from '@/ui/components'
 
 type RecordLinkSidebarProps = {
   items: IdLabelType[]

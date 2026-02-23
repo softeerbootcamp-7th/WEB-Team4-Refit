@@ -7,14 +7,14 @@ import {
   useUpdateQnaSet,
   useUpdateQnaSetSelfReview,
 } from '@/apis/generated/qna-set-api/qna-set-api'
-import { BookmarkIcon, MoreIcon } from '@/designs/assets'
-import { Border, Button } from '@/designs/components'
-import ConfirmModal from '@/designs/components/modal/ConfirmModal'
 import { QnaSetCard, QnaSetEditForm, StarAnalysisSection } from '@/features/_common/components/qna-set'
 import { useOnClickOutside } from '@/features/_common/hooks/useOnClickOutside'
 import { getApiErrorCode } from '@/features/_common/utils/error'
 import { RetroWriteCard, ScrapModal } from '@/features/retro/_common/components'
 import type { QnaSetType } from '@/types/interview'
+import { BookmarkIcon, MoreIcon } from '@/ui/assets'
+import { Border, Button } from '@/ui/components'
+import ConfirmModal from '@/ui/components/modal/ConfirmModal'
 
 type QnaRetroCardProps = {
   ref?: Ref<HTMLDivElement>

@@ -1,9 +1,9 @@
 import type { RefObject } from 'react'
-import { Button } from '@/designs/components'
-import ConfirmModal from '@/designs/components/modal/ConfirmModal'
 import { useInterviewNavigate } from '@/features/_common/hooks/useInterviewNavigation'
 import { ROUTES } from '@/routes/routes'
 import type { SimpleQnaType } from '@/types/interview'
+import { Button } from '@/ui/components'
+import ConfirmModal from '@/ui/components/modal/ConfirmModal'
 import { QnaListSection } from './QnaListSection'
 
 type RecordSectionProps = {

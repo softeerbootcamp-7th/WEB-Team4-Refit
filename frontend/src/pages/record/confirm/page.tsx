@@ -1,7 +1,6 @@
 import { Navigate, useParams } from 'react-router'
 import { getInterviewFull, InterviewDtoInterviewReviewStatus, useGetInterviewFull } from '@/apis'
 import { getInterviewNavigationPath } from '@/constants/interviewReviewStatusRoutes'
-import ConfirmModal from '@/designs/components/modal/ConfirmModal'
 import SidebarLayoutSkeleton from '@/features/_common/components/sidebar/SidebarLayoutSkeleton'
 import { useInterviewNavigate } from '@/features/_common/hooks/useInterviewNavigation'
 import { useSectionScroll } from '@/features/_common/hooks/useSectionScroll'
@@ -12,6 +11,7 @@ import { useQnaList, useRecordConfirmConvertGate } from '@/features/record/confi
 import { CONVERT_FAILED_ERROR_CODE } from '@/features/record/confirm/hooks/useRecordConfirmConvertGate'
 import { ROUTES } from '@/routes/routes'
 import type { InterviewInfoType, InterviewType, SimpleQnaType } from '@/types/interview'
+import ConfirmModal from '@/ui/components/modal/ConfirmModal'
 
 export default function RecordConfirmPage() {
   const { interviewId } = useParams()

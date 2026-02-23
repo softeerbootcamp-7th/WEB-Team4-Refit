@@ -1,8 +1,8 @@
 import { useState, type Ref } from 'react'
-import { PencilIcon, TrashIcon } from '@/designs/assets'
-import ConfirmModal from '@/designs/components/modal/ConfirmModal'
 import { QnaSetCard, QnaSetEditForm } from '@/features/_common/components/qna-set'
 import type { SimpleQnaType } from '@/types/interview'
+import { PencilIcon, TrashIcon } from '@/ui/assets'
+import ConfirmModal from '@/ui/components/modal/ConfirmModal'
 
 type QnaSetContainerProps = {
   ref?: Ref<HTMLDivElement>

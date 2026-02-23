@@ -1,4 +1,4 @@
-import { SmallLogoIcon } from '@/designs/assets'
+import { SmallLogoIcon } from '@/ui/assets'
 
 export interface DifficultQuestionCardData {
   id: number

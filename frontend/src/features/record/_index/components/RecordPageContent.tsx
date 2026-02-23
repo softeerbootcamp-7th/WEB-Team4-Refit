@@ -1,10 +1,10 @@
 import { useState, type Dispatch, type SetStateAction } from 'react'
-import { CloudSaveIcon, LoadingSpinner } from '@/designs/assets'
-import { Button } from '@/designs/components'
 import LoadingOverlay from '@/features/_common/loading/LoadingOverlay'
 import { LiveAudioVisualizer } from '@/features/_common/record/components'
 import { RecordSidebar } from '@/features/record/_index/components/RecordSidebar'
 import type { InterviewInfoType } from '@/types/interview'
+import { CloudSaveIcon, LoadingSpinner } from '@/ui/assets'
+import { Button } from '@/ui/components'
 
 type AutoSaveStatus = 'idle' | 'saving' | 'saved' | 'error'
 const MAX_RECORD_TEXT_LENGTH = 10_000

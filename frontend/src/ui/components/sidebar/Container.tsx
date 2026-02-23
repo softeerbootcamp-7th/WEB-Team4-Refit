@@ -1,4 +1,4 @@
-import Border from '@/designs/components/border'
+import Border from '@/ui/components/border'
 
 type ContainerWithHeaderProps = {
   title: string

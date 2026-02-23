@@ -1,8 +1,8 @@
 import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
-import { ContainerWithoutHeader } from '@/designs/components'
 import { formatDateTime } from '@/features/_common/utils/date'
 import type { LabelValueType } from '@/types/global'
 import type { InterviewInfoType } from '@/types/interview'
+import { ContainerWithoutHeader } from '@/ui/components'
 
 export function InterviewInfoSection({ companyName, interviewStartAt, jobRole, interviewType }: InterviewInfoType) {
   const infoItems = [

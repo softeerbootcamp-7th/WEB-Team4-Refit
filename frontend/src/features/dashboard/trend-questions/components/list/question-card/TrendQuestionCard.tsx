@@ -1,7 +1,7 @@
 import type { FrequentQnaSetResponse } from '@/apis/generated/refit-api.schemas'
 import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
-import { Badge, Border } from '@/designs/components'
 import { formatDate } from '@/features/_common/utils/date'
+import { Badge, Border } from '@/ui/components'
 
 type TrendQuestionCardProps = {
   item: FrequentQnaSetResponse

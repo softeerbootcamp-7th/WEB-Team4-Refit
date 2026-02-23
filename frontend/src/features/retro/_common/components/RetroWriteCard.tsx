@@ -1,4 +1,4 @@
-import { Badge } from '@/designs/components'
+import { Badge } from '@/ui/components'
 
 const MAX_LENGTH = 500
 

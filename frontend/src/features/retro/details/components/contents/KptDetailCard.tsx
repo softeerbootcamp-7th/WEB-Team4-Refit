@@ -1,10 +1,10 @@
 import { useRef, useState, type Ref } from 'react'
 import { useUpdateKptSelfReview } from '@/apis/generated/interview-api/interview-api'
-import { MoreIcon } from '@/designs/assets'
-import { Button } from '@/designs/components'
 import { useOnClickOutside } from '@/features/_common/hooks/useOnClickOutside'
 import { KptWriteCard } from '@/features/retro/_common/components/KptWriteCard'
 import type { KptTextsType } from '@/types/interview'
+import { MoreIcon } from '@/ui/assets'
+import { Button } from '@/ui/components'
 
 const isSameKptTexts = (current: KptTextsType, saved: KptTextsType) =>
   current.keepText === saved.keepText && current.problemText === saved.problemText && current.tryText === saved.tryText

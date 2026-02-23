@@ -1,7 +1,7 @@
 import { useEffect, type Dispatch, type RefObject, type SetStateAction } from 'react'
-import { MicIcon } from '@/designs/assets'
-import { Button } from '@/designs/components'
 import { useAudioRecorder } from '@/features/_common/record/components/useAudioRecorder'
+import { MicIcon } from '@/ui/assets'
+import { Button } from '@/ui/components'
 
 type LiveAudioVisualizerProps = {
   onCancel?: () => void

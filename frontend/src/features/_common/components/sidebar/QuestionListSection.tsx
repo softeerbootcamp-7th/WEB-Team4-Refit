@@ -1,6 +1,6 @@
 import { useEffect, useRef, useCallback } from 'react'
-import { ContainerWithHeader, ListItemLarge } from '@/designs/components'
 import type { IdLabelType } from '@/types/global'
+import { ContainerWithHeader, ListItemLarge } from '@/ui/components'
 
 type QuestionListSectionProps = {
   title: string

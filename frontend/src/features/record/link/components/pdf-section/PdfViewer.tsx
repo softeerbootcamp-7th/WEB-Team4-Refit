@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { Button } from '@/designs/components'
+import { Button } from '@/ui/components'
 import { PdfNavigation } from './PdfNavigation'
 import { PdfPage } from './PdfPage'
 import { useContainerSize } from './useContainerSize'

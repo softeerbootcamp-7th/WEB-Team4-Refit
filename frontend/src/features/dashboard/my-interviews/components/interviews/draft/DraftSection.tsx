@@ -4,8 +4,8 @@ import { useGetMyInterviewDrafts } from '@/apis/generated/interview-my-api/inter
 import type { GetMyInterviewDraftsInterviewDraftType } from '@/apis/generated/refit-api.schemas'
 import { getInterviewNavigationPath } from '@/constants/interviewReviewStatusRoutes'
 import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
-import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/designs/components'
 import { mapDraftInterviewRow } from '@/features/dashboard/my-interviews/components/interviews/mappers'
+import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/ui/components'
 import DraftListModal from './draft-list-modal/DraftListModal'
 
 type DraftSectionProps = {

@@ -11,12 +11,12 @@ import {
 import type { InterviewDto } from '@/apis'
 import { INTERVIEW_REVIEW_STATUS_LABEL } from '@/constants/interviewReviewStatus'
 import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
-import { MoreIcon, SmallLogoIcon } from '@/designs/assets'
-import { Badge } from '@/designs/components'
-import ConfirmModal from '@/designs/components/modal/ConfirmModal'
 import { useMenuPosition } from '@/features/_common/hooks/useMenuPosition'
 import { useOnClickOutside } from '@/features/_common/hooks/useOnClickOutside'
 import { formatDateTime } from '@/features/_common/utils/date'
+import { MoreIcon, SmallLogoIcon } from '@/ui/assets'
+import { Badge } from '@/ui/components'
+import ConfirmModal from '@/ui/components/modal/ConfirmModal'
 import { CalendarInterviewMenu } from './CalendarInterviewMenu'
 
 interface CalendarInterviewCardProps {

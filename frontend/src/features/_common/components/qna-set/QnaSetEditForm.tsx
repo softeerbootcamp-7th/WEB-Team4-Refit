@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Badge, Button } from '@/designs/components'
+import { Badge, Button } from '@/ui/components'
 
 type QnaSetEditFormProps = {
   idx: number

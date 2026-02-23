@@ -1,12 +1,12 @@
 import { useMemo, useState } from 'react'
 import { INTERVIEW_TYPE_OPTIONS } from '@/constants/interviews'
-import { Button, Checkbox, Modal } from '@/designs/components'
 import {
   EMPTY_FILTER,
   RESULT_STATUS_ITEMS,
   REVIEW_STATUS_ITEMS,
 } from '@/features/dashboard/my-interviews/constants/constants'
 import type { InterviewFilter } from '@/types/interview'
+import { Button, Checkbox, Modal } from '@/ui/components'
 
 type InterviewFilterModalProps = {
   open: boolean

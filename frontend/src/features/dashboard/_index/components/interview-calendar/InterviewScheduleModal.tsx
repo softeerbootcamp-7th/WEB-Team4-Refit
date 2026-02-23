@@ -7,11 +7,11 @@ import {
   InterviewCreateRequestInterviewType,
   useCreateInterview,
 } from '@/apis'
-import Modal from '@/designs/components/modal'
 import { ScheduleModalContent } from '@/features/dashboard/_index/components/schedule-modal-content/ScheduleModalContent'
 import type { ScheduleFormSubmitValues } from '@/features/dashboard/_index/components/schedule-modal-content/ScheduleModalContent'
 import { SCHEDULE_MODAL_STEP_CONFIG } from '@/features/dashboard/_index/constants/interviewCalendar'
 import { useScheduleModal } from '@/features/dashboard/_index/contexts/ScheduleModalContext'
+import Modal from '@/ui/components/modal'
 
 const toStartAt = (date: string, time: string) => {
   if (!date || !time) return null

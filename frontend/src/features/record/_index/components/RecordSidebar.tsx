@@ -1,7 +1,7 @@
-import { NoteIcon } from '@/designs/assets'
-import { SidebarLayout } from '@/designs/components'
 import { InterviewInfoSection } from '@/features/_common/components/sidebar'
 import type { InterviewInfoType } from '@/types/interview'
+import { NoteIcon } from '@/ui/assets'
+import { SidebarLayout } from '@/ui/components'
 
 type RecordSidebarProps = {
   infoItems: InterviewInfoType
