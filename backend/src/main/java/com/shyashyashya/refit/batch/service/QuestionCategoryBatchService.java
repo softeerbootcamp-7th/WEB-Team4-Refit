@@ -77,6 +77,11 @@ public class QuestionCategoryBatchService {
         }
 
         log.info("[createCategories] 6. QnaSet 이 분류되지 않은 카테고리 삭제");
+        List<Long> notEmptyCategoryIds = qnaSetCategoryRepository.findAllNotEmptyCategoryIds();
+        categoryVectorRepository
+                .findAll()
+                .filter(document -> !notEmptyCategoryIds.contains(document.getId()))
+                .forEach(document -> categoryVectorRepository.deleteById(document.getId()));
         qnaSetCategoryRepository.deleteEmptyCategory();
     }
 }

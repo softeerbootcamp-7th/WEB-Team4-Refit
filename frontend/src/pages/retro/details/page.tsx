@@ -1,4 +1,4 @@
-import { Suspense, useState } from 'react'
+import { Suspense, useMemo, useState } from 'react'
 import { useParams } from 'react-router'
 import { getInterviewFull, useGetInterviewFullSuspense } from '@/apis/generated/interview-api/interview-api'
 import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
@@ -30,6 +30,9 @@ function RetroDetailContent() {
   const [isPdfOpen, setIsPdfOpen] = useState(false)
 
   const { activeIndex, setRef, scrollContainerRef, handleItemClick } = useSectionScroll({ idPrefix: 'retro' })
+  const qnaSetIndexById = useMemo(() => {
+    return new Map(qnaSets.map((qnaSet, index) => [qnaSet.qnaSetId, index]))
+  }, [qnaSets])
 
   const togglePdf = () => setIsPdfOpen((v) => !v)
 
@@ -55,6 +58,11 @@ function RetroDetailContent() {
           hasPdf={hasUploadedPdf}
           qnaSetIds={qnaSets.map((qna) => qna.qnaSetId)}
           startPage="first"
+          onHighlightRectClick={(qnaSetId) => {
+            const index = qnaSetIndexById.get(qnaSetId)
+            if (index === undefined) return
+            handleItemClick(index)
+          }}
         />
       </div>
     )

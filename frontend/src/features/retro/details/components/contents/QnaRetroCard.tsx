@@ -1,5 +1,8 @@
 import { useRef, useState, type Ref } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
+import { getGetInterviewFullQueryKey } from '@/apis/generated/interview-api/interview-api'
 import {
+  getGetPdfHighlightingsQueryKey,
   useCreateStarAnalysis,
   useDeletePdfHighlighting,
   useDeleteQnaSet,
@@ -22,14 +25,16 @@ type QnaRetroCardProps = {
   qnaSet: QnaSetType
   isOtherEditing?: boolean
   onEditingIdChange?: (editingId: string | null) => void
-  onDelete?: (qnaSetId: number) => void
 }
 
 const SCRAP_FOLDERS_STALE_TIME = 1000 * 60 * 30
 const QNA_DELETE_FAILED_PDF_HIGHLIGHTING_EXISTS = 'QNA_DELETE_FAILED_PDF_HIGHLIGHTING_EXISTS'
+const DELETE_ERROR_MESSAGE = '질문 삭제에 실패했어요. 잠시 후 다시 시도해주세요.'
 
-export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChange, onDelete }: QnaRetroCardProps) {
-  const { qnaSetId, questionText, answerText, qnaSetSelfReviewText, starAnalysis, isMarkedDifficult } = qnaSet
+export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChange }: QnaRetroCardProps) {
+  const { interviewId, qnaSetId, questionText, answerText, qnaSetSelfReviewText, starAnalysis, isMarkedDifficult } =
+    qnaSet
+  const queryClient = useQueryClient()
   const { mutateAsync: updateQnaSet, isPending: isSavingQna } = useUpdateQnaSet()
   const { mutateAsync: updateQnaSetSelfReview, isPending: isSavingRetro } = useUpdateQnaSetSelfReview()
   const { mutateAsync: deleteQnaSet, isPending: isDeletingQnaSet } = useDeleteQnaSet()
@@ -51,6 +56,7 @@ export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChan
   const isBookmarked = currentMarkedDifficult || hasAnyScrapFolder
 
   const [isScrapModalOpen, setIsScrapModalOpen] = useState(false)
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false)
   const [isDeleteWithHighlightConfirmOpen, setIsDeleteWithHighlightConfirmOpen] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
 
@@ -72,6 +78,13 @@ export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChan
   useOnClickOutside(menuRef, () => setIsMenuOpen(false))
 
   const editingKey = `edit-${qnaSetId}`
+
+  const invalidateAfterDelete = async () => {
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: getGetInterviewFullQueryKey(interviewId) }),
+      queryClient.invalidateQueries({ queryKey: getGetPdfHighlightingsQueryKey(qnaSetId) }),
+    ])
+  }
 
   const startEditing = () => {
     setIsEditing(true)
@@ -121,6 +134,10 @@ export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChan
         savedRetroRef.current = editedRetro
       }
 
+      if (isQnaChanged || isRetroChanged) {
+        void queryClient.invalidateQueries({ queryKey: getGetInterviewFullQueryKey(interviewId) })
+      }
+
       stopEditing()
     } catch {
       setSaveErrorMessage('저장에 실패했어요. 잠시 후 다시 시도해주세요.')
@@ -132,14 +149,17 @@ export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChan
     stopEditing()
   }
 
-  const handleDelete = () => {
-    setIsMenuOpen(false)
+  const handleDeleteRequest = () => {
+    if (isDeletingQnaSet || isDeletingPdfHighlighting) return
+
     void deleteQnaSet({ qnaSetId })
       .then(() => {
-        onDelete?.(qnaSetId)
+        setIsDeleteConfirmOpen(false)
+        return invalidateAfterDelete()
       })
       .catch((error) => {
         if (getApiErrorCode(error) === QNA_DELETE_FAILED_PDF_HIGHLIGHTING_EXISTS) {
+          setIsDeleteConfirmOpen(false)
           setIsDeleteWithHighlightConfirmOpen(true)
           return
         }
@@ -151,9 +171,12 @@ export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChan
       .then(() => deleteQnaSet({ qnaSetId }))
       .then(() => {
         setIsDeleteWithHighlightConfirmOpen(false)
-        onDelete?.(qnaSetId)
+        return invalidateAfterDelete()
       })
-      .catch(() => {})
+      .catch(() => {
+        console.error(DELETE_ERROR_MESSAGE)
+        setIsDeleteWithHighlightConfirmOpen(false)
+      })
   }
 
   const handleScrap = () => {
@@ -198,7 +221,10 @@ export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChan
                     수정하기
                   </button>
                   <button
-                    onClick={handleDelete}
+                    onClick={() => {
+                      setIsMenuOpen(false)
+                      setIsDeleteConfirmOpen(true)
+                    }}
                     className="body-s-medium w-full px-4 py-2.5 text-left text-red-500 hover:bg-red-50"
                   >
                     삭제하기
@@ -277,6 +303,18 @@ export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChan
         qnaSetId={qnaSetId}
         isMarkedDifficult={currentMarkedDifficult}
         onDifficultMarkedChange={setCurrentMarkedDifficult}
+      />
+      <ConfirmModal
+        open={isDeleteConfirmOpen}
+        onClose={() => setIsDeleteConfirmOpen(false)}
+        title={`질문을 정말\n삭제하시겠어요?`}
+        description="삭제 후에는 되돌릴 수 없어요."
+        hasCancelButton={true}
+        cancelText="취소"
+        okText="삭제하기"
+        okButtonVariant="fill-gray-800"
+        okButtonLoading={isDeletingQnaSet}
+        onOk={handleDeleteRequest}
       />
       <ConfirmModal
         open={isDeleteWithHighlightConfirmOpen}

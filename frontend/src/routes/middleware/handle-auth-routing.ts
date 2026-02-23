@@ -44,7 +44,7 @@ const validateAuthOnce = async (): Promise<AuthSessionStatus> => {
 
   initialAuthCheckPromise = (async () => {
     try {
-      const response = await reissue()
+      const response = await reissue({ originType: import.meta.env.VITE_APP_ENV })
       const isNeedSignUp = response.result?.isNeedSignUp ?? true
       /* 
         isNeedSignUp이 false인 경우는 구글 가입 완료 && 서비스 회원가입 완료

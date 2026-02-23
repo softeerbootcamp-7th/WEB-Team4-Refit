@@ -5,6 +5,7 @@ import com.shyashyashya.refit.global.auth.dto.TokenReissueResultDto;
 import com.shyashyashya.refit.global.auth.model.RefreshToken;
 import com.shyashyashya.refit.global.auth.repository.RefreshTokenRepository;
 import com.shyashyashya.refit.global.exception.RefreshTokenTheftException;
+import com.shyashyashya.refit.global.model.ClientOriginType;
 import com.shyashyashya.refit.global.property.AuthJwtProperty;
 import com.shyashyashya.refit.global.util.KeyLockUtil;
 import jakarta.annotation.Nullable;
@@ -41,7 +42,10 @@ public class JwtService {
     }
 
     public TokenReissueResultDto rotateRefreshToken(
-            @NotNull String encodedRefreshJwt, @NotNull String email, @Nullable Long userId) {
+            @NotNull String encodedRefreshJwt,
+            @NotNull String email,
+            @Nullable Long userId,
+            ClientOriginType originType) {
         ReentrantLock lock = keyLockUtil.acquire(email);
         try {
             // 리프레시 토큰이 저장소에 없으면 탈취 의심, 재로그인 필요
@@ -50,7 +54,7 @@ public class JwtService {
             // TODO: 이것을 과연 '탈취'라고 말할 수 있을까? 이런 경우를 구분한다면 어떻게 해야할까
             if (!refreshTokenRepository.existsById(encodedRefreshJwt)) {
                 refreshTokenRepository.deleteByEmail(email);
-                throw new RefreshTokenTheftException();
+                throw new RefreshTokenTheftException(originType);
             }
 
             // 리프레시 토큰을 신뢰, RT Rotation 및 AT, RT 재발급

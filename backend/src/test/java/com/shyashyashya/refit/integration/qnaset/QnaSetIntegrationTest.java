@@ -19,6 +19,13 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
 import com.shyashyashya.refit.domain.interview.model.InterviewResultStatus;
+import com.shyashyashya.refit.domain.qnaset.model.StarAnalysis;
+import com.shyashyashya.refit.domain.qnaset.model.StarInclusionLevel;
+import com.shyashyashya.refit.domain.qnaset.repository.StarAnalysisRepository;
+import com.shyashyashya.refit.domain.scrapfolder.model.QnaSetScrapFolder;
+import com.shyashyashya.refit.domain.scrapfolder.model.ScrapFolder;
+import com.shyashyashya.refit.domain.scrapfolder.repository.QnaSetScrapFolderRepository;
+import com.shyashyashya.refit.domain.scrapfolder.repository.ScrapFolderRepository;
 import com.shyashyashya.refit.integration.core.IntegrationTest;
 import com.shyashyashya.refit.domain.interview.dto.request.InterviewCreateRequest;
 import com.shyashyashya.refit.domain.interview.dto.request.QnaSetCreateRequest;
@@ -55,6 +62,15 @@ public class QnaSetIntegrationTest extends IntegrationTest {
 
     @Autowired
     private QnaSetSelfReviewRepository qnaSetSelfReviewRepository;
+
+    @Autowired
+    private ScrapFolderRepository scrapFolderRepository;
+
+    @Autowired
+    private QnaSetScrapFolderRepository qnaSetScrapFolderRepository;
+
+    @Autowired
+    private StarAnalysisRepository starAnalysisRepository;
 
     private Long qnaSetDraftQnaSetId;
     private Long debriefCompletedQnaSetId;
@@ -460,14 +476,21 @@ public class QnaSetIntegrationTest extends IntegrationTest {
             createAndSavePdfHighlighting(pdfHighlightUpdateRequest, qnaSetWithPdfHighlighting);
         }
 
-        @Test
-        void 인터뷰가_질답_세트_검토_중_상태이면_질답_세트_삭제에_성공한다() {
+        @ParameterizedTest
+        @EnumSource(value = InterviewReviewStatus.class, names = {"QNA_SET_DRAFT", "DEBRIEF_COMPLETED"})
+        void 인터뷰가_질답_세트_검토_중_또는_회고_완료_상태이면_질답_세트_삭제에_성공한다(InterviewReviewStatus reviewStatus) {
             // given
+            var interviewCreateRequest1 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview interview = createAndSaveInterview(interviewCreateRequest1, reviewStatus);
+
+            var qnaSetCreateRequest1 = new QnaSetCreateRequest("test question text", "test answer text");
+            QnaSet qnaSet = createAndSaveQnaSet(qnaSetCreateRequest1, interview, true);
 
             // when & then
             given(spec)
             .when()
-                    .delete("/qna-set/" + qnaSetDraftQnaSetId)
+                    .delete("/qna-set/" + qnaSet.getId())
             .then()
                     .statusCode(200)
                     .body("code", equalTo(COMMON204.name()))
@@ -475,14 +498,21 @@ public class QnaSetIntegrationTest extends IntegrationTest {
                     .body("result", nullValue());
         }
 
-        @Test
-        void 인터뷰가_질답_세트_검토_중_상태가_아니면_질답_세트_삭제에_실패한다() {
+        @ParameterizedTest
+        @EnumSource(value = InterviewReviewStatus.class, mode = EnumSource.Mode.EXCLUDE, names = {"QNA_SET_DRAFT", "DEBRIEF_COMPLETED"})
+        void 인터뷰가_질답_세트_검토_중_또는_회고_완료_상태가_아니면_질답_세트_삭제에_실패한다(InterviewReviewStatus reviewStatus) {
             // given
+            var interviewCreateRequest1 = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview interview = createAndSaveInterview(interviewCreateRequest1, reviewStatus);
+
+            var qnaSetCreateRequest1 = new QnaSetCreateRequest("test question text", "test answer text");
+            QnaSet qnaSet = createAndSaveQnaSet(qnaSetCreateRequest1, interview, true);
 
             // when & then
             given(spec)
             .when()
-                    .delete("/qna-set/" + debriefCompletedQnaSetId)
+                    .delete("/qna-set/" + qnaSet.getId())
             .then()
                     .statusCode(400)
                     .body("code", equalTo(INTERVIEW_REVIEW_STATUS_VALIDATION_FAILED.name()))
@@ -533,6 +563,97 @@ public class QnaSetIntegrationTest extends IntegrationTest {
                     .body("message", equalTo(QNA_DELETE_FAILED_PDF_HIGHLIGHTING_EXISTS.getMessage()))
                     .body("result", nullValue());
         }
+
+        @Test
+        void 질문과_연관된_스크랩내역이_존재해도_질답_세트_삭제에_성공한다() {
+            // given
+            var interviewCreateRequest = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer");
+            Interview interview = createAndSaveInterview(interviewCreateRequest, InterviewReviewStatus.QNA_SET_DRAFT);
+
+            var qnaSetCreateRequest = new QnaSetCreateRequest("scrap test question", "test answer text");
+            QnaSet scrapedQnaSet = createAndSaveQnaSet(qnaSetCreateRequest, interview, false);
+
+            ScrapFolder scrapFolder = scrapFolderRepository.save(ScrapFolder.create("스크랩 폴더", requestUser));
+            qnaSetScrapFolderRepository.save(QnaSetScrapFolder.create(scrapedQnaSet, scrapFolder));
+
+            // when & then
+            given(spec)
+            .when()
+                    .delete("/qna-set/" + scrapedQnaSet.getId())
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON204.name()))
+                    .body("message", equalTo(COMMON204.getMessage()))
+                    .body("result", nullValue());
+
+            assertThat(qnaSetRepository.findById(scrapedQnaSet.getId())).isEmpty();
+            assertThat(qnaSetScrapFolderRepository.existsByQnaSetAndScrapFolder(scrapedQnaSet, scrapFolder)).isFalse();
+        }
+
+        @Test
+        void 회고가_존재하는_질답_세트_삭제에_성공한다() {
+            // given
+            var interviewCreateRequest = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L,
+                    "BE Developer");
+            Interview interview = createAndSaveInterview(interviewCreateRequest,
+                    InterviewReviewStatus.DEBRIEF_COMPLETED);
+
+            var qnaSetCreateRequest = new QnaSetCreateRequest("test question text", "test answer text");
+            QnaSet qnaSet = createAndSaveQnaSet(qnaSetCreateRequest, interview, true);
+
+            QnaSetSelfReview selfReview = QnaSetSelfReview.create("self review test", qnaSet);
+            qnaSetSelfReviewRepository.save(selfReview);
+
+            // when & then
+            given(spec)
+            .when()
+                    .delete("/qna-set/" + qnaSet.getId())
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON204.name()))
+                    .body("message", equalTo(COMMON204.getMessage()))
+                    .body("result", nullValue());
+
+            assertThat(qnaSetRepository.findById(qnaSet.getId())).isEmpty();
+            assertThat(qnaSetSelfReviewRepository.findById(selfReview.getId())).isEmpty();
+        }
+
+        @Test
+        void STAR_분석이_존재하는_질답_세트_삭제에_성공한다() {
+            // given
+            var interviewCreateRequest = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0), InterviewType.FIRST, "현대자동차", 1L, 1L,
+                    "BE Developer");
+            Interview interview = createAndSaveInterview(interviewCreateRequest,
+                    InterviewReviewStatus.DEBRIEF_COMPLETED);
+            var qnaSetCreateRequest = new QnaSetCreateRequest("test question text", "test answer text");
+            QnaSet qnaSet = createAndSaveQnaSet(qnaSetCreateRequest, interview, true);
+            // SelfReview 대신 StarAnalysis 생성 및 완료 상태 세팅
+            StarAnalysis starAnalysis = StarAnalysis.create(qnaSet);
+            starAnalysis.complete(
+                    StarInclusionLevel.PRESENT,
+                    StarInclusionLevel.PRESENT,
+                    StarInclusionLevel.PRESENT,
+                    StarInclusionLevel.PRESENT,
+                    "overall summary test"
+            );
+            starAnalysisRepository.save(starAnalysis);
+            // when & then
+            given(spec)
+                    .when()
+                    .delete("/qna-set/" + qnaSet.getId())
+                    .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON204.name()))
+                    .body("message", equalTo(COMMON204.getMessage()))
+                    .body("result", nullValue());
+            assertThat(qnaSetRepository.findById(qnaSet.getId())).isEmpty();
+            // 삭제 검증 타겟 변경
+            assertThat(starAnalysisRepository.findById(starAnalysis.getId())).isEmpty();
+        }
+
     }
 
     @Nested
@@ -1284,6 +1405,35 @@ public class QnaSetIntegrationTest extends IntegrationTest {
                     .body("result", hasSize(0));
         }
 
+        @ParameterizedTest
+        @EnumSource(value = InterviewReviewStatus.class, names = {"QNA_SET_DRAFT", "DEBRIEF_COMPLETED"})
+        void 인터뷰가_질답_세트_검토_중_또는_회고_완료_상태이면_PDF_하이라이팅_전체_삭제에_성공한다(InterviewReviewStatus reviewStatus) {
+            // given
+            var interviewCreateRequest = new InterviewCreateRequest(
+                    LocalDateTime.of(2025, 12, 29, 10, 0, 0),
+                    InterviewType.FIRST, "현대자동차", 1L, 1L, "BE Developer"
+            );
+            Interview interview = createAndSaveInterview(interviewCreateRequest, reviewStatus);
+
+            var qnaSetCreateRequest = new QnaSetCreateRequest("q", "a");
+            QnaSet qnaSet = createAndSaveQnaSet(qnaSetCreateRequest, interview, false);
+            Long qnaSetId = qnaSet.getId();
+
+            List<PdfHighlightingUpdateRequest> pdfHighlightUpdateRequest = createPdfHighlightUpdateRequest();
+            createAndSavePdfHighlighting(pdfHighlightUpdateRequest, qnaSet);
+
+            // when & then
+            given(spec)
+            .when()
+                    .delete("/qna-set/" + qnaSetId + "/pdf-highlighting")
+            .then()
+                    .statusCode(200)
+                    .body("code", equalTo(COMMON204.name()))
+                    .body("message", equalTo(COMMON204.getMessage()))
+                    .body("result", nullValue());
+        }
+
+
         @Test
         void 이미_비어있는_PDF_하이라이팅_전체_삭제도_성공한다() {
             // given
@@ -1327,9 +1477,9 @@ public class QnaSetIntegrationTest extends IntegrationTest {
         @EnumSource(
                 value = InterviewReviewStatus.class,
                 mode = EnumSource.Mode.EXCLUDE,
-                names = "QNA_SET_DRAFT"
+                names = {"QNA_SET_DRAFT", "DEBRIEF_COMPLETED"}
         )
-        void 인터뷰가_질답_세트_검토_중_상태가_아니면_PDF_하이라이팅_전체_삭제에_실패한다(InterviewReviewStatus reviewStatus) {
+        void 인터뷰가_질답_세트_검토_중_또는_회고_완료_상태가_아니면_PDF_하이라이팅_전체_삭제에_실패한다(InterviewReviewStatus reviewStatus) {
             // given
             var interviewCreateRequest = new InterviewCreateRequest(
                     LocalDateTime.of(2025, 12, 29, 10, 0, 0),

@@ -1,21 +1,9 @@
 import { useMemo } from 'react'
-import { useGetAllJobCategories, useGetIndustries } from '@/apis'
+import { useFindCompanies, useGetAllJobCategories, useGetIndustries } from '@/apis'
 import { SearchableCombobox } from '@/ui/components'
 import Button from '@/ui/components/button'
 
 const FORM_OPTIONS_STALE_TIME = 60 * 60 * 1000
-
-const COMPANY_OPTIONS: { value: string; label: string }[] = [
-  { value: '카카오', label: '카카오' },
-  { value: '네이버', label: '네이버' },
-  { value: '쿠팡', label: '쿠팡' },
-  { value: '토스', label: '토스' },
-  { value: '라인', label: '라인' },
-  { value: '삼성전자', label: '삼성전자' },
-  { value: '현대자동차', label: '현대자동차' },
-  { value: 'LG전자', label: 'LG전자' },
-  { value: 'SK', label: 'SK' },
-]
 
 export interface InterviewInfoFormValues {
   companyName: string
@@ -33,6 +21,9 @@ export interface InterviewInfoContentProps {
 export function InterviewInfoContent({ values, onChange, onNext }: InterviewInfoContentProps) {
   const { companyName, industryId, jobCategoryId } = values
 
+  const { data: companies, isLoading: isCompaniesLoading } = useFindCompanies(undefined, {
+    query: { staleTime: FORM_OPTIONS_STALE_TIME },
+  })
   const { data: industries, isLoading: isIndustriesLoading } = useGetIndustries({
     query: { staleTime: FORM_OPTIONS_STALE_TIME },
   })
@@ -40,6 +31,14 @@ export function InterviewInfoContent({ values, onChange, onNext }: InterviewInfo
     query: { staleTime: FORM_OPTIONS_STALE_TIME },
   })
 
+  const companyOptions = useMemo(
+    () =>
+      (companies?.result?.content ?? []).map((item) => ({
+        value: item.companyName ?? '',
+        label: item.companyName ?? '',
+      })),
+    [companies?.result?.content],
+  )
   const industryOptions = useMemo(
     () =>
       (industries?.result ?? []).map((item) => ({
@@ -74,12 +73,13 @@ export function InterviewInfoContent({ values, onChange, onNext }: InterviewInfo
         <SearchableCombobox
           label="회사명"
           placeholder="회사명을 선택해 주세요"
-          options={COMPANY_OPTIONS}
+          options={companyOptions}
           value={companyName}
           onChange={(e: { target: { value: string } }) => onChange({ ...values, companyName: e.target.value })}
           required
           searchPlaceholder="검색"
           creatable
+          disabled={isCompaniesLoading}
         />
         <SearchableCombobox
           label="산업군"

@@ -36,8 +36,8 @@ import com.shyashyashya.refit.domain.interview.service.validator.InterviewValida
 import com.shyashyashya.refit.domain.jobcategory.model.JobCategory;
 import com.shyashyashya.refit.domain.jobcategory.repository.JobCategoryRepository;
 import com.shyashyashya.refit.domain.qnaset.dto.StarAnalysisDto;
+import com.shyashyashya.refit.domain.qnaset.event.QuestionBatchEmbeddingEvent;
 import com.shyashyashya.refit.domain.qnaset.event.QuestionEmbeddingDeletionEvent;
-import com.shyashyashya.refit.domain.qnaset.event.QuestionEmbeddingEvent;
 import com.shyashyashya.refit.domain.qnaset.model.PdfHighlighting;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSet;
 import com.shyashyashya.refit.domain.qnaset.model.QnaSetSelfReview;
@@ -45,6 +45,7 @@ import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRepository
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetSelfReviewRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.StarAnalysisRepository;
+import com.shyashyashya.refit.domain.scrapfolder.repository.QnaSetScrapFolderRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
 import com.shyashyashya.refit.global.gemini.GeminiClient;
@@ -89,6 +90,7 @@ public class InterviewService {
     private final PdfHighlightingRepository pdfHighlightingRepository;
     private final StarAnalysisRepository starAnalysisRepository;
     private final InterviewSelfReviewRepository interviewSelfReviewRepository;
+    private final QnaSetScrapFolderRepository qnaSetScrapFolderRepository;
 
     private final InterviewValidator interviewValidator;
     private final RequestUserContext requestUserContext;
@@ -181,9 +183,11 @@ public class InterviewService {
         deleteAllPdfHighlighting(interview);
         starAnalysisRepository.deleteAllByInterview(interview);
         qnaSetSelfReviewRepository.deleteAllByInterview(interview);
-        qnaSetRepository
-                .findAllByInterview(interview)
-                .forEach(qnaSet -> eventPublisher.publishEvent(QuestionEmbeddingDeletionEvent.of(qnaSet.getId())));
+        List<QnaSet> qnaSets = qnaSetRepository.findAllByInterview(interview);
+        if (!qnaSets.isEmpty()) {
+            qnaSetScrapFolderRepository.deleteAllByQnaSetIn(qnaSets);
+        }
+        qnaSets.forEach(qnaSet -> eventPublisher.publishEvent(QuestionEmbeddingDeletionEvent.of(qnaSet.getId())));
         qnaSetRepository.deleteAllByInterview(interview);
         interviewSelfReviewRepository.deleteByInterview(interview);
         interviewRepository.delete(interview);
@@ -350,7 +354,8 @@ public class InterviewService {
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
         interviewValidator.validateInterviewOwner(interview, requestUser);
-        interviewValidator.validateInterviewReviewStatus(interview, List.of(InterviewReviewStatus.SELF_REVIEW_DRAFT));
+        interviewValidator.validateInterviewReviewStatus(
+                interview, List.of(InterviewReviewStatus.SELF_REVIEW_DRAFT, InterviewReviewStatus.DEBRIEF_COMPLETED));
 
         interviewSelfReviewRepository
                 .findByInterview(interview)
@@ -409,17 +414,16 @@ public class InterviewService {
     @Transactional
     public void completeSelfReview(Long interviewId) {
         User requestUser = requestUserContext.getRequestUser();
-
         Interview interview =
                 interviewRepository.findById(interviewId).orElseThrow(() -> new CustomException(INTERVIEW_NOT_FOUND));
+
         interviewValidator.validateInterviewOwner(interview, requestUser);
         interviewValidator.validateInterviewReviewStatus(interview, List.of(InterviewReviewStatus.SELF_REVIEW_DRAFT));
+
         interview.completeReview();
 
-        // TODO: 추후 bulk insert 등 한번에 데이터를 전달하는 방식 고려
         List<QnaSet> qnaSets = qnaSetRepository.findAllByInterview(interview);
-        qnaSets.forEach(qnaSet ->
-                eventPublisher.publishEvent(QuestionEmbeddingEvent.of(qnaSet.getId(), qnaSet.getQuestionText())));
+        eventPublisher.publishEvent(new QuestionBatchEmbeddingEvent(qnaSets));
     }
 
     private Company findOrSaveCompany(InterviewCreateRequest request) {

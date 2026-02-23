@@ -57,7 +57,7 @@ function UserProfileContent() {
   const handleLogout = () => {
     if (isLoggingOut) return
     setIsMenuOpen(false)
-    requestLogout()
+    requestLogout({ params: { originType: import.meta.env.VITE_APP_ENV } })
   }
 
   return (

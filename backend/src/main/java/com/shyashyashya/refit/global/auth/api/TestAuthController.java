@@ -71,8 +71,8 @@ public class TestAuthController {
             @CookieValue(value = AuthConstant.REFRESH_TOKEN, required = false) String refreshToken,
             @RequestParam(required = false) String originType) {
         ClientOriginType clientOriginType = ClientOriginType.fromOriginTypeString(originType);
-        String deleteAccessTokenCookie = cookieUtil.deleteCookie(AuthConstant.ACCESS_TOKEN);
-        String deleteRefreshTokenCookie = cookieUtil.deleteCookie(AuthConstant.REFRESH_TOKEN);
+        String deleteAccessTokenCookie = cookieUtil.deleteCookie(AuthConstant.ACCESS_TOKEN, clientOriginType);
+        String deleteRefreshTokenCookie = cookieUtil.deleteCookie(AuthConstant.REFRESH_TOKEN, clientOriginType);
 
         if (refreshToken != null) {
             refreshTokenRepository.deleteById(refreshToken);

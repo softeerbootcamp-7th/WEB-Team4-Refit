@@ -24,6 +24,7 @@ import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRectReposi
 import com.shyashyashya.refit.domain.qnaset.repository.PdfHighlightingRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetRepository;
 import com.shyashyashya.refit.domain.qnaset.repository.QnaSetSelfReviewRepository;
+import com.shyashyashya.refit.domain.qnaset.repository.StarAnalysisRepository;
 import com.shyashyashya.refit.domain.scrapfolder.repository.QnaSetScrapFolderRepository;
 import com.shyashyashya.refit.domain.user.model.User;
 import com.shyashyashya.refit.global.exception.CustomException;
@@ -50,6 +51,7 @@ public class QnaSetService {
     private final PdfHighlightingRepository pdfHighlightingRepository;
     private final QnaSetScrapFolderRepository qnaSetScrapFolderRepository;
     private final PdfHighlightingRectRepository pdfHighlightingRectRepository;
+    private final StarAnalysisRepository starAnalysisRepository;
     private final RequestUserContext requestUserContext;
     private final InterviewValidator interviewValidator;
     private final IndustryValidator industryValidator;
@@ -111,12 +113,16 @@ public class QnaSetService {
     public void deleteQnaSet(Long qnaSetId) {
         QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
         interviewValidator.validateInterviewReviewStatus(
-                qnaSet.getInterview(), List.of(InterviewReviewStatus.QNA_SET_DRAFT));
+                qnaSet.getInterview(),
+                List.of(InterviewReviewStatus.QNA_SET_DRAFT, InterviewReviewStatus.DEBRIEF_COMPLETED));
 
         if (pdfHighlightingRepository.existsByQnaSet(qnaSet)) {
             throw new CustomException(QNA_DELETE_FAILED_PDF_HIGHLIGHTING_EXISTS);
         }
 
+        qnaSetSelfReviewRepository.deleteByQnaSet(qnaSet);
+        starAnalysisRepository.deleteByQnaSet(qnaSet);
+        qnaSetScrapFolderRepository.deleteAllByQnaSet(qnaSet);
         qnaSetRepository.delete(qnaSet);
         eventPublisher.publishEvent(QuestionEmbeddingDeletionEvent.of(qnaSetId));
     }
@@ -163,7 +169,8 @@ public class QnaSetService {
     public void deletePdfHighlighting(Long qnaSetId) {
         QnaSet qnaSet = getValidatedQnaSet(qnaSetId);
         interviewValidator.validateInterviewReviewStatus(
-                qnaSet.getInterview(), List.of(InterviewReviewStatus.QNA_SET_DRAFT));
+                qnaSet.getInterview(),
+                List.of(InterviewReviewStatus.QNA_SET_DRAFT, InterviewReviewStatus.DEBRIEF_COMPLETED));
         pdfHighlightingRepository.deleteAllByQnaSet(qnaSet);
     }
 
