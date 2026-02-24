@@ -217,7 +217,8 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
 |BE|면접 기록의 질답 변환이 실패하는 문제의 해결 과정 (작성 예정)|권찬|
 |BE|[WebClient vs RestClient 성능 비교](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B송영범%5D-WebClient-vs-RestClient-성능-비교) (작성 예정)|송영범|
 |BE|[AWS S3 Presigned URL 무한 업로드 문제 해결](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B송영범%5D-S3-Presigned%E2%80%90URL-무한-업로드-문제)|송영범|
-|BE|벡터 데이터베이스 활용을 위한 객체지향적인 인터페이스 설계 과정 (작성 예정)|이장안|
+|BE|[VectorDB 도입 트러블슈팅: 객체지향적 Repository 인터페이스 설계 및 구현체 작성](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%EC%9D%B4%EC%9E%A5%EC%95%88%5D-VectorDB-%EB%8F%84%EC%9E%85-%ED%8A%B8%EB%9F%AC%EB%B8%94%EC%8A%88%ED%8C%85%3A-%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5%EC%A0%81-Repository-%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4-%EC%84%A4%EA%B3%84-%EB%B0%8F-%EA%B5%AC%ED%98%84%EC%B2%B4-%EC%9E%91%EC%84%B1)|이장안|
+|BE|[Spring Security 없이 구현하는 OAuth2.0 로그인과 JWT 검증](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%EC%9D%B4%EC%9E%A5%EC%95%88%5D-Spring-Security-%EC%97%86%EC%9D%B4-%EA%B5%AC%ED%98%84%ED%95%98%EB%8A%94-OAuth2.0-%EB%A1%9C%EA%B7%B8%EC%9D%B8%EA%B3%BC-JWT-%EA%B2%80%EC%A6%9D)|이장안|
 
 ### 기술 스택
 <table>
@@ -253,14 +254,28 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
                 <img src="https://img.shields.io/badge/GitHub_Actions-2088FF?logo=github-actions&logoColor=white"/>
                 <img src="https://img.shields.io/badge/docker-%230db7ed.svg?logo=docker&logoColor=white"/>
                 <img src="https://img.shields.io/badge/AWS-%23FF9900.svg?logo=amazon-aws&logoColor=white"/>
+                <img src="https://img.shields.io/badge/NGINX-009639?logo=nginx&logoColor=white"/>
             </td>
         </tr>
         <tr>
             <td>
-                <p>데이터베이스</p>
+                <p>데이터베이스 및 캐시</p>
             </td>
             <td>
-                <img src="https://img.shields.io/badge/mysql-4479A1.svg?logo=mysql&logoColor=white"/>
+                <img src="https://img.shields.io/badge/MySQL-4479A1.svg?logo=mysql&logoColor=white"/>
+                <img src="https://img.shields.io/badge/Redis-%23DD0031.svg?logo=redis&logoColor=white"/>
+                <img src="https://img.shields.io/badge/Qdrant-D33854?logo=qdrant&logoColor=white"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>도구 및 기타</p>
+            </td>
+            <td>
+                <img src="https://img.shields.io/badge/Swagger-85EA2D?logo=swagger&logoColor=black"/>
+                <img src="https://img.shields.io/badge/QueryDSL-02303A.svg?logo=spring&logoColor=white"/>
+                <img src="https://img.shields.io/badge/JWT-black?logo=JSON%20web%20tokens&logoColor=white"/>
+                <img src="https://img.shields.io/badge/ELKI-02303A.svg?logo=openjdk&logoColor=white"/>
             </td>
         </tr>
     </tbody>
