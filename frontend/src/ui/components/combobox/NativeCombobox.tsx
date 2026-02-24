@@ -1,4 +1,4 @@
-import { forwardRef } from 'react'
+import { forwardRef, useId } from 'react'
 import type { SelectHTMLAttributes } from 'react'
 import { CaretDownIcon } from '@/ui/assets'
 
@@ -11,15 +11,17 @@ export interface NativeComboboxProps extends SelectHTMLAttributes<HTMLSelectElem
 
 const NativeCombobox = forwardRef<HTMLSelectElement, NativeComboboxProps>(
   (
-    { label, options, placeholder = '선택해 주세요', required, className = '', value, disabled, onChange, ...props },
+    { label, options, placeholder = '선택해 주세요', required, className = '', value, disabled, onChange, id: externalId, ...props },
     ref,
   ) => {
+    const generatedId = useId()
+    const selectId = externalId ?? generatedId
     const isPlaceholderSelected = value === '' || value === undefined
 
     return (
       <div className="flex flex-col gap-2">
         {label && (
-          <label className="body-l-semibold flex gap-1 text-gray-600">
+          <label htmlFor={selectId} className="body-l-semibold flex gap-1 text-gray-600">
             <span>{label}</span>
             {required && (
               <span className="text-red-400" aria-hidden>
@@ -31,6 +33,7 @@ const NativeCombobox = forwardRef<HTMLSelectElement, NativeComboboxProps>(
         <div className="relative">
           <select
             ref={ref}
+            id={selectId}
             value={value}
             required={required}
             disabled={disabled}

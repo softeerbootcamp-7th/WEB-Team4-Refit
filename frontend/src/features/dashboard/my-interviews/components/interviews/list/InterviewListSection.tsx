@@ -44,5 +44,5 @@ export default function InterviewListSection({ filter }: InterviewListSectionPro
 }
 
 function StatusText({ message }: { message: string }) {
-  return <div className="col-span-3 py-8 text-center text-gray-400">{message}</div>
+  return <div className="col-span-3 py-8 text-center text-gray-500">{message}</div>
 }

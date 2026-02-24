@@ -32,7 +32,7 @@ function ReviewWaitingEmptyCard() {
   return (
     <div className="col-span-2 flex min-h-75 w-full flex-col items-center justify-center rounded-2xl bg-white p-6 text-center">
       <p className="body-l-semibold text-gray-700">아직 복기 대기 중인 면접이 없어요</p>
-      <p className="body-m-medium mt-2 text-gray-400">면접 일정을 등록하면 여기에 표시돼요.</p>
+      <p className="body-m-medium mt-2 text-gray-500">면접 일정을 등록하면 여기에 표시돼요.</p>
     </div>
   )
 }

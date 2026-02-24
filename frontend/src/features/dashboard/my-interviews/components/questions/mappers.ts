@@ -14,6 +14,7 @@ export type FrequentQuestionCategory = {
 }
 
 export type QuestionCardModel = {
+  interviewId: number
   question: string
   companyName: string
   companyLogoUrl: string
@@ -46,6 +47,7 @@ export function mapFrequentCategory(item: FrequentQnaSetCategoryResponse): Frequ
 
 export function mapFrequentQuestion(item: FrequentQnaSetCategoryQuestionResponse): QuestionCardModel {
   return {
+    interviewId: item.interviewInfo?.interviewId ?? 0,
     question: item.question ?? '',
     companyName: item.interviewInfo?.companyInfo?.companyName ?? '',
     companyLogoUrl: item.interviewInfo?.companyInfo?.companyLogoUrl ?? '',

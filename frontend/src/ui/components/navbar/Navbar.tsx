@@ -22,7 +22,7 @@ export default function Navbar() {
     <>
       <nav className="bg-gray-white fixed top-0 right-0 left-0 z-50 h-15 border-b border-gray-100">
         <div className="mx-auto flex h-full w-7xl items-center gap-8">
-          <NavLink to={ROUTES.DASHBOARD} className="flex items-center">
+          <NavLink to={ROUTES.DASHBOARD} className="flex items-center" aria-label="Refit 홈">
             <Logo className="h-6 w-auto text-orange-500" />
           </NavLink>
 

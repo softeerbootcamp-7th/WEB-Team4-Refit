@@ -51,7 +51,7 @@ export default function FrequentQuestionsSection({ isTermsLocked }: FrequentQues
         <h2 className="body-l-semibold text-gray-900">빈출 질문 카테고리 TOP 5</h2>
       </div>
       {!isTermsLocked && categories.length === 0 ? (
-        <div className="body-m-medium flex min-h-28 items-center justify-center text-center text-gray-400">
+        <div className="body-m-medium flex min-h-28 items-center justify-center text-center text-gray-500">
           아직 빈출 카테고리 데이터가 없어요.
         </div>
       ) : (

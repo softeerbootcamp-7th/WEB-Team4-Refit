@@ -36,7 +36,7 @@ export default function PopularQuestionsSection({ isTermsLocked }: PopularQuesti
         </div>
         <button
           type="button"
-          className="body-m-medium flex shrink-0 cursor-pointer items-center gap-1 whitespace-nowrap text-gray-400 hover:text-gray-600"
+          className="body-m-medium flex shrink-0 cursor-pointer items-center gap-1 whitespace-nowrap text-gray-500 hover:text-gray-600"
           onClick={() => navigate(ROUTES.DASHBOARD_TREND_QUESTIONS)}
         >
           비슷한 질문 더 보러가기
@@ -44,8 +44,8 @@ export default function PopularQuestionsSection({ isTermsLocked }: PopularQuesti
         </button>
       </div>
       {!isTermsLocked && data.length === 0 ? (
-        <div className="body-m-medium flex min-h-32 items-center justify-center text-center text-gray-400">
-          아직 빈출 질문 데이터가 없어요.
+        <div className="body-m-medium flex min-h-32 items-center justify-center text-center text-gray-500">
+          아직 최신 질문 데이터가 없어요.
         </div>
       ) : (
         <TermsLockedOverlay isLocked={isTermsLocked} overlayClassName="rounded-xl">

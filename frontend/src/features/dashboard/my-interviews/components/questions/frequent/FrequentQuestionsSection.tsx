@@ -46,7 +46,7 @@ export default function FrequentQuestionsSection() {
     return (
       <section className="flex flex-col gap-3">
         <h2 className="title-s-bold">{nickname}님이 자주 받은 질문들</h2>
-        <div className="bg-gray-white body-m-medium flex justify-center gap-5 rounded-lg p-5 py-10 text-gray-400">
+        <div className="bg-gray-white body-m-medium flex justify-center gap-5 rounded-lg p-5 py-10 text-gray-500">
           {DATA_EMPTY_MESSAGE.questions}
         </div>
       </section>
@@ -73,7 +73,7 @@ export default function FrequentQuestionsSection() {
             />
             <div className="grid grid-cols-3 gap-3">
               {questionsToRender.length === 0 ? (
-                <div className="col-span-3 py-8 text-center text-gray-400">{DATA_EMPTY_MESSAGE.questions}</div>
+                <div className="col-span-3 py-8 text-center text-gray-500">{DATA_EMPTY_MESSAGE.questions}</div>
               ) : (
                 questionsToRender.map((card, index) => <QuestionCard key={`${card.question}-${index}`} card={card} />)
               )}
@@ -95,6 +95,7 @@ const DUMMY_CATEGORIES: FrequentQuestionCategory[] = Array.from({ length: 5 }, (
 }))
 
 const DUMMY_QUESTIONS: QuestionCardModel[] = Array.from({ length: 3 }, () => ({
+  interviewId: 0,
   question: '약관 동의가 필요합니다.',
   companyName: '약관 동의 필요',
   companyLogoUrl: '',
@@ -128,7 +129,7 @@ function FrequentQuestionResultHeader({
         <Button size="xs" onClick={onPrev} disabled={page <= 1}>
           <CircleLeftIcon />
         </Button>
-        <span className="body-s-regular text-gray-400">
+        <span className="body-s-regular text-gray-500">
           {page}/{totalPages}
         </span>
         <Button size="xs" onClick={onNext} disabled={page >= totalPages}>
