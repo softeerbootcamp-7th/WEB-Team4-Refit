@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /
+Allow: /signin
+
+Sitemap: https://www.refit.my/sitemap.xml
