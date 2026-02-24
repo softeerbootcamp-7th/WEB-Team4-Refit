@@ -66,6 +66,7 @@ src/
 - [Feature: Record](.claude/docs/features/record.md) — 3단계 기록 플로우, 상태 머신, 자동저장
 - [Feature: Retro](.claude/docs/features/retro.md) — 질문별 회고 + KPT, STAR 분석, 스크랩
 - [Feature: Mobile](.claude/docs/features/mobile.md) — 모바일 녹음, Web Speech API
+- [E2E Test Plan](.claude/docs/e2e-test-plan.md) — E2E 테스트 플로우 계획서 (agent-browser 기반)
 
 ## Session Notes
 
