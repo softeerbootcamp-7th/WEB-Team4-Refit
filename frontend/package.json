@@ -39,7 +39,7 @@
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
     "markdown-it": "14.1.1",
-    "minimatch": "^10.2.2",
+    "minimatch": "^10.2.1",
     "msw": "^2.12.7",
     "orval": "^8.4.0",
     "prettier": "^3.8.1",
