@@ -80,7 +80,7 @@ public class QuestionBatchEmbeddingEventHandler {
         for (int i = 0; i < qnaSets.size(); i++) {
             sendQnaSets.add(qnaSets.get(i));
             if (sendQnaSets.size() == 100) {
-                var requests = new GeminiBatchEmbeddingRequest(qnaSets.stream()
+                var requests = new GeminiBatchEmbeddingRequest(sendQnaSets.stream()
                         .map(qnaSet -> GeminiBatchEmbeddingRequest.GeminiEmbeddingRequest.of(
                                 qnaSet.getQuestionText(),
                                 GeminiEmbeddingRequest.TaskType.SEMANTIC_SIMILARITY,
@@ -91,6 +91,15 @@ public class QuestionBatchEmbeddingEventHandler {
                 sendQnaSets.clear();
             }
         }
+
+        var requests = new GeminiBatchEmbeddingRequest(sendQnaSets.stream()
+                .map(qnaSet -> GeminiBatchEmbeddingRequest.GeminiEmbeddingRequest.of(
+                        qnaSet.getQuestionText(),
+                        GeminiEmbeddingRequest.TaskType.SEMANTIC_SIMILARITY,
+                        outputDimensionality))
+                .toList());
+        embeddings.addAll(geminiClient.sendAsyncBatchEmbeddingRequest(requests).join().embeddings().stream()
+                .toList());
 
         return embeddings.stream()
                 .map(GeminiBatchEmbeddingResponse.Embedding::values)
