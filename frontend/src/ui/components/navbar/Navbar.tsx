@@ -57,7 +57,7 @@ const getNavLinkClassName = ({ isActive }: { isActive: boolean }) => {
   const baseStyles = 'relative flex h-full items-center px-4 transition-colors'
   const activeStyles =
     'body-m-semibold text-gray-800 after:absolute after:right-0 after:bottom-0 after:left-0 after:h-0.5 after:bg-orange-500 after:content-[""]'
-  const inactiveStyles = 'body-m-medium text-gray-400 hover:text-gray-800'
+  const inactiveStyles = 'body-m-medium text-gray-500 hover:text-gray-800'
 
   return isActive ? `${baseStyles} ${activeStyles}` : `${baseStyles} ${inactiveStyles}`
 }

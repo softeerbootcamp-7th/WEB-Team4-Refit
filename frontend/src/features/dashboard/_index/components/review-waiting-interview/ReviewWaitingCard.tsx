@@ -45,7 +45,7 @@ export default function ReviewWaitingCard({ data }: ReviewWaitingCardProps) {
             )}
           </div>
           <h3 className="title-s-semibold text-gray-800">{data.companyName}</h3>
-          <span className="body-m-medium text-gray-400">{data.industry}</span>
+          <span className="body-m-medium text-gray-600">{data.industry}</span>
         </div>
 
         <div className="mb-4 flex flex-wrap items-center gap-1.5">

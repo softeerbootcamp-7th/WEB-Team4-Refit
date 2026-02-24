@@ -1,6 +1,5 @@
 import { DASHBOARD_BANNER_VARIANTS } from '@/features/dashboard/_index/constants/dashboardBanner'
 import type { DashboardBannerVariant } from '@/features/dashboard/_index/constants/dashboardBanner'
-import { useDashboardBanner } from '@/features/dashboard/_index/hooks/useDashboardBanner'
 import { BubbleTailIcon, PencilChickIcon } from '@/ui/assets'
 
 interface DashboardBannerProps {
@@ -11,7 +10,6 @@ interface DashboardBannerProps {
 
 export default function DashboardBanner({ variant, titleText, isLoading = false }: DashboardBannerProps) {
   const config = DASHBOARD_BANNER_VARIANTS[variant]
-  const { handleBannerClick } = useDashboardBanner()
   const displayTitle = titleText ?? config.titleText
 
   if (isLoading) {
@@ -21,12 +19,11 @@ export default function DashboardBanner({ variant, titleText, isLoading = false 
   }
 
   return (
-    <button
-      onClick={() => handleBannerClick(variant)}
-      className={`group border-box relative flex h-30 w-full cursor-pointer items-center justify-between overflow-hidden rounded-[20px] pl-10 ${config.bg}`}
+    <div
+      className={`group relative flex h-30 w-full items-center justify-between overflow-hidden rounded-[20px] pl-10 ${config.bg}`}
     >
       <div
-        className={`title-s-semibold ${config.textColor} text-left`}
+        className={`title-s-semibold ${config.textColor}`}
         dangerouslySetInnerHTML={{ __html: displayTitle }}
       />
       <div className="z-1">
@@ -41,7 +38,7 @@ export default function DashboardBanner({ variant, titleText, isLoading = false 
       <Diamond className={`bottom-[20%] left-[50%] h-2 w-2 ${config.diamondColor}`} />
       <Diamond className={`top-[10%] right-[42%] h-3 w-3 ${config.diamondColor}`} />
       <Diamond className={`top-[8%] right-[2%] h-1.5 w-1.5 ${config.diamondColor}`} />
-    </button>
+    </div>
   )
 }
 
