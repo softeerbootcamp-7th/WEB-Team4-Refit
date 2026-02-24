@@ -23,7 +23,7 @@ export default function DifficultQuestionsSection() {
           <MeltIcon className="h-6 w-6 shrink-0 text-gray-400" />
           <h2 className="body-l-semibold text-gray-900">어렵게 느낀 면접 질문</h2>
         </div>
-        <div className="body-m-medium flex flex-1 items-center justify-center text-gray-400">
+        <div className="body-m-medium flex flex-1 items-center justify-center text-gray-500">
           아직 어렵게 느낀 질문 데이터가 없어요.
         </div>
       </section>

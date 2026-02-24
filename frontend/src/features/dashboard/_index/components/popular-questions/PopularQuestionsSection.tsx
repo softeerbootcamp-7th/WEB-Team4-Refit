@@ -44,7 +44,7 @@ export default function PopularQuestionsSection({ isTermsLocked }: PopularQuesti
         </button>
       </div>
       {!isTermsLocked && data.length === 0 ? (
-        <div className="body-m-medium flex min-h-32 items-center justify-center text-center text-gray-400">
+        <div className="body-m-medium flex min-h-32 items-center justify-center text-center text-gray-500">
           아직 빈출 질문 데이터가 없어요.
         </div>
       ) : (
