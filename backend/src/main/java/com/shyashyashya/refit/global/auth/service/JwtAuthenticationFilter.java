@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
+import org.slf4j.MDC;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
@@ -59,6 +60,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             requestUserContext.setEmail(email);
             requestUserContext.setUserId(userId);
+            MDC.put("userInfo", email);
 
             if (isGuestRequest(userId)) {
                 validateGuestRequestNotIllegal(request);

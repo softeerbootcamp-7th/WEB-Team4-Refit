@@ -39,7 +39,7 @@ public class ApiLoggingFilter extends OncePerRequestFilter {
         String clientIp = getClientIp(request);
         String queryString = request.getQueryString();
         String decodedQueryString = "";
-        MDC.put("clientIp", clientIp);
+        MDC.put("userInfo", clientIp);
 
         if (queryString != null && !queryString.isEmpty()) {
             decodedQueryString = "?" + URLDecoder.decode(queryString, StandardCharsets.UTF_8);
@@ -57,7 +57,7 @@ public class ApiLoggingFilter extends OncePerRequestFilter {
             long duration = System.currentTimeMillis() - startTime;
             int status = response.getStatus();
             log.info("[Resp] HTTP {} ({} {}) - {}ms", status, method, requestUriWithQuery, duration);
-            MDC.remove("clientIp");
+            MDC.remove("userInfo");
             MDC.clear();
         }
     }
