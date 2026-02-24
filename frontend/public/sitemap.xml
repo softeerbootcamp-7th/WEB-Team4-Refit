@@ -1,4 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://www.refit.my/signin</loc></url>
+  <url>
+    <loc>https://www.refit.my/signin</loc>
+  </url>
+  <url>
+    <loc>https://www.refit.my/signup</loc>
+  </url>
+  <url>
+    <loc>https://www.refit.my/terms</loc>
+  </url>
+  <url>
+    <loc>https://www.refit.my/dashboard</loc>
+  </url>
+  <url>
+    <loc>https://www.refit.my/dashboard/my-interviews</loc>
+  </url>
+  <url>
+    <loc>https://www.refit.my/dashboard/trend-questions</loc>
+  </url>
+  <url>
+    <loc>https://www.refit.my/dashboard/my-collections</loc>
+  </url>
+  <url>
+    <loc>https://www.refit.my/dashboard/my-page</loc>
+  </url>
 </urlset>
