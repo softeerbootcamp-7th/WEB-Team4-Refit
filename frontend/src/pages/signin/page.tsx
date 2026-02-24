@@ -13,7 +13,7 @@ export default function SigninPage() {
   const { handleGoogleLogin, isFetching } = useGoogleOAuthLogin({ redirectTo: DESKTOP_OAUTH_REDIRECT })
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100 px-4 py-6 sm:px-6 sm:py-8">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-gray-100 px-4 py-6 sm:px-6 sm:py-8">
       <div className="bg-gray-white flex w-full max-w-118 flex-col items-center rounded-2xl px-6 py-8 shadow-md sm:rounded-4xl sm:px-10 sm:py-12">
         <div className="flex w-full flex-col items-center gap-6 sm:gap-8">
           <Link
@@ -41,6 +41,6 @@ export default function SigninPage() {
           </Button>
         </div>
       </div>
-    </div>
+    </main>
   )
 }
