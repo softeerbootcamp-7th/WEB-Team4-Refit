@@ -13,6 +13,7 @@ import com.shyashyashya.refit.global.gemini.dto.GeminiBatchEmbeddingResponse;
 import com.shyashyashya.refit.global.gemini.dto.GeminiEmbeddingRequest;
 import com.shyashyashya.refit.global.property.ClusteringProperty;
 import com.shyashyashya.refit.global.vectordb.model.ScoredVector;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -73,13 +74,25 @@ public class QuestionBatchEmbeddingEventHandler {
     private List<List<Float>> generateEmbeddings(List<QnaSet> qnaSets) {
         var outputDimensionality = GeminiEmbeddingRequest.OutputDimensionality.fromValue(
                 questionVectorRepository.getCollectionVectorDimension());
-        var requests = new GeminiBatchEmbeddingRequest(qnaSets.stream()
-                .map(qnaSet -> GeminiBatchEmbeddingRequest.GeminiEmbeddingRequest.of(
-                        qnaSet.getQuestionText(),
-                        GeminiEmbeddingRequest.TaskType.SEMANTIC_SIMILARITY,
-                        outputDimensionality))
-                .toList());
-        return geminiClient.sendAsyncBatchEmbeddingRequest(requests).join().embeddings().stream()
+
+        List<GeminiBatchEmbeddingResponse.Embedding> embeddings = new ArrayList<>();
+        List<QnaSet> sendQnaSets = new ArrayList<>();
+        for (int i = 0; i < qnaSets.size(); i++) {
+            sendQnaSets.add(qnaSets.get(i));
+            if (sendQnaSets.size() == 100) {
+                var requests = new GeminiBatchEmbeddingRequest(qnaSets.stream()
+                        .map(qnaSet -> GeminiBatchEmbeddingRequest.GeminiEmbeddingRequest.of(
+                                qnaSet.getQuestionText(),
+                                GeminiEmbeddingRequest.TaskType.SEMANTIC_SIMILARITY,
+                                outputDimensionality))
+                        .toList());
+                embeddings.addAll(geminiClient.sendAsyncBatchEmbeddingRequest(requests).join().embeddings().stream()
+                        .toList());
+                sendQnaSets.clear();
+            }
+        }
+
+        return embeddings.stream()
                 .map(GeminiBatchEmbeddingResponse.Embedding::values)
                 .toList();
     }
