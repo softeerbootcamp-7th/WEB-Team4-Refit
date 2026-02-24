@@ -16,7 +16,7 @@ public class QuestionEmbeddingAsyncConfig {
         executor.setCorePoolSize(2);
         executor.setMaxPoolSize(5);
         executor.setQueueCapacity(100);
-        executor.setThreadNamePrefix("QuestionEmbedding-Thread-");
+        executor.setThreadNamePrefix("qna-embed-");
         executor.initialize();
         return executor;
     }
