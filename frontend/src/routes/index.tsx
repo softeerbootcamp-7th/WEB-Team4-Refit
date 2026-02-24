@@ -18,10 +18,7 @@ import {
   MyPage,
   NotFound,
   RecordConfirmPage,
-  RecordLinkPage,
   RecordPage,
-  RetroDetailPage,
-  RetroQuestionPage,
   SigninPage,
   SignupPage,
   TrendQuestionsPage,
@@ -123,7 +120,7 @@ const router = createBrowserRouter([
               },
               {
                 path: getChildPath(ROUTES.RECORD_LINK, ROUTES.RECORD),
-                Component: RecordLinkPage,
+                lazy: () => import('@/pages/record/link/page').then((m) => ({ Component: m.default })),
               },
             ],
           },
@@ -133,11 +130,12 @@ const router = createBrowserRouter([
             children: [
               {
                 index: true,
-                Component: RetroQuestionPage,
+                lazy: () => import('@/pages/retro/page').then((m) => ({ Component: m.default })),
               },
               {
                 path: getChildPath(ROUTES.RETRO_DETAILS, ROUTES.RETRO),
-                Component: RetroDetailPage,
+                lazy: () =>
+                  import('@/pages/retro/details/page').then((m) => ({ Component: m.default })),
               },
             ],
           },

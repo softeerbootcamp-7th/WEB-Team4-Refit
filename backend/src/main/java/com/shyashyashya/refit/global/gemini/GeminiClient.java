@@ -11,6 +11,7 @@ import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -68,6 +69,9 @@ public class GeminiClient {
 
     public CompletableFuture<GeminiBatchEmbeddingResponse> sendAsyncBatchEmbeddingRequest(
             GeminiBatchEmbeddingRequest requestBody) {
+        log.info(
+                "[sendAsyncBatchEmbeddingRequest] send generate embedding in batch: request size {}",
+                requestBody.requests().size());
         return webClient
                 .post()
                 .uri(EMBEDDING_BATCH_ENDPOINT)
@@ -75,6 +79,11 @@ public class GeminiClient {
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(requestBody)
                 .retrieve()
+                .onStatus(HttpStatusCode::isError, response -> response.bodyToMono(String.class)
+                        .flatMap(body -> {
+                            log.error("[sendAsyncBatchEmbeddingRequest] gemini error response : {}", body);
+                            return response.createException();
+                        }))
                 .bodyToMono(GeminiBatchEmbeddingResponse.class)
                 .timeout(Duration.ofSeconds(geminiProperty.webClientRequestTimeoutSec()))
                 .toFuture();

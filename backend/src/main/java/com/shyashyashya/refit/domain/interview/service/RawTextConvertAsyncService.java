@@ -66,7 +66,7 @@ public class RawTextConvertAsyncService {
             GeminiGenerateRequest requestBody = GeminiGenerateRequest.from(prompt);
             CompletableFuture<GeminiGenerateResponse> future =
                     geminiClient.sendAsyncTextGenerateRequest(requestBody, GenerateModel.GEMMA_3_27B_IT);
-            log.info("request sended");
+            log.info("[startRawTextConvertAsync] request sended");
             future.thenApplyAsync(
                             response -> {
                                 rawTextConvertService.processConvertSuccess(interviewId, response);

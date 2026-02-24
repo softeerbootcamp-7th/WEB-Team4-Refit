@@ -22,7 +22,7 @@ export default function Navbar() {
     <>
       <nav className="bg-gray-white fixed top-0 right-0 left-0 z-50 h-15 border-b border-gray-100">
         <div className="mx-auto flex h-full w-7xl items-center gap-8">
-          <NavLink to={ROUTES.DASHBOARD} className="flex items-center">
+          <NavLink to={ROUTES.DASHBOARD} className="flex items-center" aria-label="Refit 홈">
             <Logo className="h-6 w-auto text-orange-500" />
           </NavLink>
 
@@ -57,7 +57,7 @@ const getNavLinkClassName = ({ isActive }: { isActive: boolean }) => {
   const baseStyles = 'relative flex h-full items-center px-4 transition-colors'
   const activeStyles =
     'body-m-semibold text-gray-800 after:absolute after:right-0 after:bottom-0 after:left-0 after:h-0.5 after:bg-orange-500 after:content-[""]'
-  const inactiveStyles = 'body-m-medium text-gray-400 hover:text-gray-800'
+  const inactiveStyles = 'body-m-medium text-gray-500 hover:text-gray-800'
 
   return isActive ? `${baseStyles} ${activeStyles}` : `${baseStyles} ${inactiveStyles}`
 }

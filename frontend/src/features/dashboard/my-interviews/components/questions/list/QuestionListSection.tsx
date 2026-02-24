@@ -54,5 +54,5 @@ export default function QuestionListSection({ filter }: QuestionListSectionProps
 }
 
 function StatusText({ message }: { message: string }) {
-  return <div className="col-span-2 py-8 text-center text-gray-400">{message}</div>
+  return <div className="col-span-2 py-8 text-center text-gray-500">{message}</div>
 }

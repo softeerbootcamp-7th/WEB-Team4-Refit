@@ -54,7 +54,7 @@ export default function UpcomingInterviewCard({ data, isTermsLocked }: UpcomingI
             </div>
           </div>
           <div className="flex flex-col gap-3">
-            {isQuestionEmpty && <p className="body-m-medium my-9 text-center text-gray-400">아직 기출 질문 데이터가 없어요.</p>}
+            {isQuestionEmpty && <p className="body-m-medium my-9 text-center text-gray-500">아직 기출 질문 데이터가 없어요.</p>}
             {questions.map((q, index) => (
               <div key={`${q.id}-${index}`} className="flex items-start gap-2">
                 <span className="body-m-semibold text-gray-300">Q.</span>

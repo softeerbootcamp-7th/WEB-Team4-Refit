@@ -47,7 +47,7 @@ const FolderModal = ({
             maxLength={10}
             required
           />
-          <p className="body-s-medium text-right text-gray-400">최대 10자</p>
+          <p className="body-s-medium text-right text-gray-500">최대 10자</p>
           {errorMessage && <p className="body-s-medium text-red-500">{errorMessage}</p>}
         </div>
         <Button
