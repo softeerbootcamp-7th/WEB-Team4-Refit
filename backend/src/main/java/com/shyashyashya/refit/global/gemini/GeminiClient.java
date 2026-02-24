@@ -69,6 +69,9 @@ public class GeminiClient {
 
     public CompletableFuture<GeminiBatchEmbeddingResponse> sendAsyncBatchEmbeddingRequest(
             GeminiBatchEmbeddingRequest requestBody) {
+        log.info(
+                "[sendAsyncBatchEmbeddingRequest] send generate embedding in batch: request size {}",
+                requestBody.requests().size());
         return webClient
                 .post()
                 .uri(EMBEDDING_BATCH_ENDPOINT)
