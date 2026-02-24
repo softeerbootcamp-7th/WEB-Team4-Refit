@@ -95,6 +95,7 @@ const DUMMY_CATEGORIES: FrequentQuestionCategory[] = Array.from({ length: 5 }, (
 }))
 
 const DUMMY_QUESTIONS: QuestionCardModel[] = Array.from({ length: 3 }, () => ({
+  interviewId: 0,
   question: '약관 동의가 필요합니다.',
   companyName: '약관 동의 필요',
   companyLogoUrl: '',
