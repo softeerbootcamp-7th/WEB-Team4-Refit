@@ -114,7 +114,7 @@ export default function InterviewFilterModalContent({
               value={draft.startDate}
               onChange={(e) => setDraft((prev) => ({ ...prev, startDate: e.target.value }))}
             />
-            <span className="text-gray-400">~</span>
+            <span className="text-gray-500">~</span>
             <DateSelectInput
               value={draft.endDate}
               onChange={(e) => setDraft((prev) => ({ ...prev, endDate: e.target.value }))}

@@ -91,7 +91,7 @@ export function CalendarInterviewCard({ interview, onItemClick }: CalendarInterv
             onItemClick(interview)
           }
         }}
-        className="w-full cursor-pointer rounded-lg bg-white p-4 text-left hover:bg-gray-50"
+        className="w-full cursor-pointer rounded-lg bg-white p-4 text-left hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
       >
         <div className="mb-1 flex items-center justify-between gap-1.5">
           <div className="mb-2.5 flex min-w-0 items-center gap-2">
@@ -109,6 +109,7 @@ export function CalendarInterviewCard({ interview, onItemClick }: CalendarInterv
                 setIsMenuOpen((prev) => !prev)
               }}
               className="flex items-center justify-center rounded-md text-gray-400 hover:bg-gray-200 hover:text-gray-600"
+              aria-label="더보기 메뉴"
             >
               <MoreIcon className="h-7 w-7" />
             </button>

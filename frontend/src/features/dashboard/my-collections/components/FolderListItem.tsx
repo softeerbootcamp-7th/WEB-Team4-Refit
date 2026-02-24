@@ -59,6 +59,7 @@ const FolderListItem = ({
           <button
             onClick={handleMenuClick}
             className="flex h-6 w-6 items-center justify-center rounded-md text-gray-400 hover:bg-gray-200 hover:text-gray-600"
+            aria-label="더보기 메뉴"
           >
             <MoreIcon className="h-6 w-6" />
           </button>
