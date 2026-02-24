@@ -1,14 +1,14 @@
 import { memo } from 'react'
+import { useNavigate } from 'react-router'
 import { INTERVIEW_TYPE_LABEL } from '@/constants/interviews'
-import { useInterviewNavigate } from '@/features/_common/_index/hooks/useInterviewNavigation'
 import { formatDate } from '@/features/_common/_index/utils/date'
 import { ROUTES } from '@/routes/routes'
 import { SmallLogoIcon } from '@/ui/assets'
 import type { QuestionCardModel } from '../../mappers'
 
 function QuestionCard({ card }: { card: QuestionCardModel }) {
-  const navigateWithId = useInterviewNavigate()
-  const goToRetroDetailsPage = () => navigateWithId(ROUTES.RETRO_DETAILS, { replace: true })
+  const navigate = useNavigate()
+  const goToRetroDetailsPage = () => navigate(ROUTES.RETRO_DETAILS.replace(':interviewId', String(card.interviewId)))
 
   return (
     <button
