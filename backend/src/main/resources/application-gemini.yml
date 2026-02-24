@@ -4,4 +4,4 @@ spring:
     prompt-path: "${GEMINI_PROMPT_PATH}"
     rest-client-connect-timeout-sec: 3
     rest-client-read-timeout-sec: 30
-    web-client-request-timeout-sec: 30
+    web-client-request-timeout-sec: 180
