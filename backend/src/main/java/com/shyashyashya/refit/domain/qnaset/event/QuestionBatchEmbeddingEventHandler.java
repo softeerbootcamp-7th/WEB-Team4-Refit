@@ -92,14 +92,16 @@ public class QuestionBatchEmbeddingEventHandler {
             }
         }
 
-        var requests = new GeminiBatchEmbeddingRequest(sendQnaSets.stream()
-                .map(qnaSet -> GeminiBatchEmbeddingRequest.GeminiEmbeddingRequest.of(
-                        qnaSet.getQuestionText(),
-                        GeminiEmbeddingRequest.TaskType.SEMANTIC_SIMILARITY,
-                        outputDimensionality))
-                .toList());
-        embeddings.addAll(geminiClient.sendAsyncBatchEmbeddingRequest(requests).join().embeddings().stream()
-                .toList());
+        if (!qnaSets.isEmpty()) {
+            var requests = new GeminiBatchEmbeddingRequest(sendQnaSets.stream()
+                    .map(qnaSet -> GeminiBatchEmbeddingRequest.GeminiEmbeddingRequest.of(
+                            qnaSet.getQuestionText(),
+                            GeminiEmbeddingRequest.TaskType.SEMANTIC_SIMILARITY,
+                            outputDimensionality))
+                    .toList());
+            embeddings.addAll(geminiClient.sendAsyncBatchEmbeddingRequest(requests).join().embeddings().stream()
+                    .toList());
+        }
 
         return embeddings.stream()
                 .map(GeminiBatchEmbeddingResponse.Embedding::values)
