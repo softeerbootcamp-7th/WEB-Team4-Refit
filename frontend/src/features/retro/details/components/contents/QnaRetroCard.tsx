@@ -10,7 +10,7 @@ import {
   useUpdateQnaSet,
   useUpdateQnaSetSelfReview,
 } from '@/apis/generated/qna-set-api/qna-set-api'
-import { SCRAP_FOLDERS_STALE_TIME } from '@/constants/queryCachePolicy'
+import { SCRAP_FOLDERS_GC_TIME, SCRAP_FOLDERS_STALE_TIME } from '@/constants/queryCachePolicy'
 import { QnaSetCard, QnaSetEditForm, StarAnalysisSection } from '@/features/_common/_index/components/qna-set'
 import { useOnClickOutside } from '@/features/_common/_index/hooks/useOnClickOutside'
 import { getApiErrorCode } from '@/features/_common/_index/utils/error'
@@ -47,6 +47,7 @@ export function QnaRetroCard({ ref, idx, qnaSet, isOtherEditing, onEditingIdChan
       query: {
         enabled: qnaSetId > 0,
         staleTime: SCRAP_FOLDERS_STALE_TIME,
+        gcTime: SCRAP_FOLDERS_GC_TIME,
       },
     },
   )

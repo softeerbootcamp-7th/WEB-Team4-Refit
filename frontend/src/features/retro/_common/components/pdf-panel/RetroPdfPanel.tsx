@@ -2,7 +2,7 @@ import { useCallback, useMemo, useRef, useState } from 'react'
 import { useQueries } from '@tanstack/react-query'
 import { getGetPdfHighlightingsQueryKey, getPdfHighlightings } from '@/apis/generated/qna-set-api/qna-set-api'
 import type { ApiResponseListPdfHighlightingDto } from '@/apis/generated/refit-api.schemas'
-import { PDF_HIGHLIGHTS_STALE_TIME } from '@/constants/queryCachePolicy'
+import { PDF_HIGHLIGHTS_GC_TIME, PDF_HIGHLIGHTS_STALE_TIME } from '@/constants/queryCachePolicy'
 import { PdfNavigation } from '@/features/record/link/components/pdf-section/PdfNavigation'
 import { useContainerSize } from '@/features/record/link/components/pdf-section/useContainerSize'
 import { usePdfCachedUrl } from '@/features/record/link/components/pdf-section/usePdfCachedUrl'
@@ -46,6 +46,7 @@ export function RetroPdfPanel({
     queries: (hasPdf ? qnaSetIds : []).map((qnaSetId) => ({
       queryKey: getGetPdfHighlightingsQueryKey(qnaSetId),
       staleTime: PDF_HIGHLIGHTS_STALE_TIME,
+      gcTime: PDF_HIGHLIGHTS_GC_TIME,
       refetchOnWindowFocus: false,
       queryFn: async () => {
         try {

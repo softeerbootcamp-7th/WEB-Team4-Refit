@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useGetScrapFoldersContainingQnaSet } from '@/apis/generated/qna-set-api/qna-set-api'
-import { SCRAP_FOLDERS_STALE_TIME } from '@/constants/queryCachePolicy'
+import { SCRAP_FOLDERS_GC_TIME, SCRAP_FOLDERS_STALE_TIME } from '@/constants/queryCachePolicy'
 
 type UseRetroBookmarkStateParams = {
   qnaSetId: number
@@ -17,6 +17,7 @@ export function useRetroBookmarkState({ qnaSetId, isKptStep, initialMarkedDiffic
     query: {
       enabled: !isKptStep && qnaSetId > 0,
       staleTime: SCRAP_FOLDERS_STALE_TIME,
+      gcTime: SCRAP_FOLDERS_GC_TIME,
     },
   })
   const hasAnyScrapFolder = (scrapFolderData?.result?.content ?? []).some((folder) => folder.contains)
