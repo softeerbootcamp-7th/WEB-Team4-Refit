@@ -29,13 +29,18 @@ export function useCollectionFolderMutations({ folders, folderId, navigate }: Us
   const { mutateAsync: updateScrapFolderName, isPending: isUpdatePending } = useUpdateScrapFolderName()
   const { mutateAsync: deleteScrapFolder, isPending: isDeletePending } = useDeleteScrapFolder()
 
-  const folderToEdit = useMemo(
-    () => folders.find((folder) => folder.id === folderToEditId),
-    [folderToEditId, folders],
-  )
+  const folderToEdit = useMemo(() => folders.find((folder) => folder.id === folderToEditId), [folderToEditId, folders])
 
   const refreshFolderList = async () => {
-    await queryClient.invalidateQueries({ queryKey: getGetMyScrapFoldersQueryKey() })
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: getGetMyScrapFoldersQueryKey() }),
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const [head] = query.queryKey
+          return typeof head === 'string' && head.startsWith('/qna-set/') && head.endsWith('/scrap-folder')
+        },
+      }),
+    ])
   }
 
   const closeModal = () => {
