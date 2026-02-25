@@ -83,8 +83,8 @@ Refit의 사용 방법은 [위키](https://github.com/softeerbootcamp-7th/WEB-Te
 | 스프린트 기간 | 스프린트 목표 | 백로그 |
 |---|--------|---|
 | 1주차<br/>(01/19 ~ 01/25) | - [공통] Git 컨벤션 설정 및 프로젝트 초기 환경 구축<br/> - [공통] 디자인 핸드오프 기반 기획 최종 검토 및 싱크| [Refit 1주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20%22DEV%22%20AND%20sprint%20%3D%204%20ORDER%20BY%20created%20DESC)|
-| 2주차<br/>(01/26 ~ 02/01) |- [공통] Jira Automation을 활용한 프로젝트 워크플로우 설계 및 구현<br/> - [FE] 공통 UI 컴포넌트 설계 및 프로젝트 라우팅 아키텍처 구축<br/> - [FE] Fetch API 기반 HTTP 클라이언트 설계 및 구현<br/> - [BE] ERD 및 API 명세 설계<br/> - [BE] 서버 공통 로직 개발| [Refit 2주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%20AND%20sprint%20%3D%2039%20ORDER%20BY%20created%20DESC)|
-| 3주차<br/>(02/02 ~ 02/08) |  - [FE] 서비스 모든 페이지 정적 UI 구현 <br/> - [FE] Orval과 n8n을 활용한 자연어 -> OpenAPI -> React Hook 플로우 개발<br/> - [BE] 공통 CRUD API 개발<br/> - [BE] OAuth2 구글 로그인 개발 | [Refit 3주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%0AAND%20assignee%20%3D%20712020%3Aa4e068c2-8139-4e53-88c4-f47f6c6e0bda%0AAND%20status%20%3D%20Done%0AAND%20Sprint%20%3D%20105%0AORDER%20BY%20created%20DESC)|
+| 2주차<br/>(01/26 ~ 02/01) | - [공통] Jira Automation을 활용한 프로젝트 워크플로우 설계 및 구현<br/> - [FE] 공통 UI 컴포넌트 설계 및 프로젝트 라우팅 아키텍처 구축<br/> - [FE] Fetch API 기반 HTTP 클라이언트 설계 및 구현<br/> - [BE] ERD 및 API 명세 설계<br/> - [BE] 서버 공통 로직 개발| [Refit 2주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%20AND%20sprint%20%3D%2039%20ORDER%20BY%20created%20DESC)|
+| 3주차<br/>(02/02 ~ 02/08) |  - [FE] 서비스 모든 페이지 정적 UI 구현 <br/> - [FE] n8n과 Orval을 활용한 자연어 -> OAS -> React Hooks 플로우 개발<br/> - [BE] 공통 CRUD API 개발<br/> - [BE] OAuth2 구글 로그인 개발 | [Refit 3주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%0AAND%20assignee%20%3D%20712020%3Aa4e068c2-8139-4e53-88c4-f47f6c6e0bda%0AAND%20status%20%3D%20Done%0AAND%20Sprint%20%3D%20105%0AORDER%20BY%20created%20DESC)|
 | 4주차<br/>(02/09 ~ 02/15) | - [FE] 서비스 모든 페이지 Mock API 연동<br/> - [BE] 통합 테스트 코드 작성 및 API 로직 고도화| [Refit 4주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%0AAND%20assignee%20%3D%20712020%3Aa4e068c2-8139-4e53-88c4-f47f6c6e0bda%0AAND%20status%20%3D%20Done%0AAND%20Sprint%20%3D%20138%0AORDER%20BY%20created%20DESC)|
 | 5주차<br/>(02/16 ~ 02/22) | - [FE] 서비스 모든 페이지 API 연동<br/> - [FE] Claude Code를 활용한 웹 접근성 개선 및 E2E 테스팅</br> - [BE] 질문 임베딩 벡터 생성 및 카테고리 분류 배치 로직 개발</br> - [BE] PDF 업로드 및 하이라이팅 등록 로직 고도화 | [Refit 5주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%0AAND%20assignee%20%3D%20712020%3Aa4e068c2-8139-4e53-88c4-f47f6c6e0bda%0AAND%20status%20%3D%20Done%0AAND%20Sprint%20%3D%20171%0AORDER%20BY%20created%20DESC)|
  
@@ -134,7 +134,7 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
 |제목|작성자|
 |---|---| 
 |[Claude Code 개념부터 활용까지 (Harness, Context, Skills)](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%ED%99%8D%EC%A7%80%EC%9A%B4%2C-%ED%99%A9%EC%A3%BC%ED%9D%AC%5D-Claude-Code-%EA%B0%9C%EB%85%90%EB%B6%80%ED%84%B0-%ED%99%9C%EC%9A%A9%EA%B9%8C%EC%A7%80-%28Harness%2C-Context%2C-Skills%29) |홍지운, 황주희|
-|Orval과 n8n을 활용한 OpenAPI 주도 개발 (작성 예정)|홍지운, 황주희|
+|[n8n과 Orval을 이용한 OpenAPI Specification(OAS) 주도 개발](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%ED%99%8D%EC%A7%80%EC%9A%B4,-%ED%99%A9%EC%A3%BC%ED%9D%AC%5D-n8n%EA%B3%BC-Orval%EC%9D%84-%EC%9D%B4%EC%9A%A9%ED%95%9C-OpenAPI-Specification(OAS)-%EC%A3%BC%EB%8F%84-%EA%B0%9C%EB%B0%9C) |홍지운, 황주희|
 |Web Speech API: 서버 구축 없이 Realtime STT 구현하기 (작성 예정)|홍지운|
 |[PDF.js 기반 하이라이트 기능 설계하기 (Part1)](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%ED%99%A9%EC%A3%BC%ED%9D%AC%5D-PDF.js-%EA%B8%B0%EB%B0%98-%ED%95%98%EC%9D%B4%EB%9D%BC%EC%9D%B4%ED%8A%B8-%EA%B8%B0%EB%8A%A5-%EC%84%A4%EA%B3%84%ED%95%98%EA%B8%B0-%28Part-1%29)<br>[PDF.js 기반 하이라이트 안정화하기 ‐ 렌더링과 네트워크 이슈 해결 (Part2)](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%ED%99%A9%EC%A3%BC%ED%9D%AC%5D-PDF.js-%EA%B8%B0%EB%B0%98-%ED%95%98%EC%9D%B4%EB%9D%BC%EC%9D%B4%ED%8A%B8-%EC%95%88%EC%A0%95%ED%99%94%ED%95%98%EA%B8%B0-%E2%80%90-%EB%A0%8C%EB%8D%94%EB%A7%81%EA%B3%BC-%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-%EC%9D%B4%EC%8A%88-%ED%95%B4%EA%B2%B0-%28Part-2%29) |황주희|
 
@@ -195,14 +195,6 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
 </table>
 
 
-### n8n과 Orval를 활용한 API 명세 자동화
-한 달 남짓인 소프티어 프로젝트 개발 기간에서 **API 배포 전까지 프론트엔드 개발을 할 수 없는 것은 큰 병목**이에요. 이를 해결하기 위해 다음과 같은 워크플로우를 도입했어요.
-1. **워크플로우 트리거:** Slack의 `/openapi` 명령어를 통해 n8n 자동화 워크플로우를 호출해요.
-2. **데이터 추출:** Notion API를 활용하여 자연어로 작성된 노션 API 명세 문서를 정형화된 JSON 데이터로 추출해요.
-3. **OAS 생성:** 추출된 JSON을 Gemini LLM에 전달하여 표준화된 OpenAPI Specification(OAS) 파일을 생성해요.
-4. **CI/CD 연동:** 생성된 OAS 파일을 GitHub 저장소에 Push하여 명세를 업데이트해요.
-5. **개발 환경 동기화:** Oval이 업데이트된 OAS를 기반으로 d.ts와 Mock Server를 생성하여 즉각적인 개발 환경을 최신으로 동기화 시켜요.
-
 
 
 
@@ -214,7 +206,7 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
 |파트|제목|작성자|
 |---|---|---| 
 |BE|[질문 카테고리 분류를 위한 클러스터링 배치 로직 설계 과정](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%EA%B6%8C%EC%B0%AC%5D-%EC%A7%88%EB%AC%B8-%EC%B9%B4%ED%85%8C%EA%B3%A0%EB%A6%AC-%EB%B6%84%EC%84%9D%EC%9D%84-%EC%9C%84%ED%95%9C-%ED%81%B4%EB%9F%AC%EC%8A%A4%ED%84%B0%EB%A7%81-%EB%A1%9C%EC%A7%81-%EC%84%A4%EA%B3%84-%EA%B3%BC%EC%A0%95)|권찬|
-|BE|[WebClient vs RestClient 성능 비교](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B송영범%5D-WebClient-vs-RestClient-성능-비교) (작성 예정)|송영범|
+|BE|[의도하지 않은 DB 커넥션 점유 현상 발견 및 해결 과정](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B송영범%5D-의도하지-않은-DB-커넥션-점유하는-현상을-발견-및-해결-과정)|송영범|
 |BE|[AWS S3 Presigned URL 무한 업로드 문제 해결](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B송영범%5D-S3-Presigned%E2%80%90URL-무한-업로드-문제)|송영범|
 |BE|[VectorDB 도입 트러블슈팅: 객체지향적 Repository 인터페이스 설계 및 구현체 작성](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%EC%9D%B4%EC%9E%A5%EC%95%88%5D-VectorDB-%EB%8F%84%EC%9E%85-%ED%8A%B8%EB%9F%AC%EB%B8%94%EC%8A%88%ED%8C%85%3A-%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5%EC%A0%81-Repository-%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4-%EC%84%A4%EA%B3%84-%EB%B0%8F-%EA%B5%AC%ED%98%84%EC%B2%B4-%EC%9E%91%EC%84%B1)|이장안|
 |BE|[Spring Security 없이 완성하는 OAuth2 기반 JWT 인증 아키텍처](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%EC%9D%B4%EC%9E%A5%EC%95%88%5D-Spring-Security-%EC%97%86%EC%9D%B4-%EC%99%84%EC%84%B1%ED%95%98%EB%8A%94-OAuth2-%EA%B8%B0%EB%B0%98-JWT-%EC%9D%B8%EC%A6%9D-%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98)|이장안|
