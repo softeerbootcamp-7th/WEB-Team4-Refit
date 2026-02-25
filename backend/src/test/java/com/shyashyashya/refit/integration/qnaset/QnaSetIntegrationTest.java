@@ -975,12 +975,12 @@ public class QnaSetIntegrationTest extends IntegrationTest {
                     .body("result.content[0].jobCategoryName", equalTo(interview1.getJobCategory().getName()))
                     .body("result.content[0].interviewType", equalTo(interview1.getInterviewType().toString()))
                     .body("result.content[0].interviewStartAt", equalTo(interview1.getStartAt().format(TIME_FORMATTER)))
-                    .body("result.content[0].question", equalTo(qnaSet1.getQuestionText()))
+                    .body("result.content[0].question", equalTo(qnaSet2.getQuestionText()))
                     .body("result.content[1].industryName", equalTo(interview1.getIndustry().getName()))
                     .body("result.content[1].jobCategoryName", equalTo(interview1.getJobCategory().getName()))
                     .body("result.content[1].interviewType", equalTo(interview1.getInterviewType().toString()))
                     .body("result.content[1].interviewStartAt", equalTo(interview1.getStartAt().format(TIME_FORMATTER)))
-                    .body("result.content[1].question", equalTo(qnaSet2.getQuestionText()));
+                    .body("result.content[1].question", equalTo(qnaSet1.getQuestionText()));
         }
 
         @Test
