@@ -5,6 +5,8 @@ import {
 } from '@/apis/generated/qna-set-my-controller/qna-set-my-controller'
 import { mapFrequentCategory, mapFrequentQuestion } from '../mappers'
 
+const FREQUENT_CATEGORIES_LIMIT = 5
+
 interface UseFrequentQuestionsParams {
   pageSize?: number
   enabled?: boolean
@@ -13,7 +15,7 @@ interface UseFrequentQuestionsParams {
 export function useFrequentQuestions({ pageSize = 3, enabled = true }: UseFrequentQuestionsParams = {}) {
   const [page, setPage] = useState(1)
   const { data: categories = [] } = useGetMyFrequentQnaSetCategories(
-    { page: 0, size: 5 },
+    { page: 0, size: FREQUENT_CATEGORIES_LIMIT },
     {
       query: {
         enabled,
