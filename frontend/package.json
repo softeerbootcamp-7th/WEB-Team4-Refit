@@ -1,7 +1,7 @@
 {
   "name": "frontend",
   "private": true,
-  "version": "1.0.3",
+  "version": "1.0.4",
   "type": "module",
   "scripts": {
     "dev": "tsc -b && vite",
@@ -54,5 +54,12 @@
     "workerDirectory": [
       "public"
     ]
+  },
+  "pnpm": {
+    "overrides": {
+      "ajv@<6.14.0": ">=6.14.0",
+      "minimatch@<3.1.3": ">=3.1.3",
+      "minimatch@>=9.0.0 <9.0.6": ">=9.0.6"
+    }
   }
 }

@@ -9,9 +9,8 @@ import {
   useGetMyProfileInfo,
   useUpdateMyProfile,
 } from '@/apis'
+import { COMPANY_INDUSTRY_JOB_OPTIONS_STALE_TIME } from '@/constants/queryCachePolicy'
 import type { FormValues, SaveFeedback } from '@/features/dashboard/my-page/components'
-
-const FORM_OPTIONS_STALE_TIME = 60 * 60 * 1000
 
 const EMPTY_FORM_VALUES: FormValues = {
   nickname: '',
@@ -19,12 +18,10 @@ const EMPTY_FORM_VALUES: FormValues = {
   jobCategoryId: '',
   isAgreedToTerms: false,
 }
-
 const normalizeFormValues = (values: FormValues): FormValues => ({
   ...values,
   nickname: values.nickname.trim(),
 })
-
 const hasProfileFieldsChanged = (current: FormValues, initial: FormValues): boolean => {
   return (
     current.nickname !== initial.nickname ||
@@ -32,7 +29,6 @@ const hasProfileFieldsChanged = (current: FormValues, initial: FormValues): bool
     current.jobCategoryId !== initial.jobCategoryId
   )
 }
-
 const toFormValues = (profile?: {
   nickname?: string
   industryId?: number
@@ -61,10 +57,10 @@ export function useMyPageProfile() {
     },
   })
   const { data: industries, isLoading: isIndustriesLoading } = useGetIndustries({
-    query: { staleTime: FORM_OPTIONS_STALE_TIME },
+    query: { staleTime: COMPANY_INDUSTRY_JOB_OPTIONS_STALE_TIME },
   })
   const { data: jobCategories, isLoading: isJobCategoriesLoading } = useGetAllJobCategories({
-    query: { staleTime: FORM_OPTIONS_STALE_TIME },
+    query: { staleTime: COMPANY_INDUSTRY_JOB_OPTIONS_STALE_TIME },
   })
 
   const industryOptions = useMemo(

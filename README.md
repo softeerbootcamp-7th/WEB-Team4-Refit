@@ -82,11 +82,11 @@ Refit의 사용 방법은 [위키](https://github.com/softeerbootcamp-7th/WEB-Te
 
 | 스프린트 기간 | 스프린트 목표 | 백로그 |
 |---|--------|---|
-| 01/19 ~ 01/25 | - [공통] Git 컨벤션 설정 및 프로젝트 초기 환경 구축<br/> - [공통] 디자인 핸드오프 기반 기획 최종 검토 및 싱크| [Refit 1주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20%22DEV%22%20AND%20sprint%20%3D%204%20ORDER%20BY%20created%20DESC)|
-| 01/26 ~ 02/01 |- [공통] Jira Automation을 활용한 프로젝트 워크플로우 설계 및 구현<br/> - [FE] 공통 UI 컴포넌트 설계 및 프로젝트 라우팅 아키텍처 구축<br/> - [FE] Fetch API 기반 HTTP 클라이언트 설계 및 구현<br/> - [BE] ERD 및 API 명세 설계<br/> - [BE] 서버 공통 로직 개발| [Refit 2주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%20AND%20sprint%20%3D%2039%20ORDER%20BY%20created%20DESC)|
-| 02/02 ~ 02/08 |  - [FE] 서비스 모든 페이지 정적 UI 구현 <br/> - [FE] Orval과 n8n을 활용한 자연어 -> OpenAPI -> React Hook 플로우 개발<br/> - [BE] 공통 CRUD API 개발<br/> - [BE] OAuth2 구글 로그인 개발 | [Refit 3주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%0AAND%20assignee%20%3D%20712020%3Aa4e068c2-8139-4e53-88c4-f47f6c6e0bda%0AAND%20status%20%3D%20Done%0AAND%20Sprint%20%3D%20105%0AORDER%20BY%20created%20DESC)|
-| 02/09 ~ 02/15 | - [FE] 서비스 모든 페이지 Mock API 연동<br/> - [BE] 통합 테스트 코드 작성 및 API 로직 고도화| [Refit 4주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%0AAND%20assignee%20%3D%20712020%3Aa4e068c2-8139-4e53-88c4-f47f6c6e0bda%0AAND%20status%20%3D%20Done%0AAND%20Sprint%20%3D%20138%0AORDER%20BY%20created%20DESC)|
-| 02/16 ~ 02/22 | - [FE] 서비스 모든 페이지 API 연동<br/> - [FE] Claude Code를 활용한 웹 접근성 개선 및 E2E 테스팅</br> - [BE] 질문 임베딩 벡터 생성 및 카테고리 분류 배치 로직 개발</br> - [BE] PDF 업로드 및 하이라이팅 등록 로직 고도화 | [Refit 5주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%0AAND%20assignee%20%3D%20712020%3Aa4e068c2-8139-4e53-88c4-f47f6c6e0bda%0AAND%20status%20%3D%20Done%0AAND%20Sprint%20%3D%20171%0AORDER%20BY%20created%20DESC)|
+| 1주차<br/>(01/19 ~ 01/25) | - [공통] Git 컨벤션 설정 및 프로젝트 초기 환경 구축<br/> - [공통] 디자인 핸드오프 기반 기획 최종 검토 및 싱크| [Refit 1주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20%22DEV%22%20AND%20sprint%20%3D%204%20ORDER%20BY%20created%20DESC)|
+| 2주차<br/>(01/26 ~ 02/01) |- [공통] Jira Automation을 활용한 프로젝트 워크플로우 설계 및 구현<br/> - [FE] 공통 UI 컴포넌트 설계 및 프로젝트 라우팅 아키텍처 구축<br/> - [FE] Fetch API 기반 HTTP 클라이언트 설계 및 구현<br/> - [BE] ERD 및 API 명세 설계<br/> - [BE] 서버 공통 로직 개발| [Refit 2주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%20AND%20sprint%20%3D%2039%20ORDER%20BY%20created%20DESC)|
+| 3주차<br/>(02/02 ~ 02/08) |  - [FE] 서비스 모든 페이지 정적 UI 구현 <br/> - [FE] Orval과 n8n을 활용한 자연어 -> OpenAPI -> React Hook 플로우 개발<br/> - [BE] 공통 CRUD API 개발<br/> - [BE] OAuth2 구글 로그인 개발 | [Refit 3주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%0AAND%20assignee%20%3D%20712020%3Aa4e068c2-8139-4e53-88c4-f47f6c6e0bda%0AAND%20status%20%3D%20Done%0AAND%20Sprint%20%3D%20105%0AORDER%20BY%20created%20DESC)|
+| 4주차<br/>(02/09 ~ 02/15) | - [FE] 서비스 모든 페이지 Mock API 연동<br/> - [BE] 통합 테스트 코드 작성 및 API 로직 고도화| [Refit 4주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%0AAND%20assignee%20%3D%20712020%3Aa4e068c2-8139-4e53-88c4-f47f6c6e0bda%0AAND%20status%20%3D%20Done%0AAND%20Sprint%20%3D%20138%0AORDER%20BY%20created%20DESC)|
+| 5주차<br/>(02/16 ~ 02/22) | - [FE] 서비스 모든 페이지 API 연동<br/> - [FE] Claude Code를 활용한 웹 접근성 개선 및 E2E 테스팅</br> - [BE] 질문 임베딩 벡터 생성 및 카테고리 분류 배치 로직 개발</br> - [BE] PDF 업로드 및 하이라이팅 등록 로직 고도화 | [Refit 5주차 백로그](https://shashasha.atlassian.net/jira/software/c/projects/DEV/list?jql=project%20%3D%20DEV%0AAND%20assignee%20%3D%20712020%3Aa4e068c2-8139-4e53-88c4-f47f6c6e0bda%0AAND%20status%20%3D%20Done%0AAND%20Sprint%20%3D%20171%0AORDER%20BY%20created%20DESC)|
  
  <!--
 #### Refit 1주차
@@ -136,7 +136,7 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
 |[Claude Code 개념부터 활용까지 (Harness, Context, Skills)](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%ED%99%8D%EC%A7%80%EC%9A%B4%2C-%ED%99%A9%EC%A3%BC%ED%9D%AC%5D-Claude-Code-%EA%B0%9C%EB%85%90%EB%B6%80%ED%84%B0-%ED%99%9C%EC%9A%A9%EA%B9%8C%EC%A7%80-%28Harness%2C-Context%2C-Skills%29) |홍지운, 황주희|
 |Orval과 n8n을 활용한 OpenAPI 주도 개발 (작성 예정)|홍지운, 황주희|
 |Web Speech API: 서버 구축 없이 Realtime STT 구현하기 (작성 예정)|홍지운|
-|PDF.js 기반 대용량 문서 하이라이팅 구현 및 렌더링 이슈 개선(작성 예정)|황주희|
+|[PDF.js 기반 하이라이트 기능 설계하기 (Part1)](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%ED%99%A9%EC%A3%BC%ED%9D%AC%5D-PDF.js-%EA%B8%B0%EB%B0%98-%ED%95%98%EC%9D%B4%EB%9D%BC%EC%9D%B4%ED%8A%B8-%EA%B8%B0%EB%8A%A5-%EC%84%A4%EA%B3%84%ED%95%98%EA%B8%B0-%28Part-1%29)<br>[PDF.js 기반 하이라이트 안정화하기 ‐ 렌더링과 네트워크 이슈 해결 (Part2)](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%ED%99%A9%EC%A3%BC%ED%9D%AC%5D-PDF.js-%EA%B8%B0%EB%B0%98-%ED%95%98%EC%9D%B4%EB%9D%BC%EC%9D%B4%ED%8A%B8-%EC%95%88%EC%A0%95%ED%99%94%ED%95%98%EA%B8%B0-%E2%80%90-%EB%A0%8C%EB%8D%94%EB%A7%81%EA%B3%BC-%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-%EC%9D%B4%EC%8A%88-%ED%95%B4%EA%B2%B0-%28Part-2%29) |황주희|
 
 ### 기술 스택
 <table>
@@ -214,10 +214,10 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
 |파트|제목|작성자|
 |---|---|---| 
 |BE|[질문 카테고리 분류를 위한 클러스터링 배치 로직 설계 과정](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%EA%B6%8C%EC%B0%AC%5D-%EC%A7%88%EB%AC%B8-%EC%B9%B4%ED%85%8C%EA%B3%A0%EB%A6%AC-%EB%B6%84%EC%84%9D%EC%9D%84-%EC%9C%84%ED%95%9C-%ED%81%B4%EB%9F%AC%EC%8A%A4%ED%84%B0%EB%A7%81-%EB%A1%9C%EC%A7%81-%EC%84%A4%EA%B3%84-%EA%B3%BC%EC%A0%95)|권찬|
-|BE|면접 기록의 질답 변환이 실패하는 문제의 해결 과정 (작성 예정)|권찬|
-|BE|rest client와 web client의 성능 비교(작성 예정)|송영범|
+|BE|[WebClient vs RestClient 성능 비교](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B송영범%5D-WebClient-vs-RestClient-성능-비교) (작성 예정)|송영범|
 |BE|[AWS S3 Presigned URL 무한 업로드 문제 해결](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B송영범%5D-S3-Presigned%E2%80%90URL-무한-업로드-문제)|송영범|
-|BE|벡터 데이터베이스 활용을 위한 객체지향적인 인터페이스 설계 과정 (작성 예정)|이장안|
+|BE|[VectorDB 도입 트러블슈팅: 객체지향적 Repository 인터페이스 설계 및 구현체 작성](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%EC%9D%B4%EC%9E%A5%EC%95%88%5D-VectorDB-%EB%8F%84%EC%9E%85-%ED%8A%B8%EB%9F%AC%EB%B8%94%EC%8A%88%ED%8C%85%3A-%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5%EC%A0%81-Repository-%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4-%EC%84%A4%EA%B3%84-%EB%B0%8F-%EA%B5%AC%ED%98%84%EC%B2%B4-%EC%9E%91%EC%84%B1)|이장안|
+|BE|[Spring Security 없이 완성하는 OAuth2 기반 JWT 인증 아키텍처](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%EC%9D%B4%EC%9E%A5%EC%95%88%5D-Spring-Security-%EC%97%86%EC%9D%B4-%EC%99%84%EC%84%B1%ED%95%98%EB%8A%94-OAuth2-%EA%B8%B0%EB%B0%98-JWT-%EC%9D%B8%EC%A6%9D-%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98)|이장안|
 
 ### 기술 스택
 <table>
@@ -253,14 +253,28 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
                 <img src="https://img.shields.io/badge/GitHub_Actions-2088FF?logo=github-actions&logoColor=white"/>
                 <img src="https://img.shields.io/badge/docker-%230db7ed.svg?logo=docker&logoColor=white"/>
                 <img src="https://img.shields.io/badge/AWS-%23FF9900.svg?logo=amazon-aws&logoColor=white"/>
+                <img src="https://img.shields.io/badge/NGINX-009639?logo=nginx&logoColor=white"/>
             </td>
         </tr>
         <tr>
             <td>
-                <p>데이터베이스</p>
+                <p>데이터베이스 및 캐시</p>
             </td>
             <td>
-                <img src="https://img.shields.io/badge/mysql-4479A1.svg?logo=mysql&logoColor=white"/>
+                <img src="https://img.shields.io/badge/MySQL-4479A1.svg?logo=mysql&logoColor=white"/>
+                <img src="https://img.shields.io/badge/Redis-%23DD0031.svg?logo=redis&logoColor=white"/>
+                <img src="https://img.shields.io/badge/Qdrant-D33854?logo=qdrant&logoColor=white"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>도구 및 기타</p>
+            </td>
+            <td>
+                <img src="https://img.shields.io/badge/Swagger-85EA2D?logo=swagger&logoColor=black"/>
+                <img src="https://img.shields.io/badge/QueryDSL-02303A.svg?logo=spring&logoColor=white"/>
+                <img src="https://img.shields.io/badge/JWT-black?logo=JSON%20web%20tokens&logoColor=white"/>
+                <img src="https://img.shields.io/badge/ELKI-02303A.svg?logo=openjdk&logoColor=white"/>
             </td>
         </tr>
     </tbody>

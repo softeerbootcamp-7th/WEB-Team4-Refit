@@ -2,12 +2,12 @@ import { useEffect } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
 import { getGetAllJobCategoriesQueryOptions, getGetIndustriesQueryOptions, useBuildOAuth2LoginUrl } from '@/apis'
+import { SIGNUP_OPTIONS_STALE_TIME } from '@/constants/queryCachePolicy'
 import { resetAuthSessionStatus } from '@/routes/middleware/auth-session'
 
 const POPUP_NAME = 'google-oauth-login'
 const POPUP_WIDTH = 500
 const POPUP_HEIGHT = 600
-const SIGNUP_OPTIONS_STALE_TIME = 60 * 60 * 1000
 
 type UseGoogleOAuthLoginOptions = {
   redirectTo: { signUp: string; success: string }

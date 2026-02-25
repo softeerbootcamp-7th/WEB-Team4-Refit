@@ -50,6 +50,7 @@ public class QnaSetCustomRepositoryImpl implements QnaSetCustomRepository {
                 .join(qnaSet.interview.jobCategory)
                 .fetchJoin()
                 .where(searchConditions)
+                .orderBy(qnaSet.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
