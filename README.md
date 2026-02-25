@@ -217,7 +217,7 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
 |BE|[WebClient vs RestClient 성능 비교](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B송영범%5D-WebClient-vs-RestClient-성능-비교) (작성 예정)|송영범|
 |BE|[AWS S3 Presigned URL 무한 업로드 문제 해결](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B송영범%5D-S3-Presigned%E2%80%90URL-무한-업로드-문제)|송영범|
 |BE|[VectorDB 도입 트러블슈팅: 객체지향적 Repository 인터페이스 설계 및 구현체 작성](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%EC%9D%B4%EC%9E%A5%EC%95%88%5D-VectorDB-%EB%8F%84%EC%9E%85-%ED%8A%B8%EB%9F%AC%EB%B8%94%EC%8A%88%ED%8C%85%3A-%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5%EC%A0%81-Repository-%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4-%EC%84%A4%EA%B3%84-%EB%B0%8F-%EA%B5%AC%ED%98%84%EC%B2%B4-%EC%9E%91%EC%84%B1)|이장안|
-|BE|[Spring Security 없이 구현하는 OAuth2.0 로그인과 JWT 검증](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%EC%9D%B4%EC%9E%A5%EC%95%88%5D-Spring-Security-%EC%97%86%EC%9D%B4-%EA%B5%AC%ED%98%84%ED%95%98%EB%8A%94-OAuth2.0-%EB%A1%9C%EA%B7%B8%EC%9D%B8%EA%B3%BC-JWT-%EA%B2%80%EC%A6%9D)|이장안|
+|BE|[Spring Security 없이 완성하는 OAuth2 기반 JWT 인증 아키텍처](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%EC%9D%B4%EC%9E%A5%EC%95%88%5D-Spring-Security-%EC%97%86%EC%9D%B4-%EC%99%84%EC%84%B1%ED%95%98%EB%8A%94-OAuth2-%EA%B8%B0%EB%B0%98-JWT-%EC%9D%B8%EC%A6%9D-%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98)|이장안|
 
 ### 기술 스택
 <table>
