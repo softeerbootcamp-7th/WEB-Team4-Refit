@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
 import { useLogout } from '@/apis'
 import { useGetMyProfileInfoSuspense } from '@/apis/generated/user-api/user-api'
-import { PROFILE_STALE_TIME } from '@/constants/queryCachePolicy'
+import { PROFILE_GC_TIME, PROFILE_STALE_TIME } from '@/constants/queryCachePolicy'
 import { useOnClickOutside } from '@/features/_common/_index/hooks/useOnClickOutside'
 import { markUnauthenticated } from '@/routes/middleware/auth-session'
 import { ROUTES } from '@/routes/routes'
@@ -35,6 +35,7 @@ function UserProfileContent() {
   const { data: profile } = useGetMyProfileInfoSuspense({
     query: {
       staleTime: PROFILE_STALE_TIME,
+      gcTime: PROFILE_GC_TIME,
       refetchOnWindowFocus: false, // 탭을 다시 클릭해 포커스가 돌아와도 자동 재요청하지 않음
       select: (response) => ({
         nickname: response.result?.nickname?.trim() || '회원',
