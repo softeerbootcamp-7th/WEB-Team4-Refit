@@ -3,12 +3,11 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
 import { useLogout } from '@/apis'
 import { useGetMyProfileInfoSuspense } from '@/apis/generated/user-api/user-api'
+import { PROFILE_STALE_TIME } from '@/constants/queryCachePolicy'
 import { useOnClickOutside } from '@/features/_common/_index/hooks/useOnClickOutside'
 import { markUnauthenticated } from '@/routes/middleware/auth-session'
 import { ROUTES } from '@/routes/routes'
 import { LogoutIcon, UserIcon } from '@/ui/assets'
-
-const PROFILE_STALE_TIME = 1000 * 60 * 60 // 1시간
 
 export default function UserProfile() {
   return (

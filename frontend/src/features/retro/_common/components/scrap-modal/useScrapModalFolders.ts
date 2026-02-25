@@ -5,8 +5,8 @@ import {
   useGetScrapFoldersContainingQnaSet,
 } from '@/apis/generated/qna-set-api/qna-set-api'
 import { getGetMyScrapFoldersQueryKey } from '@/apis/generated/scrap-folder-api/scrap-folder-api'
+import { SCRAP_FOLDERS_STALE_TIME } from '@/constants/queryCachePolicy'
 
-const SCRAP_FOLDERS_STALE_TIME = 1000 * 60 * 30
 const FOLDER_QUERY_PARAMS = { page: 0, size: 10 } as const
 
 export function useScrapModalFolders(qnaSetId: number, isOpen: boolean) {

@@ -1,9 +1,8 @@
 import { useMemo } from 'react'
 import { useFindCompanies, useGetAllJobCategories, useGetIndustries } from '@/apis'
+import { COMPANY_INDUSTRY_JOB_OPTIONS_STALE_TIME } from '@/constants/queryCachePolicy'
 import { SearchableCombobox } from '@/ui/components'
 import Button from '@/ui/components/button'
-
-const FORM_OPTIONS_STALE_TIME = 60 * 60 * 1000
 
 export interface InterviewInfoFormValues {
   companyName: string
@@ -11,7 +10,6 @@ export interface InterviewInfoFormValues {
   jobCategoryId: string
   jobRole: string
 }
-
 export interface InterviewInfoContentProps {
   values: InterviewInfoFormValues
   onChange: (values: InterviewInfoFormValues) => void
@@ -22,13 +20,13 @@ export function InterviewInfoContent({ values, onChange, onNext }: InterviewInfo
   const { companyName, industryId, jobCategoryId } = values
 
   const { data: companies, isLoading: isCompaniesLoading } = useFindCompanies(undefined, {
-    query: { staleTime: FORM_OPTIONS_STALE_TIME },
+    query: { staleTime: COMPANY_INDUSTRY_JOB_OPTIONS_STALE_TIME },
   })
   const { data: industries, isLoading: isIndustriesLoading } = useGetIndustries({
-    query: { staleTime: FORM_OPTIONS_STALE_TIME },
+    query: { staleTime: COMPANY_INDUSTRY_JOB_OPTIONS_STALE_TIME },
   })
   const { data: jobCategories, isLoading: isJobCategoriesLoading } = useGetAllJobCategories({
-    query: { staleTime: FORM_OPTIONS_STALE_TIME },
+    query: { staleTime: COMPANY_INDUSTRY_JOB_OPTIONS_STALE_TIME },
   })
 
   const companyOptions = useMemo(

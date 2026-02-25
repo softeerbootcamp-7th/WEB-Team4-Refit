@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useGetScrapFoldersContainingQnaSet } from '@/apis/generated/qna-set-api/qna-set-api'
-
-const SCRAP_FOLDERS_STALE_TIME = 1000 * 60 * 30
+import { SCRAP_FOLDERS_STALE_TIME } from '@/constants/queryCachePolicy'
 
 type UseRetroBookmarkStateParams = {
   qnaSetId: number

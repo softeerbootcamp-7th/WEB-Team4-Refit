@@ -1,21 +1,18 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useCreatePdfDownloadUrl } from '@/apis/generated/interview-api/interview-api'
-
-const PDF_OBJECT_URL_GC_TIME = 1000 * 60 * 30
+import { PDF_OBJECT_URL_GC_TIME, PDF_OBJECT_URL_STALE_TIME } from '@/constants/queryCachePolicy'
 
 type DownloadInfo = {
   downloadUrl: string
   updatedAt: string
 }
-
 type UsePdfCachedUrlParams = {
   interviewId: number
   hasPdf: boolean
   onDownloadSuccess: () => void
   onDownloadError: () => void
 }
-
 type UsePdfCachedUrlReturn = {
   resolvedPdfUrl: string | null
   isDownloadFetching: boolean
@@ -48,7 +45,6 @@ export function usePdfCachedUrl({
       // presigned URL은 만료되므로 진입 시마다 최신 값을 조회한다.
       enabled: hasPdf,
       retry: false,
-      staleTime: 0,
       refetchOnMount: true,
       select: (res) => {
         const presigned = res.result?.presignedUrlDto
@@ -73,7 +69,7 @@ export function usePdfCachedUrl({
     queryKey: pdfObjectUrlQueryKey ?? [...getPdfObjectUrlKeyPrefix(interviewId), 'pending'],
     queryFn: () => null,
     enabled: !!pdfObjectUrlQueryKey,
-    staleTime: Infinity,
+    staleTime: PDF_OBJECT_URL_STALE_TIME,
     gcTime: PDF_OBJECT_URL_GC_TIME,
   })
 
