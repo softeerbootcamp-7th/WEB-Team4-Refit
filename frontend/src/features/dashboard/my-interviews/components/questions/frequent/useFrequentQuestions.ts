@@ -13,7 +13,7 @@ interface UseFrequentQuestionsParams {
 export function useFrequentQuestions({ pageSize = 3, enabled = true }: UseFrequentQuestionsParams = {}) {
   const [page, setPage] = useState(1)
   const { data: categories = [] } = useGetMyFrequentQnaSetCategories(
-    { page: 0, size: 20 },
+    { page: 0, size: 5 },
     {
       query: {
         enabled,
