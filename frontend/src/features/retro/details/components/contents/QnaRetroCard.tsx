@@ -10,6 +10,7 @@ import {
   useUpdateQnaSet,
   useUpdateQnaSetSelfReview,
 } from '@/apis/generated/qna-set-api/qna-set-api'
+import { SCRAP_FOLDERS_STALE_TIME } from '@/constants/queryCachePolicy'
 import { QnaSetCard, QnaSetEditForm, StarAnalysisSection } from '@/features/_common/_index/components/qna-set'
 import { useOnClickOutside } from '@/features/_common/_index/hooks/useOnClickOutside'
 import { getApiErrorCode } from '@/features/_common/_index/utils/error'
@@ -26,8 +27,6 @@ type QnaRetroCardProps = {
   isOtherEditing?: boolean
   onEditingIdChange?: (editingId: string | null) => void
 }
-
-const SCRAP_FOLDERS_STALE_TIME = 1000 * 60 * 30
 const QNA_DELETE_FAILED_PDF_HIGHLIGHTING_EXISTS = 'QNA_DELETE_FAILED_PDF_HIGHLIGHTING_EXISTS'
 const DELETE_ERROR_MESSAGE = '질문 삭제에 실패했어요. 잠시 후 다시 시도해주세요.'
 

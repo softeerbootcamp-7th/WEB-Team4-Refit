@@ -1,11 +1,10 @@
 import { useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import { useGetAllJobCategories, useGetIndustries, useSignUp } from '@/apis'
+import { SIGNUP_OPTIONS_STALE_TIME } from '@/constants/queryCachePolicy'
 import { markAuthenticated } from '@/routes/middleware/auth-session'
 
 type SignupLocationState = { nickname?: string; profileImageUrl?: string } | null
-const SIGNUP_OPTIONS_STALE_TIME = 60 * 60 * 1000
-
 type UseSignupFormOptions = {
   redirectTo: string
 }
