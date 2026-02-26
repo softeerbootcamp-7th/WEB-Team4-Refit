@@ -129,7 +129,6 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
 
 
 ## 🐥 프론트엔드
-
 ### 기술 아티클 
 |제목|작성자|
 |---|---| 
@@ -138,6 +137,8 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
 |[React Router 기반 라우팅 처리](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%ED%99%8D%EC%A7%80%EC%9A%B4%2C-%ED%99%A9%EC%A3%BC%ED%9D%AC%5D-React-Router-%EA%B8%B0%EB%B0%98-%EB%9D%BC%EC%9A%B0%ED%8C%85-%EC%B2%98%EB%A6%AC) |홍지운, 황주희|
 |[PDF.js 기반 하이라이트 기능 설계하기 (Part1)](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%ED%99%A9%EC%A3%BC%ED%9D%AC%5D-PDF.js-%EA%B8%B0%EB%B0%98-%ED%95%98%EC%9D%B4%EB%9D%BC%EC%9D%B4%ED%8A%B8-%EA%B8%B0%EB%8A%A5-%EC%84%A4%EA%B3%84%ED%95%98%EA%B8%B0-%28Part-1%29)<br>[PDF.js 기반 하이라이트 안정화하기 ‐ 렌더링과 네트워크 이슈 해결 (Part2)](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%ED%99%A9%EC%A3%BC%ED%9D%AC%5D-PDF.js-%EA%B8%B0%EB%B0%98-%ED%95%98%EC%9D%B4%EB%9D%BC%EC%9D%B4%ED%8A%B8-%EC%95%88%EC%A0%95%ED%99%94%ED%95%98%EA%B8%B0-%E2%80%90-%EB%A0%8C%EB%8D%94%EB%A7%81%EA%B3%BC-%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-%EC%9D%B4%EC%8A%88-%ED%95%B4%EA%B2%B0-%28Part-2%29) |황주희|
 |Web Speech API: 서버 구축 없이 Realtime STT 구현하기 (작성 예정)|홍지운|
+
+<br/>
 
 ### 기술 스택
 <table>
@@ -195,7 +196,7 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
     </tbody>
 </table>
 
-
+<br/>
 
 ### 폴더 구조
 ```
@@ -236,8 +237,13 @@ frontend/
 
 <br/>
 
-### 프로덕트 고도화
-#### 코드 스플리팅
+### 코드 스플리팅
+- `rollup-plugin-visualizer`를 통해 `pdfjs-dist`가 초기 번들에서 큰 비중을 차지하고 있음을 확인
+- `React.lazy()`를 이용해 Route-based Lazy Loading 적용 
+- Rollup의 `manualChunks` 옵션을 이용해 Vendor Splitting 적용
+
+
+
 | Before | After |
 |------|-----|
 | <img width="1000" height="auto" alt="before-stats" src="https://github.com/user-attachments/assets/a1f6797b-06c3-4b0b-bf74-c112d6d3136a" /><br><img width="1000" height="auto" alt="before-chunk" src="https://github.com/user-attachments/assets/65ab8062-bab4-49fa-bd60-8ac65ffa9974" /><br><br><br> | <img width="1000" height="auto" alt="after-stats" src="https://github.com/user-attachments/assets/6c676358-2fda-445d-ae89-35825c920ad8" /><br><img width="1000" height="auto" alt="after-chunk" src="https://github.com/user-attachments/assets/ed400498-dd58-459d-87b1-62f46ac3ee4e" />|
@@ -245,11 +251,16 @@ frontend/
 | 초기 번들 gzip: 374.04 kB | 초기 번들 gzip: 234.64 kB 
 | 총 번들: 1,193.55 kB | 총 번들: 1,196.88 kB 
 
+<br/>
 
 #### 접근성 및 SEO
+- /web-design-guidelines Skills를 활용해 접근성 체크리스트와 SEO 기본 원칙을 설계 단계에서 반영
+
+
 | Before | After |
 |------|-----|
 | <img width="723" height="881" alt="Lighthouse Before" src="https://github.com/user-attachments/assets/e88d7433-6a86-4620-b4ad-9de2ecbf0a3b" />| <img width="723" height="881" alt="Lighthouse Before" src="https://github.com/user-attachments/assets/09f56d55-6a0a-4dc8-81ab-df8242f500b9" />
+
 
 
 
