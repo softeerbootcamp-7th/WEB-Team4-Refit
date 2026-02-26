@@ -237,6 +237,21 @@ frontend/
 
 <br/>
 
+### n8n과 Orval을 이용한 OpenAPI Specification(OAS) 주도 개발
+- n8n 워크플로우(Notion → Vertex Chat Model → GitHub)를 구성해, 자연어 API 명세를 자동으로 OAS(OpenAPI) 파일로 변환·반영하는 파이프라인을 만들었습니다.
+- 프론트엔드는 Orval을 도입해 OAS로부터 타입(d.ts), API 호출 함수, React Query Hook, MSW Handler를 자동 생성하고, pnpm orval 한 번으로 스펙-코드를 동기화했습니다.
+- 이 구조로 백엔드 미완성 단계에서는 MSW로 병행 개발하고, API 준비 후에는 Handler 제거만으로 점진 전환했으며, 이후에는 springdoc-openapi 기반 OAS 추출로 운영 루프를 이어갔습니다.
+더 자세한 내용은 [해당 아티클](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%ED%99%8D%EC%A7%80%EC%9A%B4,-%ED%99%A9%EC%A3%BC%ED%9D%AC%5D-n8n%EA%B3%BC-Orval%EC%9D%84-%EC%9D%B4%EC%9A%A9%ED%95%9C-OpenAPI-Specification(OAS)-%EC%A3%BC%EB%8F%84-%EA%B0%9C%EB%B0%9C)에서 보실 수 있습니다.
+
+<br/>
+
+### AI Agent 친화적인 Codebase 및 Workflow 설계
+- CLAUDE.md는 가볍게 유지하고, 세부 규칙은 .claude/**/*.md 로 분리해 필요한 Context만 선택적으로 가져오도록 설계했습니다.
+- 반복 작업들은 Skills로 모듈화해 AI Agent의 실행 품질과 일관성을 높였습니다.
+- SPEC.md 작성 -> Plan Mode 기반 구현 -> 검증 Skils 실행 -> 문서 정리 Skills 실행으로 이어지는 Workflow를 설계해, AI Agent 친화적인 Codebase를 만들었습니다.
+
+<br/>
+
 ### 코드 스플리팅
 - `rollup-plugin-visualizer`를 통해 `pdfjs-dist`가 초기 번들에서 큰 비중을 차지하고 있음을 확인
 - `React.lazy()`를 이용해 Route-based Lazy Loading 적용 
