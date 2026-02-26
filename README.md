@@ -238,12 +238,12 @@ frontend/
 
 ### 프로덕트 고도화
 #### 코드 스플리팅
-| | Before | After |
-|------|------|-----|
+| Before | After |
+|------|-----|
 | | <img width="1000" height="auto" alt="before-stats" src="https://github.com/user-attachments/assets/a1f6797b-06c3-4b0b-bf74-c112d6d3136a" /><br><img width="1000" height="auto" alt="before-chunk" src="https://github.com/user-attachments/assets/65ab8062-bab4-49fa-bd60-8ac65ffa9974" /><br><br><br> | <img width="1000" height="auto" alt="after-stats" src="https://github.com/user-attachments/assets/6c676358-2fda-445d-ae89-35825c920ad8" /><br><img width="1000" height="auto" alt="after-chunk" src="https://github.com/user-attachments/assets/ed400498-dd58-459d-87b1-62f46ac3ee4e" />|
-| 초기 번들 | 1,193.55 kB | 716.91 kB 
-| 초기 번들<br>gzip | 374.04 kB | 234.64 kB 
-| 총 번들 크기 | 1,193.55 kB | 1,196.88 kB 
+| 초기 번들: 1,193.55 kB | 초기 번들: 716.91 kB 
+| 초기 번들 gzip: 374.04 kB | 초기 번들 gzip: 234.64 kB 
+| 총 번들: 1,193.55 kB | 총 번들: 1,196.88 kB 
 
 
 #### 접근성 및 SEO
