@@ -130,7 +130,7 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
 
 ## 🐥 프론트엔드
 
-### 📚 기술 아티클 
+### 기술 아티클 
 |제목|작성자|
 |---|---| 
 |[Claude Code 개념부터 활용까지 (Harness, Context, Skills)](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%ED%99%8D%EC%A7%80%EC%9A%B4%2C-%ED%99%A9%EC%A3%BC%ED%9D%AC%5D-Claude-Code-%EA%B0%9C%EB%85%90%EB%B6%80%ED%84%B0-%ED%99%9C%EC%9A%A9%EA%B9%8C%EC%A7%80-%28Harness%2C-Context%2C-Skills%29) |홍지운, 황주희|
@@ -238,7 +238,7 @@ frontend/
 
 
 ## 💾 백엔드
-### 📚 기술 아티클 
+### 기술 아티클 
 |파트|제목|작성자|
 |---|---|---| 
 |BE|[질문 카테고리 분류를 위한 클러스터링 배치 로직 설계 과정](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%EA%B6%8C%EC%B0%AC%5D-%EC%A7%88%EB%AC%B8-%EC%B9%B4%ED%85%8C%EA%B3%A0%EB%A6%AC-%EB%B6%84%EC%84%9D%EC%9D%84-%EC%9C%84%ED%95%9C-%ED%81%B4%EB%9F%AC%EC%8A%A4%ED%84%B0%EB%A7%81-%EB%A1%9C%EC%A7%81-%EC%84%A4%EA%B3%84-%EA%B3%BC%EC%A0%95)|권찬|
