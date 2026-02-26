@@ -81,9 +81,7 @@ public class PromptGenerateUtil {
                     List<Long> questionIds = category.getQuestionDocumentIds();
                     List<String> questions = questionVectors.stream()
                             .filter(questionVector -> {
-                                List<Long> subList = questionIds.size() > 30
-                                        ? questionIds.subList(0, 30)
-                                        : questionIds;
+                                List<Long> subList = questionIds.size() > 30 ? questionIds.subList(0, 30) : questionIds;
                                 return subList.contains(questionVector.getId());
                             })
                             .map(QuestionVectorDocument::getQuestion)
