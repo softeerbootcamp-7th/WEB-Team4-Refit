@@ -241,7 +241,7 @@ frontend/
 - `rollup-plugin-visualizer`를 통해 `pdfjs-dist`가 초기 번들에서 큰 비중을 차지하고 있음을 확인
 - `React.lazy()`를 이용해 Route-based Lazy Loading 적용 
 - Rollup의 `manualChunks` 옵션을 이용해 Vendor Splitting 적용
-
+- [[홍지운, 황주희] 코드 스플리팅을 통한 초기 로딩 속도 최적화](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%ED%99%8D%EC%A7%80%EC%9A%B4%2C-%ED%99%A9%EC%A3%BC%ED%9D%AC%5D-%EC%BD%94%EB%93%9C-%EC%8A%A4%ED%94%8C%EB%A6%AC%ED%8C%85%EC%9D%84-%ED%86%B5%ED%95%9C-%EC%B4%88%EA%B8%B0-%EB%A1%9C%EB%94%A9-%EC%86%8D%EB%8F%84-%EC%B5%9C%EC%A0%81%ED%99%94) 에서 더 자세한 내용을 확인할 수 있어요.
 
 
 | Before | After |
