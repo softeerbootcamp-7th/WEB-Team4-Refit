@@ -7,7 +7,7 @@ export default function MainLayout() {
       <header className="h-15 shrink-0">
         <Navbar />
       </header>
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-auto [scrollbar-gutter:stable]">
         <Outlet />
       </main>
     </div>
