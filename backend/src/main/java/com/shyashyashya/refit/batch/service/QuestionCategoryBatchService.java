@@ -63,6 +63,10 @@ public class QuestionCategoryBatchService {
             Long categoryId = tempIdToCategoryId.get(tempCategoryId);
             String categoryName = tempIdToCategoryName.get(tempCategoryId);
 
+            if (categoryId == null || categoryName == null) {
+                continue;
+            }
+
             log.debug("[createCategories] save question category vector");
             CategoryVectorDocument categoryVectorDocument = CategoryVectorDocument.of(
                     categoryId, tempCategory.getCentroidVector(), Map.of("categoryName", categoryName));
