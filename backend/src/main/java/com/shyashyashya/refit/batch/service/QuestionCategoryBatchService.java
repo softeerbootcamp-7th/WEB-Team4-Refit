@@ -64,6 +64,11 @@ public class QuestionCategoryBatchService {
             String categoryName = tempIdToCategoryName.get(tempCategoryId);
 
             if (categoryId == null || categoryName == null) {
+                log.warn(
+                        "[createCategories] category id or category name not exists: temp id = {}, real id = {}, category name = {}",
+                        tempCategoryId,
+                        categoryId,
+                        categoryName);
                 continue;
             }
 
