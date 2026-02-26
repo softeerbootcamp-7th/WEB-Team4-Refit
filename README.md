@@ -236,6 +236,34 @@ frontend/
 
 <br/>
 
+### 프로덕트 고도화
+#### 코드 스플리팅
+| | Before | After |
+|------|------|-----|
+| | <img width="1000" height="auto" alt="before-stats" src="https://github.com/user-attachments/assets/a1f6797b-06c3-4b0b-bf74-c112d6d3136a" /><br><img width="1000" height="auto" alt="before-chunk" src="https://github.com/user-attachments/assets/65ab8062-bab4-49fa-bd60-8ac65ffa9974" /><br><br><br> | <img width="1000" height="auto" alt="after-stats" src="https://github.com/user-attachments/assets/6c676358-2fda-445d-ae89-35825c920ad8" /><br><img width="1000" height="auto" alt="after-chunk" src="https://github.com/user-attachments/assets/ed400498-dd58-459d-87b1-62f46ac3ee4e" />|
+| 초기 번들 | 1,193.55 kB | 716.91 kB 
+| 초기 번들<br>gzip | 374.04 kB | 234.64 kB 
+| 총 번들 크기 | 1,193.55 kB | 1,196.88 kB 
+
+
+#### 접근성 및 SEO
+| Before | After |
+|------|-----|
+| <img width="723" height="881" alt="Lighthouse Before" src="https://github.com/user-attachments/assets/e88d7433-6a86-4620-b4ad-9de2ecbf0a3b" />| <img width="723" height="881" alt="Lighthouse Before" src="https://github.com/user-attachments/assets/09f56d55-6a0a-4dc8-81ab-df8242f500b9" />
+
+
+
+#### E2E 테스트
+**1. 하이라이트 테스트**
+
+https://github.com/user-attachments/assets/c284c4e1-fb79-424d-90bb-550bf1c9fc4c
+
+
+**2. 면접 생성 및 복기 테스트**
+
+https://github.com/user-attachments/assets/a6f2cb3a-06e9-4081-9e67-70a822cae956
+
+
 
 ## 💾 백엔드
 ### 기술 아티클 
