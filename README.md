@@ -135,10 +135,9 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
 |---|---| 
 |[Claude Code 개념부터 활용까지 (Harness, Context, Skills)](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%ED%99%8D%EC%A7%80%EC%9A%B4%2C-%ED%99%A9%EC%A3%BC%ED%9D%AC%5D-Claude-Code-%EA%B0%9C%EB%85%90%EB%B6%80%ED%84%B0-%ED%99%9C%EC%9A%A9%EA%B9%8C%EC%A7%80-%28Harness%2C-Context%2C-Skills%29) |홍지운, 황주희|
 |[n8n과 Orval을 이용한 OpenAPI Specification(OAS) 주도 개발](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%ED%99%8D%EC%A7%80%EC%9A%B4,-%ED%99%A9%EC%A3%BC%ED%9D%AC%5D-n8n%EA%B3%BC-Orval%EC%9D%84-%EC%9D%B4%EC%9A%A9%ED%95%9C-OpenAPI-Specification(OAS)-%EC%A3%BC%EB%8F%84-%EA%B0%9C%EB%B0%9C) |홍지운, 황주희|
-
-|Web Speech API: 서버 구축 없이 Realtime STT 구현하기 (작성 예정)|홍지운|
+|[React Router 기반 라우팅 처리](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%ED%99%8D%EC%A7%80%EC%9A%B4%2C-%ED%99%A9%EC%A3%BC%ED%9D%AC%5D-React-Router-%EA%B8%B0%EB%B0%98-%EB%9D%BC%EC%9A%B0%ED%8C%85-%EC%B2%98%EB%A6%AC) |홍지운, 황주희|
 |[PDF.js 기반 하이라이트 기능 설계하기 (Part1)](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%ED%99%A9%EC%A3%BC%ED%9D%AC%5D-PDF.js-%EA%B8%B0%EB%B0%98-%ED%95%98%EC%9D%B4%EB%9D%BC%EC%9D%B4%ED%8A%B8-%EA%B8%B0%EB%8A%A5-%EC%84%A4%EA%B3%84%ED%95%98%EA%B8%B0-%28Part-1%29)<br>[PDF.js 기반 하이라이트 안정화하기 ‐ 렌더링과 네트워크 이슈 해결 (Part2)](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%ED%99%A9%EC%A3%BC%ED%9D%AC%5D-PDF.js-%EA%B8%B0%EB%B0%98-%ED%95%98%EC%9D%B4%EB%9D%BC%EC%9D%B4%ED%8A%B8-%EC%95%88%EC%A0%95%ED%99%94%ED%95%98%EA%B8%B0-%E2%80%90-%EB%A0%8C%EB%8D%94%EB%A7%81%EA%B3%BC-%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-%EC%9D%B4%EC%8A%88-%ED%95%B4%EA%B2%B0-%28Part-2%29) |황주희|
-|Web Speech API: 서버 구축 없이 Realtime STT 구현하기|홍지운|
+|Web Speech API: 서버 구축 없이 Realtime STT 구현하기 (작성 예정)|홍지운|
 
 ### 기술 스택
 <table>
