@@ -129,14 +129,16 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
 
 
 ## 🐥 프론트엔드
-
-### 📚 기술 아티클 
+### 기술 아티클 
 |제목|작성자|
 |---|---| 
 |[Claude Code 개념부터 활용까지 (Harness, Context, Skills)](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%ED%99%8D%EC%A7%80%EC%9A%B4%2C-%ED%99%A9%EC%A3%BC%ED%9D%AC%5D-Claude-Code-%EA%B0%9C%EB%85%90%EB%B6%80%ED%84%B0-%ED%99%9C%EC%9A%A9%EA%B9%8C%EC%A7%80-%28Harness%2C-Context%2C-Skills%29) |홍지운, 황주희|
 |[n8n과 Orval을 이용한 OpenAPI Specification(OAS) 주도 개발](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%ED%99%8D%EC%A7%80%EC%9A%B4,-%ED%99%A9%EC%A3%BC%ED%9D%AC%5D-n8n%EA%B3%BC-Orval%EC%9D%84-%EC%9D%B4%EC%9A%A9%ED%95%9C-OpenAPI-Specification(OAS)-%EC%A3%BC%EB%8F%84-%EA%B0%9C%EB%B0%9C) |홍지운, 황주희|
-|Web Speech API: 서버 구축 없이 Realtime STT 구현하기 (작성 예정)|홍지운|
+|[React Router 기반 라우팅 처리](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%ED%99%8D%EC%A7%80%EC%9A%B4%2C-%ED%99%A9%EC%A3%BC%ED%9D%AC%5D-React-Router-%EA%B8%B0%EB%B0%98-%EB%9D%BC%EC%9A%B0%ED%8C%85-%EC%B2%98%EB%A6%AC) |홍지운, 황주희|
 |[PDF.js 기반 하이라이트 기능 설계하기 (Part1)](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%ED%99%A9%EC%A3%BC%ED%9D%AC%5D-PDF.js-%EA%B8%B0%EB%B0%98-%ED%95%98%EC%9D%B4%EB%9D%BC%EC%9D%B4%ED%8A%B8-%EA%B8%B0%EB%8A%A5-%EC%84%A4%EA%B3%84%ED%95%98%EA%B8%B0-%28Part-1%29)<br>[PDF.js 기반 하이라이트 안정화하기 ‐ 렌더링과 네트워크 이슈 해결 (Part2)](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%ED%99%A9%EC%A3%BC%ED%9D%AC%5D-PDF.js-%EA%B8%B0%EB%B0%98-%ED%95%98%EC%9D%B4%EB%9D%BC%EC%9D%B4%ED%8A%B8-%EC%95%88%EC%A0%95%ED%99%94%ED%95%98%EA%B8%B0-%E2%80%90-%EB%A0%8C%EB%8D%94%EB%A7%81%EA%B3%BC-%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-%EC%9D%B4%EC%8A%88-%ED%95%B4%EA%B2%B0-%28Part-2%29) |황주희|
+|Web Speech API: 서버 구축 없이 Realtime STT 구현하기 (작성 예정)|홍지운|
+
+<br/>
 
 ### 기술 스택
 <table>
@@ -194,15 +196,112 @@ Jira와 GitHub를 동시에 관리해야 하는 수고를 줄이고 팀의 Git �
     </tbody>
 </table>
 
+<br/>
 
-
-
+### 폴더 구조
+```
+frontend/
+├── src/
+│   ├── routes/                   
+│   │   ├── index.tsx             # createBrowserRouter 설정
+│   │   ├── routes.ts             # ROUTES 경로 상수
+│   │   └── middleware/           # 인증, 모바일 감지 미들웨어
+│   │
+│   ├── pages/                    # 라우터 진입점
+│   │   ├── _index/               # 폴더 단위의 라우트 엔트리 (라우트 구조와 1:1 대응)
+│   │   └── ...                   
+│   │
+│   ├── features/                 # 화면/도메인 기능 구현 계층 (라우트 구조와 1:1 대응)
+│   │   ├── _common/              # 전역 공통 모듈 (여러 도메인에서 재사용)
+│   │   ├── dashboard/            # dashboard 도메인
+│   │   │   ├── _common/                 # dashboard 내 여러 화면에서 공유하는 모듈
+│   │   │   ├── _index/                  # dashboard 기본 화면
+│   │   │   │   ├── components/                # _index 화면 전용 UI 컴포넌트
+│   │   │   │   ├── constants/                 # _index 화면 전용 상수
+│   │   │   │   ├── contexts/                  # _index 화면 전용 Context/Provider
+│   │   │   │   └── hooks/                     # _index 화면 전용 커스텀 훅
+│   │   └── ...
+│   │
+│   ├── apis/                     # API client 및 요청 로직
+│   │   ├── generated/                   # Orval이 생성한 React Hooks
+│   │   └── custom-fetch.ts              # Custom Fetcher 
+│   ├── constants/                # 공통 상수
+│   ├── layouts/                  # 공통 레이아웃
+│   ├── routes/                   # 라우팅 정의/미들웨어
+│   ├── styles/                   # 전역 스타일
+│   ├── types/                    # 공통 타입
+│   └── ui/                       # 재사용 UI 컴포넌트/에셋
+│
+└── api-docs.json                 # OpenAPI Specification (OAS)
+```
 
 <br/>
 
+### n8n과 Orval을 이용한 OpenAPI Specification(OAS) 주도 개발
+- n8n 워크플로우(Notion → Vertex Chat Model → GitHub)를 구성해, 자연어 API 명세를 자동으로 OAS(OpenAPI) 파일로 변환·반영하는 파이프라인을 만들었습니다.
+- 프론트엔드는 Orval을 도입해 OAS로부터 타입(d.ts), API 호출 함수, React Query Hook, MSW Handler를 자동 생성하고, pnpm orval 한 번으로 스펙-코드를 동기화했습니다.
+- 이 구조로 백엔드 미완성 단계에서는 MSW로 병행 개발하고, API 준비 후에는 Handler 제거만으로 점진 전환했으며, 이후에는 springdoc-openapi 기반 OAS 추출로 운영 루프를 이어갔습니다.
+더 자세한 내용은 [해당 아티클](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%ED%99%8D%EC%A7%80%EC%9A%B4,-%ED%99%A9%EC%A3%BC%ED%9D%AC%5D-n8n%EA%B3%BC-Orval%EC%9D%84-%EC%9D%B4%EC%9A%A9%ED%95%9C-OpenAPI-Specification(OAS)-%EC%A3%BC%EB%8F%84-%EA%B0%9C%EB%B0%9C)에서 보실 수 있습니다.
+
+<br/>
+
+### AI Agent 친화적인 Codebase 및 Workflow 설계
+- CLAUDE.md는 가볍게 유지하고, 세부 규칙은 .claude/**/*.md 로 분리해 필요한 Context만 선택적으로 가져오도록 설계했습니다.
+- 반복 작업들은 Skills로 모듈화해 AI Agent의 실행 품질과 일관성을 높였습니다.
+- SPEC.md 작성 -> Plan Mode 기반 구현 -> 검증 Skils 실행 -> 문서 정리 Skills 실행으로 이어지는 Workflow를 설계해, AI Agent 친화적인 Codebase를 만들었습니다.
+
+<br/>
+
+### 코드 스플리팅
+- `rollup-plugin-visualizer`를 통해 `pdfjs-dist`가 초기 번들에서 큰 비중을 차지하고 있음을 확인
+- `React.lazy()`를 이용해 Route-based Lazy Loading 적용 
+- Rollup의 `manualChunks` 옵션을 이용해 Vendor Splitting 적용
+- [[홍지운, 황주희] 코드 스플리팅을 통한 초기 로딩 속도 최적화](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%ED%99%8D%EC%A7%80%EC%9A%B4%2C-%ED%99%A9%EC%A3%BC%ED%9D%AC%5D-%EC%BD%94%EB%93%9C-%EC%8A%A4%ED%94%8C%EB%A6%AC%ED%8C%85%EC%9D%84-%ED%86%B5%ED%95%9C-%EC%B4%88%EA%B8%B0-%EB%A1%9C%EB%94%A9-%EC%86%8D%EB%8F%84-%EC%B5%9C%EC%A0%81%ED%99%94) 에서 더 자세한 내용을 확인할 수 있어요.
+
+
+| Before | After |
+|------|-----|
+| <img width="1000" height="auto" alt="before-stats" src="https://github.com/user-attachments/assets/a1f6797b-06c3-4b0b-bf74-c112d6d3136a" /><br><img width="1000" height="auto" alt="before-chunk" src="https://github.com/user-attachments/assets/65ab8062-bab4-49fa-bd60-8ac65ffa9974" /><br><br><br> | <img width="1000" height="auto" alt="after-stats" src="https://github.com/user-attachments/assets/6c676358-2fda-445d-ae89-35825c920ad8" /><br><img width="1000" height="auto" alt="after-chunk" src="https://github.com/user-attachments/assets/ed400498-dd58-459d-87b1-62f46ac3ee4e" />|
+| 초기 번들: 1,193.55 kB | 초기 번들: 716.91 kB 
+| 초기 번들 gzip: 374.04 kB | 초기 번들 gzip: 234.64 kB 
+| 총 번들: 1,193.55 kB | 총 번들: 1,196.88 kB 
+
+<br/>
+
+### 접근성 및 SEO
+- /web-design-guidelines Skills를 활용해 접근성 체크리스트와 SEO 기본 원칙을 설계 단계에서 반영
+
+
+| Before | After |
+|------|-----|
+| <img width="723" height="881" alt="Lighthouse Before" src="https://github.com/user-attachments/assets/e88d7433-6a86-4620-b4ad-9de2ecbf0a3b" />| <img width="723" height="881" alt="Lighthouse Before" src="https://github.com/user-attachments/assets/09f56d55-6a0a-4dc8-81ab-df8242f500b9" />
+
+**/web-design-guidelines Skills 접근성 체크리스트 결과 예시**
+
+| <img width="1414" height="1596" alt="image" src="https://github.com/user-attachments/assets/2b16bb0a-1588-46cd-b4da-91f66f9dabcf" /> | <img width="1352" height="1076" alt="image" src="https://github.com/user-attachments/assets/ebeccf55-8af9-4233-8fad-678d49f03fb6" /> |
+|---|---|
+| <img width="1334" height="1346" alt="image" src="https://github.com/user-attachments/assets/67ce07f9-10eb-4777-9cd2-ef1ce13c5e99" /> | <img width="1376" height="1630" alt="image" src="https://github.com/user-attachments/assets/52a67db0-7375-4e57-8edb-64d2626ecf8e" /> |
+
+
+
+
+
+### E2E 테스트
+- /agent-browser Skills를 활용해 사전 정의한 자연어 시나리오를 기반으로 E2E 테스트를 진행
+
+**1. 하이라이트 테스트**
+
+https://github.com/user-attachments/assets/c284c4e1-fb79-424d-90bb-550bf1c9fc4c
+
+
+**2. 면접 생성 및 복기 테스트**
+
+https://github.com/user-attachments/assets/a6f2cb3a-06e9-4081-9e67-70a822cae956
+
+
 
 ## 💾 백엔드
-### 📚 기술 아티클 
+### 기술 아티클 
 |파트|제목|작성자|
 |---|---|---| 
 |BE|[질문 카테고리 분류를 위한 클러스터링 배치 로직 설계 과정](https://github.com/softeerbootcamp-7th/WEB-Team4-Refit/wiki/%5B%EA%B6%8C%EC%B0%AC%5D-%EC%A7%88%EB%AC%B8-%EC%B9%B4%ED%85%8C%EA%B3%A0%EB%A6%AC-%EB%B6%84%EC%84%9D%EC%9D%84-%EC%9C%84%ED%95%9C-%ED%81%B4%EB%9F%AC%EC%8A%A4%ED%84%B0%EB%A7%81-%EB%A1%9C%EC%A7%81-%EC%84%A4%EA%B3%84-%EA%B3%BC%EC%A0%95)|권찬|
