@@ -5,7 +5,7 @@ import { shouldThrowInterviewRouteError } from '@/routes/interviewErrorRoute'
 const CONVERT_PENDING_ERROR_CODE = 'INTERVIEW_CONVERTING_STATUS_IS_PENDING'
 const CONVERT_IN_PROGRESS_ERROR_CODE = 'INTERVIEW_CONVERTING_IN_PROGRESS'
 export const CONVERT_FAILED_ERROR_CODE = 'INTERVIEW_CONVERTING_FAILED'
-const REFETCH_INTERVAL_MS = 1500
+const REFETCH_INTERVAL_MS = 1000 * 60 * 3
 
 export type ConvertGateState = 'loading' | 'ready' | 'failed' | 'error'
 
