@@ -253,7 +253,7 @@ frontend/
 
 <br/>
 
-#### 접근성 및 SEO
+### 접근성 및 SEO
 - /web-design-guidelines Skills를 활용해 접근성 체크리스트와 SEO 기본 원칙을 설계 단계에서 반영
 
 
@@ -261,10 +261,19 @@ frontend/
 |------|-----|
 | <img width="723" height="881" alt="Lighthouse Before" src="https://github.com/user-attachments/assets/e88d7433-6a86-4620-b4ad-9de2ecbf0a3b" />| <img width="723" height="881" alt="Lighthouse Before" src="https://github.com/user-attachments/assets/09f56d55-6a0a-4dc8-81ab-df8242f500b9" />
 
+**/web-design-guidelines Skills 접근성 체크리스트 결과 예시**
+
+| <img width="1414" height="1596" alt="image" src="https://github.com/user-attachments/assets/2b16bb0a-1588-46cd-b4da-91f66f9dabcf" /> | <img width="1352" height="1076" alt="image" src="https://github.com/user-attachments/assets/ebeccf55-8af9-4233-8fad-678d49f03fb6" /> |
+|---|---|
+| <img width="1334" height="1346" alt="image" src="https://github.com/user-attachments/assets/67ce07f9-10eb-4777-9cd2-ef1ce13c5e99" /> | <img width="1376" height="1630" alt="image" src="https://github.com/user-attachments/assets/52a67db0-7375-4e57-8edb-64d2626ecf8e" /> |
 
 
 
-#### E2E 테스트
+
+
+### E2E 테스트
+- /agent-browser Skills를 활용해 사전 정의한 자연어 시나리오를 기반으로 E2E 테스트를 진행
+
 **1. 하이라이트 테스트**
 
 https://github.com/user-attachments/assets/c284c4e1-fb79-424d-90bb-550bf1c9fc4c
